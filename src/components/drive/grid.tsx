@@ -1,0 +1,92 @@
+'use client'
+
+import { Card, CardFooter, CardHeader } from '@heroui/react'
+import React from 'react'
+import { useMediaQuery } from '®/hooks/useMediaQuery'
+import { BlogCardAnimation, fromLeftVariant } from '®/lib/FramerMotionVariants'
+import { formatBytes, formatDateTime } from '®/lib/utils'
+import { Drive, DriveItem } from '®/types/drive'
+import { ContextMenu, ContextMenuTrigger } from '®/ui/context-menu'
+import AnimatedDiv from '®/ui/farmer/div'
+import { MagicCard } from '®/ui/magiccard'
+import { GridSkeleton } from '®/ui/skeleton'
+import { Menu } from './menu'
+import { Thumbnail } from './thumbnail'
+
+export function Grid({
+    data,
+    isLoading,
+    onSelectItem,
+}: {
+    data?: Drive
+    isLoading?: boolean
+    onSelectItem: (item: DriveItem) => void
+}) {
+    const [active, setActive] = React.useState<DriveItem | null>(null)
+    const [open, setOpen] = React.useState(false)
+    const isDesktop = useMediaQuery('(min-width: 640px)')
+    if (isLoading) {
+        return <GridSkeleton />
+    }
+
+    return (
+        <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2'>
+            {data?.children?.map((c) => (
+                <ContextMenu
+                    key={c.id}
+                    onOpenChange={(open) => {
+                        setOpen(open)
+                        if (open) {
+                            setActive(c)
+                        } else {
+                            setActive(null)
+                        }
+                    }}
+                >
+                    <ContextMenuTrigger onClick={() => onSelectItem(c)}>
+                        <AnimatedDiv mobileVariants={BlogCardAnimation} variants={fromLeftVariant}>
+                            <Card
+                                aria-label={c?.name}
+                                shadow='none'
+                                className='w-full select-none rounded-2xl border bg-transparent'
+                                isPressable={isDesktop}
+                                onPress={() => onSelectItem(c)}
+                            >
+                                <MagicCard>
+                                    <CardHeader className='mb-[1px] p-2'>
+                                        <h1 className='line-clamp-1 text-start text-[13px]'>
+                                            {c?.name}
+                                        </h1>
+                                        <span className='w-10' />
+                                    </CardHeader>
+                                    <Thumbnail
+                                        name={c?.name as string}
+                                        src={c?.thumbnails?.[0]?.large?.url || ''}
+                                        type='Grid'
+                                    />
+                                    <CardFooter className='grid grid-cols-3 p-2 text-xs text-muted-foreground'>
+                                        <p className='truncate text-start'>
+                                            {formatBytes(c?.size)}
+                                        </p>
+                                        <p className='truncate text-center'></p>
+                                        <p className='truncate text-right'>
+                                            {formatDateTime(c?.lastModifiedDateTime)}
+                                        </p>
+                                    </CardFooter>
+                                </MagicCard>
+                            </Card>
+                        </AnimatedDiv>
+                    </ContextMenuTrigger>
+                    <Menu
+                        c={c}
+                        open={active?.id === c.id && open}
+                        setOpen={(open) => {
+                            setActive(c)
+                            setOpen(open)
+                        }}
+                    />
+                </ContextMenu>
+            ))}
+        </div>
+    )
+}

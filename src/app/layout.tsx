@@ -1,0 +1,89 @@
+import type { Metadata, Viewport } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import Footer from '®/components/footer'
+import { META_THEME_COLORS, siteConfig } from '®/config/site'
+import { Providers } from '®/provider'
+import { Sonner } from '®/ui/sonner'
+import './globals.css'
+import SearchBar from '®/components/search/bar'
+
+const geistSans = Geist({
+    variable: '--font-geist-sans',
+    subsets: ['latin'],
+})
+
+const geistMono = Geist_Mono({
+    variable: '--font-geist-mono',
+    subsets: ['latin'],
+})
+
+export default function RootLayout({
+    children,
+}: Readonly<{
+    children: React.ReactNode
+}>) {
+    return (
+        <html suppressHydrationWarning lang='en'>
+            <head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+            try {
+                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
+                }
+            } catch (_) {}
+            `,
+                    }}
+                />
+            </head>
+            <body
+                className={`${geistSans.variable} ${geistMono.variable} bg-background antialiased`}
+            >
+                <Providers>
+                    <div className='relative flex min-h-screen flex-col bg-background'>
+                        {/* remove it for now bcz for large contetnt list its get height error -  vaul-drawer-wrapper="" */}
+                        <div className='flex-1 overflow-clip'>{children}</div>
+                        <Footer />
+                        <SearchBar />
+                        <Sonner />
+                    </div>
+                </Providers>
+            </body>
+        </html>
+    )
+}
+
+export const metadata: Metadata = {
+    title: {
+        default: siteConfig.title,
+        template: `%s - ${siteConfig.title}`,
+    },
+    description: siteConfig.description,
+    manifest: '/manifest.json',
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: 'black-translucent',
+        title: `${siteConfig.title}`,
+        startupImage: ['/icons/rdrive.png'],
+    },
+    icons: {
+        icon: '/favicon.ico',
+    },
+    metadataBase: new URL(siteConfig.domain),
+    openGraph: {
+        title: siteConfig.title,
+        description: siteConfig.description,
+        url: new URL(siteConfig.domain),
+        siteName: siteConfig.title,
+        type: 'website',
+        images: '/api/drive/og?slug=/',
+    },
+    category: 'technology',
+}
+
+export const viewport: Viewport = {
+    maximumScale: 1,
+    userScalable: false,
+    themeColor: META_THEME_COLORS.dark,
+}
