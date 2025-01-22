@@ -69,7 +69,7 @@ const List = React.memo(({ c }: { c: DriveItem }) => {
     const url = `${siteConfig.domain}${c.href}`
 
     return (
-        <Listbox variant='flat'>
+        <Listbox variant='flat'  disabledKeys={["rename", "delete"]}>
             <ListboxSection title='Actions'>
                 <ListboxItem
                     key='share'

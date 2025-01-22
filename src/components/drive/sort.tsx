@@ -81,7 +81,7 @@ export function SortBy({ sort }: { sort: (sortField: SortField, sortOrder: SortO
                         aria-label='Sort Options'
                         selectedKeys={[sortField, sortOrder]}
                         selectionMode='single'
-                        variant='flat'
+                        variant='faded'
                         onSelectionChange={(keys) =>
                             handleSelectionChange(Array.from(keys)[0] as SortField | SortOrder)
                         }
