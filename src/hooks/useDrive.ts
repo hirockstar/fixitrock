@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter as route, usePathname } from 'next/navigation'
 import { useRouter } from 'nextjs-toploader/app'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -10,6 +10,7 @@ import { Drive, DriveItem, SortField, SortOrder } from '®/types/drive'
 import { useQueryParams } from './useQueryParams'
 
 export function useDrive(slugPath: string[]) {
+    const queryClient = useQueryClient()
     const [query, setQuery] = useState('')
     const [sortField, setSortField] = useState<SortField>('name')
     const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
@@ -26,6 +27,9 @@ export function useDrive(slugPath: string[]) {
         queryKey: ['Drive', slug],
         queryFn: () => getChildren(slug),
         staleTime: 60 * 1000,
+        initialData: () => queryClient.getQueryData(['Drive', slug]),
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
     })
 
     const sanitizedQuery = useMemo(() => sanitizeQuery(query), [query])

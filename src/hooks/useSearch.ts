@@ -31,5 +31,8 @@ export const useSearch = (query: string) => {
         queryKey: ['search', debouncedQuery],
         queryFn: () => getSearch(debouncedQuery),
         enabled: !!debouncedQuery,
+        staleTime: 5 * 60 * 1000,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
     })
 }

@@ -5,12 +5,12 @@ Welcome to the Fix it Rock GitHub repository! This project is dedicated to provi
 ## Table of Contents
 
 - [Fix it Rock - Open Source Project](#fix-it-rock---open-source-project)
-  - [Table of Contents](#table-of-contents)
-  - [About FixitRock](#about-fixitrock)
-  - [Getting Started](#getting-started)
-  - [Contributing](#contributing)
-  - [Uploading Files](#uploading-files)
-  - [License](#license)
+    - [Table of Contents](#table-of-contents)
+    - [About FixitRock](#about-fixitrock)
+    - [Getting Started](#getting-started)
+    - [Contributing](#contributing)
+    - [Uploading Files](#uploading-files)
+    - [License](#license)
 
 ## About FixitRock
 
@@ -36,7 +36,7 @@ If you have files that you would like to share with the community, you can uploa
 
 - The files are well-organized and appropriately named.
 - You provide a brief description of the files and their intended use.
-- connect with us via [WhatsApp](https://wa.me/919927241144) to get access for uploading files.  
+- connect with us via [WhatsApp](https://wa.me/919927241144) to get access for uploading files.
 
 ## License
 

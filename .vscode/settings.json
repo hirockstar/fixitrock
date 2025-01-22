@@ -1,0 +1,15 @@
+{
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "prettier.semi": false,
+    "prettier.useTabs": false,
+    "prettier.tabWidth": 4,
+    "prettier.printWidth": 100,
+    "prettier.singleQuote": true,
+    "prettier.bracketSpacing": true,
+    "prettier.endOfLine": "auto",
+    "prettier.arrowParens": "always",
+    "prettier.trailingComma": "all",
+    "prettier.configPath": ".prettierrc.js",
+    "markdown.extension.print.onFileSave": true
+}
