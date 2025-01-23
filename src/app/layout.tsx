@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next'
+
 import { Geist, Geist_Mono } from 'next/font/google'
+
 import Footer from '®/components/footer'
 import { META_THEME_COLORS, siteConfig } from '®/config/site'
 import { Providers } from '®/provider'

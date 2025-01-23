@@ -2,6 +2,7 @@
 
 import { motion, useMotionTemplate, useMotionValue } from 'motion/react'
 import React, { useCallback, useEffect, useRef } from 'react'
+
 import { cn } from '®/lib/utils'
 
 export interface MagicCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -25,6 +26,7 @@ export function MagicCard({
                 const { left, top } = cardRef.current.getBoundingClientRect()
                 const clientX = e.clientX
                 const clientY = e.clientY
+
                 mouseX.set(clientX - left)
                 mouseY.set(clientY - top)
             }
@@ -65,6 +67,7 @@ export function MagicCard({
         mouseX.set(-gradientSize)
         mouseY.set(-gradientSize)
     }, [gradientSize, mouseX, mouseY])
+
     return (
         <div
             ref={cardRef}

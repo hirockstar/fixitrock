@@ -14,12 +14,14 @@ import { motion } from 'motion/react'
 import React from 'react'
 import { FaApple } from 'react-icons/fa'
 import { TbApps } from 'react-icons/tb'
+import { useRouter } from 'nextjs-toploader/app'
+
 import { FolderType, StorageType } from '®/app/api/actions/drive/storage'
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import { useStorage } from '®/hooks/useStorage'
 import { formatBytes, stateColors } from '®/lib/utils'
+
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from './drawer'
-import { useRouter } from 'nextjs-toploader/app'
 
 export function Status() {
     const { data, isLoading } = useStorage()
@@ -45,8 +47,8 @@ export function Status() {
     const TriggerButton = (
         <Button
             className={`h-8 rounded-sm p-1 text-[0.875rem] font-[400] r${stateColors[storage.state]}`}
+            startContent={<span aria-hidden='true' className={stateClass} />}
             variant='light'
-            startContent={<span className={stateClass} aria-hidden='true' />}
         >
             {stateLabel}
         </Button>
@@ -78,19 +80,20 @@ export function Status() {
 function Drive({ data }: { data: StorageType }) {
     const usedSpace = data.total - data.remaining
     const usedPercentage = (usedSpace / data.total) * 100
+
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className='group'
+            initial={{ opacity: 0, y: 20 }}
         >
             <Card
-                className='border bg-transparent hover:bg-muted/30 dark:hover:bg-[#0a0a0a]'
-                shadow='none'
+                disableRipple
+                fullWidth
                 isHoverable
                 isPressable
-                fullWidth
-                disableRipple
+                className='border bg-transparent hover:bg-muted/30 dark:hover:bg-[#0a0a0a]'
+                shadow='none'
             >
                 <CardBody className='flex-row items-center gap-2.5'>
                     <HardDrive className='size-8 shrink-0' />
@@ -100,9 +103,9 @@ function Drive({ data }: { data: StorageType }) {
                         </div>
                         <div className='relative h-4 overflow-hidden rounded bg-muted'>
                             <motion.div
+                                animate={{ width: `${usedPercentage}%` }}
                                 className={`h-full ${stateColors[data.state]}`}
                                 initial={{ width: 0 }}
-                                animate={{ width: `${usedPercentage}%` }}
                                 transition={{ duration: 1, ease: 'easeOut' }}
                             />
                             <div className='absolute inset-0 flex items-center justify-center text-xs font-medium text-white'>
@@ -150,17 +153,17 @@ function Folder({ folder, setOpen }: { folder: FolderType; setOpen: (open: boole
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className='group'
+            initial={{ opacity: 0, y: 20 }}
         >
             <Card
-                className='border bg-transparent hover:bg-muted/30 dark:hover:bg-[#0a0a0a]'
-                shadow='none'
+                disableRipple
+                fullWidth
                 isHoverable
                 isPressable
-                fullWidth
-                disableRipple
+                className='border bg-transparent hover:bg-muted/30 dark:hover:bg-[#0a0a0a]'
+                shadow='none'
                 onPress={() => {
                     setOpen(false)
                     route.push(`/${folder.name}`)
@@ -177,9 +180,9 @@ function Folder({ folder, setOpen }: { folder: FolderType; setOpen: (open: boole
                         </div>
                         <div className='relative h-2 overflow-hidden rounded bg-muted'>
                             <motion.div
+                                animate={{ width: '100%' }}
                                 className={`h-full ${color}`}
                                 initial={{ width: 0 }}
-                                animate={{ width: '100%' }}
                                 transition={{ duration: 1, ease: 'easeOut' }}
                             />
                         </div>

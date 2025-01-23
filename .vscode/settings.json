@@ -1,6 +1,9 @@
 {
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "always"
+    },
     "prettier.semi": false,
     "prettier.useTabs": false,
     "prettier.tabWidth": 4,
@@ -9,7 +12,5 @@
     "prettier.bracketSpacing": true,
     "prettier.endOfLine": "auto",
     "prettier.arrowParens": "always",
-    "prettier.trailingComma": "all",
-    "prettier.configPath": ".prettierrc.js",
-    "markdown.extension.print.onFileSave": true
+    "prettier.trailingComma": "all"
 }

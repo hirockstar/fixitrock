@@ -24,6 +24,7 @@ export async function getMeta(meta: string) {
                     .api(`/me/drive/items/${response.id}:/icon.png`)
                     .expand('thumbnails')
                     .get()
+
                 thumbnails = thumbnailResponse?.thumbnails || null
             } catch (error: unknown) {
                 if (
@@ -51,6 +52,7 @@ export async function getMeta(meta: string) {
             `Failed to fetch metadata for ${meta} from OneDrive (getMeta):`,
             error instanceof Error ? error.message : error
         )
+
         return {}
     }
 }

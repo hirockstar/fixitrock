@@ -13,9 +13,9 @@ import {
 } from '@heroui/react'
 import { ListFilter } from 'lucide-react'
 import * as React from 'react'
+
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import { SortField, SortOrder } from '®/types/drive'
-
 import {
     Drawer,
     DrawerContent,
@@ -63,18 +63,18 @@ export function SortBy({ sort }: { sort: (sortField: SortField, sortOrder: SortO
         <>
             {isDesktop ? (
                 <Dropdown
-                    placement='bottom-end'
-                    type='listbox'
                     className='rounded-lg border shadow-none'
+                    placement='bottom-end'
                     radius='none'
+                    type='listbox'
                 >
                     <DropdownTrigger>
                         <Button
                             isIconOnly
                             className='h-9 min-w-9 rounded-lg border'
+                            size='sm'
                             startContent={<ListFilter size={20} />}
                             variant='light'
-                            size='sm'
                         />
                     </DropdownTrigger>
                     <DropdownMenu

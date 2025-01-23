@@ -2,9 +2,11 @@
 
 import { motion, useAnimation } from 'motion/react'
 import { useEffect, useState } from 'react'
+
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import useScroll from '®/hooks/useScroll'
 import { Bottom } from '®/lib/FramerMotionVariants'
+
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '../drawer'
 
 interface AnimatedSearchProps {
@@ -20,7 +22,9 @@ export default function AnimatedSearch({ children, open, setOpen }: AnimatedSear
 
     useEffect(() => {
         const animate = async () => await controls.start(isHidden ? 'hidden' : 'visible')
+
         animate()
+
         return () => controls.stop()
     }, [isHidden, controls])
 
@@ -32,11 +36,11 @@ export default function AnimatedSearch({ children, open, setOpen }: AnimatedSear
                 onClick={() => setOpen(false)}
             />
             <motion.div
-                className={`fixed bottom-4 z-50 w-[95%] md:w-[640px]`}
-                variants={Bottom}
-                initial={isHidden && !open ? 'hidden' : 'visible'}
                 animate={controls}
+                className={`fixed bottom-4 z-50 w-[95%] md:w-[640px]`}
+                initial={isHidden && !open ? 'hidden' : 'visible'}
                 transition={{ type: 'spring', stiffness: 350, damping: 35 }}
+                variants={Bottom}
             >
                 <Modal open={open} setOpen={setOpen}>
                     {children}
@@ -58,6 +62,7 @@ export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
             </div>
         )
     }
+
     return (
         <>
             {!open && <div className='z-50 w-full'>{children}</div>}
@@ -103,6 +108,7 @@ export const useOpen = () => {
 
             const isScrollable =
                 document.documentElement.scrollHeight > document.documentElement.clientHeight
+
             document.documentElement.style.paddingRight = isScrollable ? '11px' : '0px'
         } else {
             document.documentElement.style.overflow = ''

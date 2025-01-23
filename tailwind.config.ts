@@ -1,6 +1,6 @@
-import { heroui } from '@heroui/react'
 import type { Config } from 'tailwindcss'
 
+import { heroui } from '@heroui/react'
 import tailwindcssAnimate from 'tailwindcss-animate'
 
 export default {

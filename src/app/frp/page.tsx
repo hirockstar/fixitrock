@@ -1,8 +1,11 @@
 import { Metadata } from 'next'
 import { Suspense } from 'react'
+
 import { siteConfig } from '®/config/site'
 import { GridSkeleton } from '®/ui/skeleton'
+
 import { getData } from '../api/actions/supabase/getData'
+
 import { FRPCard } from './card'
 
 export default async function FRP() {

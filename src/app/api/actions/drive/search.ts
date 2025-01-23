@@ -27,6 +27,7 @@ export async function getSearch(query: string): Promise<Search> {
             .get()
 
         const searchResults = response?.value || []
+
         if (!searchResults.length) return { data: [] } // Return empty data array if no results
 
         // Process each search result and return them as SearchItem objects
@@ -48,6 +49,7 @@ export async function getSearch(query: string): Promise<Search> {
                                 .api(`/me/drive/items/${item.id}:/icon.png`)
                                 .expand('thumbnails($select=large)')
                                 .get()
+
                             itemDetails.thumbnails =
                                 thumbnailResponse?.thumbnails || itemDetails.thumbnails || null
                         } catch {
@@ -61,6 +63,7 @@ export async function getSearch(query: string): Promise<Search> {
                         `Failed to fetch details for item ${item.id}:`,
                         error instanceof Error ? error.message : error
                     )
+
                     return null
                 }
             })
@@ -73,6 +76,7 @@ export async function getSearch(query: string): Promise<Search> {
             'Error searching items in OneDrive (getMeta):',
             error instanceof Error ? error.message : error
         )
+
         return { data: [] } // Return empty data array in case of error
     }
 }

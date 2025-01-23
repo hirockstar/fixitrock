@@ -20,6 +20,7 @@ const Input: React.FC<InputProps> = ({ value = '', hotKey, onChange, ...inputPro
             const timer = setTimeout(() => {
                 setIsLoading(false)
             }, 300)
+
             return () => clearTimeout(timer)
         }
         setIsLoading(false)
@@ -39,14 +40,28 @@ const Input: React.FC<InputProps> = ({ value = '', hotKey, onChange, ...inputPro
     return (
         <Drive
             ref={inputRef}
-            type='search'
-            value={value}
-            onChange={onChange}
             className='bg-transparent'
             classNames={{
                 inputWrapper:
                     'h-9 min-h-9 w-full rounded-lg border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
             }}
+            endContent={
+                <>
+                    {!value && hotKey && (
+                        <Button
+                            isIconOnly
+                            className='hidden h-5 w-5 !min-w-5 rounded-sm border bg-default/20 text-[12px] dark:bg-default/40 sm:block'
+                            radius='none'
+                            size='sm'
+                            variant='light'
+                        >
+                            {hotKey.toUpperCase()}
+                        </Button>
+                    )}
+                </>
+            }
+            radius='none'
+            size='sm'
             startContent={
                 <>
                     {isLoading ? (
@@ -56,23 +71,9 @@ const Input: React.FC<InputProps> = ({ value = '', hotKey, onChange, ...inputPro
                     )}
                 </>
             }
-            endContent={
-                <>
-                    {!value && hotKey && (
-                        <Button
-                            isIconOnly
-                            variant='light'
-                            className='hidden h-5 w-5 !min-w-5 rounded-sm border bg-default/20 text-[12px] dark:bg-default/40 sm:block'
-                            radius='none'
-                            size='sm'
-                        >
-                            {hotKey.toUpperCase()}
-                        </Button>
-                    )}
-                </>
-            }
-            radius='none'
-            size='sm'
+            type='search'
+            value={value}
+            onChange={onChange}
             {...inputProps}
         />
     )

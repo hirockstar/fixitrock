@@ -1,12 +1,15 @@
 'use client'
 import React from 'react'
+
 import { DriveItem } from '®/types/drive'
+
 import ImagePreview from './image'
 import Mdx from './mdx'
 import VideoPreview from './video'
 
 const Switch: React.FC<{ file: DriveItem }> = ({ file }) => {
     const mimeType = file?.file?.mimeType
+
     if (mimeType?.startsWith('image/')) {
         return <ImagePreview file={file} />
     }

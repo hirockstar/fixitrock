@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+
 import { DriveItem } from '®/types/drive'
 
 export function cn(...inputs: ClassValue[]) {
@@ -53,6 +54,7 @@ export const cUrl = (c: DriveItem, pathname: string) => {
     if (isPreviewable(c)) {
         return `${pathname === '/' ? '' : pathname}?view=${c.name}`
     }
+
     return getDownloadUrl(c)
 }
 
@@ -81,6 +83,7 @@ export function formatDateTime(dateTimeString?: string | null | undefined): stri
     }
 
     const date = new Date(dateTimeString)
+
     if (isNaN(date.getTime())) {
         throw new Error('Invalid date string provided')
     }
@@ -101,18 +104,22 @@ export function formatDateTime(dateTimeString?: string | null | undefined): stri
         return pluralize(diffInSeconds, 'sec') + ' ago'
     } else if (diffInSeconds < HOUR) {
         const minutes = Math.floor(diffInSeconds / MINUTE)
+
         return pluralize(minutes, 'min') + ' ago'
     } else if (diffInSeconds < DAY) {
         const hours = Math.floor(diffInSeconds / HOUR)
+
         return pluralize(hours, 'hr') + ' ago'
     } else if (diffInSeconds < WEEK) {
         const days = Math.floor(diffInSeconds / DAY)
+
         return pluralize(days, 'day') + ' ago'
     } else {
         // Manually format the date as "6 Aug 2023"
         const day = date.getDate()
         const month = date.toLocaleString('en-US', { month: 'short' })
         const year = date.getFullYear()
+
         return `${day} ${month} ${year}`
     }
 }

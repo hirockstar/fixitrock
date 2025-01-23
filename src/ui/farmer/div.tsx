@@ -1,5 +1,6 @@
 'use client'
 import { motion } from 'motion/react'
+
 import { AnimatedTAGProps } from '®/types/drive'
 
 export default function AnimatedDiv({
@@ -17,16 +18,16 @@ export default function AnimatedDiv({
 
     return (
         <motion.div
-            initial='hidden'
-            whileInView='visible'
-            viewport={{ once: !infinity }}
-            variants={selectedVariants}
+            layout
             className={className}
+            initial='hidden'
             transition={{
                 staggerChildren: 0.1,
                 delayChildren: 0.2,
             }}
-            layout
+            variants={selectedVariants}
+            viewport={{ once: !infinity }}
+            whileInView='visible'
             {...motionProps}
         >
             {children}

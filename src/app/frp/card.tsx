@@ -1,12 +1,12 @@
 'use client'
 import { Card, CardFooter, CardHeader, Image } from '@heroui/react'
 import Link from 'next/link'
+import { z } from 'zod'
+
 import { fromLeftVariant, fromTopVariant } from '®/lib/FramerMotionVariants'
 import { formatDateTime } from '®/lib/utils'
 import AnimatedDiv from '®/ui/farmer/div'
 import { MagicCard } from '®/ui/magiccard'
-
-import { z } from 'zod'
 
 export const FRPSchema = z.object({
     id: z.number().int().positive(),
@@ -23,26 +23,27 @@ export function FRPCard({ f }: { f: FRPType }) {
     return (
         <AnimatedDiv
             key={f.id}
+            className='relative select-none'
             mobileVariants={fromTopVariant}
             variants={fromLeftVariant}
-            className='relative select-none'
         >
             <Card
                 aria-label={f.title}
-                shadow='none'
                 className='w-full rounded-2xl border bg-transparent'
+                shadow='none'
             >
-                <Link href={f.link} passHref target='_blank'>
+                <Link passHref href={f.link} target='_blank'>
                     <MagicCard>
                         <CardHeader className='mb-[1px] p-2'>
                             <h1 className='line-clamp-1 text-start text-[13px]'>{f.title}</h1>
                         </CardHeader>
                         <Image
-                            src={f.img}
-                            alt={f.title}
                             isBlurred
-                            classNames={{ wrapper: 'mx-auto' }}
+                            alt={f.title}
                             className={`aspect-video h-40 rounded-lg bg-default/5 object-contain p-2 dark:bg-default/10`}
+                            classNames={{ wrapper: 'mx-auto' }}
+                            loading='lazy'
+                            src={f.img}
                         />
                         <CardFooter className='justify-end p-2 text-xs text-muted-foreground'>
                             <p>{formatDateTime(f.created_at)}</p>

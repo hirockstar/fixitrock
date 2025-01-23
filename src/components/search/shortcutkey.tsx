@@ -15,13 +15,13 @@ type ShortcutProps = {
 }
 
 const Shortcut: React.FC<ShortcutProps> = ({ tooltip, icon }) => (
-    <Tooltip content={tooltip} aria-label={tooltip} showArrow={true}>
+    <Tooltip aria-label={tooltip} content={tooltip} showArrow={true}>
         <Button
-            aria-label={tooltip}
-            size='sm'
-            className='h-6 w-6 min-w-0 rounded-sm border bg-default/10 dark:bg-default/30'
-            variant='light'
             isIconOnly
+            aria-label={tooltip}
+            className='h-6 w-6 min-w-0 rounded-sm border bg-default/10 dark:bg-default/30'
+            size='sm'
+            variant='light'
         >
             {icon}
         </Button>
@@ -41,7 +41,7 @@ export default function ShortcutKey() {
             <h3 className='text-sm text-muted-foreground'>Shortcut Key</h3>
             <div className='flex gap-2'>
                 {icons.map(({ tooltip, icon }, index) => (
-                    <Shortcut key={index} tooltip={tooltip} icon={icon} />
+                    <Shortcut key={index} icon={icon} tooltip={tooltip} />
                 ))}
             </div>
         </div>

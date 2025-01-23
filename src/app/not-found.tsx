@@ -14,7 +14,7 @@ const NotFound: FC = () => {
                     {/* <p className="mb-8 text-xl">
             Oops! It seems like you&apos;ve ventured into uncharted territory.
           </p> */}
-                    <Button color='primary' radius='full' href='/'>
+                    <Button color='primary' href='/' radius='full'>
                         तू जा रे!
                     </Button>
                 </div>

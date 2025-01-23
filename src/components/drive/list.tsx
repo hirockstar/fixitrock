@@ -2,15 +2,17 @@
 
 import { Card, CardBody } from '@heroui/react'
 import React from 'react'
+
 import { BlogCardAnimation, fromTopVariant } from '®/lib/FramerMotionVariants'
 import { formatCount, formatDateTime, formatBytes } from '®/lib/utils'
 import { Drive, DriveItem } from '®/types/drive'
 import { ContextMenu, ContextMenuTrigger } from '®/ui/context-menu'
 import AnimatedDiv from '®/ui/farmer/div'
 import { ListSkeleton } from '®/ui/skeleton'
+import { useMediaQuery } from '®/hooks/useMediaQuery'
+
 import { Menu } from './menu'
 import { Thumbnail } from './thumbnail'
-import { useMediaQuery } from '®/hooks/useMediaQuery'
 
 export function List({
     data,
@@ -31,7 +33,7 @@ export function List({
 
     return (
         <div className='flex flex-col gap-2'>
-            {data?.children?.map((c) => (
+            {data?.value.map((c) => (
                 <ContextMenu
                     key={c.id}
                     onOpenChange={(open) => {
@@ -51,13 +53,13 @@ export function List({
                         >
                             <Card
                                 key={c.id}
+                                disableRipple
                                 isHoverable
-                                isPressable={isDesktop}
                                 aria-label={c?.name}
+                                className='w-full select-none rounded-lg border bg-transparent p-0.5 pl-1 data-[hover=true]:bg-muted/30 dark:data-[hover=true]:bg-[#0a0a0a]'
+                                isPressable={isDesktop}
                                 shadow='none'
                                 onPress={() => onSelectItem(c)}
-                                disableRipple
-                                className='w-full select-none rounded-lg border bg-transparent p-0.5 pl-1 data-[hover=true]:bg-muted/30 dark:data-[hover=true]:bg-[#0a0a0a]'
                             >
                                 <CardBody className='flex flex-row items-center gap-2 p-0.5'>
                                     <Thumbnail

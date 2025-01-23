@@ -1,8 +1,9 @@
 'use server'
 
+import { z } from 'zod'
+
 import { logWarning } from '®/lib/utils'
 import { DriveClient } from '®/lib/utils/DriveClient'
-import { z } from 'zod'
 
 const StorageSchema = z.object({
     remaining: z.number(),
@@ -74,6 +75,7 @@ export async function getStorage(): Promise<StorageData> {
                         `Failed to fetch details for folder at ${path}:`,
                         error instanceof Error ? error.message : 'Unknown error'
                     )
+
                     return FolderSchema.parse({
                         name: path.replace('/', ''),
                         size: 0,

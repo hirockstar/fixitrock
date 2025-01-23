@@ -1,5 +1,6 @@
 'use client'
 import { Card, CardFooter, CardHeader, Skeleton } from '@heroui/react'
+
 import { MagicCard } from './magiccard'
 
 export const GridSkeleton = () => {
@@ -8,10 +9,10 @@ export const GridSkeleton = () => {
             {Array.from({ length: 12 }).map((_, index) => (
                 <Card
                     key={index}
-                    isPressable
-                    shadow='none'
                     isBlurred
+                    isPressable
                     className='rounded-2xl border'
+                    shadow='none'
                 >
                     <MagicCard className='items-stretch'>
                         <CardHeader className='justify-between gap-x-2 p-2'>
@@ -59,7 +60,7 @@ export const ListSkeleton = () => {
 
 export const MarkdownSkeleton = () => {
     return (
-        <div className='flex flex-col gap-4' aria-busy='true'>
+        <div aria-busy='true' className='flex flex-col gap-4'>
             {/* Title */}
             <Skeleton className='h-6 w-3/4 rounded-md' />
 

@@ -4,6 +4,7 @@ import { Loader, Maximize, Minimize, Volume2, VolumeX } from 'lucide-react'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FaPlay } from 'react-icons/fa'
 import { RiPictureInPictureFill } from 'react-icons/ri'
+
 import { Slider } from '®/ui/slider'
 
 interface CustomVideoPlayerProps {
@@ -38,11 +39,13 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60)
         const seconds = Math.floor(time % 60)
+
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
     }
 
     useEffect(() => {
         const video = videoRef.current
+
         if (!video) return
 
         const updateProgress = () => {
@@ -61,6 +64,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         const handleProgress = () => {
             if (video.buffered.length > 0) {
                 const bufferedEnd = video.buffered.end(video.buffered.length - 1)
+
                 setBufferedProgress((bufferedEnd / video.duration) * 100)
             }
         }
@@ -96,6 +100,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
 
         const checkMouseInactivity = () => {
             const currentTime = Date.now()
+
             if (currentTime - lastMouseMoveTime > 3000 && isFullscreen) {
                 setShowControls(false)
             }
@@ -146,6 +151,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
 
         const newTime = Array.isArray(value) ? value[0] : value
         const newVideoTime = (newTime / 100) * videoRef.current.duration
+
         videoRef.current.currentTime = newVideoTime
         setProgress(newTime)
     }, [])
@@ -161,6 +167,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         if (!videoRef.current) return
 
         const newVolume = Array.isArray(value) ? value[0] : value
+
         videoRef.current.volume = newVolume
         setVolume(newVolume)
         setCurrentVolume(newVolume)
@@ -201,21 +208,21 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     return (
         <>
             <div
-                className={`relative flex h-full w-full max-w-full flex-col items-center justify-center overflow-hidden`}
                 ref={playerRef}
+                className={`relative flex h-full w-full max-w-full flex-col items-center justify-center overflow-hidden`}
             >
                 {loading && (
                     <div className='absolute inset-0 flex items-center justify-center rounded-2xl'>
-                        <Loader size={40} className='animate-spin text-white opacity-60' />
+                        <Loader className='animate-spin text-white opacity-60' size={40} />
                     </div>
                 )}
                 <video
                     ref={videoRef}
                     className={`${isFullscreen ? '' : 'aspect-video rounded-lg border lg:aspect-square lg:rounded-none lg:border-none'} cursor-default`}
-                    src={videoSrc}
-                    width={width}
                     height={height}
                     poster={poster}
+                    src={videoSrc}
+                    width={width}
                     onClick={togglePlay}
                 >
                     Your browser does not support the video tag.
@@ -225,7 +232,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                         className='absolute inset-0 flex items-center justify-center'
                         onClick={togglePlay}
                     >
-                        <FaPlay size={50} className='text-white opacity-60' />
+                        <FaPlay className='text-white opacity-60' size={50} />
                     </div>
                 )}
                 <div
@@ -236,14 +243,14 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                             <p>{formatTime(videoRef.current ? videoRef.current.currentTime : 0)}</p>
                             <div className='relative w-full'>
                                 <Slider
-                                    value={[progress]}
-                                    bufferedProgress={bufferedProgress}
-                                    className=''
-                                    onValueChange={handleProgressChange}
-                                    min={0}
-                                    max={100}
                                     hideThumb
                                     aria-label='Video Track'
+                                    bufferedProgress={bufferedProgress}
+                                    className=''
+                                    max={100}
+                                    min={0}
+                                    value={[progress]}
+                                    onValueChange={handleProgressChange}
                                 />
                             </div>
                             <p>{formatTime(duration)}</p>
@@ -252,19 +259,19 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                             <div className='flex w-full max-w-32'>
                                 <Button
                                     isIconOnly
-                                    radius='full'
                                     className='bg-transparent'
+                                    radius='full'
                                     onPress={toggleMute}
                                 >
                                     {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                                 </Button>
                                 <Slider
+                                    aria-label='Slider with solid thumb'
+                                    max={1}
+                                    min={0}
+                                    step={0.1}
                                     value={[volume]}
                                     onValueChange={handleVolumeChange}
-                                    min={0}
-                                    max={1}
-                                    step={0.1}
-                                    aria-label='Slider with solid thumb'
                                 />
                             </div>
                             <div className='flex w-full items-center justify-end'>

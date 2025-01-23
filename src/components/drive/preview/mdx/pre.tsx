@@ -2,6 +2,7 @@
 import { Snippet } from '@heroui/react'
 import { ReactElement } from 'react'
 import { MdOutlineContentCopy } from 'react-icons/md'
+
 import CodeTitle from './codetitle'
 
 interface CodeBlockProps {
@@ -11,6 +12,7 @@ interface CodeBlockProps {
 const Pre = ({ children }: { children?: ReactElement<CodeBlockProps> }) => {
     const getClassName = () => {
         const language = children?.props['data-language']
+
         return language || ''
     }
 
@@ -24,10 +26,10 @@ const Pre = ({ children }: { children?: ReactElement<CodeBlockProps> }) => {
                 )}
                 <div className='flex flex-grow items-center justify-end'>
                     <Snippet
-                        size='sm'
                         hideSymbol
                         classNames={{ base: '-p-1 bg-transparent', pre: 'hidden' }}
                         copyIcon={<MdOutlineContentCopy />}
+                        size='sm'
                     >
                         {children}
                     </Snippet>

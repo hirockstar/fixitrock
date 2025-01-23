@@ -2,6 +2,7 @@
 
 import { Card, Image } from '@heroui/react'
 import Link from 'next/link'
+
 import { cn } from '®/lib/utils'
 
 export const UL = ({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) => {
@@ -53,14 +54,15 @@ type Props = {
 export const IMG = ({ src, alt, width, height }: Props) => {
     return (
         <Image
-            src={src}
-            alt={alt}
-            width={width}
-            className='mx-auto my-2'
-            removeWrapper
-            radius='lg'
-            height={height}
             isBlurred
+            removeWrapper
+            alt={alt}
+            className='mx-auto my-2'
+            height={height}
+            loading='lazy'
+            radius='lg'
+            src={src}
+            width={width}
         />
     )
 }

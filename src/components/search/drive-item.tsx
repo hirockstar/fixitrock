@@ -2,10 +2,12 @@
 
 import { Listbox, ListboxItem } from '@heroui/react'
 import { useRouter } from 'nextjs-toploader/app'
+
 import { formatCount, formatDateTime, formatBytes } from '®/lib/utils'
 import { Search } from '®/types/drive'
 import { ListSkeleton } from '®/ui/skeleton'
 import { SearchEmpty } from '®/ui/state'
+
 import { Thumbnail } from '../drive/thumbnail'
 
 export function DriveItem({
@@ -21,6 +23,7 @@ export function DriveItem({
 }) {
     const url = (path: string, name: string, isFolder: boolean): string => {
         const basePath = path.replace('/drive/root:/RDRIVE', '')
+
         return isFolder ? `${basePath}/${name}` : `${basePath}#${name}`
     }
     const router = useRouter()
@@ -28,6 +31,7 @@ export function DriveItem({
         setOpen(false)
         command()
     }
+
     if (isLoading) {
         return (
             <div className='px-1.5 py-1.5'>
@@ -46,22 +50,22 @@ export function DriveItem({
 
     return (
         <Listbox
+            autoFocus
             aria-label='Drive Search Result'
             classNames={{ list: 'gap-1.5 px-1 py-1.5' }}
-            autoFocus
         >
             {data.data.map((c) => (
                 <ListboxItem
                     key={c.id}
+                    className='overflow-hidden border data-[hover=true]:bg-muted/50'
+                    startContent={
+                        <Thumbnail name={c.name} src={c?.thumbnails?.[0]?.large?.url} type='List' />
+                    }
                     textValue={c.name}
                     onPress={() =>
                         handleRoute(() =>
                             router.push(url(c?.parentReference.path, c.name, !!c.folder))
                         )
-                    }
-                    className='overflow-hidden border data-[hover=true]:bg-muted/50'
-                    startContent={
-                        <Thumbnail type='List' src={c?.thumbnails?.[0]?.large?.url} name={c.name} />
                     }
                 >
                     <div className='flex flex-col'>

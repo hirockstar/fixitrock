@@ -16,6 +16,7 @@ export async function getToken() {
             .single()
 
         const currentTimeUTC = new Date().toISOString()
+
         if (tokenRecord && tokenRecord.expires_at > currentTimeUTC) {
             return tokenRecord.token
         }
@@ -45,12 +46,14 @@ export async function getToken() {
 
         if (!tokenResponse.ok) {
             const errorDetails = await tokenResponse.text()
+
             throw new Error(`Token request failed: ${errorDetails}`)
         }
 
         const { access_token } = await tokenResponse.json()
 
         const expires_at = new Date(Date.now() + TOKEN_EXPIRY_TIME).toISOString()
+
         if (tokenRecord) {
             await supabase
                 .from('access_token')

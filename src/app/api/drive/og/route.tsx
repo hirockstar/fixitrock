@@ -1,6 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
-
 import { ImageResponse } from 'next/og'
+
 import { siteConfig } from '®/config/site'
 import { formatCount, formatDateTime, formatBytes } from '®/lib/utils'
 import { getMeta } from '®actions/drive/meta'
@@ -35,8 +34,8 @@ export async function GET(request: Request) {
                     }}
                 >
                     <img
-                        src='https://github.com/rdriveorg.png'
                         alt='RDRIVE'
+                        src='https://github.com/rdriveorg.png'
                         style={{
                             width: '70px',
                             height: '70px',
@@ -85,11 +84,11 @@ export async function GET(request: Request) {
                             }}
                         />
                         <img
+                            alt={data.name}
                             src={
                                 data.thumbnails?.[0]?.large?.url ||
                                 `${siteConfig.domain}/icons/fallback.png`
                             }
-                            alt={data.name}
                             style={{
                                 objectFit: 'contain',
                                 width: '100%',

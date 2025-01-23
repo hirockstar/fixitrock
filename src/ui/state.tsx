@@ -57,43 +57,43 @@ export default function LimitExceeded() {
     return (
         <div className='mx-auto w-full max-w-2xl rounded-lg bg-white px-6 py-8 text-center shadow-lg dark:bg-gray-800 sm:px-8 sm:py-10'>
             <motion.div
-                initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
                 className='mb-4 text-2xl font-extrabold text-gray-800 dark:text-gray-200 sm:text-5xl'
+                initial={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.6 }}
             >
                 🚧 &quot;Server Says BRB 😜&quot;
             </motion.div>
 
             <motion.p
-                initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
                 className='mb-6 text-base leading-relaxed text-gray-600 dark:text-gray-400 sm:text-lg'
+                initial={{ opacity: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
             >
                 Our servers took a coffee break ☕. We&apos;ve hit limits on Supabase and Vercel.
                 We&apos;re working on a fix—thanks for your patience!
             </motion.p>
 
             <motion.div
-                initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.4 }}
                 className='mt-6 flex flex-col items-center gap-4'
+                initial={{ opacity: 0 }}
+                transition={{ duration: 1, delay: 0.4 }}
             >
                 <motion.a
+                    className='rounded-md bg-blue-600 px-6 py-3 text-white shadow-md transition hover:bg-blue-700'
                     href='https://wa.me/919927241144?text=Hey?'
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className='rounded-md bg-blue-600 px-6 py-3 text-white shadow-md transition hover:bg-blue-700'
                 >
                     Request Files via WhatsApp
                 </motion.a>
 
                 <motion.div
+                    animate={{ opacity: 1, scale: 1 }}
                     className='w-full rounded-md bg-gray-100 p-4 text-left text-sm text-gray-800 shadow-md dark:bg-gray-700 dark:text-gray-300'
                     initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6, delay: 0.5 }}
                 >
                     <p className='mb-2 font-bold'>Available Files:</p>
@@ -107,10 +107,10 @@ export default function LimitExceeded() {
             </motion.div>
 
             <motion.div
-                initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1.2, delay: 0.6 }}
                 className='mt-8 text-xs text-gray-500 dark:text-gray-400 sm:text-sm'
+                initial={{ opacity: 0 }}
+                transition={{ duration: 1.2, delay: 0.6 }}
             >
                 Thanks for sticking with us! We’ll be back soon, stronger and caffeinated! ☕
             </motion.div>

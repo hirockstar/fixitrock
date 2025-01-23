@@ -24,6 +24,7 @@ type Props = {
 
 export default function CodeTitle({ lang }: Props) {
     let Icon, Title
+
     switch (lang) {
         case 'html':
             Icon = SiHtml5
@@ -103,6 +104,7 @@ export default function CodeTitle({ lang }: Props) {
             Title = 'Code'
             break
     }
+
     return (
         <div className='flex items-center gap-2'>
             <Icon className='h-5 w-5' />

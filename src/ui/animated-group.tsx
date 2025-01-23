@@ -168,20 +168,20 @@ function AnimatedGroup({
 
     return (
         <MotionComponent
-            initial='hidden'
-            whileInView='visible'
-            variants={containerVariants}
-            className={className}
             layout
+            className={className}
+            initial='hidden'
+            variants={containerVariants}
+            whileInView='visible'
         >
             {React.Children.map(children, (child, index) => (
                 <MotionChild
                     key={index}
-                    variants={itemVariants}
-                    initial='hidden'
-                    whileInView='visible'
-                    viewport={{ once: !infinity }}
                     layout
+                    initial='hidden'
+                    variants={itemVariants}
+                    viewport={{ once: !infinity }}
+                    whileInView='visible'
                 >
                     {child}
                 </MotionChild>

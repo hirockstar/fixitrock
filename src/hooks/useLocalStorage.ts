@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+
 import { logWarning } from '®/lib/utils'
 
 type SetValue<T> = Dispatch<SetStateAction<T>>
@@ -56,7 +57,6 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
 
     useEffect(() => {
         setStoredValue(readValue())
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -74,7 +74,6 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
             window.removeEventListener('storage', handleStorageChange)
             window.removeEventListener('local-storage', handleStorageChange)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return [storedValue, setValue]

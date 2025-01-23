@@ -1,6 +1,7 @@
 'use client'
 import { Button, Skeleton, Tooltip } from '@heroui/react'
 import { LayoutGrid, LayoutList } from 'lucide-react'
+
 import useLayout from '®/hooks/useLayout'
 
 export default function Layout() {
@@ -13,11 +14,11 @@ export default function Layout() {
     return (
         <Tooltip content={layout === 'Grid' ? 'Switch to List' : 'Switch to Grid'} showArrow={true}>
             <Button
-                variant='light'
                 isIconOnly
-                size='sm'
-                onPress={toggleLayout}
                 className='group h-9 min-w-9 rounded-lg border'
+                size='sm'
+                variant='light'
+                onPress={toggleLayout}
             >
                 {hydrated ? (
                     layout === 'Grid' ? (

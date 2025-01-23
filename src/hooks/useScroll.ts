@@ -12,6 +12,7 @@ const useScroll = () => {
         }
 
         window.addEventListener('scroll', listener)
+
         return () => {
             window.removeEventListener('scroll', listener)
         }

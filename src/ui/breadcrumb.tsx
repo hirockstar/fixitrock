@@ -3,19 +3,20 @@
 import { Button, ScrollShadow } from '@heroui/react'
 import { useRouter } from 'nextjs-toploader/app'
 import { usePathname } from 'next/navigation'
+
 import { ChevronRight, Home } from './icons'
 
 const HomeCrumb = () => {
     const router = useRouter()
+
     return (
         <Button
+            isIconOnly
             aria-label='Fix iT Rock'
             radius='full'
-            // className="min-w-9 h-9"
-            onPress={() => router.push('/')}
             size='sm'
-            isIconOnly
             variant='light'
+            onPress={() => router.push('/')}
         >
             <Home />
         </Button>
@@ -48,18 +49,19 @@ const Breadcrumb: React.FC = () => {
                                 <ChevronRight className='h-5' />
                                 <Button
                                     aria-label={p}
-                                    radius='full'
                                     className='mx-0.5'
+                                    isDisabled={i === 0}
+                                    radius='full'
+                                    size='sm'
+                                    variant='light'
                                     onPress={() => {
                                         const href = `/${paths
                                             .slice(0, paths.length - i)
                                             .map((p) => encodeURIComponent(p))
                                             .join('/')}`
+
                                         router.push(href)
                                     }}
-                                    isDisabled={i === 0}
-                                    size='sm'
-                                    variant='light'
                                 >
                                     {p.replaceAll('-', ' ')}
                                 </Button>
