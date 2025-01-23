@@ -17,94 +17,97 @@ import { Thumbnail } from './thumbnail'
 export function List({
     data,
     isLoading,
-    onSelectItem,
+    loadMore,
+    onSelect,
 }: {
     data?: Drive
     isLoading?: boolean
-    onSelectItem: (item: DriveItem) => void
+    loadMore?: boolean
+    onSelect: (item: DriveItem) => void
 }) {
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
     const isDesktop = useMediaQuery('(min-width: 640px)')
 
-    if (isLoading) {
-        return <ListSkeleton />
-    }
-
     return (
         <div className='flex flex-col gap-2'>
-            {data?.value.map((c) => (
-                <ContextMenu
-                    key={c.id}
-                    onOpenChange={(open) => {
-                        setOpen(open)
-                        if (open) {
-                            setActive(c)
-                        } else {
-                            setActive(null)
-                        }
-                    }}
-                >
-                    <ContextMenuTrigger onClick={() => onSelectItem(c)}>
-                        <AnimatedDiv
-                            key={c.id}
-                            mobileVariants={BlogCardAnimation}
-                            variants={fromTopVariant}
-                        >
-                            <Card
-                                key={c.id}
-                                disableRipple
-                                isHoverable
-                                aria-label={c?.name}
-                                className='w-full select-none rounded-lg border bg-transparent p-0.5 pl-1 data-[hover=true]:bg-muted/30 dark:data-[hover=true]:bg-[#0a0a0a]'
-                                isPressable={isDesktop}
-                                shadow='none'
-                                onPress={() => onSelectItem(c)}
-                            >
-                                <CardBody className='flex flex-row items-center gap-2 p-0.5'>
-                                    <Thumbnail
-                                        name={c?.name as string}
-                                        src={c?.thumbnails?.[0]?.large?.url}
-                                        type='List'
-                                    />
-                                    <div className='flex-1 space-y-[2px]'>
-                                        <h2 className='line-clamp-1 text-[15px] font-medium'>
-                                            {c?.name}
-                                        </h2>
-                                        <p className='text-xs text-muted-foreground'>
-                                            {[
-                                                formatBytes(c?.size),
-                                                c?.folder?.childCount &&
-                                                    formatCount(c.folder.childCount),
-                                                c?.lastModifiedDateTime &&
-                                                    formatDateTime(c?.lastModifiedDateTime),
-                                            ]
-                                                .filter(Boolean)
-                                                .map((item, index, arr) => (
-                                                    <span key={index}>
-                                                        {item}
-                                                        {index < arr.length - 1 && (
-                                                            <span className='mx-2'>•</span>
-                                                        )}
-                                                    </span>
-                                                ))}
-                                        </p>
-                                    </div>
-                                    <span className='w-10' />
-                                </CardBody>
-                            </Card>
-                        </AnimatedDiv>
-                    </ContextMenuTrigger>
-                    <Menu
-                        c={c}
-                        open={active?.id === c.id && open}
-                        setOpen={(open) => {
-                            setActive(c)
+            {isLoading ? (
+                <ListSkeleton />
+            ) : (
+                data?.value.map((c) => (
+                    <ContextMenu
+                        key={c.id}
+                        onOpenChange={(open) => {
                             setOpen(open)
+                            if (open) {
+                                setActive(c)
+                            } else {
+                                setActive(null)
+                            }
                         }}
-                    />
-                </ContextMenu>
-            ))}
+                    >
+                        <ContextMenuTrigger onClick={() => onSelect(c)}>
+                            <AnimatedDiv
+                                key={c.id}
+                                mobileVariants={BlogCardAnimation}
+                                variants={fromTopVariant}
+                            >
+                                <Card
+                                    key={c.id}
+                                    disableRipple
+                                    isHoverable
+                                    aria-label={c?.name}
+                                    className='w-full select-none rounded-lg border bg-transparent p-0.5 pl-1 data-[hover=true]:bg-muted/30 dark:data-[hover=true]:bg-[#0a0a0a]'
+                                    isPressable={isDesktop}
+                                    shadow='none'
+                                    onPress={() => onSelect(c)}
+                                >
+                                    <CardBody className='flex flex-row items-center gap-2 p-0.5'>
+                                        <Thumbnail
+                                            name={c?.name as string}
+                                            src={c?.thumbnails?.[0]?.large?.url}
+                                            type='List'
+                                        />
+                                        <div className='flex-1 space-y-[2px]'>
+                                            <h2 className='line-clamp-1 text-[15px] font-medium'>
+                                                {c?.name}
+                                            </h2>
+                                            <p className='text-xs text-muted-foreground'>
+                                                {[
+                                                    formatBytes(c?.size),
+                                                    c?.folder?.childCount &&
+                                                        formatCount(c.folder.childCount),
+                                                    c?.lastModifiedDateTime &&
+                                                        formatDateTime(c?.lastModifiedDateTime),
+                                                ]
+                                                    .filter(Boolean)
+                                                    .map((item, index, arr) => (
+                                                        <span key={index}>
+                                                            {item}
+                                                            {index < arr.length - 1 && (
+                                                                <span className='mx-2'>•</span>
+                                                            )}
+                                                        </span>
+                                                    ))}
+                                            </p>
+                                        </div>
+                                        <span className='w-10' />
+                                    </CardBody>
+                                </Card>
+                            </AnimatedDiv>
+                        </ContextMenuTrigger>
+                        <Menu
+                            c={c}
+                            open={active?.id === c.id && open}
+                            setOpen={(open) => {
+                                setActive(c)
+                                setOpen(open)
+                            }}
+                        />
+                    </ContextMenu>
+                ))
+            )}
+            {loadMore && <ListSkeleton />}
         </div>
     )
 }

@@ -5,7 +5,7 @@ import { MagicCard } from './magiccard'
 
 export const GridSkeleton = () => {
     return (
-        <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-4'>
+        <>
             {Array.from({ length: 12 }).map((_, index) => (
                 <Card
                     key={index}
@@ -28,13 +28,13 @@ export const GridSkeleton = () => {
                     </MagicCard>
                 </Card>
             ))}
-        </div>
+        </>
     )
 }
 
 export const ListSkeleton = () => {
     return (
-        <div className='flex flex-col gap-2'>
+        <>
             {Array.from({ length: 8 }).map((_, index) => (
                 <div key={index} className='flex items-center gap-2 rounded-lg border p-1'>
                     <Skeleton className='size-10 flex-shrink-0 rounded-lg' />
@@ -54,7 +54,7 @@ export const ListSkeleton = () => {
                     </div>
                 </div>
             ))}
-        </div>
+        </>
     )
 }
 

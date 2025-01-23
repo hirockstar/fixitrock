@@ -1,15 +1,17 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
+
 import { useDrive } from '®/hooks/useDrive'
 import Breadcrumb from '®/ui/breadcrumb'
-import { FolderEmpty, NotFound, SearchEmpty } from '®/ui/state'
 import useLayout from '®/hooks/useLayout'
+import { FolderEmpty, SearchEmpty, NotFound } from '®/ui/state'
 
-import { Grid } from './grid'
 import Input from './input'
 import { Preview } from './preview'
 import { SortBy } from './sort'
 import Layout from './layout'
+import { Grid } from './grid'
 import { List } from './list'
 
 export function Drive({ drive }: { drive: string }) {
@@ -20,11 +22,16 @@ export function Drive({ drive }: { drive: string }) {
         setQuery,
         sort,
         selectedItem,
-        isPreviewOpen,
-        setPreviewOpen,
-        onSelectItem,
+        open,
+        setOpen,
+        selectItem,
+        ref,
+        loadMore,
+        status,
     } = useDrive(drive)
     const { layout, hydrated } = useLayout()
+    const path = usePathname()
+    const title = path.split('/').pop()
 
     return (
         <div className='flex flex-col gap-4'>
@@ -32,7 +39,9 @@ export function Drive({ drive }: { drive: string }) {
             <div className='flex gap-2'>
                 <Input
                     hotKey='/'
-                    placeholder='Thinking . . .'
+                    placeholder={
+                        status === 'notFound' ? 'Oops, Page Not Found!' : `Search in ${title}`
+                    }
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
@@ -40,22 +49,31 @@ export function Drive({ drive }: { drive: string }) {
                 <Layout />
             </div>
             {hydrated ? (
-                data && Object.keys(data).length === 1 && data?.value.length === 0 ? (
+                status === 'notFound' ? (
                     <NotFound />
-                ) : query.length > 0 && data?.value.length === 0 ? (
+                ) : query && data?.value?.length === 0 ? (
                     <SearchEmpty query={query} />
-                ) : data?.value.length === 0 ? (
+                ) : status === 'empty' ? (
                     <FolderEmpty />
                 ) : layout === 'Grid' ? (
-                    <Grid data={data} isLoading={isLoading} onSelectItem={onSelectItem} />
+                    <Grid
+                        data={data}
+                        isLoading={isLoading}
+                        loadMore={loadMore}
+                        onSelect={selectItem}
+                    />
                 ) : (
-                    <List data={data} isLoading={isLoading} onSelectItem={onSelectItem} />
+                    <List
+                        data={data}
+                        isLoading={isLoading}
+                        loadMore={loadMore}
+                        onSelect={selectItem}
+                    />
                 )
             ) : null}
 
-            {selectedItem && (
-                <Preview data={selectedItem} open={isPreviewOpen} setOpen={setPreviewOpen} />
-            )}
+            <div ref={ref} />
+            {selectedItem && <Preview data={selectedItem} open={open} setOpen={setOpen} />}
         </div>
     )
 }

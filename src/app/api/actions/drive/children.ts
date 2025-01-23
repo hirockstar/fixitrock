@@ -3,96 +3,64 @@
 import useHidden from '®/hooks/useHidden'
 import { logWarning } from '®/lib/utils'
 import { DriveClient } from '®/lib/utils/DriveClient'
-import { DriveItem } from '®/types/drive'
+import { Drive, DriveItem } from '®/types/drive'
 
-export async function getChildren(slug: string, top: number = 55, skipToken?: string) {
+async function getThumbnails(id: string): Promise<DriveItem['thumbnails'] | null> {
     const client = await DriveClient()
 
-    if (!client) {
-        throw new Error('DriveClient initialization failed')
-    }
-
     try {
-        let url = `/me/drive/root:/RDRIVE${slug}:/children`
+        const res = await client
+            .api(`/me/drive/items/${id}:/icon.png`)
+            .expand('thumbnails($select=large)')
+            .get()
 
-        url += `?top=${top}`
-        if (skipToken) {
-            url += `&$skiptoken=${skipToken}`
-        }
-        const response = await client.api(url).expand('thumbnails($select=large)').get()
-
-        let readme: DriveItem | null = null
-
-        const value = response.value
-            ? await Promise.all(
-                  response.value.map(async (child: DriveItem) => {
-                      try {
-                          if (child.name.toLowerCase() === 'readme.md') {
-                              const details = await client
-                                  .api(`/me/drive/items/${child.id}`)
-                                  .select('@microsoft.graph.downloadUrl')
-                                  .get()
-
-                              readme = {
-                                  ...child,
-                                  '@microsoft.graph.downloadUrl':
-                                      details['@microsoft.graph.downloadUrl'],
-                              }
-
-                              return null
-                          }
-
-                          if (useHidden(child)) return null
-
-                          let thumbnails: DriveItem['thumbnails'] | null = null
-
-                          if (child.folder) {
-                              try {
-                                  const thumbnailResponse = await client
-                                      .api(`/me/drive/items/${child.id}:/icon.png`)
-                                      .expand('thumbnails($select=large)')
-                                      .get()
-
-                                  thumbnails = thumbnailResponse.thumbnails || null
-                              } catch (error: unknown) {
-                                  if (
-                                      error instanceof Error &&
-                                      (error as { statusCode?: number }).statusCode === 404
-                                  ) {
-                                      logWarning(`Thumbnail not found for folder ${child.id}`)
-                                  } else {
-                                      throw error
-                                  }
-                              }
-                          }
-
-                          return {
-                              ...child,
-                              thumbnails:
-                                  thumbnails ||
-                                  (child.thumbnails?.length ? child.thumbnails : null),
-                          }
-                      } catch (error: unknown) {
-                          if (error instanceof Error) {
-                              logWarning(
-                                  `Failed to process child item (${child.name}): ${error.message}`
-                              )
-                          }
-
-                          return null
-                      }
-                  })
-              )
-            : []
-
-        return { ...response, value: value.filter(Boolean), readme }
+        return res.thumbnails || null
     } catch (error: unknown) {
-        if (error instanceof Error) {
-            logWarning('Failed to fetch metadata from OneDrive (getChildren):', error.message)
+        if (error instanceof Error && (error as { statusCode?: number }).statusCode === 404) {
+            logWarning(`No thumbnail for folder: ${id}`)
         } else {
-            logWarning('An unknown error occurred in getChildren.')
+            throw error
         }
 
-        return {}
+        return null
+    }
+}
+
+export async function getChildren(slug: string, pageParam?: string): Promise<Drive> {
+    try {
+        const client = await DriveClient()
+
+        if (!client) throw new Error('DriveClient init failed')
+
+        const endpoint = pageParam || `/me/drive/root:/RDRIVE${slug}:/children?top=50`
+        const res = await client.api(endpoint).expand('thumbnails($select=large)').get()
+
+        if (!res.value?.length) return { value: [], status: 'empty' }
+
+        const child = await Promise.all(
+            res.value.map(async (child: DriveItem) => {
+                if (useHidden(child)) return null
+
+                let thumbs = child.thumbnails?.length ? child.thumbnails : null
+
+                if (child.folder) {
+                    thumbs = (await getThumbnails(child.id)) || thumbs
+                }
+
+                return { ...child, thumbnails: thumbs }
+            })
+        )
+
+        return {
+            ...res,
+            value: child.filter(Boolean) as DriveItem[],
+            status: 'success',
+        }
+    } catch (error: unknown) {
+        const msg = error || 'An unknown error occurred in getChildren.'
+
+        logWarning(`getChildren failed: ${msg}`)
+
+        return { value: [], status: 'notFound' }
     }
 }

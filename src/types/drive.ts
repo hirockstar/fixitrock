@@ -68,10 +68,9 @@ export type DriveItem = {
 }
 
 export type Drive = {
-    '@odata.context'?: string
-    '@odata.nextLink'?: string
     value: DriveItem[]
-    readme?: DriveItem
+    '@odata.nextLink'?: string
+    status?: 'success' | 'empty' | 'notFound'
 }
 
 export type SortField = 'name' | 'type' | 'size' | 'lastModifiedDateTime'
