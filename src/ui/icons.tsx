@@ -5,7 +5,7 @@ import React from 'react'
 export function ChevronRight(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
-            height={24}
+            height={18}
             viewBox='0 0 12 24'
             width={12}
             xmlns='http://www.w3.org/2000/svg'
@@ -30,9 +30,9 @@ export function ChevronRight(props: SVGProps<SVGSVGElement>) {
 export function Home(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
-            height={24}
+            height={20}
             viewBox='0 0 24 24'
-            width={24}
+            width={20}
             xmlns='http://www.w3.org/2000/svg'
             {...props}
         >
@@ -70,7 +70,22 @@ export function GridLine(props: SVGProps<SVGSVGElement>) {
         </svg>
     )
 }
-
+export function Grid(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            height={24}
+            viewBox='0 0 24 24'
+            width={24}
+            xmlns='http://www.w3.org/2000/svg'
+            {...props}
+        >
+            <path
+                d='M4 11h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1m10 0h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1M4 21h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1m10 0h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1'
+                fill='currentColor'
+            />
+        </svg>
+    )
+}
 export function GridFill(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
@@ -90,8 +105,23 @@ export function GridFill(props: SVGProps<SVGSVGElement>) {
         </svg>
     )
 }
-
 export function List(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            height={24}
+            viewBox='0 0 24 24'
+            width={24}
+            xmlns='http://www.w3.org/2000/svg'
+            {...props}
+        >
+            <path
+                d='M4.25 4A2.25 2.25 0 0 0 2 6.25v2.5A2.25 2.25 0 0 0 4.25 11h2.5A2.25 2.25 0 0 0 9 8.75v-2.5A2.25 2.25 0 0 0 6.75 4zm7 1a.75.75 0 0 0 0 1.5h10a.75.75 0 0 0 0-1.5zm0 3a.75.75 0 0 0 0 1.5h7a.75.75 0 0 0 0-1.5zm-7 5A2.25 2.25 0 0 0 2 15.25v2.5A2.25 2.25 0 0 0 4.25 20h2.5A2.25 2.25 0 0 0 9 17.75v-2.5A2.25 2.25 0 0 0 6.75 13zm7 1a.75.75 0 0 0 0 1.5h10a.75.75 0 0 0 0-1.5zm0 3a.75.75 0 0 0 0 1.5h7a.75.75 0 0 0 0-1.5z'
+                fill='currentColor'
+            />
+        </svg>
+    )
+}
+export function ListLayout(props: SVGProps<SVGSVGElement>) {
     return (
         <svg
             height={20}

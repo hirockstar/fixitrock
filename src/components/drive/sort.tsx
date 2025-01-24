@@ -49,10 +49,10 @@ export function SortBy({ sort }: { sort: (sortField: SortField, sortOrder: SortO
     const handleSelectionChange = (key: string) => {
         if (key === 'asc' || key === 'desc') {
             setSortOrder(key as SortOrder)
-            sort(sortField, key as SortOrder) // Use the current sortField
+            sort(sortField, key as SortOrder)
         } else {
             setSortField(key as SortField)
-            sort(key as SortField, sortOrder) // Use the current sortOrder
+            sort(key as SortField, sortOrder)
         }
         if (!isDesktop) {
             setOpen(false)
@@ -71,7 +71,7 @@ export function SortBy({ sort }: { sort: (sortField: SortField, sortOrder: SortO
                     <DropdownTrigger>
                         <Button
                             isIconOnly
-                            className='h-9 min-w-9 rounded-lg border'
+                            className='h-9 min-w-9 rounded-md border'
                             size='sm'
                             startContent={<ListFilter size={20} />}
                             variant='light'
@@ -121,7 +121,7 @@ export function SortBy({ sort }: { sort: (sortField: SortField, sortOrder: SortO
                     <DrawerTrigger asChild>
                         <Button
                             isIconOnly
-                            className='h-9 min-w-9 rounded-lg border'
+                            className='h-9 min-w-9 rounded-md border'
                             size='sm'
                             startContent={<ListFilter size={20} />}
                             variant='light'

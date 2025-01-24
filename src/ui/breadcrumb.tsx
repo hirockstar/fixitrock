@@ -13,6 +13,7 @@ const HomeCrumb = () => {
         <Button
             isIconOnly
             aria-label='Fix iT Rock'
+            className='sticky left-0 z-10 ml-2'
             radius='full'
             size='sm'
             variant='light'
@@ -30,14 +31,12 @@ const Breadcrumb: React.FC = () => {
 
     if (paths.length > 0) {
         return (
-            <nav className='flex items-center rounded-lg border'>
-                <div className='sticky left-0 z-10 flex items-center px-1'>
-                    <HomeCrumb />
-                </div>
+            <nav className='flex items-center rounded-md border'>
+                <HomeCrumb />
                 <ScrollShadow
                     hideScrollBar
                     isEnabled
-                    className='inline-flex flex-row-reverse items-center pl-1'
+                    className='inline-flex flex-row-reverse items-center'
                     orientation='horizontal'
                     visibility='auto'
                 >
@@ -45,27 +44,24 @@ const Breadcrumb: React.FC = () => {
                         .slice(0)
                         .reverse()
                         .map((p: string, i: number) => (
-                            <span key={i} className='flex items-center py-1.5'>
-                                <ChevronRight className='h-5' />
-                                <Button
-                                    aria-label={p}
-                                    className='mx-0.5'
-                                    isDisabled={i === 0}
-                                    radius='full'
-                                    size='sm'
-                                    variant='light'
-                                    onPress={() => {
-                                        const href = `/${paths
-                                            .slice(0, paths.length - i)
-                                            .map((p) => encodeURIComponent(p))
-                                            .join('/')}`
+                            <Button
+                                key={i}
+                                aria-label={p}
+                                className='m-1 h-7 min-w-0 rounded p-1'
+                                isDisabled={i === 0}
+                                startContent={<ChevronRight />}
+                                variant='light'
+                                onPress={() => {
+                                    const href = `/${paths
+                                        .slice(0, paths.length - i)
+                                        .map((p) => encodeURIComponent(p))
+                                        .join('/')}`
 
-                                        router.push(href)
-                                    }}
-                                >
-                                    {p.replaceAll('-', ' ')}
-                                </Button>
-                            </span>
+                                    router.push(href)
+                                }}
+                            >
+                                {p.replaceAll('-', ' ')}
+                            </Button>
                         ))}
                 </ScrollShadow>
             </nav>

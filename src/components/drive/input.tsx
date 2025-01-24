@@ -43,7 +43,7 @@ const Input: React.FC<InputProps> = ({ value = '', hotKey, onChange, ...inputPro
             className='bg-transparent'
             classNames={{
                 inputWrapper:
-                    'h-9 min-h-9 w-full rounded-lg border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
+                    'h-9 min-h-9 w-full rounded-md border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
             }}
             endContent={
                 <>
@@ -60,7 +60,6 @@ const Input: React.FC<InputProps> = ({ value = '', hotKey, onChange, ...inputPro
                     )}
                 </>
             }
-            radius='none'
             size='sm'
             startContent={
                 <>

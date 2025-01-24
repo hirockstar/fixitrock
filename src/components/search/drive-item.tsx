@@ -34,7 +34,7 @@ export function DriveItem({
 
     if (isLoading) {
         return (
-            <div className='px-1.5 py-1.5'>
+            <div className='flex flex-col gap-1.5 px-1.5 py-1.5'>
                 <ListSkeleton />
             </div>
         )

@@ -1,8 +1,8 @@
 'use client'
-import { Button, Skeleton, Tooltip } from '@heroui/react'
-import { LayoutGrid, LayoutList } from 'lucide-react'
+import { Tab, Tabs } from '@heroui/react'
 
 import useLayout from '®/hooks/useLayout'
+import { Grid, List } from '®/ui/icons'
 
 export default function Layout() {
     const { layout, setLayout, hydrated } = useLayout()
@@ -11,25 +11,31 @@ export default function Layout() {
         setLayout(layout === 'Grid' ? 'List' : 'Grid')
     }
 
+    const tabs = [
+        { layout: 'Grid', icon: <Grid /> },
+        { layout: 'List', icon: <List /> },
+    ]
+
     return (
-        <Tooltip content={layout === 'Grid' ? 'Switch to List' : 'Switch to Grid'} showArrow={true}>
-            <Button
-                isIconOnly
-                className='group h-9 min-w-9 rounded-lg border'
-                size='sm'
-                variant='light'
-                onPress={toggleLayout}
-            >
-                {hydrated ? (
-                    layout === 'Grid' ? (
-                        <LayoutGrid size={20} />
-                    ) : (
-                        <LayoutList size={20} />
-                    )
-                ) : (
-                    <Skeleton className='size-5 rounded' />
-                )}
-            </Button>
-        </Tooltip>
+        <Tabs
+            aria-label='Layout Switcher'
+            className=''
+            classNames={{
+                base: 'rounded-md border',
+                tabContent: '!group-data-[selected=true]:text-muted-foreground',
+                tabList: 'gap-1 bg-background',
+                tab: 'px-1',
+                cursor: 'shadow-none group-data-[selected=true]:rounded-sm group-data-[selected=true]:bg-default/20 dark:group-data-[selected=true]:bg-default/40',
+            }}
+            defaultSelectedKey='light'
+            selectedKey={hydrated ? layout : undefined}
+            size='sm'
+            variant='light'
+            onSelectionChange={toggleLayout}
+        >
+            {tabs.map((item) => (
+                <Tab key={item.layout} aria-label={item.layout} title={item.icon} />
+            ))}
+        </Tabs>
     )
 }
