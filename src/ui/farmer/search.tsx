@@ -34,6 +34,11 @@ export default function AnimatedSearch({ children, open, setOpen }: AnimatedSear
                 key={open ? 'focused' : 'unfocused'}
                 className={`${open && 'fixed inset-0 z-50 backdrop-blur-[1px]'}`}
                 onClick={() => setOpen(false)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                        setOpen(false)
+                    }
+                }}
             />
             <motion.div
                 animate={controls}
@@ -56,7 +61,7 @@ export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
     if (isDesktop) {
         return (
             <div
-                className={`z-50 w-full transition-transform duration-300 md:w-[640px] ${open && 'fixed bottom-4 max-w-[95%] translate-y-[-23dvh] transform overflow-hidden rounded-xl border bg-background'}`}
+                className={`z-50 transition-transform duration-300 ${open && 'translate-y-[-23dvh] transform'}`}
             >
                 {children}
             </div>
@@ -65,7 +70,7 @@ export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
 
     return (
         <>
-            {!open && <div className='z-50 w-full'>{children}</div>}
+            {!open && <div className='z-50'>{children}</div>}
             <Drawer open={open} onOpenChange={setOpen}>
                 <DrawerContent className='overflow-hidden'>
                     <DrawerHeader className='sr-only'>

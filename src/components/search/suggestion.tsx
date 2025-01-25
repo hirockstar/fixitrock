@@ -5,7 +5,7 @@ import { useTheme } from 'next-themes'
 import { useRouter } from 'nextjs-toploader/app'
 import React from 'react'
 
-import { suggestion, themes } from '®/config/suggestion'
+import { siteConfig } from '®/config/site'
 
 export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
     const { setTheme } = useTheme()
@@ -21,13 +21,13 @@ export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
                 classNames={{ base: 'mb-0 px-1.5', group: 'flex flex-col gap-1.5' }}
                 title='Suggestion'
             >
-                {suggestion.map((s) => (
+                {siteConfig.suggestion.map((s) => (
                     <ListboxItem
                         key={s.title}
                         className='border data-[hover=true]:bg-muted/50'
                         startContent={
                             <div className='flex size-10 items-center rounded-lg border'>
-                                {s.icon}
+                                <s.icon className='mx-auto text-muted-foreground' size={18} />
                             </div>
                         }
                         textValue={s.title}
@@ -46,13 +46,13 @@ export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
                 classNames={{ base: 'px-1.5', group: 'flex flex-col gap-1.5' }}
                 title='Theme'
             >
-                {themes.map((t) => (
+                {siteConfig.themes.map((t) => (
                     <ListboxItem
                         key={t.title}
                         className='border data-[hover=true]:bg-muted/50'
                         startContent={
                             <div className='flex size-10 items-center rounded-lg border'>
-                                {t.icon}
+                                <t.icon className='mx-auto text-muted-foreground' size={18} />
                             </div>
                         }
                         textValue={t.title}

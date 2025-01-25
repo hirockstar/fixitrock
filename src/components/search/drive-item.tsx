@@ -3,7 +3,7 @@
 import { Listbox, ListboxItem } from '@heroui/react'
 import { useRouter } from 'nextjs-toploader/app'
 
-import { formatCount, formatDateTime, formatBytes } from '®/lib/utils'
+import { formatDateTime, formatBytes } from '®/lib/utils'
 import { Search } from '®/types/drive'
 import { ListSkeleton } from '®/ui/skeleton'
 import { SearchEmpty } from '®/ui/state'
@@ -40,11 +40,11 @@ export function DriveItem({
         )
     }
 
-    if (data && data.data.length === 0) {
+    if (data && data.value.length === 0) {
         return <SearchEmpty query={query} />
     }
 
-    if (!data || !data.data.length) {
+    if (!data || !data.value.length) {
         return null
     }
 
@@ -52,15 +52,13 @@ export function DriveItem({
         <Listbox
             autoFocus
             aria-label='Drive Search Result'
-            classNames={{ list: 'gap-1.5 px-1 py-1.5' }}
+            classNames={{ list: 'gap-1.5 px-0.5 py-1' }}
         >
-            {data.data.map((c) => (
+            {data.value.map((c) => (
                 <ListboxItem
                     key={c.id}
                     className='overflow-hidden border data-[hover=true]:bg-muted/50'
-                    startContent={
-                        <Thumbnail name={c.name} src={c?.thumbnails?.[0]?.large?.url} type='List' />
-                    }
+                    startContent={<Thumbnail name={c.name} type='List' />}
                     textValue={c.name}
                     onPress={() =>
                         handleRoute(() =>
@@ -72,8 +70,7 @@ export function DriveItem({
                         <h2 className='line-clamp-1 text-[15px] font-medium'>{c.name}</h2>
                         <p className='text-xs text-muted-foreground'>
                             {[
-                                formatBytes(c?.size),
-                                c?.folder?.childCount && formatCount(c.folder.childCount),
+                                c?.size > 0 && formatBytes(c?.size),
                                 c?.lastModifiedDateTime && formatDateTime(c?.lastModifiedDateTime),
                             ]
                                 .filter(Boolean)

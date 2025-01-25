@@ -1,9 +1,10 @@
 'use client'
 import { Tab, Tabs } from '@heroui/react'
-import { Monitor, Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useEffect, useState } from 'react'
+
+import { siteConfig } from '®/config/site'
 
 function ThemeSwitcher() {
     const { theme, setTheme } = useTheme()
@@ -16,12 +17,6 @@ function ThemeSwitcher() {
     useEffect(() => {
         setHasMounted(true)
     }, [])
-
-    const tabs = [
-        { theme: 'light', icon: <Sun size={14} /> },
-        { theme: 'system', icon: <Monitor size={14} /> },
-        { theme: 'dark', icon: <Moon size={14} /> },
-    ]
 
     return (
         <Tabs
@@ -40,8 +35,8 @@ function ThemeSwitcher() {
             variant='light'
             onSelectionChange={(key) => setTheme(String(key))}
         >
-            {tabs.map((item) => (
-                <Tab key={item.theme} aria-label={item.theme} title={item.icon} />
+            {siteConfig.themes.map((t) => (
+                <Tab key={t.theme} aria-label={t.description} title={<t.icon size={14} />} />
             ))}
         </Tabs>
     )

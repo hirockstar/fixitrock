@@ -103,7 +103,7 @@ export type SearchItem = {
 }
 
 export type Search = {
-    data: SearchItem[]
+    value: SearchItem[]
 }
 
 export type Count = {

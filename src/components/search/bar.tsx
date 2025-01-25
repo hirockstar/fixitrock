@@ -17,46 +17,46 @@ const SearchBar = () => {
 
     return (
         <AnimatedSearch open={open} setOpen={setOpen}>
-            <div className={`${open ? 'flex h-full max-h-[70vh] flex-col sm:h-[60dvh]' : ''}`}>
-                <div className='sticky top-0'>
-                    <Input
-                        classNames={{
-                            inputWrapper: `h-11 min-h-10 bg-background/80 shadow-none backdrop-blur data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 ${
-                                open ? 'rounded-none border-b p-2 !px-2.5' : 'rounded-xl border'
-                            }`,
-                        }}
-                        endContent={
-                            query ? (
-                                <Button
-                                    isIconOnly
-                                    className='data-[hover]:bg-foreground/10'
-                                    radius='full'
-                                    size='sm'
-                                    variant='light'
-                                    onPress={() => setQuery('')}
-                                >
-                                    <X size={18} />
-                                </Button>
-                            ) : (
-                                <Button isIconOnly radius='full' size='sm' variant='flat'>
-                                    <Image
-                                        alt='Fix iT Rock'
-                                        height={30}
-                                        src='/icons/rdrive.png'
-                                        width={30}
-                                    />
-                                </Button>
-                            )
-                        }
-                        placeholder='What do you need?'
-                        size='lg'
-                        startContent={<Search size={20} />}
-                        type='text'
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        onFocus={() => setOpen(true)}
-                    />
-                </div>
+            <div
+                className={`${open ? 'flex h-full max-h-[70vh] flex-col overflow-hidden rounded-xl sm:h-[60dvh] sm:border' : ''} bg-background`}
+            >
+                <Input
+                    classNames={{
+                        inputWrapper: `h-11 min-h-10 bg-background/80 shadow-none backdrop-blur data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 ${
+                            open ? 'rounded-none border-b p-2 !px-2.5' : 'rounded-xl border'
+                        }`,
+                    }}
+                    endContent={
+                        query ? (
+                            <Button
+                                isIconOnly
+                                className='data-[hover]:bg-foreground/10'
+                                radius='full'
+                                size='sm'
+                                variant='light'
+                                onPress={() => setQuery('')}
+                            >
+                                <X size={18} />
+                            </Button>
+                        ) : (
+                            <Button isIconOnly radius='full' size='sm' variant='flat'>
+                                <Image
+                                    alt='Fix iT Rock'
+                                    height={30}
+                                    src='/icons/rdrive.png'
+                                    width={30}
+                                />
+                            </Button>
+                        )
+                    }
+                    placeholder='What do you need?'
+                    size='lg'
+                    startContent={<Search size={20} />}
+                    type='text'
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onFocus={() => setOpen(true)}
+                />
 
                 {open && (
                     <div className='flex-1 overflow-y-auto'>
