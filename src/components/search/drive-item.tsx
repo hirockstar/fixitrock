@@ -59,7 +59,7 @@ export function DriveItem({
                 >
                     <div className='flex flex-col'>
                         <h2 className='line-clamp-1 text-[15px] font-medium'>{c.name}</h2>
-                        <p className='text-xs text-muted-foreground'>
+                        <p className='items-center text-xs text-muted-foreground'>
                             {[
                                 c?.size > 0 && formatBytes(c?.size),
                                 c?.lastModifiedDateTime && formatDateTime(c?.lastModifiedDateTime),

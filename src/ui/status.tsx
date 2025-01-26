@@ -46,7 +46,7 @@ export function Status() {
     )
     const TriggerButton = (
         <Button
-            className={`h-8 rounded-sm p-1 text-[0.875rem] font-[400] r${stateColors[storage.state]}`}
+            className={`h-8 rounded-sm p-1 text-xs r${stateColors[storage.state]}`}
             startContent={<span aria-hidden='true' className={stateClass} />}
             variant='light'
         >

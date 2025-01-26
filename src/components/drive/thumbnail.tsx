@@ -37,10 +37,10 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({ src, fallback, name, type 
                         />
                     ) : (
                         <div
-                            className={`${type === 'Grid' ? 'flex aspect-video h-40 items-center justify-center rounded-lg bg-default/5 dark:bg-default/10' : 'flex size-10 items-center rounded-lg border'}`}
+                            className={`${type === 'Grid' ? 'flex aspect-video h-40 items-center justify-center rounded-md bg-default/5 dark:bg-default/10' : 'flex size-10 items-center rounded-md border'}`}
                         >
                             <Icon
-                                className={`${type === 'Grid' ? '!size-14' : 'mx-auto !size-8 shrink-0'}`}
+                                className={`${type === 'Grid' ? '!size-14' : 'mx-auto !size-7 shrink-0'}`}
                                 name={name}
                             />
                         </div>

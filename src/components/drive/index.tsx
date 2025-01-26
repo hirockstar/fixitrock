@@ -36,7 +36,7 @@ export function Drive({ drive }: { drive: string }) {
     return (
         <div className='flex flex-col gap-4'>
             <Breadcrumb />
-            <div className='flex gap-2'>
+            <div className='flex space-x-1.5'>
                 <Input
                     hotKey='/'
                     placeholder={

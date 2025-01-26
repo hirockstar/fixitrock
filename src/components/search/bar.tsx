@@ -18,13 +18,16 @@ const SearchBar = () => {
     return (
         <AnimatedSearch open={open} setOpen={setOpen}>
             <div
-                className={`${open ? 'flex h-full max-h-[70vh] flex-col overflow-hidden rounded-xl sm:h-[60dvh] sm:border' : ''} bg-background`}
+                className={`${open ? 'flex h-full max-h-[70vh] flex-col rounded-xl bg-background sm:h-[60dvh] sm:border' : ''} overflow-hidden`}
             >
                 <Input
                     classNames={{
-                        inputWrapper: `h-11 min-h-10 bg-background/80 shadow-none backdrop-blur data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 ${
-                            open ? 'rounded-none border-b p-2 !px-2.5' : 'rounded-xl border'
+                        inputWrapper: `h-11 min-h-10 overflow-hidden bg-background/80 shadow-none backdrop-blur data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 ${
+                            open
+                                ? 'rounded-none border-b p-2 !px-2.5'
+                                : 'overflow-hidden rounded-xl border'
                         }`,
+                        mainWrapper: 'overflow-hidden',
                     }}
                     endContent={
                         query ? (

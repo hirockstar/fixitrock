@@ -14,7 +14,7 @@ export default async function FRP() {
     return (
         <div className='mx-auto mt-4 w-full max-w-7xl p-2'>
             <Suspense fallback={<GridSkeleton />}>
-                <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-4'>
+                <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2'>
                     {frp.map((f) => (
                         <FRPCard key={f.id} f={f} />
                     ))}

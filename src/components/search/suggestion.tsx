@@ -24,7 +24,7 @@ export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
                 {siteConfig.suggestion.map((s) => (
                     <ListboxItem
                         key={s.title}
-                        className='border data-[hover=true]:bg-muted/50'
+                        className='rounded-md border data-[hover=true]:bg-muted/50'
                         startContent={
                             <div className='flex size-10 items-center rounded-lg border'>
                                 <s.icon className='mx-auto text-muted-foreground' size={18} />
@@ -49,7 +49,7 @@ export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
                 {siteConfig.themes.map((t) => (
                     <ListboxItem
                         key={t.title}
-                        className='border data-[hover=true]:bg-muted/50'
+                        className='rounded-md border data-[hover=true]:bg-muted/50'
                         startContent={
                             <div className='flex size-10 items-center rounded-lg border'>
                                 <t.icon className='mx-auto text-muted-foreground' size={18} />

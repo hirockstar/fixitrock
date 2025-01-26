@@ -1,23 +1,13 @@
 import type { Metadata, Viewport } from 'next'
 
-import { Geist, Geist_Mono } from 'next/font/google'
-
 import Footer from '®/components/footer'
 import { META_THEME_COLORS, siteConfig } from '®/config/site'
 import { Providers } from '®/provider'
 import { Sonner } from '®/ui/sonner'
 import './globals.css'
 import SearchBar from '®/components/search/bar'
-
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin'],
-})
+import { cn } from '®/lib/utils'
+import { fontMono, fontSans } from '®/lib/fonts'
 
 export default function RootLayout({
     children,
@@ -40,7 +30,11 @@ export default function RootLayout({
                 />
             </head>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} bg-background antialiased`}
+                className={cn(
+                    'min-h-svh bg-background font-sans antialiased',
+                    fontSans.variable,
+                    fontMono.variable
+                )}
             >
                 <Providers>
                     <div className='relative flex min-h-screen flex-col bg-background'>

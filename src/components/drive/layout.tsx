@@ -21,11 +21,11 @@ export default function Layout() {
             aria-label='Layout Switcher'
             className=''
             classNames={{
-                base: 'rounded-md border',
+                base: 'rounded-md border p-1',
                 tabContent: '!group-data-[selected=true]:text-muted-foreground',
-                tabList: 'gap-1 bg-background',
+                tabList: 'gap-1 bg-background p-0',
                 tab: 'px-1',
-                cursor: 'shadow-none group-data-[selected=true]:rounded-sm group-data-[selected=true]:bg-default/20 dark:group-data-[selected=true]:bg-default/40',
+                cursor: 'shadow-none group-data-[selected=true]:rounded group-data-[selected=true]:bg-muted dark:group-data-[selected=true]:bg-muted',
             }}
             defaultSelectedKey='light'
             selectedKey={hydrated ? layout : undefined}
