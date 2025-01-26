@@ -38,7 +38,7 @@ const Breadcrumb: React.FC = () => {
                     isEnabled
                     className='inline-flex flex-row-reverse items-center'
                     orientation='horizontal'
-                    visibility='left'
+                    visibility='auto'
                 >
                     {paths
                         .slice(0)

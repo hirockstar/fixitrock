@@ -108,6 +108,7 @@ const iconMap: Record<string, IconComponent> = {
     apk: FaAndroid,
     pit: SiSamsung,
     ozip: SiOppo,
+    ofp: SiOppo,
 }
 
 interface IconProps {
