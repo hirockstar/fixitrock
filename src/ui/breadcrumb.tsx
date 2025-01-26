@@ -38,30 +38,32 @@ const Breadcrumb: React.FC = () => {
                     isEnabled
                     className='inline-flex flex-row-reverse items-center'
                     orientation='horizontal'
-                    visibility='auto'
+                    visibility='left'
                 >
                     {paths
                         .slice(0)
                         .reverse()
                         .map((p: string, i: number) => (
-                            <Button
-                                key={i}
-                                aria-label={p}
-                                className='m-1 h-7 min-w-0 rounded p-1'
-                                isDisabled={i === 0}
-                                startContent={<ChevronRight />}
-                                variant='light'
-                                onPress={() => {
-                                    const href = `/${paths
-                                        .slice(0, paths.length - i)
-                                        .map((p) => encodeURIComponent(p))
-                                        .join('/')}`
+                            <div key={i} className='flex items-center'>
+                                <Button
+                                    key={i}
+                                    aria-label={p}
+                                    className='m-1 h-7 min-w-0 rounded p-1'
+                                    isDisabled={i === 0}
+                                    startContent={<ChevronRight />}
+                                    variant='light'
+                                    onPress={() => {
+                                        const href = `/${paths
+                                            .slice(0, paths.length - i)
+                                            .map((p) => encodeURIComponent(p))
+                                            .join('/')}`
 
-                                    router.push(href)
-                                }}
-                            >
-                                {p.replaceAll('-', ' ')}
-                            </Button>
+                                        router.push(href)
+                                    }}
+                                >
+                                    {p.replaceAll('-', ' ')}
+                                </Button>
+                            </div>
                         ))}
                 </ScrollShadow>
             </nav>
