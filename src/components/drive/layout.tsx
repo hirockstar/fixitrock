@@ -5,11 +5,7 @@ import useLayout from '®/hooks/useLayout'
 import { Grid, List } from '®/ui/icons'
 
 export default function Layout() {
-    const { layout, setLayout, hydrated } = useLayout()
-
-    const toggleLayout = () => {
-        setLayout(layout === 'Grid' ? 'List' : 'Grid')
-    }
+    const { layout, setLayout } = useLayout()
 
     const tabs = [
         { layout: 'Grid', icon: <Grid /> },
@@ -27,11 +23,12 @@ export default function Layout() {
                 tab: 'px-1',
                 cursor: 'shadow-none group-data-[selected=true]:rounded group-data-[selected=true]:bg-muted dark:group-data-[selected=true]:bg-muted',
             }}
-            defaultSelectedKey='light'
-            selectedKey={hydrated ? layout : undefined}
+            selectedKey={layout === 'Grid' ? 'Grid' : 'List'}
             size='sm'
             variant='light'
-            onSelectionChange={toggleLayout}
+            onSelectionChange={() => {
+                setLayout(layout === 'Grid' ? 'List' : 'Grid')
+            }}
         >
             {tabs.map((item) => (
                 <Tab key={item.layout} aria-label={item.layout} title={item.icon} />

@@ -20,7 +20,7 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({ src, fallback, name, type 
             {src ? (
                 <Image
                     alt={name}
-                    className={`${type === 'Grid' ? 'aspect-video h-40 rounded-lg bg-default/5 p-2 dark:bg-default/10' : 'size-10 rounded-lg border p-0.5'} object-contain`}
+                    className={`${type === 'Grid' ? 'aspect-video h-40 rounded-md bg-default/5 p-2 dark:bg-default/10' : 'size-10 rounded-md border p-0.5'} object-contain`}
                     isBlurred={type === 'Grid'}
                     loading='lazy'
                     src={src}
