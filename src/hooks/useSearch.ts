@@ -14,7 +14,7 @@ export const useSearch = (query: string) => {
         if (query) {
             const handler = setTimeout(() => {
                 setDebouncedQuery(query)
-            }, 500)
+            }, 1000)
 
             return () => {
                 clearTimeout(handler)

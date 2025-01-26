@@ -80,6 +80,7 @@ export type SearchItem = {
     id: string
     name: string
     size: number
+    webUrl: string
     createdBy: {
         user: {
             email: string

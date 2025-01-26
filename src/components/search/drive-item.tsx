@@ -3,7 +3,7 @@
 import { Listbox, ListboxItem } from '@heroui/react'
 import { useRouter } from 'nextjs-toploader/app'
 
-import { formatDateTime, formatBytes } from '®/lib/utils'
+import { formatDateTime, formatBytes, path } from '®/lib/utils'
 import { Search } from '®/types/drive'
 import { ListSkeleton } from '®/ui/skeleton'
 import { SearchEmpty } from '®/ui/state'
@@ -21,11 +21,6 @@ export function DriveItem({
     setOpen: (open: boolean) => void
     query: string
 }) {
-    const url = (path: string, name: string, isFolder: boolean): string => {
-        const basePath = path.replace('/drive/root:/RDRIVE', '')
-
-        return isFolder ? `${basePath}/${name}` : `${basePath}#${name}`
-    }
     const router = useRouter()
     const handleRoute = (command: () => void) => {
         setOpen(false)
@@ -60,11 +55,7 @@ export function DriveItem({
                     className='overflow-hidden border data-[hover=true]:bg-muted/50'
                     startContent={<Thumbnail name={c.name} type='List' />}
                     textValue={c.name}
-                    onPress={() =>
-                        handleRoute(() =>
-                            router.push(url(c?.parentReference.path, c.name, !!c.folder))
-                        )
-                    }
+                    onPress={() => handleRoute(() => router.push(path(c.webUrl)))}
                 >
                     <div className='flex flex-col'>
                         <h2 className='line-clamp-1 text-[15px] font-medium'>{c.name}</h2>

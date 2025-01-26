@@ -1,4 +1,5 @@
 import { createBrowserClient } from '@supabase/ssr'
 
-export const createClient = () =>
-    createBrowserClient(process.env.VERCEL_SUPABASE_URL!, process.env.VERCEL_SUPABASE_ANON_KEY!)
+import { env } from '®/lib/env'
+
+export const createClient = () => createBrowserClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)

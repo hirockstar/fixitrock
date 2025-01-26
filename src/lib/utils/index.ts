@@ -141,3 +141,19 @@ export function slugify(text: string): string {
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
 }
+
+export function path(url: string) {
+    const path = url
+        .replace('https://rdrive-my.sharepoint.com/personal/ftp_rdrive_org/Documents/RDRIVE', '')
+        .trim()
+
+    if (path.includes('.')) {
+        const parts = path.split('/')
+        const fileName = parts.pop()
+        const folderPath = parts.join('/')
+
+        return `${folderPath}#${fileName}`
+    }
+
+    return path
+}
