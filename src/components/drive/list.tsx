@@ -19,11 +19,13 @@ export function List({
     isLoading,
     loadMore,
     onSelect,
+    focus,
 }: {
     data?: Drive
     isLoading?: boolean
     loadMore?: boolean
     onSelect: (item: DriveItem) => void
+    focus: DriveItem | null
 }) {
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
@@ -57,7 +59,7 @@ export function List({
                                     disableRipple
                                     isHoverable
                                     aria-label={c?.name}
-                                    className='w-full select-none rounded-lg border bg-transparent p-0.5 pl-1 data-[hover=true]:bg-muted/30 dark:data-[hover=true]:bg-[#0a0a0a]'
+                                    className={`w-full select-none rounded-lg border bg-transparent p-0.5 pl-1 data-[hover=true]:bg-muted/30 dark:data-[hover=true]:bg-[#0a0a0a] ${focus?.name === c.name ? 'bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
                                     isPressable={isDesktop}
                                     shadow='none'
                                     onPress={() => onSelect(c)}

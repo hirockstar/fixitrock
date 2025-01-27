@@ -17,6 +17,7 @@ export function useDrive(slug: string) {
     const [sortField, setSortField] = useState<SortField>('name')
     const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
     const [selectedItem, setSelectedItem] = useState<DriveItem | null>(null)
+    const [focus, setFocus] = useState<DriveItem | null>(null)
     const [open, setPreviewOpen] = useState(false)
 
     const router = useRouter()
@@ -114,6 +115,29 @@ export function useDrive(slug: string) {
         }
     }
 
+    const handleHashChange = useCallback(() => {
+        const hash = window.location.hash.slice(1)
+
+        if (!hash) {
+            setFocus(null)
+
+            return
+        }
+
+        const itemToHighlight = combinedData.find((item) => item.name === hash)
+
+        setFocus(itemToHighlight || null)
+    }, [combinedData])
+
+    useEffect(() => {
+        handleHashChange()
+        window.addEventListener('hashchange', handleHashChange)
+
+        return () => {
+            window.removeEventListener('hashchange', handleHashChange)
+        }
+    }, [handleHashChange])
+
     useEffect(() => {
         if (inView && hasNextPage) fetchNextPage()
     }, [inView, hasNextPage, fetchNextPage])
@@ -139,6 +163,7 @@ export function useDrive(slug: string) {
         setQuery,
         sort,
         selectedItem,
+        focus,
         open,
         setOpen,
         selectItem,

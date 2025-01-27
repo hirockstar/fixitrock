@@ -20,11 +20,13 @@ export function Grid({
     isLoading,
     onSelect,
     loadMore,
+    focus,
 }: {
     data?: Drive
     isLoading?: boolean
     loadMore?: boolean
     onSelect: (item: DriveItem) => void
+    focus: DriveItem | null
 }) {
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
@@ -59,7 +61,9 @@ export function Grid({
                                     shadow='none'
                                     onPress={() => onSelect(c)}
                                 >
-                                    <MagicCard>
+                                    <MagicCard
+                                        className={`${focus?.name === c.name ? 'bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
+                                    >
                                         <CardHeader className='mb-[1px] p-2'>
                                             <h1 className='line-clamp-1 text-start text-[13px]'>
                                                 {c?.name}

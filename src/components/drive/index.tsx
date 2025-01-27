@@ -27,6 +27,7 @@ export function Drive({ drive }: { drive: string }) {
         selectItem,
         ref,
         loadMore,
+        focus,
         status,
     } = useDrive(drive)
     const { layout, hydrated } = useLayout()
@@ -58,6 +59,7 @@ export function Drive({ drive }: { drive: string }) {
                 ) : layout === 'Grid' ? (
                     <Grid
                         data={data}
+                        focus={focus}
                         isLoading={isLoading}
                         loadMore={loadMore}
                         onSelect={selectItem}
@@ -65,6 +67,7 @@ export function Drive({ drive }: { drive: string }) {
                 ) : (
                     <List
                         data={data}
+                        focus={focus}
                         isLoading={isLoading}
                         loadMore={loadMore}
                         onSelect={selectItem}
