@@ -26,7 +26,7 @@ export function Grid({
     isLoading?: boolean
     loadMore?: boolean
     onSelect: (item: DriveItem) => void
-    focus: DriveItem | null
+    focus?: DriveItem | null
 }) {
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
