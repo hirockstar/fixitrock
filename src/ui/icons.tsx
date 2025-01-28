@@ -595,29 +595,29 @@ export function Dots(props: SVGProps<SVGSVGElement>) {
     )
 }
 
-export function Share(props: SVGProps<SVGSVGElement>) {
-    return (
-        <svg
-            height={20}
-            viewBox='0 0 24 24'
-            width={20}
-            xmlns='http://www.w3.org/2000/svg'
-            {...props}
-        >
-            <g
-                color='currentColor'
-                fill='none'
-                stroke='currentColor'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={1.5}
-            >
-                <path d='M11.026 3a9.028 9.028 0 0 0 1.003 18A9.03 9.03 0 0 0 21 13' />
-                <path d='m21 6.025l-1-.002c-3.737-.01-5.605-.015-6.918.93c-.437.313-.82.695-1.135 1.131C11 9.395 11 11.264 11 15m10-8.975a.7.7 0 0 0-.175-.472C20.06 4.647 18.071 3 18.071 3M21 6.025a.7.7 0 0 1-.174.422C20.06 7.353 18.07 9 18.07 9' />
-            </g>
-        </svg>
-    )
-}
+// export function Share(props: SVGProps<SVGSVGElement>) {
+//     return (
+//         <svg
+//             height={20}
+//             viewBox='0 0 24 24'
+//             width={20}
+//             xmlns='http://www.w3.org/2000/svg'
+//             {...props}
+//         >
+//             <g
+//                 color='currentColor'
+//                 fill='none'
+//                 stroke='currentColor'
+//                 strokeLinecap='round'
+//                 strokeLinejoin='round'
+//                 strokeWidth={1.5}
+//             >
+//                 <path d='M11.026 3a9.028 9.028 0 0 0 1.003 18A9.03 9.03 0 0 0 21 13' />
+//                 <path d='m21 6.025l-1-.002c-3.737-.01-5.605-.015-6.918.93c-.437.313-.82.695-1.135 1.131C11 9.395 11 11.264 11 15m10-8.975a.7.7 0 0 0-.175-.472C20.06 4.647 18.071 3 18.071 3M21 6.025a.7.7 0 0 1-.174.422C20.06 7.353 18.07 9 18.07 9' />
+//             </g>
+//         </svg>
+//     )
+// }
 
 export function CopyLink(props: SVGProps<SVGSVGElement>) {
     return (
@@ -686,6 +686,81 @@ export function Rename(props: SVGProps<SVGSVGElement>) {
             <path
                 d='M8.5 2a.5.5 0 0 0 0 1h1v14h-1a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-1V3h1a.5.5 0 0 0 0-1zm-4 2h4v1h-4A1.5 1.5 0 0 0 3 6.5v7A1.5 1.5 0 0 0 4.5 15h4v1h-4A2.5 2.5 0 0 1 2 13.5v-7A2.5 2.5 0 0 1 4.5 4m11 11h-4v1h4a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 15.5 4h-4v1h4A1.5 1.5 0 0 1 17 6.5v7a1.5 1.5 0 0 1-1.5 1.5'
                 fill='currentColor'
+            />
+        </svg>
+    )
+}
+
+export function NewTab(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            height={20}
+            viewBox='0 0 16 16'
+            width={20}
+            xmlns='http://www.w3.org/2000/svg'
+            {...props}
+        >
+            <path d='M3 1v12h12V1zm11 11H4V2h10zM2 14V3.5l-1-1V15h12.5l-1-1z' fill='currentColor' />
+            <path d='M5.5 4L8 6.5l-3 3L6.5 11l3-3l2.5 2.5V4z' fill='currentColor' />
+        </svg>
+    )
+}
+
+export function NewWindow(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            height={18}
+            viewBox='0 0 20 20'
+            width={18}
+            xmlns='http://www.w3.org/2000/svg'
+            {...props}
+        >
+            <path
+                d='M17 17H3V3h5V1H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5h-2z'
+                fill='currentColor'
+            />
+            <path d='m11 1l3.3 3.3L8.6 10l1.4 1.4l5.7-5.7L19 9V1z' fill='currentColor' />
+        </svg>
+    )
+}
+
+export function Share(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            height={24}
+            viewBox='0 0 24 24'
+            width={24}
+            xmlns='http://www.w3.org/2000/svg'
+            {...props}
+        >
+            <path
+                d='M12 5v8.5M15 7l-3-3l-3 3m-4 5v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5'
+                fill='none'
+                stroke='currentColor'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+            />
+        </svg>
+    )
+}
+
+export function Link(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            height={24}
+            viewBox='0 0 24 24'
+            width={24}
+            xmlns='http://www.w3.org/2000/svg'
+            {...props}
+        >
+            <path
+                d='m9 15l6-6m-4-3l.463-.536a5 5 0 0 1 7.071 7.072L18 13m-5 5l-.397.534a5.07 5.07 0 0 1-7.127 0a4.97 4.97 0 0 1 0-7.071L6 11'
+                fill='none'
+                stroke='currentColor'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
             />
         </svg>
     )

@@ -95,6 +95,7 @@ export function Grid({
                                 setActive(c)
                                 setOpen(open)
                             }}
+                            onSelected={onSelect}
                         />
                     </ContextMenu>
                 ))

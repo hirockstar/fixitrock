@@ -105,6 +105,7 @@ export function List({
                                 setActive(c)
                                 setOpen(open)
                             }}
+                            onSelected={onSelect}
                         />
                     </ContextMenu>
                 ))
