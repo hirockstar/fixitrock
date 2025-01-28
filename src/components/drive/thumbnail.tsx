@@ -13,7 +13,7 @@ interface ThumbnailProps {
 }
 
 export const Thumbnail: React.FC<ThumbnailProps> = ({ src, fallback, name, type }) => {
-    const isFolder = !name.includes('.')
+    const isFolder = name.split('.').pop()?.toLowerCase()
 
     return (
         <div className='flex shrink-0 items-center justify-center'>
@@ -41,7 +41,7 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({ src, fallback, name, type 
                         >
                             <Icon
                                 className={`${type === 'Grid' ? '!size-14' : 'mx-auto !size-7 shrink-0'}`}
-                                name={name}
+                                name={isFolder as string}
                             />
                         </div>
                     )}
