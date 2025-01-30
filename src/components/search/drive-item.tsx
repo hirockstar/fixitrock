@@ -58,7 +58,7 @@ export function DriveItem({
                     onPress={() => handleRoute(() => router.push(path(c.webUrl)))}
                 >
                     <div className='flex flex-col'>
-                        <h2 className='line-clamp-1 text-[15px] font-medium'>{c.name}</h2>
+                        <h2 className='truncate text-[13px]'>{c.name}</h2>
                         <p className='items-center text-xs text-muted-foreground'>
                             {[
                                 c?.size > 0 && formatBytes(c?.size),

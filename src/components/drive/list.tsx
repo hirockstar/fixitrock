@@ -70,8 +70,8 @@ export function List({
                                             src={c?.thumbnails?.[0]?.large?.url}
                                             type='List'
                                         />
-                                        <div className='flex-1 space-y-[2px]'>
-                                            <h2 className='line-clamp-1 text-[15px] font-medium'>
+                                        <div className='flex-1 space-y-[2px] overflow-hidden'>
+                                            <h2 className='truncate text-start text-[13px]'>
                                                 {c?.name}
                                             </h2>
                                             <p className='text-xs text-muted-foreground'>

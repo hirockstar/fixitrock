@@ -65,10 +65,9 @@ export function Grid({
                                         className={`${focus?.name === c.name ? 'bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
                                     >
                                         <CardHeader className='mb-[1px] p-2'>
-                                            <h1 className='line-clamp-1 text-start text-[13px]'>
+                                            <h1 className='truncate text-start text-[13px]'>
                                                 {c?.name}
                                             </h1>
-                                            <span className='w-10' />
                                         </CardHeader>
                                         <Thumbnail
                                             name={c?.name as string}
