@@ -95,6 +95,9 @@ export type SearchItem = {
     folder: {
         childCount: number
     }
+    file: {
+        mimeType: string
+    }
     thumbnails: Thumbnail[]
     video: {
         duration: number

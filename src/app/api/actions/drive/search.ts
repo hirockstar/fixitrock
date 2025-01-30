@@ -22,7 +22,7 @@ export async function getSearch(query: string): Promise<Search> {
         const sanitizedQuery = sanitizeQuery(query)
         const response = await client
             .api(`/me/drive/root:/RDRIVE:/search(q='${encodeURIComponent(sanitizedQuery)}')`)
-            .select('id,name,size,lastModifiedDateTime,webUrl')
+            .select('id,name,size,lastModifiedDateTime,webUrl,file')
             .get()
 
         const filteredItems = response.value.filter((c: SearchItem) => !useHidden(c))

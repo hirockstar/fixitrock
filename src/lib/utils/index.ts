@@ -142,12 +142,12 @@ export function slugify(text: string): string {
         .replace(/-+/g, '-')
 }
 
-export function path(url: string) {
+export function path(url: string, isFile?: boolean) {
     const path = url
         .replace('https://rdrive-my.sharepoint.com/personal/ftp_rdrive_org/Documents/RDRIVE', '')
         .trim()
 
-    if (path.includes('.')) {
+    if (isFile) {
         const parts = path.split('/')
         const fileName = parts.pop()
         const folderPath = parts.join('/')
