@@ -140,7 +140,6 @@
     --fgColor-attention: #d29922;
     --fgColor-danger: #f85149;
     --fgColor-done: #ab7df8;
-    --bgColor-default: #0d1117;
     --bgColor-muted: #151b23;
     --bgColor-neutral-muted: #656c7633;
     --bgColor-attention-muted: #bb800926;
@@ -198,7 +197,6 @@
     --fgColor-attention: #9a6700;
     --fgColor-danger: #d1242f;
     --fgColor-done: #8250df;
-    --bgColor-default: #ffffff;
     --bgColor-muted: #f6f8fa;
     --bgColor-neutral-muted: #818b981f;
     --bgColor-attention-muted: #fff8c5;
@@ -248,7 +246,7 @@
   -webkit-text-size-adjust: 100%;
   margin: 0;
   color: var(--fgColor-default);
-  background-color: var(--bgColor-default);
+  background-color: hsl(var(--background));
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
   font-size: 16px;
   line-height: 1.5;
@@ -551,6 +549,7 @@
   margin-top: 0;
   margin-bottom: 0;
   padding-left: 2em;
+  list-style: decimal;
 }
 
 .mdx ol ol,
@@ -807,7 +806,7 @@
 }
 
 .mdx table tr {
-  background-color: var(--bgColor-default);
+  background-color: hsl(var(--background));
   border-top: 1px solid var(--borderColor-muted);
 }
 
@@ -1003,7 +1002,7 @@
 .mdx .csv-data .blob-num {
   padding: 10px var(--base-size-8) 9px;
   text-align: right;
-  background: var(--bgColor-default);
+  background: hsl(var(--background));
   border: 0;
 }
 
