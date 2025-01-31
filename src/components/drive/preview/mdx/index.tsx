@@ -1,28 +1,15 @@
 'use client'
 
 import { Player } from '@lottiefiles/react-lottie-player'
-import { transformerNotationDiff } from '@shikijs/transformers'
 import matter from 'gray-matter'
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import { useEffect, useState } from 'react'
-import rehypePrettyCode from 'rehype-pretty-code'
-import Dark from 'tm-themes/themes/dracula-soft.json'
-import Light from 'tm-themes/themes/light-plus.json'
 
-import { Blockquote, HR, IMG, LI, OL, UL } from './components'
+import { IMG, Title } from './components'
 
 type MdxRemoteProps = {
     src: string
-}
-
-const Options = {
-    theme: {
-        dark: Dark,
-        light: Light,
-    },
-    transformers: [transformerNotationDiff()],
-    keepBackground: false,
 }
 
 export default function Mdx({ src }: MdxRemoteProps) {
@@ -42,9 +29,7 @@ export default function Mdx({ src }: MdxRemoteProps) {
                 const { content } = matter(rawContent)
 
                 const serializedContent = await serialize(content, {
-                    mdxOptions: {
-                        rehypePlugins: [[rehypePrettyCode, Options]],
-                    },
+                    mdxOptions: {},
                 })
 
                 setMdxSource(serializedContent)
@@ -67,19 +52,13 @@ export default function Mdx({ src }: MdxRemoteProps) {
     }
 
     return (
-        <div className='mdx overflow-auto'>
+        <div className='mdx'>
             <MDXRemote {...mdxSource} components={components} />
         </div>
     )
 }
 
 const components = {
-    ul: UL,
-    ol: OL,
-    li: LI,
-    blockquote: Blockquote,
-    hr: HR,
     img: IMG,
-    //      code: Code,
-    //    pre: Pre,
+    Title,
 }

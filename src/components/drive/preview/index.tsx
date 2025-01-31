@@ -28,14 +28,14 @@ export function Preview({ open, setOpen, data }: PreviewProps) {
                     scrollBehavior='inside'
                     onOpenChange={setOpen}
                 >
-                    <ModalContent className='border p-2 dark:bg-black'>
+                    <ModalContent className='overflow-auto border p-2 dark:bg-black'>
                         <Switch file={data} />
                         <ModalHeader aria-hidden className='hidden' />
                     </ModalContent>
                 </Modal>
             ) : (
                 <Drawer open={open} onOpenChange={setOpen}>
-                    <DrawerContent className='p-2'>
+                    <DrawerContent className='overflow-auto p-2'>
                         <DrawerTitle aria-hidden />
                         <DrawerDescription aria-hidden />
                         <Switch file={data} />

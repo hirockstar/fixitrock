@@ -13,6 +13,7 @@ import { SortBy } from './sort'
 import Layout from './layout'
 import { Grid } from './grid'
 import { List } from './list'
+import { Readme } from './readme'
 
 export function Drive({ drive }: { drive: string }) {
     const {
@@ -74,7 +75,7 @@ export function Drive({ drive }: { drive: string }) {
                     />
                 )
             ) : null}
-
+            <Readme slug={drive} />
             <div ref={ref} />
             {selectedItem && <Preview data={selectedItem} open={open} setOpen={setOpen} />}
         </div>
