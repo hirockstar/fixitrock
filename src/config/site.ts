@@ -1,5 +1,6 @@
 import { Moon, SunIcon } from 'lucide-react'
 import { BsUsbSymbol, BsApple } from 'react-icons/bs'
+import { FaRupeeSign } from 'react-icons/fa'
 import { MdPhonelinkSetup } from 'react-icons/md'
 import { RiComputerLine } from 'react-icons/ri'
 import { TbApps, TbDeviceGamepad2 } from 'react-icons/tb'
@@ -50,6 +51,12 @@ export const siteConfig = {
             title: 'iCloud Bypass Solutions',
             description: 'Say goodbye to iCloud locks: Unlock now.',
             icon: BsApple,
+        },
+        {
+            href: '/spare-parts-price',
+            title: 'Spare Parts Price',
+            description: 'Find genuine mobile parts service centers',
+            icon: FaRupeeSign,
         },
     ],
     themes: [

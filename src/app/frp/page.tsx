@@ -6,7 +6,7 @@ import { GridSkeleton } from '®/ui/skeleton'
 
 import { getData } from '../api/actions/supabase/getData'
 
-import { FRPCard } from './card'
+import { Card } from './card'
 
 export default async function FRP() {
     const frp = await getData('frp')
@@ -16,7 +16,7 @@ export default async function FRP() {
             <Suspense fallback={<GridSkeleton />}>
                 <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2'>
                     {frp.map((f) => (
-                        <FRPCard key={f.id} f={f} />
+                        <Card key={f.id} c={f} />
                     ))}
                 </div>
             </Suspense>

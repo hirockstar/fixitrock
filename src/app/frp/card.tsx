@@ -1,5 +1,5 @@
 'use client'
-import { Card, CardFooter, CardHeader, Image } from '@heroui/react'
+import { Card as Hero, CardFooter, CardHeader, Image } from '@heroui/react'
 import Link from 'next/link'
 import { z } from 'zod'
 
@@ -8,7 +8,7 @@ import { formatDateTime } from '®/lib/utils'
 import AnimatedDiv from '®/ui/farmer/div'
 import { MagicCard } from '®/ui/magiccard'
 
-export const FRPSchema = z.object({
+export const CardSchema = z.object({
     id: z.number().int().positive(),
     title: z.string().min(1, 'Title cannot be empty'),
     img: z.string().url('Invalid URL for the image'),
@@ -17,40 +17,40 @@ export const FRPSchema = z.object({
     created_at: z.string().datetime('Invalid timestamp'),
 })
 
-export type FRPType = z.infer<typeof FRPSchema>
+export type CardType = z.infer<typeof CardSchema>
 
-export function FRPCard({ f }: { f: FRPType }) {
+export function Card({ c }: { c: CardType }) {
     return (
         <AnimatedDiv
-            key={f.id}
+            key={c.id}
             className='relative select-none'
             mobileVariants={fromTopVariant}
             variants={fromLeftVariant}
         >
-            <Card
-                aria-label={f.title}
+            <Hero
+                aria-label={c.title}
                 className='w-full rounded-2xl border bg-transparent'
                 shadow='none'
             >
-                <Link passHref href={f.link} target='_blank'>
+                <Link passHref href={c.link} target='_blank'>
                     <MagicCard>
                         <CardHeader className='mb-[1px] p-2'>
-                            <h1 className='line-clamp-1 text-start text-[13px]'>{f.title}</h1>
+                            <h1 className='line-clamp-1 text-start text-[13px]'>{c.title}</h1>
                         </CardHeader>
                         <Image
                             isBlurred
-                            alt={f.title}
+                            alt={c.title}
                             className={`aspect-video h-40 rounded-lg bg-default/5 object-contain p-2 dark:bg-default/10`}
                             classNames={{ wrapper: 'mx-auto' }}
                             loading='lazy'
-                            src={f.img}
+                            src={c.img}
                         />
                         <CardFooter className='justify-end p-2 text-xs text-muted-foreground'>
-                            <p>{formatDateTime(f.created_at)}</p>
+                            <p>{formatDateTime(c.created_at)}</p>
                         </CardFooter>
                     </MagicCard>
                 </Link>
-            </Card>
+            </Hero>
         </AnimatedDiv>
     )
 }
