@@ -34,7 +34,7 @@ export async function GET(request: Request) {
                 >
                     <img
                         alt='Fix iT Rock'
-                        src='https://fixitrock.com/fixitrock.png'
+                        src='https://fixitrock.com/icons/fixitrock.png'
                         style={{
                             width: '70px',
                             height: '70px',
