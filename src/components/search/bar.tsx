@@ -46,7 +46,7 @@ const SearchBar = () => {
                                 <Image
                                     alt='Fix iT Rock'
                                     height={30}
-                                    src='/icons/rdrive.png'
+                                    src='/icons/fixitrock.png'
                                     width={30}
                                 />
                             </Button>
@@ -77,7 +77,12 @@ const SearchBar = () => {
 
                 {open && (
                     <div className='sticky bottom-0 hidden select-none items-center justify-between border-t p-1.5 lg:flex'>
-                        <Image alt='Fix iT Rock' height={30} src='/icons/rdrive.png' width={30} />
+                        <Image
+                            alt='Fix iT Rock'
+                            height={30}
+                            src='/icons/fixitrock.png'
+                            width={30}
+                        />
                         <ShortcutKey />
                     </div>
                 )}

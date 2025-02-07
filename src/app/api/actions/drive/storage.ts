@@ -2,6 +2,7 @@
 
 import { z } from 'zod'
 
+import { siteConfig } from '®/config/site'
 import { logWarning } from '®/lib/utils'
 import { DriveClient } from '®/lib/utils/DriveClient'
 
@@ -28,7 +29,11 @@ const StorageDataSchema = z.object({
 
 export type StorageData = z.infer<typeof StorageDataSchema>
 
-const paths = ['/RDRIVE/Apple', '/RDRIVE/Apps', '/RDRIVE/Games']
+const paths = [
+    `${siteConfig.baseDirectory}/Apple`,
+    `${siteConfig.baseDirectory}/Apps`,
+    `${siteConfig.baseDirectory}/Games`,
+]
 
 export async function getStorage(): Promise<StorageData> {
     const client = await DriveClient()

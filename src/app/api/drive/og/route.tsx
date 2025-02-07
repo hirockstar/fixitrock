@@ -26,7 +26,6 @@ export async function GET(request: Request) {
                     overflow: 'hidden',
                 }}
             >
-                {/* RDRIVE Logo at Top */}
                 <div
                     style={{
                         display: 'flex',
@@ -34,8 +33,8 @@ export async function GET(request: Request) {
                     }}
                 >
                     <img
-                        alt='RDRIVE'
-                        src='https://github.com/rdriveorg.png'
+                        alt='Fix iT Rock'
+                        src='https://fixitrock.com/fixitrock.png'
                         style={{
                             width: '70px',
                             height: '70px',

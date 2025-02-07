@@ -61,7 +61,7 @@ export const metadata: Metadata = {
         capable: true,
         statusBarStyle: 'black-translucent',
         title: `${siteConfig.title}`,
-        startupImage: ['/icons/rdrive.png'],
+        startupImage: ['/icons/fixitrock.png'],
     },
     icons: {
         icon: '/favicon.ico',

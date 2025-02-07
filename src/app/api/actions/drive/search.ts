@@ -1,5 +1,6 @@
 'use server'
 
+import { siteConfig } from '®/config/site'
 import useHidden from '®/hooks/useHidden'
 import { logWarning } from '®/lib/utils'
 import { DriveClient } from '®/lib/utils/DriveClient'
@@ -21,7 +22,9 @@ export async function getSearch(query: string): Promise<Search> {
     try {
         const sanitizedQuery = sanitizeQuery(query)
         const response = await client
-            .api(`/me/drive/root:/RDRIVE:/search(q='${encodeURIComponent(sanitizedQuery)}')`)
+            .api(
+                `/me/drive/root:${siteConfig.baseDirectory}:/search(q='${encodeURIComponent(sanitizedQuery)}')`
+            )
             .select('id,name,size,lastModifiedDateTime,webUrl,file')
             .get()
 

@@ -1,5 +1,6 @@
 'use server'
 
+import { siteConfig } from '®/config/site'
 import useHidden from '®/hooks/useHidden'
 import { logWarning } from '®/lib/utils'
 import { DriveClient } from '®/lib/utils/DriveClient'
@@ -32,7 +33,8 @@ export async function getChildren(slug: string, pageParam?: string): Promise<Dri
 
         if (!client) throw new Error('DriveClient init failed')
 
-        const endpoint = pageParam || `/me/drive/root:/RDRIVE${slug}:/children?top=50`
+        const endpoint =
+            pageParam || `/me/drive/root:${siteConfig.baseDirectory}${slug}:/children?top=50`
         const res = await client.api(endpoint).expand('thumbnails($select=large)').get()
 
         if (!res.value?.length) return { value: [], status: 'empty' }

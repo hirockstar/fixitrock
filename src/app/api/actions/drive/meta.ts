@@ -1,5 +1,6 @@
 'use server'
 
+import { siteConfig } from '®/config/site'
 import { logWarning } from '®/lib/utils'
 import { DriveClient } from '®/lib/utils/DriveClient'
 
@@ -12,7 +13,7 @@ export async function getMeta(meta: string) {
 
     try {
         const response = await client
-            .api(`/me/drive/root:/RDRIVE/${meta}`)
+            .api(`/me/drive/root:${siteConfig.baseDirectory}/${meta}`)
             .select('id,name,size,folder,lastModifiedDateTime')
             .get()
 
