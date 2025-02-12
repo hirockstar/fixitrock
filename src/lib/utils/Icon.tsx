@@ -14,7 +14,7 @@ import { FaAndroid, FaBookReader, FaJava, FaLink } from 'react-icons/fa'
 import { IoLogoJavascript, IoMdImage } from 'react-icons/io'
 import { MdInstallDesktop, MdRestorePage } from 'react-icons/md'
 import { PiBracketsCurlyBold, PiFileJpgBold, PiFilePng } from 'react-icons/pi'
-import { Si7Zip, SiHtml5, SiJpeg, SiMdx, SiOppo, SiSamsung, SiVuetify } from 'react-icons/si'
+import { Si7Zip, SiHtml5, SiJpeg, SiLg, SiMdx, SiOppo, SiSamsung, SiVuetify } from 'react-icons/si'
 
 import { cn } from '®/lib/utils'
 import { Excel, Folder, Gif, Music, Office, Pdf, Play } from '®/ui/icons'
@@ -109,6 +109,7 @@ const iconMap: Record<string, IconComponent> = {
     pit: SiSamsung,
     ozip: SiOppo,
     ofp: SiOppo,
+    kdz: SiLg,
 }
 
 interface IconProps {
