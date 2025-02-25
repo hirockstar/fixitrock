@@ -1,6 +1,6 @@
 'use client'
 
-import { HeroUIProvider } from '@heroui/react'
+import { HeroUIProvider, ToastProvider } from '@heroui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from 'next-themes'
@@ -27,7 +27,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             defaultTheme='system'
         >
             <QueryClientProvider client={queryClient}>
-                <HeroUIProvider navigate={router.push} useHref={useHref}>
+                <HeroUIProvider navigate={router.push} spinnerVariant='spinner' useHref={useHref}>
+                    <ToastProvider maxVisibleToasts={9} toastProps={{ radius: 'lg' }} />
                     {children}
                     <NextTopLoader color='hsl(var(--ring))' height={4} showSpinner={false} />
                     {isDevelopment && (

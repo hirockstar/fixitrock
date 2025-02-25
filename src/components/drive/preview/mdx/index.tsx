@@ -6,7 +6,7 @@ import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import { useEffect, useState } from 'react'
 
-import { IMG, Title } from './components'
+import { IMG, Title, YouTube } from './components'
 
 type MdxRemoteProps = {
     src: string
@@ -61,4 +61,5 @@ export default function Mdx({ src }: MdxRemoteProps) {
 const components = {
     img: IMG,
     Title,
+    YouTube,
 }

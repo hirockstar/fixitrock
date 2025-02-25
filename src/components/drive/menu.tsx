@@ -1,9 +1,10 @@
 'use client'
 
 import * as React from 'react'
-import { toast } from 'sonner'
 import { Listbox, ListboxItem, ListboxSection } from '@heroui/react'
+import { toast } from 'sonner'
 import { FolderSymlink } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 import { siteConfig } from '®/config/site'
 import { useMediaQuery } from '®/hooks/useMediaQuery'
@@ -29,8 +30,9 @@ export function Menu({
     setOpen: (open: boolean) => void
     onSelected: (c: DriveItem) => void
 }) {
+    const path = usePathname()
     const isDesktop = useMediaQuery('(min-width: 640px)')
-    const url = `${siteConfig.domain}${c.href}`
+    const url = `${siteConfig.domain}${c.folder ? `${c.href}` : `${path}#${c.name}`}`
 
     const handleCopy = () => {
         const promise = copy(url)
