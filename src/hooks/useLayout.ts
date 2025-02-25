@@ -7,7 +7,7 @@ export const layouts: Array<{ id: number; name: 'Grid' | 'List' }> = [
     { id: 2, name: 'Grid' },
 ]
 
-const DEFAULT_LAYOUT = layouts[0].name
+const DEFAULT_LAYOUT = layouts.find((l) => l.name === 'Grid')!.name
 
 type Layout = 'Grid' | 'List'
 
