@@ -145,7 +145,7 @@ export function slugify(text: string): string {
 export function path(url: string, isFile?: boolean) {
     const path = url
         .replace(
-            'https://rdrive-my.sharepoint.com/personal/ftp_rdrive_org/Documents/Fix%20iT%20Rock',
+            'https://fixitrock-my.sharepoint.com/personal/drive_fixitrock_com/Documents/fixitrock',
             ''
         )
         .trim()

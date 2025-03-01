@@ -70,9 +70,8 @@ export function useDrive(slug: string) {
 
     const getHref = useCallback((item: DriveItem): string => {
         const path =
-            item?.parentReference?.path
-                ?.replace('/drive/root:/Fix iT Rock', '')
-                .replace(/\/$/, '') || ''
+            item?.parentReference?.path?.replace('/drive/root:/fixitrock', '').replace(/\/$/, '') ||
+            ''
 
         if (isFolder(item)) return `${path}/${item.name}`
         if (isPreviewable(item)) return `${path}/?view=${item.name}`
