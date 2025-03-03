@@ -1,0 +1,10 @@
+{
+    "redirects": [
+        {
+            "source": "/:path*",
+            "has": [{ "type": "host", "value": "rockstar.bio" }],
+            "destination": "https://fixitrock.com/rockstar",
+            "permanent": true
+        }
+    ]
+}
