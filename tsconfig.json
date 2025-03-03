@@ -20,7 +20,8 @@
         ],
         "paths": {
             "®/*": ["./src/*"],
-            "®actions/*": ["./src/app/api/actions/*"]
+            "®actions/*": ["./src/server/actions/*"],
+            "®supabase/*": ["./src/server/supabase/*"]
         }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

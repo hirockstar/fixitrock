@@ -10,6 +10,7 @@ export function useStorage() {
         queryFn: getStorage,
         staleTime: 1000 * 60 * 5,
         retry: 1,
+        refetchOnWindowFocus: false,
     })
 
     const defaultData: StorageData = {

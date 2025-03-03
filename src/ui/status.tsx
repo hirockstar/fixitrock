@@ -16,12 +16,13 @@ import { FaApple } from 'react-icons/fa'
 import { TbApps } from 'react-icons/tb'
 import { useRouter } from 'nextjs-toploader/app'
 
-import { FolderType, StorageType } from '®/app/api/actions/drive/storage'
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import { useStorage } from '®/hooks/useStorage'
 import { formatBytes, stateColors } from '®/lib/utils'
 
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from './drawer'
+
+import { FolderType, StorageType } from '®actions/drive/storage'
 
 export function Status() {
     const { data, isLoading } = useStorage()

@@ -7,5 +7,6 @@ export function useReadme(slug: string) {
         queryKey: ['readme', slug],
         queryFn: () => getReadme(slug),
         enabled: !!slug,
+        refetchOnWindowFocus: false,
     })
 }
