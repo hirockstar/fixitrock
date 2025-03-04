@@ -13,3 +13,10 @@ export const UserPropsSchema = z.object({
 })
 
 export type UserProps = z.infer<typeof UserPropsSchema>
+
+export const GallerySchema = z.object({
+    name: z.string(),
+    thumbnail: z.string().url(),
+})
+
+export type GalleryProps = z.infer<typeof GallerySchema>

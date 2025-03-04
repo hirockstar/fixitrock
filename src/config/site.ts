@@ -17,13 +17,13 @@ export const siteConfig = {
     cacheControlHeader: 'max-age=0, s-maxage=60, stale-while-revalidate',
     suggestion: [
         {
-            href: '/Apps',
+            href: '/fw/Apps',
             title: 'Apps',
             description: 'Download apps for Android, MacOS, Windows, and Linux',
             icon: TbApps,
         },
         {
-            href: '/Games',
+            href: '/fw/Games',
             title: 'Games',
             description: 'Download games for Android, MacOS, Windows, and Linux',
             icon: TbDeviceGamepad2,
@@ -35,19 +35,19 @@ export const siteConfig = {
             icon: TbApps,
         },
         {
-            href: '/Drivers',
+            href: '/fw/Drivers',
             title: 'USB Drivers',
             description: 'Download Android USB flashing drivers',
             icon: BsUsbSymbol,
         },
         {
-            href: '/Flash-Tool',
+            href: '/fw/Flash-Tool',
             title: 'Flashing Tools',
             description: 'Tools for flashing mobile devices',
             icon: MdPhonelinkSetup,
         },
         {
-            href: '/iCloud',
+            href: '/fw/iCloud',
             title: 'iCloud Bypass Solutions',
             description: 'Say goodbye to iCloud locks: Unlock now.',
             icon: BsApple,

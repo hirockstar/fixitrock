@@ -1,6 +1,6 @@
 import { MotionProps, Variants } from 'motion/react'
 
-type Thumbnail = {
+export type Thumbnail = {
     id: string
     large?: {
         height: number

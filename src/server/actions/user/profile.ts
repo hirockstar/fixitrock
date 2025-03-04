@@ -7,13 +7,13 @@ import { DriveClient } from '®/lib/utils/DriveClient'
 
 const ProfileItemSchema = z.object({
     name: z.string(),
-    '@microsoft.graph.downloadUrl': z.string().url(),
+    '@microsoft.graph.downloadUrl': z.string().url().optional(),
 })
 
 const ProfileSchema = z.object({
     user: z.object({
-        avatar: z.string().url(),
-        cover: z.string().url(),
+        avatar: z.string().url().optional(),
+        cover: z.string().url().optional(),
     }),
 })
 
@@ -27,8 +27,12 @@ export async function getProfile(username: string) {
 
         const files = z.array(ProfileItemSchema).parse(response.value)
 
-        const avatar = files.find((item) => item.name === 'avatar.png')
-        const cover = files.find((item) => item.name === 'cover.png')
+        const avatar = files.find(
+            (item) => item.name === 'avatar.png' && item['@microsoft.graph.downloadUrl']
+        )
+        const cover = files.find(
+            (item) => item.name === 'cover.png' && item['@microsoft.graph.downloadUrl']
+        )
 
         const profile = {
             user: {
