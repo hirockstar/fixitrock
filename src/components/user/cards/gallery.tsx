@@ -11,7 +11,6 @@ export default function GalleryCard({ c }: { c: GalleryProps }) {
     return (
         <Card
             key={c.name}
-            isPressable
             aria-label={c.name}
             className='w-full select-none rounded-lg border bg-transparent'
             shadow='none'
@@ -19,7 +18,7 @@ export default function GalleryCard({ c }: { c: GalleryProps }) {
         >
             <Image
                 alt={c.name}
-                className='h-[160px] w-full object-cover object-center sm:h-[200px] lg:h-[200px]'
+                className='h-[240px] w-full object-cover object-center 2xl:h-[220px]'
                 classNames={{ wrapper: '!max-w-full' }}
                 src={c.thumbnail}
             />

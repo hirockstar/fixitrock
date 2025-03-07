@@ -7,7 +7,7 @@ import { useProfile } from '®/hooks/useProfile'
 import { UserProps } from '®/types/user'
 import { Counts } from '®/lib/utils'
 
-import { Actions } from './actions'
+import { Actions } from '../actions'
 
 export default function Profile({ user }: { user: UserProps }) {
     const { data } = useProfile(user.username)

@@ -1,7 +1,6 @@
 'use client'
+import GalleryCard from '®/components/user/cards/gallery'
 import { useGallery } from '®/hooks/useGallery'
-
-import GalleryCard from './card'
 
 export default function Page() {
     const { data } = useGallery('rockstar')

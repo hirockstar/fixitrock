@@ -8,10 +8,9 @@ import { useInView } from 'react-intersection-observer'
 
 import { getDownloadUrl, isFolder, isPreviewable, sanitizeQuery } from '®/lib/utils'
 import { Drive, DriveItem, SortField, SortOrder } from '®/types/drive'
+import { getChildren } from '®actions/drive/children'
 
 import { useQueryParams } from './useQueryParams'
-
-import { getChildren } from '®actions/drive/children'
 
 export function useDrive(slug: string) {
     const [query, setQuery] = useState('')

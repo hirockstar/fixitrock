@@ -1,6 +1,5 @@
-import Profile from '®/app/rockstar/profile'
-
-import Tabs from './tabs'
+import Profile from '®/components/user/cards/profile'
+import Tabs from '®/components/user/tabs'
 
 const user = {
     name: 'Rock Star',
