@@ -1,20 +1,17 @@
 'use client'
-import { Card, Image } from '@heroui/react'
-import { useRouter } from 'nextjs-toploader/app'
+import { Image } from '@heroui/react'
+import Link from 'next/link'
 
 import { formatDateTime } from '®/lib/utils'
 import { GalleryProps } from '®/types/user'
 
 export default function GalleryCard({ c }: { c: GalleryProps }) {
-    const router = useRouter()
-
     return (
-        <Card
+        <Link
             key={c.name}
             aria-label={c.name}
-            className='w-full select-none rounded-lg border bg-transparent'
-            shadow='none'
-            onPress={() => router.push(`/rockstar/gallery/${Path(c.name)}`)}
+            className='group relative w-full overflow-hidden rounded-lg'
+            href={`/rockstar/gallery/${Path(c.name)}`}
         >
             <Image
                 alt={c.name}
@@ -22,11 +19,11 @@ export default function GalleryCard({ c }: { c: GalleryProps }) {
                 classNames={{ wrapper: '!max-w-full' }}
                 src={c.thumbnail}
             />
-            <div className='absolute bottom-0 z-20 flex w-full justify-between bg-black bg-opacity-20 p-1 px-2 text-xs text-white'>
-                <p className='w-24 truncate text-start sm:w-auto'>{Name(c.name)} </p>
-                <p className='text-xs'>{formatDateTime(Date(c.name))}</p>
-            </div>
-        </Card>
+            <p className='absolute bottom-0 z-20 flex w-full justify-between rounded-b-lg bg-black bg-opacity-20 p-1 px-3 text-xs leading-relaxed text-white'>
+                <span>{Name(c.name)} </span>
+                <span>{formatDateTime(Date(c.name))}</span>
+            </p>
+        </Link>
     )
 }
 

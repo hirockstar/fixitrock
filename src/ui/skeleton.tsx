@@ -1,5 +1,5 @@
 'use client'
-import { Card, CardFooter, CardHeader, Skeleton } from '@heroui/react'
+import { Card, CardBody, CardFooter, CardHeader, Skeleton } from '@heroui/react'
 
 import { MagicCard } from './magiccard'
 
@@ -32,6 +32,30 @@ export const GridSkeleton = () => {
     )
 }
 
+export const QuoteSkeleton = () => {
+    return (
+        <>
+            {Array.from({ length: 10 }).map((_, index) => (
+                <Card
+                    key={index}
+                    className='flex select-none flex-col justify-between bg-muted/50 shadow-none'
+                >
+                    <CardBody className='flex flex-1 flex-col'>
+                        <span className='flex h-[180px] flex-col items-center justify-center gap-4'>
+                            <Skeleton className='h-4 w-52 rounded' />
+                            <Skeleton className='h-4 w-56 rounded' />
+                            <Skeleton className='h-4 w-48 rounded' />
+                        </span>
+                        <div className='flex items-center justify-between text-xs text-muted-foreground'>
+                            <Skeleton className='h-4 w-20 rounded-lg' />
+                            <Skeleton className='h-4 w-20 rounded-lg' />
+                        </div>
+                    </CardBody>
+                </Card>
+            ))}
+        </>
+    )
+}
 export const ListSkeleton = () => {
     return (
         <>

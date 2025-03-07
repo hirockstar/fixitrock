@@ -3,10 +3,9 @@ import { Suspense } from 'react'
 
 import { siteConfig } from '®/config/site'
 import { GridSkeleton } from '®/ui/skeleton'
+import { getData } from '®supabase/getData'
 
 import { Card } from './card'
-
-import { getData } from '®supabase/getData'
 
 export default async function FRP() {
     const frp = await getData('frp')
