@@ -70,5 +70,10 @@
         "prettier-plugin-tailwindcss": "^0.6.10",
         "tailwindcss": "^3.4.17",
         "typescript": "^5.7.3"
+    },
+    "resolutions": {
+        "@react-aria/i18n": "3.10.2",
+        "@react-aria/selection": "3.23.0",
+        "@react-aria/utils": "3.28.0"
     }
 }
