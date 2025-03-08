@@ -7,14 +7,14 @@ import { Gallery } from './showcase/gallery'
 import { Quotes } from './showcase/quotes'
 
 export default function Tabs({ username }: { username: string }) {
-    const { selectedTab, setTab } = useTabs('home')
+    const { tab, setTab } = useTabs('home')
 
     return (
         <UiTabs
             classNames={{
                 base: 'w-full border-b',
             }}
-            selectedKey={selectedTab}
+            selectedKey={tab}
             variant='underlined'
             onSelectionChange={(key) => setTab(String(key))}
         >

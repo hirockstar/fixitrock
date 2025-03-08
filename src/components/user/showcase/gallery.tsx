@@ -26,7 +26,7 @@ export function Gallery({ username }: { username: string }) {
             >
                 <CarouselContent>
                     {data?.map((c, index) => (
-                        <CarouselItem key={index} className='md:basis-1/2 2xl:basis-1/4'>
+                        <CarouselItem key={index} className='sm:basis-1/2 2xl:basis-1/4'>
                             <GalleryCard key={c.name} c={c} />
                         </CarouselItem>
                     ))}

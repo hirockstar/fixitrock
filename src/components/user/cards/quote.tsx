@@ -12,7 +12,10 @@ export type QuoteProps = {
 
 export function Quote({ q }: { q: QuoteProps }) {
     return (
-        <Card className='flex select-none flex-col justify-between bg-muted/50 shadow-none'>
+        <Card
+            isPressable
+            className='flex select-none flex-col justify-between bg-muted shadow-none'
+        >
             <CardBody className='flex flex-1 flex-col'>
                 <p className='flex h-[180px] items-center justify-center text-balance text-center font-serif text-xl font-bold'>
                     "{q.quote}"

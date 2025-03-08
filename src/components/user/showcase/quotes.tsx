@@ -11,7 +11,7 @@ export function Quotes() {
     const { data, isLoading } = useQuote()
 
     return (
-        <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2'>
+        <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2 px-1'>
             {isLoading ? (
                 <QuoteSkeleton />
             ) : (

@@ -2,12 +2,12 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getGallery } from '®/server/actions/user/gallery'
+import { getTour } from '®/server/actions/user/tour'
 
-export function useGallery(username: string) {
+export function useTour(tour: string) {
     const query = useQuery({
-        queryKey: ['Gallery', username],
-        queryFn: () => getGallery(username),
+        queryKey: ['Tour', tour],
+        queryFn: () => getTour(tour),
         staleTime: 1000 * 60 * 5,
         retry: 1,
         refetchOnWindowFocus: false,
