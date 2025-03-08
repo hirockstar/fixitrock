@@ -1,11 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+
+import { useQueryParams } from './useQueryParams'
 
 function useTabs(tabs: string) {
     const router = useRouter()
-    const searchParams = useSearchParams()
-    const currentTab = searchParams.get('tab') || tabs
+    const queryParams = useQueryParams()
+    const currentTab = queryParams?.get('tab') || tabs
     const [tab, setSelectedTab] = useState(currentTab)
 
     useEffect(() => {
