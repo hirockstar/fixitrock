@@ -14,7 +14,7 @@ export function Quote({ q }: { q: QuoteProps }) {
     return (
         <Card
             isPressable
-            className='flex select-none flex-col justify-between bg-muted shadow-none'
+            className='flex w-full select-none flex-col justify-between bg-muted shadow-none'
         >
             <CardBody className='flex flex-1 flex-col'>
                 <p className='flex h-[180px] items-center justify-center text-balance text-center font-serif text-xl font-bold'>
