@@ -3,11 +3,12 @@
 import { Image } from '@heroui/react'
 import React from 'react'
 
-import { useProfile } from '®/hooks/useProfile'
 import { UserProps } from '®/types/user'
 import { Counts } from '®/lib/utils'
 
 import { Actions } from '../actions'
+
+import { useProfile } from '®tanstack/query'
 
 export default function Profile({ user }: { user: UserProps }) {
     const { data } = useProfile(user.username)

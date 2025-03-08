@@ -10,7 +10,7 @@ import { getDownloadUrl, isFolder, isPreviewable, sanitizeQuery } from '®/lib/u
 import { Drive, DriveItem, SortField, SortOrder } from '®/types/drive'
 import { getChildren } from '®actions/drive/children'
 
-import { useQueryParams } from './useQueryParams'
+import { useQueryParams } from '../../useQueryParams'
 
 export function useDrive(slug: string) {
     const [query, setQuery] = useState('')

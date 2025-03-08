@@ -21,7 +21,8 @@
         "paths": {
             "®/*": ["./src/*"],
             "®actions/*": ["./src/server/actions/*"],
-            "®supabase/*": ["./src/server/supabase/*"]
+            "®supabase/*": ["./src/server/supabase/*"],
+            "®tanstack/*": ["./src/hooks/tanstack/*"]
         }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

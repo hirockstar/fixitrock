@@ -1,8 +1,8 @@
 'use client'
 
-import { useReadme } from '®/hooks/useReadme'
-
 import Mdx from './preview/mdx'
+
+import { useReadme } from '®tanstack/query'
 
 export function Readme({ slug }: { slug: string }) {
     const { data: src } = useReadme(slug)

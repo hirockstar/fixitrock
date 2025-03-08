@@ -5,11 +5,12 @@ import { useRouter } from 'nextjs-toploader/app'
 import { FaPlay } from 'react-icons/fa'
 
 import useTabs from '®/hooks/useTabs'
-import { useTour } from '®/hooks/useTour'
 import { BlogCardAnimation, fromLeftVariant } from '®/lib/FramerMotionVariants'
 import { formatDuration } from '®/lib/utils'
 import { DriveItem } from '®/types/drive'
 import AnimatedDiv from '®/ui/farmer/div'
+
+import { useTour } from '®tanstack/query'
 
 const FilterButtons = ({
     filter,
@@ -24,7 +25,7 @@ const FilterButtons = ({
         {['all', 'photos', 'videos'].map((tab) => (
             <Button
                 key={tab}
-                className={`h-6 gap-1.5 rounded-lg bg-background/30 bg-muted/70 px-1.5 backdrop-blur ${filter === tab ? 'bg-primary text-white' : ''}`}
+                className={`h-6 gap-1.5 rounded-lg bg-muted/70 px-1.5 backdrop-blur ${filter === tab ? 'bg-primary text-white' : ''}`}
                 size='sm'
                 onPress={() => setFilter(tab)}
             >

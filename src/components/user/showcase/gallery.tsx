@@ -1,6 +1,5 @@
 import Autoplay from 'embla-carousel-autoplay'
 
-import { useGallery } from '®/hooks/useGallery'
 import {
     Carousel,
     CarouselContent,
@@ -11,6 +10,8 @@ import {
 import { TitleAction } from '®/ui/titleaction'
 
 import GalleryCard from '../cards/gallery'
+
+import { useGallery } from '®tanstack/query'
 
 export function Gallery({ username }: { username: string }) {
     const { data, isLoading } = useGallery(username)

@@ -1,11 +1,12 @@
 'use client'
 
-import { useQuote } from '®/hooks/useQuotes'
 import AnimatedDiv from '®/ui/farmer/div'
 import { BlogCardAnimation, fromLeftVariant } from '®/lib/FramerMotionVariants'
 import { QuoteSkeleton } from '®/ui/skeleton'
 
 import { Quote } from '../cards/quote'
+
+import { useQuote } from '®tanstack/query'
 
 export function Quotes() {
     const { data, isLoading } = useQuote()

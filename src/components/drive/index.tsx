@@ -2,7 +2,6 @@
 
 import { usePathname } from 'next/navigation'
 
-import { useDrive } from '®/hooks/useDrive'
 import Breadcrumb from '®/ui/breadcrumb'
 import useLayout from '®/hooks/useLayout'
 import { FolderEmpty, SearchEmpty, NotFound } from '®/ui/state'
@@ -14,6 +13,8 @@ import Layout from './layout'
 import { Grid } from './grid'
 import { List } from './list'
 import { Readme } from './readme'
+
+import { useDrive } from '®tanstack/query'
 
 export function Drive({ drive }: { drive: string }) {
     const {

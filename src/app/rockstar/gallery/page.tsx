@@ -1,9 +1,10 @@
 'use client'
 
 import GalleryCard from '®/components/user/cards/gallery'
-import { useGallery } from '®/hooks/useGallery'
 import { BlogCardAnimation, fromLeftVariant } from '®/lib/FramerMotionVariants'
 import AnimatedDiv from '®/ui/farmer/div'
+
+import { useGallery } from '®tanstack/query'
 
 export default function Page() {
     const { data } = useGallery('rockstar')
