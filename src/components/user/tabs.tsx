@@ -1,25 +1,22 @@
 'use client'
 import { Tab, Tabs as UiTabs } from '@heroui/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+
+import useTabs from '®/hooks/useTabs'
 
 import { Gallery } from './showcase/gallery'
 import { Quotes } from './showcase/quotes'
 
 export default function Tabs({ username }: { username: string }) {
-    const router = useRouter()
-    const searchParams = useSearchParams()
-    const currentTab = searchParams.get('tab') || 'home'
+    const { selectedTab, setTab } = useTabs('home')
 
     return (
         <UiTabs
             classNames={{
                 base: 'w-full border-b',
             }}
-            selectedKey={currentTab}
+            selectedKey={selectedTab}
             variant='underlined'
-            onSelectionChange={(key) => {
-                router.push(`?tab=${key}`, { scroll: false })
-            }}
+            onSelectionChange={(key) => setTab(String(key))}
         >
             <Tab key='home' title='Home'>
                 <Gallery username={username} />
