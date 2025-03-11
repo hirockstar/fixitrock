@@ -17,7 +17,7 @@ export function Quote({ q }: { q: QuoteProps }) {
             className='flex w-full select-none flex-col justify-between bg-muted shadow-none'
         >
             <CardBody className='flex flex-1 flex-col'>
-                <p className='flex h-[180px] items-center justify-center text-balance text-center font-mono text-lg'>
+                <p className='flex h-[180px] items-center justify-center text-balance text-center text-lg font-semibold'>
                     "{q.quote}"
                 </p>
                 <div className='flex items-center justify-between text-xs text-muted-foreground'>

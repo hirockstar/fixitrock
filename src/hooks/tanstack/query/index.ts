@@ -5,6 +5,17 @@ import { useQuote } from './useQuote'
 import { useReadme } from './useReadme'
 import { useSearch } from './useSearch'
 import { useStorage } from './useStorage'
+import { useSupabse } from './useSupabse'
 import { useTour } from './useTour'
 
-export { useGallery, useDrive, useProfile, useQuote, useSearch, useReadme, useStorage, useTour }
+export {
+    useGallery,
+    useDrive,
+    useProfile,
+    useQuote,
+    useSearch,
+    useReadme,
+    useStorage,
+    useTour,
+    useSupabse,
+}
