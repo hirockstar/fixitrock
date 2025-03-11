@@ -9,7 +9,11 @@ import SearchBar from '®/components/search/bar'
 import { cn } from '®/lib/utils'
 import { fontMono, fontSans } from '®/lib/fonts'
 
-export default function RootLayout(props: { children: React.ReactNode; modal: React.ReactNode }) {
+export default function RootLayout({
+    children,
+}: Readonly<{
+    children: React.ReactNode
+}>) {
     return (
         <html suppressHydrationWarning lang='en'>
             <head>
@@ -35,13 +39,13 @@ export default function RootLayout(props: { children: React.ReactNode; modal: Re
                 <Providers>
                     <div className='relative flex min-h-screen flex-col bg-background'>
                         {/* remove it for now bcz for large contetnt list its get height error -  vaul-drawer-wrapper="" */}
-                        <div className='flex-1 overflow-clip'>{props.children}</div>
+                        <div className='flex-1 overflow-clip'>{children}</div>
                         <Footer />
                         <SearchBar />
                         <Sonner />
                     </div>
-                    {props.modal}
-                    <div id='modal-root' />
+                    {/* {props.modal}
+                    <div id='modal-root' /> */}
                 </Providers>
             </body>
         </html>
