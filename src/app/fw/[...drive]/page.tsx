@@ -6,7 +6,7 @@ export default async function DrivePage({ params }: { params: Promise<{ drive: s
     const drivePath = drive.join('/')
 
     return (
-        <div className='mx-auto mt-4 w-full max-w-7xl p-2'>
+        <div className='mx-auto w-full space-y-4 p-1 py-4 sm:p-4 2xl:px-[10%]'>
             <Drive drive={`/${drivePath}`} />
         </div>
     )

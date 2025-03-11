@@ -180,7 +180,3 @@ export const formatDuration = (milliseconds: number): string => {
 
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 }
-
-export function Name(name: string) {
-    return name.replace(/^\d{4}-\d{2}-\d{2}-|\.[^.]+$/g, '')
-}

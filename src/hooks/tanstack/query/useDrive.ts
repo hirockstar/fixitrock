@@ -12,7 +12,7 @@ import { getChildren } from '®actions/drive/children'
 
 import { useQueryParams } from '../../useQueryParams'
 
-export function useDrive(slug: string) {
+export function useDrive(slug: string, top?: number) {
     const [query, setQuery] = useState('')
     const [sortField, setSortField] = useState<SortField>('name')
     const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
@@ -29,7 +29,7 @@ export function useDrive(slug: string) {
     const { data, isFetchingNextPage, hasNextPage, fetchNextPage, status } = useInfiniteQuery({
         queryKey: ['Drive', slug],
         queryFn: async ({ pageParam }) => {
-            const response = await getChildren(slug, pageParam)
+            const response = await getChildren(slug, pageParam, top)
 
             return response
         },

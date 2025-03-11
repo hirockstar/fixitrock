@@ -1,7 +1,7 @@
 'use client'
-import { Button, Image, Navbar, Skeleton } from '@heroui/react'
+import { Button, Image, Navbar, Skeleton, Card as UICard } from '@heroui/react'
 import { ChevronLeft } from 'lucide-react'
-import { useRouter } from 'nextjs-toploader/app'
+import { usePathname, useRouter } from 'next/navigation'
 import { FaPlay } from 'react-icons/fa'
 
 import useTabs from '®/hooks/useTabs'
@@ -73,47 +73,51 @@ const SkeletonGrid = () => (
     </div>
 )
 
-const Card = ({ item }: { item: DriveItem }) => (
-    <div className='group relative overflow-hidden rounded-xl border shadow-sm transition-shadow hover:shadow-md'>
-        <Image
-            isZoomed
-            alt={item.name}
-            className='aspect-square min-h-32 cursor-pointer object-cover'
-            src={item?.thumbnails?.[0].large?.url}
-            width={item?.thumbnails?.[0].large?.width}
-        />
-        {item.file?.mimeType?.startsWith('video/') && (
-            <>
-                {item.video?.duration !== undefined && (
-                    <div className='absolute bottom-2 left-2 z-30 flex items-center gap-0.5 rounded bg-black bg-opacity-50 px-1 text-[10px] text-white'>
-                        <FaPlay size={10} />
-                        {formatDuration(item.video.duration)}
+const Card = ({ item }: { item: DriveItem }) => {
+    const router = useRouter()
+    const path = usePathname()
+
+    return (
+        <UICard
+            isPressable
+            className='group relative overflow-hidden'
+            onPress={() => router.push(`${path}/${item.id}`, { scroll: false })}
+        >
+            <Image
+                alt={item.name}
+                className='aspect-square min-h-32 cursor-pointer object-cover'
+                src={item?.thumbnails?.[0].large?.url}
+                width={item?.thumbnails?.[0].large?.width}
+            />
+            {item.file?.mimeType?.startsWith('video/') && (
+                <>
+                    {item.video?.duration !== undefined && (
+                        <div className='absolute bottom-2 left-2 z-30 flex items-center gap-0.5 rounded bg-black bg-opacity-50 px-1 text-[10px] text-white'>
+                            <FaPlay size={10} />
+                            {formatDuration(item.video.duration)}
+                        </div>
+                    )}
+                    <div className='absolute inset-0 z-20 flex items-center justify-center rounded-xl bg-black bg-opacity-20'>
+                        <FaPlay
+                            className='text-white opacity-50 transition-transform group-hover:scale-110'
+                            size={36}
+                        />
                     </div>
-                )}
-                <div className='absolute inset-0 z-20 flex items-center justify-center overflow-hidden bg-black bg-opacity-20'>
-                    <FaPlay
-                        className='text-white opacity-50 transition-transform group-hover:scale-110'
-                        size={36}
-                    />
-                </div>
-            </>
-        )}
-    </div>
-)
+                </>
+            )}
+        </UICard>
+    )
+}
 
 export default function Tour({ gallery }: { gallery: string }) {
     const router = useRouter()
     const { data, isLoading } = useTour(gallery)
     const { tab: filter, setTab: setFilter } = useTabs('all')
 
-    // Filter items based on the selected filter
     const videos = data?.value.filter((item) => item.file.mimeType?.startsWith('video/'))
     const photos = data?.value.filter((item) => item.file.mimeType?.startsWith('image/'))
-
-    // Apply filter to show data
     const filteredData = filter === 'all' ? data?.value : filter === 'photos' ? photos : videos
 
-    // Function to get the count based on the filter
     const getCount = (type: string) => {
         switch (type) {
             case 'all':

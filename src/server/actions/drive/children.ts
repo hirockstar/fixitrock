@@ -27,14 +27,18 @@ async function getThumbnails(id: string): Promise<DriveItem['thumbnails'] | null
     }
 }
 
-export async function getChildren(slug: string, pageParam?: string): Promise<Drive> {
+export async function getChildren(
+    slug: string,
+    pageParam?: string,
+    top: number = 50
+): Promise<Drive> {
     try {
         const client = await DriveClient()
 
         if (!client) throw new Error('DriveClient init failed')
 
         const endpoint =
-            pageParam || `/me/drive/root:${siteConfig.baseDirectory}${slug}:/children?top=50`
+            pageParam || `/me/drive/root:${siteConfig.baseDirectory}${slug}:/children?top=${top}`
         const res = await client.api(endpoint).expand('thumbnails($select=large)').get()
 
         if (!res.value?.length) return { value: [], status: 'empty' }

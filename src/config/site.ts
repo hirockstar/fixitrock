@@ -80,7 +80,22 @@ export const siteConfig = {
         },
     ],
 }
+export type TabsConfig = typeof tabsConfig
 
+export const tabsConfig = {
+    user: [
+        {
+            title: 'home',
+            href: '',
+        },
+    ],
+    admin: [
+        {
+            title: 'quotes',
+            href: '/quotes',
+        },
+    ],
+}
 export const META_THEME_COLORS = {
     light: '#ffffff',
     dark: '#00000',

@@ -1,5 +1,7 @@
 'use client'
+
 import { Button } from '@heroui/react'
+import Link from 'next/link'
 import { useRouter } from 'nextjs-toploader/app'
 
 import { cn } from '®/lib/utils'
@@ -15,11 +17,14 @@ export const TitleAction = ({ title, children, href, className }: TitleActionPro
     const router = useRouter()
 
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-col space-y-2'>
             <div className='flex items-center justify-between px-2'>
-                <h1 className='my-2 text-left text-xl font-bold md:text-3xl'>{title}</h1>
+                <h1 className='my-2 text-left text-lg font-bold sm:text-xl'>{title}</h1>
                 <Button
-                    className='h-[34px] rounded-lg bg-background/30 backdrop-blur data-[hover=true]:bg-muted/50'
+                    as={Link}
+                    className='rounded-lg bg-default/30 backdrop-blur data-[hover=true]:bg-muted/50'
+                    href={href}
+                    size='sm'
                     onPress={() => router.push(href)}
                 >
                     View All

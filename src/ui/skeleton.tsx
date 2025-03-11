@@ -3,15 +3,15 @@ import { Card, CardBody, CardFooter, CardHeader, Skeleton } from '@heroui/react'
 
 import { MagicCard } from './magiccard'
 
-export const GridSkeleton = () => {
+export const GridSkeleton = ({ length = 12 }: { length?: number }) => {
     return (
         <>
-            {Array.from({ length: 12 }).map((_, index) => (
+            {Array.from({ length }).map((_, index) => (
                 <Card
                     key={index}
                     isBlurred
                     isPressable
-                    className='rounded-2xl border'
+                    className='min-w-[280px] rounded-2xl border'
                     shadow='none'
                 >
                     <MagicCard className='items-stretch'>
@@ -23,7 +23,6 @@ export const GridSkeleton = () => {
                         <CardFooter className='mt-[2px] justify-between p-2'>
                             <Skeleton className='h-4 w-20 rounded-xl' />
                             <Skeleton className='h-4 w-20 rounded-xl' />
-                            <Skeleton className='h-4 w-20 rounded-xl' />
                         </CardFooter>
                     </MagicCard>
                 </Card>
@@ -32,10 +31,10 @@ export const GridSkeleton = () => {
     )
 }
 
-export const QuoteSkeleton = () => {
+export const QuoteSkeleton = ({ length = 12 }: { length?: number }) => {
     return (
         <>
-            {Array.from({ length: 10 }).map((_, index) => (
+            {Array.from({ length }).map((_, index) => (
                 <Card
                     key={index}
                     className='flex select-none flex-col justify-between bg-muted/50 shadow-none'

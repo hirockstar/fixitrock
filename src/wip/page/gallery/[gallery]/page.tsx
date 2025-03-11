@@ -1,5 +1,3 @@
-import { Name } from '®/lib/utils'
-
 import Tour from './tour'
 export default async function Page({ params }: { params: Promise<{ gallery: string }> }) {
     const gallery = (await params).gallery
@@ -34,4 +32,8 @@ export async function generateMetadata({ params }: { params: Promise<{ gallery: 
         //     siteName: siteConfig.title,
         // },
     }
+}
+
+export function Name(name: string) {
+    return name.replace(/^\d{4}-\d{2}-\d{2}-|\.[^.]+$/g, '')
 }

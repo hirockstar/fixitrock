@@ -3,14 +3,25 @@
 import { Image } from '@heroui/react'
 import React from 'react'
 
-import { UserProps } from '®/types/user'
 import { Counts } from '®/lib/utils'
 
-import { Actions } from '../actions'
+import { Actions } from './actions'
 
 import { useProfile } from '®tanstack/query'
+const user = {
+    name: 'Rock Star',
+    username: 'rockstar',
+    bio: 'I am a Rockstar',
+    location: 'Mars',
+    birthdate: '',
+    number: '',
+    followers: 0,
+    following: 0,
+    gender: 'male',
+}
 
-export default function Profile({ user }: { user: UserProps }) {
+export default function Profile() {
+    // const { username } = useParams<{ username: string }>()
     const { data } = useProfile(user.username)
     const [isFollowing, setIsFollowing] = React.useState(false)
 
