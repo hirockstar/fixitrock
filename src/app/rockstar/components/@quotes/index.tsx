@@ -3,10 +3,9 @@
 import AnimatedDiv from '®/ui/farmer/div'
 import { BlogCardAnimation, fromLeftVariant } from '®/lib/FramerMotionVariants'
 import { QuoteSkeleton } from '®/ui/skeleton'
+import { useQuote } from '®tanstack/query'
 
 import { Quote } from './card'
-
-import { useQuote } from '®tanstack/query'
 
 export function Quotes() {
     const { data, isLoading } = useQuote()

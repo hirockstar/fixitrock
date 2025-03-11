@@ -4,10 +4,10 @@ import { Image } from '@heroui/react'
 import React from 'react'
 
 import { Counts } from '®/lib/utils'
+import { useProfile } from '®tanstack/query'
 
 import { Actions } from './actions'
 
-import { useProfile } from '®tanstack/query'
 const user = {
     name: 'Rock Star',
     username: 'rockstar',

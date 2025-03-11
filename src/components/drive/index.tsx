@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import Breadcrumb from '®/ui/breadcrumb'
 import useLayout from '®/hooks/useLayout'
 import { FolderEmpty, SearchEmpty, NotFound } from '®/ui/state'
+import { useDrive } from '®tanstack/query'
 
 import Input from './input'
 import { Preview } from './preview'
@@ -13,8 +14,6 @@ import Layout from './layout'
 import { Grid } from './grid'
 import { List } from './list'
 import { Readme } from './readme'
-
-import { useDrive } from '®tanstack/query'
 
 export function Drive({ drive }: { drive: string }) {
     const {
@@ -31,6 +30,7 @@ export function Drive({ drive }: { drive: string }) {
         loadMore,
         focus,
         status,
+        error,
     } = useDrive(drive)
     const { layout, hydrated } = useLayout()
     const path = usePathname()
@@ -42,9 +42,7 @@ export function Drive({ drive }: { drive: string }) {
             <div className='flex space-x-1.5'>
                 <Input
                     hotKey='/'
-                    placeholder={
-                        status === 'notFound' ? 'Oops, Page Not Found!' : `Search in ${title}`
-                    }
+                    placeholder={error ? 'Oops, Page Not Found!' : `Search in ${title}`}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
@@ -52,7 +50,7 @@ export function Drive({ drive }: { drive: string }) {
                 <Layout />
             </div>
             {hydrated ? (
-                status === 'notFound' ? (
+                error ? (
                     <NotFound />
                 ) : query && data?.value?.length === 0 ? (
                     <SearchEmpty query={query} />

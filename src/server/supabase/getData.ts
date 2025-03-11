@@ -12,7 +12,7 @@ export async function getData(tableName: string) {
     const { data, error } = await supabase.from(parsedTableName).select('*')
 
     if (error) {
-        throw new Error(`Failed to fetch data from table "${parsedTableName}": ${error.message}`)
+        throw new Error(error.message)
     }
 
     return data

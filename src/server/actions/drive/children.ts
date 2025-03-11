@@ -63,10 +63,7 @@ export async function getChildren(
             status: 'success',
         }
     } catch (error: unknown) {
-        const msg = error || 'An unknown error occurred in getChildren.'
-
-        logWarning(`getChildren failed: ${msg}`)
-
-        return { value: [], status: 'notFound' }
+        logWarning(error instanceof Error ? error.message : '')
+        throw error
     }
 }

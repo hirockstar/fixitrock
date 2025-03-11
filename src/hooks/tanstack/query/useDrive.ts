@@ -26,17 +26,18 @@ export function useDrive(slug: string, top?: number) {
     const searchParams = useQueryParams()
     const { ref, inView } = useInView()
 
-    const { data, isFetchingNextPage, hasNextPage, fetchNextPage, status } = useInfiniteQuery({
-        queryKey: ['Drive', slug],
-        queryFn: async ({ pageParam }) => {
-            const response = await getChildren(slug, pageParam, top)
+    const { data, isFetchingNextPage, hasNextPage, fetchNextPage, status, error } =
+        useInfiniteQuery({
+            queryKey: ['Drive', slug],
+            queryFn: async ({ pageParam }) => {
+                const response = await getChildren(slug, pageParam, top)
 
-            return response
-        },
-        initialPageParam: '',
-        refetchOnWindowFocus: false,
-        getNextPageParam: (lastPage) => lastPage['@odata.nextLink'] || undefined,
-    })
+                return response
+            },
+            initialPageParam: '',
+            refetchOnWindowFocus: false,
+            getNextPageParam: (lastPage) => lastPage['@odata.nextLink'] || undefined,
+        })
 
     const combinedData = useMemo(() => data?.pages.flatMap((page) => page.value) || [], [data])
 
@@ -173,5 +174,6 @@ export function useDrive(slug: string, top?: number) {
         ref,
         loadMore: isFetchingNextPage,
         status: data?.pages[data.pages.length - 1]?.status,
+        error,
     }
 }

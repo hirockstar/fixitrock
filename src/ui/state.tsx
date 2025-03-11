@@ -1,6 +1,10 @@
 'use client'
 import { Image } from '@heroui/react'
 import { motion } from 'motion/react'
+import React from 'react'
+import { IconType } from 'react-icons/lib'
+
+import { cn } from '®/lib/utils'
 
 export const NotFound = () => {
     return (
@@ -114,6 +118,62 @@ export default function LimitExceeded() {
             >
                 Thanks for sticking with us! We’ll be back soon, stronger and caffeinated! ☕
             </motion.div>
+        </div>
+    )
+}
+
+interface ErrorStateProps {
+    title?: string
+    message?: string
+    className?: string
+    icons?: IconType[]
+}
+
+export const ErrorState: React.FC<ErrorStateProps> = ({
+    title,
+    message,
+    className,
+    icons = [],
+}) => {
+    return (
+        <div
+            className={cn(
+                'group flex w-full select-none flex-col items-center gap-6 rounded-xl border py-12 text-center shadow-lg transition-all duration-300',
+                className
+            )}
+        >
+            <div className='isolate flex justify-center gap-4'>
+                {icons.length === 3 ? (
+                    <>
+                        <div className='relative left-3 top-1 grid size-14 -rotate-6 place-items-center rounded-lg bg-background shadow-md ring-1 ring-border transition duration-300 group-hover:-translate-x-4 group-hover:-translate-y-0.5'>
+                            {React.createElement(icons[0], {
+                                className: 'w-7 h-7',
+                            })}
+                        </div>
+                        <div className='relative z-10 grid size-14 place-items-center rounded-lg bg-background shadow-md ring-1 ring-border transition duration-300 group-hover:-translate-y-1'>
+                            {React.createElement(icons[1], {
+                                className: 'w-7 h-7',
+                            })}
+                        </div>
+                        <div className='relative right-3 top-1 grid size-14 rotate-6 place-items-center rounded-lg bg-background shadow-md ring-1 ring-border transition duration-300 group-hover:-translate-y-1 group-hover:translate-x-4'>
+                            {React.createElement(icons[2], {
+                                className: 'w-7 h-7',
+                            })}
+                        </div>
+                    </>
+                ) : (
+                    <div className='grid size-14 place-items-center rounded-lg bg-background shadow-md ring-1 ring-border transition duration-300'>
+                        {icons[0] &&
+                            React.createElement(icons[0], {
+                                className: 'w-7 h-7',
+                            })}
+                    </div>
+                )}
+            </div>
+            <div className='mt-1 space-y-1.5'>
+                <h4 className='text-xl font-extrabold'>{title}</h4>
+                <p className='text-sm text-muted-foreground'>{message}</p>
+            </div>
         </div>
     )
 }

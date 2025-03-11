@@ -31,14 +31,11 @@ export const GridSkeleton = ({ length = 12 }: { length?: number }) => {
     )
 }
 
-export const QuoteSkeleton = ({ length = 12 }: { length?: number }) => {
+export const QuoteSkeleton = ({ length = 15 }: { length?: number }) => {
     return (
         <>
             {Array.from({ length }).map((_, index) => (
-                <Card
-                    key={index}
-                    className='flex select-none flex-col justify-between bg-muted/50 shadow-none'
-                >
+                <Card key={index} className='min-w-[280px] rounded-2xl border'>
                     <CardBody className='flex flex-1 flex-col'>
                         <span className='flex h-[180px] flex-col items-center justify-center gap-4'>
                             <Skeleton className='h-4 w-52 rounded' />

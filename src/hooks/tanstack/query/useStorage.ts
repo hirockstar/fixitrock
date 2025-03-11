@@ -11,6 +11,7 @@ export function useStorage() {
         staleTime: 1000 * 60 * 5,
         retry: 1,
         refetchOnWindowFocus: false,
+        refetchOnMount: false,
     })
 
     const defaultData: StorageData = {

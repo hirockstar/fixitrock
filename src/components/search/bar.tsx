@@ -4,12 +4,11 @@ import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 
 import AnimatedSearch, { useOpen } from '®/ui/farmer/search'
+import { useSearch } from '®tanstack/query'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
 import { Suggestion } from './suggestion'
-
-import { useSearch } from '®tanstack/query'
 
 const SearchBar = () => {
     const [query, setQuery] = useState('')
@@ -53,7 +52,7 @@ const SearchBar = () => {
                             </Button>
                         )
                     }
-                    placeholder='What do you need?'
+                    placeholder='Work in progress . . . ' //What do you need?
                     size='lg'
                     startContent={<Search size={20} />}
                     type='text'

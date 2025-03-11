@@ -1,7 +1,7 @@
 import Profile from './components/@profile'
 import Tabs from './components/@tabs'
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <div>
             <Profile />

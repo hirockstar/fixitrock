@@ -18,7 +18,7 @@ export const TitleAction = ({ title, children, href, className }: TitleActionPro
 
     return (
         <div className='flex flex-col space-y-2'>
-            <div className='flex items-center justify-between px-2'>
+            <div className='flex items-center justify-between px-1'>
                 <h1 className='my-2 text-left text-lg font-bold sm:text-xl'>{title}</h1>
                 <Button
                     as={Link}
@@ -30,7 +30,7 @@ export const TitleAction = ({ title, children, href, className }: TitleActionPro
                     View All
                 </Button>
             </div>
-            <div className={cn(className)}>{children}</div>
+            <div className={cn('pl-1.5', className)}>{children}</div>
         </div>
     )
 }
