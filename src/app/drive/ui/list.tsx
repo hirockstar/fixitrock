@@ -3,7 +3,7 @@
 import { Card, CardBody } from '@heroui/react'
 import React from 'react'
 
-import { Menu, Thumbnail } from '.'
+import { Menu } from '.'
 
 import { BlogCardAnimation, fromTopVariant } from '®lib/FramerMotionVariants'
 import { formatCount, formatDateTime, formatBytes } from '®lib/utils'
@@ -12,6 +12,7 @@ import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
 import AnimatedDiv from '®ui/farmer/div'
 import { ListSkeleton } from '®ui/skeleton'
 import { useMediaQuery } from '®hooks/useMediaQuery'
+import { Thumbnail } from '®ui'
 
 export function List({
     data,
