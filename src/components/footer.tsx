@@ -1,8 +1,8 @@
 'use client'
 import { Link } from '@heroui/react'
 
-import { siteConfig } from '®/config/site'
-import { Status } from '®/ui/status'
+import { siteConfig } from '®config/site'
+import { Status } from '®ui/status'
 
 import ThemeSwitcher from './theme'
 

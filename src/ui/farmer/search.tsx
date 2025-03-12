@@ -3,9 +3,9 @@
 import { motion, useAnimation } from 'motion/react'
 import { useEffect, useState } from 'react'
 
-import { useMediaQuery } from '®/hooks/useMediaQuery'
-import useScroll from '®/hooks/useScroll'
-import { Bottom } from '®/lib/FramerMotionVariants'
+import { useMediaQuery } from '®hooks/useMediaQuery'
+import useScroll from '®hooks/useScroll'
+import { Bottom } from '®lib/FramerMotionVariants'
 
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '../drawer'
 

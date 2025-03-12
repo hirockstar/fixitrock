@@ -5,7 +5,7 @@ import { useTheme } from 'next-themes'
 import { useRouter } from 'nextjs-toploader/app'
 import React from 'react'
 
-import { siteConfig } from '®/config/site'
+import { siteConfig } from '®config/site'
 
 export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
     const { setTheme } = useTheme()

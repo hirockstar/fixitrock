@@ -5,7 +5,7 @@ import ImagePreview from './image'
 import Mdx from './mdx'
 import VideoPreview from './video'
 
-import { DriveItem } from '®/types/drive'
+import { DriveItem } from '®types/drive'
 
 const Switch: React.FC<{ file: DriveItem }> = ({ file }) => {
     const mimeType = file?.file?.mimeType

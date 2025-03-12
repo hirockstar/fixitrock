@@ -1,9 +1,9 @@
 'use server'
 
-import { logWarning } from '®/lib/utils'
-import { DriveClient } from '®/lib/utils/DriveClient'
-import { Thumbnail } from '®/types/drive'
-import { GalleryProps, GallerySchema } from '®/types/user'
+import { logWarning } from '®lib/utils'
+import { DriveClient } from '®lib/utils/DriveClient'
+import { Thumbnail } from '®types/drive'
+import { GalleryProps, GallerySchema } from '®types/user'
 
 type DriveItem = {
     name: string

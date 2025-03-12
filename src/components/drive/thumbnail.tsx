@@ -3,7 +3,7 @@
 import React from 'react'
 import { Image } from '@heroui/react'
 
-import Icon from '®/lib/utils/Icon'
+import Icon from '®lib/utils/Icon'
 
 interface ThumbnailProps {
     src?: string

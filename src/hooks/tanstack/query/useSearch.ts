@@ -3,7 +3,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
-import { Search } from '®/types/drive'
+import { Search } from '®types/drive'
 
 import { getSearch } from '®actions/drive/search'
 

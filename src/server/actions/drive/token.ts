@@ -1,7 +1,7 @@
 'use server'
 
-import { logWarning } from '®/lib/utils'
-import { createClient } from '®/supabase/server'
+import { logWarning } from '®lib/utils'
+import { createClient } from '®supabase/server'
 
 const TOKEN_EXPIRY_TIME = 60 * 60 * 1000
 

@@ -4,7 +4,7 @@ import { useTheme } from 'next-themes'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useEffect, useState } from 'react'
 
-import { siteConfig } from '®/config/site'
+import { siteConfig } from '®config/site'
 
 function ThemeSwitcher() {
     const { theme, setTheme } = useTheme()

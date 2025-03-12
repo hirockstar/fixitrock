@@ -3,7 +3,7 @@ import { Button, Image, Input } from '@heroui/react'
 import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 
-import AnimatedSearch, { useOpen } from '®/ui/farmer/search'
+import AnimatedSearch, { useOpen } from '®ui/farmer/search'
 import { useSearch } from '®tanstack/query'
 
 import { DriveItem } from './drive-item'

@@ -3,7 +3,7 @@
 import { Image } from '@heroui/react'
 import { FC } from 'react'
 
-import { DriveItem } from '®/types/drive'
+import { DriveItem } from '®types/drive'
 
 const ImagePreview: FC<{ file: DriveItem }> = ({ file }) => {
     const src =

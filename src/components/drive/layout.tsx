@@ -1,8 +1,8 @@
 'use client'
 import { Tab, Tabs } from '@heroui/react'
 
-import useLayout from '®/hooks/useLayout'
-import { Grid, List } from '®/ui/icons'
+import useLayout from '®hooks/useLayout'
+import { Grid, List } from '®ui/icons'
 
 export default function Layout() {
     const { layout, setLayout } = useLayout()

@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from 'next'
 
-import Footer from '®/components/footer'
-import { META_THEME_COLORS, siteConfig } from '®/config/site'
-import { Providers } from '®/provider'
-import { Sonner } from '®/ui/sonner'
+import Footer from '®components/footer'
+import { META_THEME_COLORS, siteConfig } from '®config/site'
+import { Providers } from '®provider'
+import { Sonner } from '®ui/sonner'
 import '../styles/globals.css'
-import SearchBar from '®/components/search/bar'
-import { cn } from '®/lib/utils'
-import { fontMono, fontSans } from '®/lib/fonts'
+import SearchBar from '®components/search/bar'
+import { cn } from '®lib/utils'
+import { fontMono, fontSans } from '®lib/fonts'
 
 export default function RootLayout({
     children,

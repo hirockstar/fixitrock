@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-import { logWarning } from '®/lib/utils'
+import { logWarning } from '®lib/utils'
 
 type SetValue<T> = Dispatch<SetStateAction<T>>
 

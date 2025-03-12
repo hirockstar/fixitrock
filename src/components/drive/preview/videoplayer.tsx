@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FaPlay } from 'react-icons/fa'
 import { RiPictureInPictureFill } from 'react-icons/ri'
 
-import { Slider } from '®/ui/slider'
+import { Slider } from '®ui/slider'
 
 interface CustomVideoPlayerProps {
     videoSrc: string

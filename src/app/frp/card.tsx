@@ -3,10 +3,10 @@ import { Card as Hero, CardFooter, CardHeader, Image } from '@heroui/react'
 import Link from 'next/link'
 import { z } from 'zod'
 
-import { fromLeftVariant, fromTopVariant } from '®/lib/FramerMotionVariants'
-import { formatDateTime } from '®/lib/utils'
-import AnimatedDiv from '®/ui/farmer/div'
-import { MagicCard } from '®/ui/magiccard'
+import { fromLeftVariant, fromTopVariant } from '®lib/FramerMotionVariants'
+import { formatDateTime } from '®lib/utils'
+import AnimatedDiv from '®ui/farmer/div'
+import { MagicCard } from '®ui/magiccard'
 
 export const CardSchema = z.object({
     id: z.number().int().positive(),

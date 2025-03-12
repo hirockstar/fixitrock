@@ -3,7 +3,7 @@
 import { Image } from '@heroui/react'
 import React from 'react'
 
-import { Counts } from '®/lib/utils'
+import { Counts } from '®lib/utils'
 import { useProfile } from '®tanstack/query'
 
 import { Actions } from './actions'

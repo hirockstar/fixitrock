@@ -1,7 +1,7 @@
 'use server'
 import { z } from 'zod'
 
-import { createClient } from '®/supabase/server'
+import { createClient } from '®supabase/server'
 
 export async function getData(tableName: string) {
     const tableSchema = z.string().min(1, 'Table name cannot be empty')

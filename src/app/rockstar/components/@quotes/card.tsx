@@ -1,7 +1,7 @@
 'use client'
 import { Card, CardBody } from '@heroui/react'
 
-import { formatDateTime } from '®/lib/utils'
+import { formatDateTime } from '®lib/utils'
 
 export type QuoteProps = {
     id: string

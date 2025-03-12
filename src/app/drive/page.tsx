@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid } from '®/components/drive'
+import { Grid } from '®components/drive'
 import { useDrive } from '®tanstack/query'
 
 export default function Drive() {

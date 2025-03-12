@@ -8,8 +8,8 @@ import NextTopLoader from 'nextjs-toploader'
 import { useRouter } from 'nextjs-toploader/app'
 import { useState } from 'react'
 
-import { siteConfig } from '®/config/site'
-import useScreenSize from '®/hooks/useScreenSize'
+import { siteConfig } from '®config/site'
+import useScreenSize from '®hooks/useScreenSize'
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const [queryClient] = useState(() => new QueryClient())

@@ -4,7 +4,7 @@ import { FC } from 'react'
 
 import { VideoPlayer } from './videoplayer'
 
-import { DriveItem } from '®/types/drive'
+import { DriveItem } from '®types/drive'
 
 const VideoPreview: FC<{ file: DriveItem }> = ({ file }) => {
     return (

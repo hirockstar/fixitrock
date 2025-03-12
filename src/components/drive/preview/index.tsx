@@ -4,9 +4,9 @@ import { Dispatch, SetStateAction } from 'react'
 
 import Switch from './switch'
 
-import { useMediaQuery } from '®/hooks/useMediaQuery'
-import { DriveItem } from '®/types/drive'
-import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®/ui/drawer'
+import { useMediaQuery } from '®hooks/useMediaQuery'
+import { DriveItem } from '®types/drive'
+import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®ui/drawer'
 
 type PreviewProps = {
     open: boolean

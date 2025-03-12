@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 
-import { siteConfig } from '®/config/site'
-import { GridSkeleton } from '®/ui/skeleton'
+import { siteConfig } from '®config/site'
+import { GridSkeleton } from '®ui/skeleton'
 import { getData } from '®supabase/getData'
 
 import { Card } from './card'

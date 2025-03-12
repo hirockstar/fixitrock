@@ -14,8 +14,8 @@ import {
 import { ListFilter } from 'lucide-react'
 import * as React from 'react'
 
-import { useMediaQuery } from '®/hooks/useMediaQuery'
-import { SortField, SortOrder } from '®/types/drive'
+import { useMediaQuery } from '®hooks/useMediaQuery'
+import { SortField, SortOrder } from '®types/drive'
 import {
     Drawer,
     DrawerContent,
@@ -23,8 +23,8 @@ import {
     DrawerHeader,
     DrawerTitle,
     DrawerTrigger,
-} from '®/ui/drawer'
-import { ArrowSortDown, ArrowSortUp, SortAZ, SortDate, SortSize, SortType } from '®/ui/icons'
+} from '®ui/drawer'
+import { ArrowSortDown, ArrowSortUp, SortAZ, SortDate, SortSize, SortType } from '®ui/icons'
 
 export function SortBy({ sort }: { sort: (sortField: SortField, sortOrder: SortOrder) => void }) {
     const isDesktop = useMediaQuery('(min-width: 640px)')

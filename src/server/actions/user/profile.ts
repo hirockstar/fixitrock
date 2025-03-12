@@ -2,8 +2,8 @@
 
 import { z } from 'zod'
 
-import { logWarning } from '®/lib/utils'
-import { DriveClient } from '®/lib/utils/DriveClient'
+import { logWarning } from '®lib/utils'
+import { DriveClient } from '®lib/utils/DriveClient'
 
 const ProfileItemSchema = z.object({
     name: z.string(),

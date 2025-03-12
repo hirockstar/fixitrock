@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getData } from '®/server/supabase/getData'
+import { getData } from '®server/supabase/getData'
 
 export function useQuote() {
     const query = useQuery({

@@ -1,7 +1,7 @@
 'use client'
 import { motion } from 'motion/react'
 
-import { AnimatedTAGProps } from '®/types/drive'
+import { AnimatedTAGProps } from '®types/drive'
 
 export default function AnimatedDiv({
     variants,

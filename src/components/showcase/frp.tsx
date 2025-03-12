@@ -6,12 +6,12 @@ import Link from 'next/link'
 import { SiSupabase } from 'react-icons/si'
 import { TbDatabaseStar, TbPlugConnectedX } from 'react-icons/tb'
 
-import { useSupabse } from '®/hooks/tanstack/query'
-import { formatDateTime } from '®/lib/utils'
-import { TitleAction } from '®/ui'
-import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®/ui/carousel'
-import { GridSkeleton } from '®/ui/skeleton'
-import { ErrorState } from '®/ui/state'
+import { useSupabse } from '®hooks/tanstack/query'
+import { formatDateTime } from '®lib/utils'
+import { TitleAction } from '®ui'
+import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®ui/carousel'
+import { GridSkeleton } from '®ui/skeleton'
+import { ErrorState } from '®ui/state'
 
 export default function FRP() {
     const { data, isLoading, error } = useSupabse('frp')

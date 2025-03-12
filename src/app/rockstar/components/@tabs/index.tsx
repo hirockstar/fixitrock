@@ -3,7 +3,7 @@
 import { Tab, Tabs as UiTabs } from '@heroui/react'
 import { usePathname } from 'next/navigation'
 
-import { tabsConfig } from '®/config/site'
+import { tabsConfig } from '®config/site'
 
 export default function Tabs() {
     const path = usePathname()

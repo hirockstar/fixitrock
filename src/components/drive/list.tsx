@@ -5,13 +5,13 @@ import React from 'react'
 
 import { Menu, Thumbnail } from '.'
 
-import { BlogCardAnimation, fromTopVariant } from '®/lib/FramerMotionVariants'
-import { formatCount, formatDateTime, formatBytes } from '®/lib/utils'
-import { Drive, DriveItem } from '®/types/drive'
-import { ContextMenu, ContextMenuTrigger } from '®/ui/context-menu'
-import AnimatedDiv from '®/ui/farmer/div'
-import { ListSkeleton } from '®/ui/skeleton'
-import { useMediaQuery } from '®/hooks/useMediaQuery'
+import { BlogCardAnimation, fromTopVariant } from '®lib/FramerMotionVariants'
+import { formatCount, formatDateTime, formatBytes } from '®lib/utils'
+import { Drive, DriveItem } from '®types/drive'
+import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
+import AnimatedDiv from '®ui/farmer/div'
+import { ListSkeleton } from '®ui/skeleton'
+import { useMediaQuery } from '®hooks/useMediaQuery'
 
 export function List({
     data,
