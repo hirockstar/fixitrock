@@ -1,11 +1,12 @@
 'use client'
+
 import { Card, CardHeader, CardFooter } from '@heroui/react'
 import Autoplay from 'embla-carousel-autoplay'
 import Link from 'next/link'
 import React from 'react'
+import { TbDatabaseStar, TbPlugConnectedX } from 'react-icons/tb'
+import { ImOnedrive } from 'react-icons/im'
 
-import { Menu } from '®/components/drive/menu'
-import { Thumbnail } from '®/components/drive/thumbnail'
 import { useDrive } from '®/hooks/tanstack/query'
 import { formatBytes, formatDateTime } from '®/lib/utils'
 import { DriveItem } from '®/types/drive'
@@ -13,14 +14,16 @@ import { TitleAction } from '®/ui'
 import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®/ui/carousel'
 import { ContextMenu, ContextMenuTrigger } from '®/ui/context-menu'
 import { GridSkeleton } from '®/ui/skeleton'
+import { ErrorState } from '®/ui/state'
+import { Menu, Thumbnail } from '®/app/(drive)/ui'
 
-export function Firmware() {
-    const { data, isLoading, selectItem } = useDrive('', 12)
+export default function Firmware() {
+    const { data, isLoading, selectItem, error } = useDrive('', 12)
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
 
     return (
-        <TitleAction href='/fw' title='Firmware'>
+        <TitleAction href='/drive' title='Firmware'>
             <Carousel
                 plugins={[
                     Autoplay({
@@ -30,9 +33,13 @@ export function Firmware() {
             >
                 <CarouselContent>
                     {isLoading ? (
-                        <div className='flex gap-3 px-4'>
-                            <GridSkeleton length={6} />
-                        </div>
+                        <GridSkeleton length={6} />
+                    ) : error ? (
+                        <ErrorState
+                            icons={[TbDatabaseStar, ImOnedrive, TbPlugConnectedX]}
+                            message={error.message}
+                            title='OneDrive API says “Nope, Not Today.'
+                        />
                     ) : (
                         data?.value.map((c) => (
                             <CarouselItem key={c.id} className='basis-[320px]'>
@@ -52,7 +59,7 @@ export function Firmware() {
                                             aria-label={c?.name}
                                             as={Link}
                                             className='w-full select-none rounded-2xl border bg-transparent'
-                                            href={`/fw/${c.name}`}
+                                            href={`/drive/${c.name}`}
                                             shadow='none'
                                         >
                                             <CardHeader className='mb-[1px] p-2'>

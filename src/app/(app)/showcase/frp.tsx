@@ -1,17 +1,20 @@
 'use client'
+
 import { Card, CardFooter, CardHeader, Image } from '@heroui/react'
 import Autoplay from 'embla-carousel-autoplay'
 import Link from 'next/link'
-import React from 'react'
+import { SiSupabase } from 'react-icons/si'
+import { TbDatabaseStar, TbPlugConnectedX } from 'react-icons/tb'
 
 import { useSupabse } from '®/hooks/tanstack/query'
 import { formatDateTime } from '®/lib/utils'
 import { TitleAction } from '®/ui'
 import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®/ui/carousel'
 import { GridSkeleton } from '®/ui/skeleton'
+import { ErrorState } from '®/ui/state'
 
-export function FRP() {
-    const { data, isLoading } = useSupabse('frp')
+export default function FRP() {
+    const { data, isLoading, error } = useSupabse('frp')
 
     return (
         <TitleAction href='/frp' title='FRP Bypass'>
@@ -24,9 +27,13 @@ export function FRP() {
             >
                 <CarouselContent>
                     {isLoading ? (
-                        <div className='flex gap-4 px-4'>
-                            <GridSkeleton length={6} />
-                        </div>
+                        <GridSkeleton length={6} />
+                    ) : error ? (
+                        <ErrorState
+                            icons={[TbDatabaseStar, SiSupabase, TbPlugConnectedX]}
+                            message={error.message}
+                            title='Yo, FRP Data is MIA'
+                        />
                     ) : (
                         data?.slice(0, 6).map((f) => (
                             <CarouselItem key={f.id} className='basis-[320px]'>
@@ -44,7 +51,7 @@ export function FRP() {
                                         <Image
                                             isBlurred
                                             alt={f.title}
-                                            className={`aspect-video h-40 rounded-lg bg-default/5 object-contain p-2 dark:bg-default/10`}
+                                            className='aspect-video h-40 rounded-lg bg-default/5 object-contain p-2 dark:bg-default/10'
                                             classNames={{ wrapper: 'mx-auto' }}
                                             loading='lazy'
                                             src={f.img}
@@ -58,7 +65,7 @@ export function FRP() {
                         ))
                     )}
                 </CarouselContent>
-                {!isLoading && <CarouselDots />}
+                {!isLoading && !error && <CarouselDots />}
             </Carousel>
         </TitleAction>
     )

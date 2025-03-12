@@ -12,7 +12,7 @@ import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®/ui/car
 import { QuoteSkeleton } from '®/ui/skeleton'
 import { ErrorState } from '®/ui/state'
 
-export default function Page() {
+export default function Quotes() {
     const { data, isLoading, error } = useQuote()
 
     return (

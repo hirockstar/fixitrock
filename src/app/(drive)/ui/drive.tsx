@@ -2,18 +2,12 @@
 
 import { usePathname } from 'next/navigation'
 
-import Breadcrumb from '®/ui/breadcrumb'
-import useLayout from '®/hooks/useLayout'
-import { FolderEmpty, SearchEmpty, NotFound } from '®/ui/state'
-import { useDrive } from '®tanstack/query'
+import { Grid, Input, Layout, List, Preview, Readme, SortBy } from '.'
 
-import Input from './input'
-import { Preview } from './preview'
-import { SortBy } from './sort'
-import Layout from './layout'
-import { Grid } from './grid'
-import { List } from './list'
-import { Readme } from './readme'
+import { useDrive } from '®tanstack/query'
+import { FolderEmpty, SearchEmpty, NotFound } from '®/ui/state'
+import useLayout from '®/hooks/useLayout'
+import Breadcrumb from '®/ui/breadcrumb'
 
 export function Drive({ drive }: { drive: string }) {
     const {

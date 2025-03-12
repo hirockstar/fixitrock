@@ -73,7 +73,7 @@ export function useDrive(slug: string, top?: number) {
     const getHref = useCallback((item: DriveItem): string => {
         const path =
             item?.parentReference?.path
-                ?.replace('/drive/root:/fixitrock', '/fw')
+                ?.replace('/drive/root:/drive', '/drive')
                 .replace(/\/$/, '') || ''
 
         if (isFolder(item)) return `${path}/${item.name}`

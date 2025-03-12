@@ -13,17 +13,17 @@ export const siteConfig = {
     description:
         'We Provide Mobile Firmwares Drivers Flash Tool FRP Dump FIle EMMC ISP PinOut Samsung MDM File Windows Files.',
     domain: process.env.NEXT_PUBLIC_SITE_URL || 'https://fixitrock.com',
-    baseDirectory: '/fixitrock',
+    baseDirectory: '/drive',
     cacheControlHeader: 'max-age=0, s-maxage=60, stale-while-revalidate',
     suggestion: [
         {
-            href: '/fw/Apps',
+            href: '/drive/Apps',
             title: 'Apps',
             description: 'Download apps for Android, MacOS, Windows, and Linux',
             icon: TbApps,
         },
         {
-            href: '/fw/Games',
+            href: '/drive/Games',
             title: 'Games',
             description: 'Download games for Android, MacOS, Windows, and Linux',
             icon: TbDeviceGamepad2,
@@ -35,19 +35,19 @@ export const siteConfig = {
             icon: TbApps,
         },
         {
-            href: '/fw/Drivers',
+            href: '/drive/Drivers',
             title: 'USB Drivers',
             description: 'Download Android USB flashing drivers',
             icon: BsUsbSymbol,
         },
         {
-            href: '/fw/Flash-Tool',
+            href: '/drive/Flash-Tool',
             title: 'Flashing Tools',
             description: 'Tools for flashing mobile devices',
             icon: MdPhonelinkSetup,
         },
         {
-            href: '/fw/iCloud',
+            href: '/drive/iCloud',
             title: 'iCloud Bypass Solutions',
             description: 'Say goodbye to iCloud locks: Unlock now.',
             icon: BsApple,

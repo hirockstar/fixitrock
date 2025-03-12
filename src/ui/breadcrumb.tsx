@@ -17,7 +17,7 @@ const HomeCrumb = () => {
             radius='full'
             size='sm'
             variant='light'
-            onPress={() => router.push('/fw')}
+            onPress={() => router.push('/drive')}
         >
             <Home />
         </Button>
@@ -27,7 +27,7 @@ const HomeCrumb = () => {
 const Breadcrumb: React.FC = () => {
     const router = useRouter()
     const pathname = usePathname()
-    const paths = pathname.split('/').filter(Boolean) // Keep "fw" in the array
+    const paths = pathname.split('/').filter(Boolean)
 
     if (paths.length > 0) {
         return (
@@ -46,7 +46,7 @@ const Breadcrumb: React.FC = () => {
                         .map((p: string, i: number) => (
                             <div
                                 key={i}
-                                className={`flex items-center ${p === 'fw' ? 'hidden' : ''}`}
+                                className={`flex items-center ${p === 'drive' ? 'hidden' : ''}`}
                             >
                                 <Button
                                     aria-label={p.replaceAll('-', ' ')}
