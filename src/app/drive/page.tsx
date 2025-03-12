@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid } from '../ui'
+import { Grid } from './ui'
 
 import { useDrive } from '®tanstack/query'
 
