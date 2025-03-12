@@ -7,36 +7,36 @@ import { serialize } from 'next-mdx-remote/serialize'
 import { useEffect, useState } from 'react'
 
 import { IMG, Title, YouTube } from './components'
+import { useReadme } from '®hooks/tanstack/query'
+import { ErrorState } from '®ui/state'
+import { SiMarkdown } from 'react-icons/si'
 
-type MdxRemoteProps = {
-    src: string
+type ReadMeProps = {
+    slug: string
 }
 
-export default function Mdx({ src }: MdxRemoteProps) {
+export function ReadMe({ slug }: ReadMeProps) {
+    const { data: src, error } = useReadme(`/${slug}`)
     const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(null)
-    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
+        if (!src) return
+
         const fetchAndProcessMdx = async () => {
             try {
-                const response = await fetch(src)
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch MDX content: ${response.statusText}`)
+                let content = src
+                if (src.startsWith('http')) {
+                    const response = await fetch(src)
+                    if (!response.ok)
+                        throw new Error(`Failed to fetch MDX content: ${response.statusText}`)
+                    content = await response.text()
                 }
 
-                const rawContent = await response.text()
-                const { content } = matter(rawContent)
-
-                const serializedContent = await serialize(content, {
-                    mdxOptions: {},
-                })
-
+                const { content: mdxContent } = matter(content)
+                const serializedContent = await serialize(mdxContent)
                 setMdxSource(serializedContent)
-                setError(null)
             } catch (err) {
-                setError((err as Error).message)
-                setMdxSource(null)
+                console.error('MDX processing error:', err)
             }
         }
 
@@ -44,7 +44,7 @@ export default function Mdx({ src }: MdxRemoteProps) {
     }, [src])
 
     if (error) {
-        return <div className='flex h-[100px] flex-col items-center justify-center'>{error}</div>
+        return <ErrorState message={error.message} icons={[SiMarkdown]} />
     }
 
     if (!mdxSource) {
@@ -52,7 +52,7 @@ export default function Mdx({ src }: MdxRemoteProps) {
     }
 
     return (
-        <div className='mdx'>
+        <div className='mdx rounded-md border p-4 sm:p-6'>
             <MDXRemote {...mdxSource} components={components} />
         </div>
     )
