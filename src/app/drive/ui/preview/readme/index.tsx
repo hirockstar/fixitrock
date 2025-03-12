@@ -10,13 +10,18 @@ import { IMG, Title, YouTube } from './components'
 import { useReadme } from '®hooks/tanstack/query'
 import { ErrorState } from '®ui/state'
 import { SiMarkdown } from 'react-icons/si'
+import { cn } from '®lib/utils'
 
 type ReadMeProps = {
-    slug: string
+    slug?: string
+    src?: string
+    className?: string
 }
 
-export function ReadMe({ slug }: ReadMeProps) {
-    const { data: src, error } = useReadme(`/${slug}`)
+export function ReadMe({ slug, src: initialSrc, className }: ReadMeProps) {
+    const { data: fetchedSrc, error } = useReadme(slug ? `/${slug}` : '')
+
+    const src = initialSrc || fetchedSrc
     const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(null)
 
     useEffect(() => {
@@ -25,6 +30,7 @@ export function ReadMe({ slug }: ReadMeProps) {
         const fetchAndProcessMdx = async () => {
             try {
                 let content = src
+
                 if (src.startsWith('http')) {
                     const response = await fetch(src)
                     if (!response.ok)
@@ -48,11 +54,11 @@ export function ReadMe({ slug }: ReadMeProps) {
     }
 
     if (!mdxSource) {
-        return <Player autoplay loop className='h-52' src='/lottie/markdown.json' />
+        return null
     }
 
     return (
-        <div className='mdx rounded-md border p-4 sm:p-6'>
+        <div className={cn('mdx', className)}>
             <MDXRemote {...mdxSource} components={components} />
         </div>
     )

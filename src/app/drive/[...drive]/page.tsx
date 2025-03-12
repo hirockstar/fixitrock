@@ -7,6 +7,7 @@ import { Grid, Input, List, SortBy, SwitchLayout } from '../ui'
 import useLayout from '®hooks/useLayout'
 import { FolderEmpty, NotFound, SearchEmpty } from '®ui/state'
 import { ReadMe } from '../ui/preview/readme'
+import { Preview } from '../ui/preview'
 
 export default function Page() {
     const { drive } = useParams<{ drive: string[] }>()
@@ -23,6 +24,9 @@ export default function Page() {
         setQuery,
         sort,
         ref,
+        open,
+        setOpen,
+        selectedItem,
     } = useDrive(`/${path}`)
     const { layout, hydrated } = useLayout()
     const title = path.split('/').pop()
@@ -65,7 +69,8 @@ export default function Page() {
                 )
             ) : null}
             <div ref={ref} />
-            <ReadMe slug={path} />
+            <ReadMe slug={path} className='rounded-lg border p-4 sm:p-6' />
+            {selectedItem && <Preview data={selectedItem} open={open} setOpen={setOpen} />}
         </main>
     )
 }
