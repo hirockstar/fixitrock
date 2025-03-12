@@ -1,3 +1,5 @@
+'use client'
+
 import { Drive } from './drive'
 import { Grid } from './grid'
 import Input from './input'
