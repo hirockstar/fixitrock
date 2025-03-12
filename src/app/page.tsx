@@ -1,3 +1,5 @@
-export default async function Page() {
+'use client'
+
+export default function Home() {
     return <h1>Hello Next.js!</h1>
 }
