@@ -3,11 +3,11 @@
 import { motion, useAnimation } from 'motion/react'
 import { useEffect, useState } from 'react'
 
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '../drawer'
+
 import { useMediaQuery } from '®hooks/useMediaQuery'
 import useScroll from '®hooks/useScroll'
 import { Bottom } from '®lib/FramerMotionVariants'
-
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '../drawer'
 
 interface AnimatedSearchProps {
     children: React.ReactNode
@@ -110,7 +110,6 @@ export const useOpen = () => {
     useEffect(() => {
         if (open && typeof window !== 'undefined') {
             document.documentElement.style.overflow = 'hidden'
-
             const isScrollable =
                 document.documentElement.scrollHeight > document.documentElement.clientHeight
 

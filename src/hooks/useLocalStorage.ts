@@ -65,14 +65,16 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
         }
 
         // this only works for other documents, not the current one
-        window.addEventListener('storage', handleStorageChange)
+        if (typeof window !== 'undefined') {
+            window.addEventListener('storage', handleStorageChange)
 
-        // this is a custom event, triggered in writeValueToLocalStorage
-        window.addEventListener('local-storage', handleStorageChange)
+            // this is a custom event, triggered in writeValueToLocalStorage
+            window.addEventListener('local-storage', handleStorageChange)
 
-        return () => {
-            window.removeEventListener('storage', handleStorageChange)
-            window.removeEventListener('local-storage', handleStorageChange)
+            return () => {
+                window.removeEventListener('storage', handleStorageChange)
+                window.removeEventListener('local-storage', handleStorageChange)
+            }
         }
     }, [])
 
