@@ -5,12 +5,12 @@ import Autoplay from 'embla-carousel-autoplay'
 import { SiSupabase } from 'react-icons/si'
 import { TbDatabaseStar, TbPlugConnectedX } from 'react-icons/tb'
 
-import { useQuote } from '®/hooks/tanstack/query'
-import { formatDateTime } from '®/lib/utils'
-import { TitleAction } from '®/ui'
-import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®/ui/carousel'
-import { QuoteSkeleton } from '®/ui/skeleton'
-import { ErrorState } from '®/ui/state'
+import { useQuote } from '®tanstack/query'
+import { formatDateTime } from '®lib/utils'
+import { TitleAction } from '®ui'
+import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®ui/carousel'
+import { QuoteSkeleton } from '®ui/skeleton'
+import { ErrorState } from '®ui/state'
 
 export default function Quotes() {
     const { data, isLoading, error } = useQuote()

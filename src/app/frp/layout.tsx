@@ -10,8 +10,23 @@ export const metadata: Metadata = {
     title: 'FRP Bypass',
     description:
         'Unlock your device with FRP Bypass. Find the necessary tools and resources to bypass Google Factory Reset Protection (FRP).',
-    keywords:
-        'FRP Bypass, Factory Reset Protection, bypass Google FRP, unlock Android device, FRP unlock tools, remove Google account lock, bypass FRP Android, FRP tools download, Samsung FRP bypass, Google lock removal, FRP unlock resources, Android bypass guide, FRP removal tips, bypass Google Factory Reset Protection, FRP bypass solutions',
+    keywords: [
+        'FRP Bypass',
+        'Factory Reset Protection',
+        'bypass Google FRP',
+        'unlock Android',
+        'FRP unlock tools',
+        'remove Google account lock',
+        'Android FRP bypass',
+        'FRP removal tools',
+        'Samsung FRP bypass',
+        'Google lock removal',
+        'FRP bypass solutions',
+        'FRP unlock guide',
+        'Android bypass methods',
+        'FRP reset tools',
+        'bypass Google Factory Reset Protection',
+    ],
     authors: [
         {
             name: 'Rock Star',
@@ -27,3 +42,4 @@ export const metadata: Metadata = {
         siteName: siteConfig.title,
     },
 }
+
