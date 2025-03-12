@@ -15,7 +15,7 @@ import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®/ui/car
 import { ContextMenu, ContextMenuTrigger } from '®/ui/context-menu'
 import { GridSkeleton } from '®/ui/skeleton'
 import { ErrorState } from '®/ui/state'
-import { Menu, Thumbnail } from '®/app/drive/ui'
+import { Menu, Thumbnail } from '®/app/drive/@ui'
 
 export default function Firmware() {
     const { data, isLoading, selectItem, error } = useDrive('', 12)

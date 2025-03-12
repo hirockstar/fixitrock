@@ -1,6 +1,6 @@
 'use client'
 
-import { Firmware, FRP, Quotes } from './showcase'
+import { Firmware, FRP, Quotes } from './@showcase'
 
 export default function Page() {
     return (
