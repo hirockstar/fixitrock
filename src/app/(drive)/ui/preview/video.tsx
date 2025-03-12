@@ -2,9 +2,9 @@
 
 import { FC } from 'react'
 
-import { DriveItem } from '®/types/drive'
-
 import { VideoPlayer } from './videoplayer'
+
+import { DriveItem } from '®/types/drive'
 
 const VideoPreview: FC<{ file: DriveItem }> = ({ file }) => {
     return (
