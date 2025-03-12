@@ -15,7 +15,7 @@ import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®ui/caro
 import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
 import { GridSkeleton } from '®ui/skeleton'
 import { ErrorState } from '®ui/state'
-// import { Menu, Thumbnail } from '®app/(drive)/ui'
+import { Menu, Thumbnail } from '®app/drive/ui'
 
 export default function Firmware() {
     const { data, isLoading, selectItem, error } = useDrive('', 12)
@@ -67,11 +67,11 @@ export default function Firmware() {
                                                     {c?.name}
                                                 </h1>
                                             </CardHeader>
-                                            {/* <Thumbnail
+                                            <Thumbnail
                                                 name={c?.name as string}
                                                 src={c?.thumbnails?.[0]?.large?.url || ''}
                                                 type='Grid'
-                                            /> */}
+                                            />
                                             <CardFooter className='grid grid-cols-3 p-2 text-xs text-muted-foreground'>
                                                 <p className='truncate text-start'>
                                                     {formatBytes(c?.size)}
@@ -83,7 +83,7 @@ export default function Firmware() {
                                             </CardFooter>
                                         </Card>
                                     </ContextMenuTrigger>
-                                    {/* <Menu
+                                    <Menu
                                         c={c}
                                         open={active?.id === c.id && open}
                                         setOpen={(open) => {
@@ -91,7 +91,7 @@ export default function Firmware() {
                                             setOpen(open)
                                         }}
                                         onSelected={selectItem}
-                                    /> */}
+                                    />
                                 </ContextMenu>
                             </CarouselItem>
                         ))
