@@ -44,8 +44,6 @@ export default function RootLayout({
                         <SearchBar />
                         <Sonner />
                     </div>
-                    {/* {props.modal}
-                    <div id='modal-root' /> */}
                 </Providers>
             </body>
         </html>
