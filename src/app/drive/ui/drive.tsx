@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 
-import { Grid, Input, Layout, List, Preview, Readme, SortBy } from '.'
+import { Grid, Input, SwitchLayout, List, Preview, Readme, SortBy } from '.'
 
 import { useDrive } from '®tanstack/query'
 import { FolderEmpty, SearchEmpty, NotFound } from '®ui/state'
@@ -41,7 +41,7 @@ export function Drive({ drive }: { drive: string }) {
                     onChange={(e) => setQuery(e.target.value)}
                 />
                 <SortBy sort={sort} />
-                <Layout />
+                <SwitchLayout />
             </div>
             {hydrated ? (
                 error ? (

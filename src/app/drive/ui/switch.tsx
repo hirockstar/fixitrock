@@ -1,10 +1,11 @@
 'use client'
+
 import { Tab, Tabs } from '@heroui/react'
 
 import useLayout from '®hooks/useLayout'
 import { Grid, List } from '®ui/icons'
 
-export default function Layout() {
+export function SwitchLayout() {
     const { layout, setLayout } = useLayout()
 
     const tabs = [

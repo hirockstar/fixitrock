@@ -10,7 +10,7 @@ type InputProps = {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 } & Props
 
-const Input: React.FC<InputProps> = ({ value = '', hotKey, onChange, ...inputProps }) => {
+export function Input({ value = '', hotKey, onChange, ...inputProps }: InputProps) {
     const inputRef = useRef<HTMLInputElement>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -78,4 +78,3 @@ const Input: React.FC<InputProps> = ({ value = '', hotKey, onChange, ...inputPro
     )
 }
 
-export default Input

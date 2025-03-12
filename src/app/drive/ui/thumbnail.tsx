@@ -5,13 +5,13 @@ import { Image } from '@heroui/react'
 
 import Icon from '®lib/utils/Icon'
 
-interface ThumbnailProps {
+type ThumbnailProps = {
     src?: string
     name: string
     type: 'Grid' | 'List'
 }
 
-export const Thumbnail: React.FC<ThumbnailProps> = ({ src, name, type }) => {
+export function Thumbnail({ src, name, type }: ThumbnailProps) {
     return (
         <div className='flex shrink-0 items-center justify-center'>
             {src ? (
