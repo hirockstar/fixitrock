@@ -1,5 +1,4 @@
-import { Drive } from '../_ui'
-
+import { Drive } from '®/components/drive'
 import { siteConfig } from '®/config/site'
 
 export default async function DrivePage({ params }: { params: Promise<{ drive: string[] }> }) {
