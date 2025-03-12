@@ -8,8 +8,6 @@ import { Search } from '®types/drive'
 import { ListSkeleton } from '®ui/skeleton'
 import { SearchEmpty } from '®ui/state'
 
-import { Thumbnail } from '../drive'
-
 export function DriveItem({
     data,
     isLoading,
@@ -53,7 +51,7 @@ export function DriveItem({
                 <ListboxItem
                     key={c.id}
                     className='overflow-hidden border data-[hover=true]:bg-muted/50'
-                    startContent={<Thumbnail name={c.name} type='List' />}
+                    startContent={''}
                     textValue={c.name}
                     onPress={() => handleRoute(() => router.push(path(c.webUrl, !!c.file)))}
                 >
