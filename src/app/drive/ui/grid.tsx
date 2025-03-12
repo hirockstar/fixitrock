@@ -3,7 +3,7 @@
 import { Card, CardFooter, CardHeader } from '@heroui/react'
 import React from 'react'
 
-import { Menu, Thumbnail } from '.'
+import { Menu } from '.'
 
 import { useMediaQuery } from '®hooks/useMediaQuery'
 import { BlogCardAnimation, fromLeftVariant } from '®lib/FramerMotionVariants'
@@ -13,6 +13,7 @@ import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
 import AnimatedDiv from '®ui/farmer/div'
 import { MagicCard } from '®ui/magiccard'
 import { GridSkeleton } from '®ui/skeleton'
+import { Thumbnail } from '®ui'
 
 export function Grid({
     data,

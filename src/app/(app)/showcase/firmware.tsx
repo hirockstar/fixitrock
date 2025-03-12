@@ -15,7 +15,8 @@ import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®ui/caro
 import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
 import { GridSkeleton } from '®ui/skeleton'
 import { ErrorState } from '®ui/state'
-import { Menu, Thumbnail } from '®app/drive/ui'
+import { Thumbnail } from '®ui'
+import { Menu } from '®app/drive/ui'
 
 export default function Firmware() {
     const { data, isLoading, selectItem, error } = useDrive('', 12)
@@ -41,7 +42,7 @@ export default function Firmware() {
                             title='OneDrive API says “Nope, Not Today.'
                         />
                     ) : (
-                        data?.value.map((c) => (
+                        data?.value.map((c: DriveItem) => (
                             <CarouselItem key={c.id} className='basis-[320px]'>
                                 <ContextMenu
                                     key={c.id}

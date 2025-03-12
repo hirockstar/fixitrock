@@ -1,3 +1,5 @@
+'use client'
+
 import { Drive } from './drive'
 import { Grid } from './grid'
 import { Input } from './input'
@@ -7,6 +9,5 @@ import { Preview } from './preview'
 import { Readme } from './readme'
 import { SortBy } from './sort'
 import { SwitchLayout } from './switch'
-import { Thumbnail } from './thumbnail'
 
-export { Grid, List, Input, SwitchLayout, Menu, Readme, SortBy, Thumbnail, Drive, Preview }
+export { Grid, List, Input, SwitchLayout, Menu, Readme, SortBy, Drive, Preview }
