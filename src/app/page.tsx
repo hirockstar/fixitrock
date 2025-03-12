@@ -1,5 +1,3 @@
-'use client'
-
 import { Firmware, FRP, Quotes } from '®components/showcase'
 
 export default function Page() {
