@@ -22,13 +22,13 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
 }) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false)
     const [progress, setProgress] = useState<number>(0)
-    const [bufferedProgress, setBufferedProgress] = useState<number>(0) // Buffered progress
+    const [bufferedProgress, setBufferedProgress] = useState<number>(0)
     const [volume, setVolume] = useState<number>(1)
     const [currentVolume, setCurrentVolume] = useState<number>(1)
     const [isMuted, setIsMuted] = useState<boolean>(false)
     const [isFullscreen, setIsFullscreen] = useState<boolean>(false)
     const [showControls, setShowControls] = useState<boolean>(true)
-    const [loading, setLoading] = useState<boolean>(true) // Loading state
+    const [loading, setLoading] = useState<boolean>(true)
     const videoRef = useRef<HTMLVideoElement>(null)
     const playerRef = useRef<HTMLDivElement>(null)
     const [lastMouseMoveTime, setLastMouseMoveTime] = useState(Date.now())
@@ -56,7 +56,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
 
         const handleLoadedMetadata = () => {
             setDuration(video.duration)
-            setLoading(false) // Video is ready to play
+            setLoading(false)
         }
 
         const handleVideoEnd = () => setIsPlaying(false)
@@ -64,7 +64,6 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         const handleProgress = () => {
             if (video.buffered.length > 0) {
                 const bufferedEnd = video.buffered.end(video.buffered.length - 1)
-
                 setBufferedProgress((bufferedEnd / video.duration) * 100)
             }
         }
@@ -75,7 +74,9 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         video.addEventListener('ended', handleVideoEnd)
 
         if (autoplay) {
-            video.play().catch((error) => console.error('Autoplay failed:', error))
+            video.play().catch(() => {
+                // Silently handle autoplay failure
+            })
         }
 
         return () => {
@@ -128,15 +129,18 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         }
     }, [isFullscreen])
 
+    // Client-side only fullscreen change handler
     useEffect(() => {
-        const handleFullscreenChange = () => {
-            setIsFullscreen(!!document.fullscreenElement)
-        }
+        if (typeof document !== 'undefined') {
+            const handleFullscreenChange = () => {
+                setIsFullscreen(!!document.fullscreenElement)
+            }
 
-        document.addEventListener('fullscreenchange', handleFullscreenChange)
+            document.addEventListener('fullscreenchange', handleFullscreenChange)
 
-        return () => {
-            document.removeEventListener('fullscreenchange', handleFullscreenChange)
+            return () => {
+                document.removeEventListener('fullscreenchange', handleFullscreenChange)
+            }
         }
     }, [])
 
@@ -174,34 +178,40 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         setIsMuted(newVolume === 0)
     }, [])
 
+    // Client-side only fullscreen toggle
     const toggleFullscreen = useCallback(() => {
-        if (!playerRef.current) return
-        if (!document.fullscreenElement) {
-            playerRef.current.requestFullscreen()
-        } else {
-            document.exitFullscreen()
+        if (typeof document !== 'undefined' && playerRef.current) {
+            if (!document.fullscreenElement) {
+                playerRef.current.requestFullscreen()
+            } else {
+                document.exitFullscreen()
+            }
         }
     }, [])
 
+    // Client-side only picture-in-picture toggle
     const togglePip = useCallback(async () => {
-        if (!videoRef.current) return
-
-        if (document.pictureInPictureElement) {
-            await document.exitPictureInPicture()
-        } else {
-            await videoRef.current.requestPictureInPicture()
+        if (typeof document !== 'undefined' && videoRef.current) {
+            if (document.pictureInPictureElement) {
+                await document.exitPictureInPicture()
+            } else {
+                await videoRef.current.requestPictureInPicture()
+            }
         }
     }, [])
 
+    // Client-side only picture-in-picture exit handler
     useEffect(() => {
-        const handlePiPExit = () => {
-            setIsFullscreen(false)
-        }
+        if (typeof document !== 'undefined') {
+            const handlePiPExit = () => {
+                setIsFullscreen(false)
+            }
 
-        document.addEventListener('leavepictureinpicture', handlePiPExit)
+            document.addEventListener('leavepictureinpicture', handlePiPExit)
 
-        return () => {
-            document.removeEventListener('leavepictureinpicture', handlePiPExit)
+            return () => {
+                document.removeEventListener('leavepictureinpicture', handlePiPExit)
+            }
         }
     }, [])
 
