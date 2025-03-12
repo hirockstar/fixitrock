@@ -3,7 +3,7 @@ import { Card, CardBody, CardFooter, CardHeader, Skeleton } from '@heroui/react'
 
 import { MagicCard } from './magiccard'
 
-export const GridSkeleton = ({ length = 12 }: { length?: number }) => {
+export const GridSkeleton = ({ length = 15 }: { length?: number }) => {
     return (
         <>
             {Array.from({ length }).map((_, index) => (
