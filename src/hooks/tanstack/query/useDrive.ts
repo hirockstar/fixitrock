@@ -6,11 +6,11 @@ import { useRouter } from 'nextjs-toploader/app'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
+import { useQueryParams } from '../../useQueryParams'
+
 import { getDownloadUrl, isFolder, isPreviewable, sanitizeQuery } from '®lib/utils'
 import { Drive, DriveItem, SortField, SortOrder } from '®types/drive'
-import { getChildren } from '®actions/drive/children'
-
-import { useQueryParams } from '../../useQueryParams'
+import { getChildren } from '®actions/drive'
 
 export function useDrive(slug: string, top?: number) {
     const [query, setQuery] = useState('')

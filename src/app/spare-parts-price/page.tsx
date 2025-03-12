@@ -1,12 +1,11 @@
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 
-import { siteConfig } from '®config/site'
-import { GridSkeleton } from '®ui/skeleton'
-
 import { Card } from '../frp/card'
 
-import { getData } from '®server/supabase/getData'
+import { siteConfig } from '®config/site'
+import { GridSkeleton } from '®ui/skeleton'
+import { getData } from '®actions/supabase'
 
 export default async function FRP() {
     const repair = await getData('repair')

@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 
 import { siteConfig } from '®config/site'
 import { formatCount, formatDateTime, formatBytes } from '®lib/utils'
-import { getMeta } from '®actions/drive/meta'
+import { getMeta } from '®actions/drive'
 
 export const runtime = 'edge'
 

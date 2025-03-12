@@ -20,7 +20,6 @@
         ],
         "paths": {
             "®*": ["./src/*"],
-            "®actions/*": ["./src/server/actions/*"],
             "®tanstack/*": ["./src/hooks/tanstack/*"]
         }
     },
