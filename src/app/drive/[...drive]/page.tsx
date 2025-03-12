@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation'
 import { useDrive } from '®tanstack/query'
 import Breadcrumb from '®ui/breadcrumb'
-import { Grid, Input, List, SortBy, SwitchLayout } from '../ui'
+import { Grid, Input, List, Readme, SortBy, SwitchLayout } from '../ui'
 import useLayout from '®hooks/useLayout'
 import { FolderEmpty, NotFound, SearchEmpty } from '®ui/state'
 
@@ -64,6 +64,12 @@ export default function Page() {
                 )
             ) : null}
             <div ref={ref} />
+            <Readme slug={`/${path}`} />
         </main>
     )
 }
+
+//     <Readme slug={drive} />
+//     <div ref={ref} />
+//     {selectedItem && <Preview data={selectedItem} open={open} setOpen={setOpen} />}
+// </div>
