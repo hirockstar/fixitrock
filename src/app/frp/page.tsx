@@ -1,4 +1,5 @@
 'use client'
+
 import { Card, CardFooter, CardHeader, Image } from '@heroui/react'
 import Link from 'next/link'
 import { SiSupabase } from 'react-icons/si'
@@ -23,6 +24,7 @@ export default function Page() {
             ) : (
                 data?.map((f) => (
                     <Card
+                        key={f.id}
                         aria-label={f.title}
                         className='w-full rounded-2xl border bg-transparent'
                         shadow='none'
