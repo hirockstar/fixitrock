@@ -1,4 +1,4 @@
-import { Drive } from '../@ui'
+import { Drive } from '../_ui'
 
 import { siteConfig } from '®/config/site'
 
