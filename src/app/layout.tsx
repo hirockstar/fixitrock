@@ -73,7 +73,7 @@ export const metadata: Metadata = {
         url: new URL(siteConfig.domain),
         siteName: siteConfig.title,
         type: 'website',
-        images: '/api/drive/og?slug=/',
+        images: '/og?slug=/&type=drive',
     },
     category: 'technology',
 }

@@ -38,7 +38,7 @@ export async function getChildren(
         if (!client) throw new Error('DriveClient init failed')
 
         const endpoint =
-            pageParam || `/me/drive/root:${siteConfig.baseDirectory}${slug}:/children?top=${top}`
+            pageParam || `/me/drive/root:/${siteConfig.baseDirectory}${slug}:/children?top=${top}`
         const res = await client.api(endpoint).expand('thumbnails($select=large)').get()
 
         if (!res.value?.length) return { value: [], status: 'empty' }

@@ -11,8 +11,9 @@ import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
 import AnimatedDiv from '®ui/farmer/div'
 import { MagicCard } from '®ui/magiccard'
 import { GridSkeleton } from '®ui/skeleton'
-import { Menu } from './menu'
 import { Thumbnail } from '®ui'
+
+import { Menu } from './menu'
 
 export function Grid({
     data,

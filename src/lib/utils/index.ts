@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
+import { siteConfig } from '®config/site'
 import { DriveItem } from '®types/drive'
 
 export function cn(...inputs: ClassValue[]) {
@@ -157,7 +158,7 @@ export function slugify(text: string): string {
 export function path(url: string, isFile?: boolean) {
     const path = url
         .replace(
-            'https://fixitrock-my.sharepoint.com/personal/drive_fixitrock_com/Documents/drive',
+            `https://fixitrock-my.sharepoint.com/personal/drive_fixitrock_com/Documents/${siteConfig.baseDirectory}`,
             ''
         )
         .trim()

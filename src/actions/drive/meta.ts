@@ -13,7 +13,7 @@ export async function getMeta(meta: string) {
 
     try {
         const response = await client
-            .api(`/me/drive/root:${siteConfig.baseDirectory}/${meta}`)
+            .api(`/me/drive/root:/${siteConfig.baseDirectory}/${meta}`)
             .select('id,name,size,folder,lastModifiedDateTime')
             .get()
 

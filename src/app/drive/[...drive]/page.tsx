@@ -1,11 +1,13 @@
 'use client'
 
 import { useParams } from 'next/navigation'
+
 import { useDrive } from '®tanstack/query'
 import Breadcrumb from '®ui/breadcrumb'
-import { Grid, Input, List, SortBy, SwitchLayout } from '../ui'
 import useLayout from '®hooks/useLayout'
 import { FolderEmpty, NotFound, SearchEmpty } from '®ui/state'
+
+import { Grid, Input, List, SortBy, SwitchLayout } from '../ui'
 import { ReadMe } from '../ui/preview/readme'
 import { Preview } from '../ui/preview'
 
@@ -30,6 +32,7 @@ export default function Page() {
     } = useDrive(`/${path}`)
     const { layout, hydrated } = useLayout()
     const title = path.split('/').pop()
+
     return (
         <main className='flex flex-col gap-4'>
             <Breadcrumb />
@@ -69,7 +72,7 @@ export default function Page() {
                 )
             ) : null}
             <div ref={ref} />
-            <ReadMe slug={path} className='rounded-lg border p-4 sm:p-6' />
+            <ReadMe className='rounded-lg border p-4 sm:p-6' slug={path} />
             {selectedItem && <Preview data={selectedItem} open={open} setOpen={setOpen} />}
         </main>
     )

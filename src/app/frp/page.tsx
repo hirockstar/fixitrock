@@ -4,6 +4,7 @@ import { Card, CardFooter, CardHeader, Image } from '@heroui/react'
 import Link from 'next/link'
 import { SiSupabase } from 'react-icons/si'
 import { TbDatabaseStar, TbPlugConnectedX } from 'react-icons/tb'
+
 import { formatDateTime } from '®lib/utils'
 import { useSupabse } from '®tanstack/query'
 import { GridSkeleton } from '®ui/skeleton'
@@ -11,6 +12,7 @@ import { ErrorState } from '®ui/state'
 
 export default function Page() {
     const { data, isLoading, error } = useSupabse('frp')
+
     return (
         <section className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2'>
             {isLoading ? (

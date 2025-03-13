@@ -6,11 +6,12 @@ import { useRouter } from 'nextjs-toploader/app'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
-import { useQueryParams } from '../../useQueryParams'
-
 import { getDownloadUrl, isFolder, isPreviewable, sanitizeQuery } from '®lib/utils'
 import { Drive, DriveItem, SortField, SortOrder } from '®types/drive'
 import { getChildren } from '®actions/drive'
+import { siteConfig } from '®config/site'
+
+import { useQueryParams } from '../../useQueryParams'
 
 export function useDrive(slug: string, top?: number) {
     const [query, setQuery] = useState('')
@@ -73,7 +74,7 @@ export function useDrive(slug: string, top?: number) {
     const getHref = useCallback((item: DriveItem): string => {
         const path =
             item?.parentReference?.path
-                ?.replace('/drive/root:/drive', '/drive')
+                ?.replace(`/drive/root:/${siteConfig.baseDirectory}`, siteConfig.directoryUrl)
                 .replace(/\/$/, '') || ''
 
         if (isFolder(item)) return `${path}/${item.name}`

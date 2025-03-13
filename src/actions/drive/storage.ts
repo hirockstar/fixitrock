@@ -30,9 +30,9 @@ const StorageDataSchema = z.object({
 export type StorageData = z.infer<typeof StorageDataSchema>
 
 const paths = [
-    `${siteConfig.baseDirectory}/Apple`,
-    `${siteConfig.baseDirectory}/Apps`,
-    `${siteConfig.baseDirectory}/Games`,
+    `/${siteConfig.baseDirectory}/Apple`,
+    `/${siteConfig.baseDirectory}/Apps`,
+    `/${siteConfig.baseDirectory}/Games`,
 ]
 
 export async function getStorage(): Promise<StorageData> {

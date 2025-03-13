@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ drive: st
             title: title || '',
             url: new URL(siteConfig.domain),
             type: 'website',
-            images: `/api/drive/og?slug=/${drivePath}`,
+            images: `/og?slug=/${drivePath}&type=drive`,
             siteName: siteConfig.title,
         },
     }

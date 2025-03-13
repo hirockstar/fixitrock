@@ -23,7 +23,7 @@ export async function getSearch(query: string): Promise<Search> {
         const sanitizedQuery = sanitizeQuery(query)
         const response = await client
             .api(
-                `/me/drive/root:${siteConfig.baseDirectory}:/search(q='${encodeURIComponent(sanitizedQuery)}')`
+                `/me/drive/root:/${siteConfig.baseDirectory}:/search(q='${encodeURIComponent(sanitizedQuery)}')`
             )
             .select('id,name,size,lastModifiedDateTime,webUrl,file')
             .get()

@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
-import { Drive } from '.'
+
 import { siteConfig } from '®config/site'
+
+import { Drive } from '.'
 
 export default function Page() {
     return <Drive />
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
         url: new URL(siteConfig.domain),
         siteName: siteConfig.title,
         type: 'website',
-        images: '/api/drive/og?slug=/',
+        images: '/og?slug=/&type=drive',
     },
     category: 'technology',
 }

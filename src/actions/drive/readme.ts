@@ -9,7 +9,7 @@ export async function getReadme(slug: string): Promise<string | null> {
 
     try {
         const res = await client
-            .api(`/me/drive/root:${siteConfig.baseDirectory}${slug}/readme.md`)
+            .api(`/me/drive/root:/${siteConfig.baseDirectory}${slug}/readme.md`)
             .select('@microsoft.graph.downloadUrl')
             .get()
 
