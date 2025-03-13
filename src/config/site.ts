@@ -4,6 +4,7 @@ import { FaRupeeSign } from 'react-icons/fa'
 import { MdPhonelinkSetup } from 'react-icons/md'
 import { RiComputerLine } from 'react-icons/ri'
 import { TbApps, TbDeviceGamepad2 } from 'react-icons/tb'
+import { SiGhostery } from 'react-icons/si'
 
 export type SiteConfig = typeof siteConfig
 
@@ -17,6 +18,12 @@ export const siteConfig = {
     directoryUrl: '/drive',
     cacheControlHeader: 'max-age=0, s-maxage=60, stale-while-revalidate',
     suggestion: [
+        {
+            href: '/',
+            title: 'Home',
+            description: 'Go to the main page',
+            icon: SiGhostery,
+        },
         {
             href: '/drive/Apps',
             title: 'Apps',

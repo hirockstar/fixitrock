@@ -60,9 +60,9 @@ export default function Page() {
                 </div>
                 <Input
                     end={
-                        <div className='flex items-center gap-0.5'>
+                        <div className='ml-0.5 flex items-center gap-0.5'>
                             <SwitchLayout />
-                            <span className='text-muted-foreground'>|</span>
+                            <span className='text-xs text-muted-foreground'>|</span>
                             <SortBy sort={sort} />
                         </div>
                     }
