@@ -27,7 +27,7 @@ export default function FRP() {
             >
                 <CarouselContent>
                     {isLoading ? (
-                        <GridSkeleton length={6} />
+                        <GridSkeleton className='min-w-[300px]' length={6} />
                     ) : error ? (
                         <ErrorState
                             icons={[TbDatabaseStar, SiSupabase, TbPlugConnectedX]}
@@ -36,7 +36,7 @@ export default function FRP() {
                         />
                     ) : (
                         data?.slice(0, 6).map((f) => (
-                            <CarouselItem key={f.id} className='basis-[320px]'>
+                            <CarouselItem key={f.id} className='basis-[300px]'>
                                 <Card
                                     aria-label={f.title}
                                     className='w-full rounded-2xl border bg-transparent'

@@ -1,13 +1,21 @@
 'use client'
 import { Card, CardBody, CardFooter, CardHeader, Skeleton } from '@heroui/react'
 
+import { cn } from '®lib/utils'
+
 import { MagicCard } from './magiccard'
 
-export const GridSkeleton = ({ length = 15 }: { length?: number }) => {
+export const GridSkeleton = ({
+    length = 15,
+    className,
+}: {
+    length?: number
+    className?: string
+}) => {
     return (
         <>
             {Array.from({ length }).map((_, index) => (
-                <Card key={index} className='min-w-[280px] rounded-2xl border' shadow='none'>
+                <Card key={index} className={cn('rounded-2xl border', className)} shadow='none'>
                     <MagicCard className='items-stretch'>
                         <CardHeader className='justify-between gap-x-2 p-2'>
                             <Skeleton className='h-4 flex-1 rounded-xl' />
@@ -25,11 +33,17 @@ export const GridSkeleton = ({ length = 15 }: { length?: number }) => {
     )
 }
 
-export const QuoteSkeleton = ({ length = 15 }: { length?: number }) => {
+export const QuoteSkeleton = ({
+    length = 15,
+    className,
+}: {
+    length?: number
+    className?: string
+}) => {
     return (
         <>
             {Array.from({ length }).map((_, index) => (
-                <Card key={index} className='min-w-[280px] rounded-2xl border' shadow='none'>
+                <Card key={index} className={cn('rounded-2xl border', className)} shadow='none'>
                     <CardBody className='flex flex-1 flex-col'>
                         <span className='flex h-[180px] flex-col items-center justify-center gap-4'>
                             <Skeleton className='h-4 w-52 rounded' />

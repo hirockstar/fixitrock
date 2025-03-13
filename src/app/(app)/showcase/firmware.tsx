@@ -34,7 +34,7 @@ export default function Firmware() {
             >
                 <CarouselContent>
                     {isLoading ? (
-                        <GridSkeleton length={6} />
+                        <GridSkeleton className='min-w-[300px]' length={6} />
                     ) : error ? (
                         <ErrorState
                             icons={[TbDatabaseStar, ImOnedrive, TbPlugConnectedX]}
@@ -43,7 +43,7 @@ export default function Firmware() {
                         />
                     ) : (
                         data?.value.map((c: DriveItem) => (
-                            <CarouselItem key={c.id} className='basis-[320px]'>
+                            <CarouselItem key={c.id} className='basis-[300px]'>
                                 <ContextMenu
                                     key={c.id}
                                     onOpenChange={(open) => {

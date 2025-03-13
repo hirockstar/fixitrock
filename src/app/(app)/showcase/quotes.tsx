@@ -26,7 +26,7 @@ export default function Quotes() {
             >
                 <CarouselContent>
                     {isLoading ? (
-                        <QuoteSkeleton length={6} />
+                        <QuoteSkeleton className='min-w-[300px]' length={6} />
                     ) : error ? (
                         <ErrorState
                             icons={[TbDatabaseStar, SiSupabase, TbPlugConnectedX]}
@@ -35,7 +35,7 @@ export default function Quotes() {
                         />
                     ) : (
                         data?.slice(0, 6).map((q) => (
-                            <CarouselItem key={q.id} className='basis-[320px]'>
+                            <CarouselItem key={q.id} className='basis-[300px]'>
                                 <Card className='flex w-full select-none flex-col justify-between bg-muted shadow-none'>
                                     <CardBody className='flex flex-1 flex-col'>
                                         <p className='flex h-[180px] items-center justify-center text-balance text-center text-lg font-semibold'>
