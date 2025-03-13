@@ -71,7 +71,8 @@ export function SortBy({ sort }: { sort: (sortField: SortField, sortOrder: SortO
                     <DropdownTrigger>
                         <Button
                             isIconOnly
-                            className='h-9 min-w-9 rounded-md border'
+                            className='h-8 w-8 min-w-0 p-0'
+                            radius='full'
                             size='sm'
                             startContent={<ListFilter size={20} />}
                             variant='light'
@@ -121,7 +122,8 @@ export function SortBy({ sort }: { sort: (sortField: SortField, sortOrder: SortO
                     <DrawerTrigger asChild>
                         <Button
                             isIconOnly
-                            className='h-9 min-w-9 rounded-md border'
+                            className='h-8 w-8 min-w-0 p-0'
+                            radius='full'
                             size='sm'
                             startContent={<ListFilter size={20} />}
                             variant='light'

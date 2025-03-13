@@ -9,9 +9,10 @@ type InputProps = {
     value?: string
     hotKey?: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    end?: React.ReactNode
 } & Props
 
-export function Input({ value = '', hotKey, onChange, ...inputProps }: InputProps) {
+export function Input({ value = '', hotKey, end, onChange, ...inputProps }: InputProps) {
     const inputRef = useRef<HTMLInputElement>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -44,14 +45,15 @@ export function Input({ value = '', hotKey, onChange, ...inputProps }: InputProp
             className='bg-transparent'
             classNames={{
                 inputWrapper:
-                    'h-9 min-h-9 w-full rounded-md border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
+                    'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
+                base: 'sm:w-[90%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]',
             }}
             endContent={
                 <>
                     {!value && hotKey && (
                         <Button
                             isIconOnly
-                            className='hidden h-5 w-5 !min-w-5 rounded-sm border bg-default/20 text-[12px] dark:bg-default/40 sm:block'
+                            className='hidden h-5 w-5 !min-w-5 rounded border bg-default/20 text-[12px] dark:bg-default/40 sm:block'
                             radius='none'
                             size='sm'
                             variant='light'
@@ -59,6 +61,7 @@ export function Input({ value = '', hotKey, onChange, ...inputProps }: InputProp
                             {hotKey.toUpperCase()}
                         </Button>
                     )}
+                    {end}
                 </>
             }
             size='sm'

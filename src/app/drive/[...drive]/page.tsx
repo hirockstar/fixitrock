@@ -1,9 +1,11 @@
 'use client'
 
-import { useParams } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
+import { Button, Navbar } from '@heroui/react'
+import { ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
 
 import { useDrive } from '®tanstack/query'
-import Breadcrumb from '®ui/breadcrumb'
 import useLayout from '®hooks/useLayout'
 import { FolderEmpty, NotFound, SearchEmpty } from '®ui/state'
 
@@ -13,6 +15,7 @@ import { Preview } from '../ui/preview'
 
 export default function Page() {
     const { drive } = useParams<{ drive: string[] }>()
+    const pathname = usePathname()
     const path = drive.join('/')
     const {
         data,
@@ -34,18 +37,41 @@ export default function Page() {
     const title = path.split('/').pop()
 
     return (
-        <main className='flex flex-col gap-4'>
-            <Breadcrumb />
-            <div className='flex space-x-1.5'>
+        <main className='flex flex-col gap-2 p-1 md:px-4 2xl:px-[10%]'>
+            <Navbar
+                shouldHideOnScroll
+                classNames={{
+                    wrapper: 'h-auto w-full flex-col gap-1 p-0 py-1 sm:flex-row',
+                }}
+                maxWidth='full'
+            >
+                <div className='flex h-10 w-full select-none items-center gap-1.5'>
+                    <Button
+                        as={Link}
+                        className='h-8 w-8 min-w-0 p-0'
+                        href={`/${pathname.split('/').slice(1, -1).join('/')}`}
+                        radius='full'
+                        size='sm'
+                        variant='light'
+                    >
+                        <ChevronLeft size={20} />
+                    </Button>
+                    <h1 className='text-base font-bold sm:text-lg'>{title}</h1>
+                </div>
                 <Input
+                    end={
+                        <div className='flex items-center gap-0.5'>
+                            <SwitchLayout />
+                            <span className='text-muted-foreground'>|</span>
+                            <SortBy sort={sort} />
+                        </div>
+                    }
                     hotKey='/'
                     placeholder={error ? 'Oops, Page Not Found!' : `Search in ${title}`}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                 />
-                <SortBy sort={sort} />
-                <SwitchLayout />
-            </div>
+            </Navbar>
             {hydrated ? (
                 error ? (
                     <NotFound />

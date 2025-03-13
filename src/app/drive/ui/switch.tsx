@@ -17,7 +17,7 @@ export function SwitchLayout() {
             aria-label='Layout Switcher'
             className=''
             classNames={{
-                base: 'rounded-md border p-1',
+                base: 'rounded-md p-1',
                 tabContent: '!group-data-[selected=true]:text-muted-foreground',
                 tabList: 'gap-1 bg-background p-0',
                 tab: 'px-1',

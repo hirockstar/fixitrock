@@ -5,7 +5,11 @@ import { siteConfig } from '®config/site'
 import { Drive } from '.'
 
 export default function Page() {
-    return <Drive />
+    return (
+        <main className='mx-auto w-full p-1 md:px-4 2xl:px-[10%]'>
+            <Drive />
+        </main>
+    )
 }
 
 export const metadata: Metadata = {
