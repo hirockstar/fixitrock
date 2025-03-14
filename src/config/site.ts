@@ -61,7 +61,7 @@ export const siteConfig = {
             icon: BsApple,
         },
         {
-            href: '/spare-parts-price',
+            href: '/scpl',
             title: 'Spare Parts Price',
             description: 'Find genuine mobile parts service centers',
             icon: FaRupeeSign,
