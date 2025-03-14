@@ -6,7 +6,7 @@ import { Drive } from '.'
 
 export default function Page() {
     return (
-        <main className='mx-auto w-full p-1 md:px-4 2xl:px-[10%]'>
+        <main className='mx-auto mt-4 w-full p-1 md:px-4 2xl:px-[10%]'>
             <Drive />
         </main>
     )

@@ -15,7 +15,11 @@ export const GridSkeleton = ({
     return (
         <>
             {Array.from({ length }).map((_, index) => (
-                <Card key={index} className={cn('rounded-2xl border', className)} shadow='none'>
+                <Card
+                    key={index}
+                    className={cn('rounded-2xl border bg-transparent', className)}
+                    shadow='none'
+                >
                     <MagicCard className='items-stretch'>
                         <CardHeader className='justify-between gap-x-2 p-2'>
                             <Skeleton className='h-4 flex-1 rounded-xl' />
@@ -43,7 +47,11 @@ export const QuoteSkeleton = ({
     return (
         <>
             {Array.from({ length }).map((_, index) => (
-                <Card key={index} className={cn('rounded-2xl border', className)} shadow='none'>
+                <Card
+                    key={index}
+                    className={cn('rounded-2xl border bg-transparent', className)}
+                    shadow='none'
+                >
                     <CardBody className='flex flex-1 flex-col'>
                         <span className='flex h-[180px] flex-col items-center justify-center gap-4'>
                             <Skeleton className='h-4 w-52 rounded' />

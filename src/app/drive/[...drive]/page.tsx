@@ -49,14 +49,16 @@ export default function Page() {
                     <Button
                         as={Link}
                         className='h-8 w-8 min-w-0 p-0'
-                        href={`/${pathname.split('/').slice(1, -1).join('/')}`}
+                        href={error ? '/' : `/${pathname.split('/').slice(1, -1).join('/')}`}
                         radius='full'
                         size='sm'
                         variant='light'
                     >
                         <ChevronLeft size={20} />
                     </Button>
-                    <h1 className='text-base font-bold sm:text-lg'>{title}</h1>
+                    <h1 className='text-base font-bold sm:text-lg'>
+                        {error ? 'Lost? Go Back' : title}
+                    </h1>
                 </div>
                 <Input
                     end={
