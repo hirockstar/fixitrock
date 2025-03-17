@@ -1,18 +1,20 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 
-import { useQueryParams } from './useQueryParams'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-function useTabs(tabs: string) {
+function useTabs(defaultTab: string) {
     const router = useRouter()
-    const queryParams = useQueryParams()
-    const currentTab = queryParams?.get('tab') || tabs
-    const [tab, setSelectedTab] = useState(currentTab)
+    const queryParams = useSearchParams()
+    const [tab, setSelectedTab] = useState(defaultTab)
 
     useEffect(() => {
-        setSelectedTab(currentTab)
-    }, [currentTab])
+        if (queryParams) {
+            const currentTab = queryParams.get('tab') || defaultTab
+
+            setSelectedTab(currentTab)
+        }
+    }, [queryParams, defaultTab]) // Re-run if queryParams or defaultTab change
 
     const setTab = (tab: string) => {
         setSelectedTab(tab)
