@@ -1,3 +1,5 @@
+'use client'
+
 import Profile from './ui/profile'
 import Tabs from './ui/tabs'
 
