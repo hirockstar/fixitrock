@@ -1,17 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 /**
- * Custom hook to safely parse query parameters in the browser.
- * Returns an instance of URLSearchParams.
+ * Custom hook to safely parse query parameters.
+ * Returns an instance of URLSearchParams that updates dynamically.
  */
 export function useQueryParams() {
-    const [queryParams, setQueryParams] = useState<URLSearchParams | null>(null)
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setQueryParams(new URLSearchParams(window.location.search))
-        }
-    }, []) // Only run on mount
-
-    return queryParams
+    return useSearchParams()
 }

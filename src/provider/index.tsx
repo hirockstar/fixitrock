@@ -30,7 +30,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 <HeroUIProvider navigate={router.push} spinnerVariant='spinner' useHref={useHref}>
                     <ToastProvider maxVisibleToasts={9} toastProps={{ radius: 'lg' }} />
                     {children}
-                    <NextTopLoader color='hsl(var(--ring))' height={4} showSpinner={false} />
+                    <NextTopLoader color='hsl(var(--ring))' height={2} showSpinner={false} />
                     {isDevelopment && (
                         <>
                             <div className='absolute bottom-0' color='secondary'>

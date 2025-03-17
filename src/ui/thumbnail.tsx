@@ -17,14 +17,14 @@ export function Thumbnail({ src, name, type }: ThumbnailProps) {
             {src ? (
                 <Image
                     alt={name}
-                    className={`${type === 'Grid' ? 'aspect-video h-40 rounded-md bg-default/5 p-2 dark:bg-default/10' : 'size-10 rounded-md border p-0.5'} object-contain`}
+                    className={`${type === 'Grid' ? 'aspect-video h-40 rounded-md bg-default/5 p-2 dark:bg-default/10' : 'size-10'} object-contain`}
                     isBlurred={type === 'Grid'}
                     loading='lazy'
                     src={src}
                 />
             ) : (
                 <div
-                    className={`${type === 'Grid' ? 'flex aspect-video h-40 items-center justify-center rounded-md bg-default/5 dark:bg-default/10' : 'flex size-10 items-center rounded-md border'}`}
+                    className={`${type === 'Grid' ? 'flex aspect-video h-40 items-center justify-center rounded-md bg-default/5 dark:bg-default/10' : 'flex size-10 items-center'}`}
                 >
                     <Icon
                         className={`${type === 'Grid' ? '!size-14' : 'mx-auto !size-7 shrink-0'}`}
