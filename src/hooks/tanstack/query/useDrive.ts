@@ -10,8 +10,7 @@ import { getDownloadUrl, isFolder, isPreviewable, sanitizeQuery } from '®lib/ut
 import { Drive, DriveItem, SortField, SortOrder } from '®types/drive'
 import { getChildren } from '®actions/drive'
 import { siteConfig } from '®config/site'
-
-import { useQueryParams } from '../../useQueryParams'
+import { useSearchParams } from '®hooks/useSearchParams'
 
 export function useDrive(slug: string, top?: number) {
     const [query, setQuery] = useState('')
@@ -24,7 +23,7 @@ export function useDrive(slug: string, top?: number) {
     const router = useRouter()
     const topLoader = topLoaderRouter()
     const pathname = usePathname()
-    const searchParams = useQueryParams()
+    const searchParams = useSearchParams()
     const { ref, inView } = useInView()
 
     const { data, isFetchingNextPage, hasNextPage, fetchNextPage, status, error } =
