@@ -14,17 +14,16 @@ function useTabs(defaultTab: string) {
     useEffect(() => {
         const currentTab = queryParams.get('tab')
 
-        if (currentTab) {
+        if (currentTab && currentTab !== tab) {
             setSelectedTab(currentTab)
         }
-    }, [queryParams])
+    }, [queryParams, tab])
 
     const setTab = (newTab: string) => {
-        setSelectedTab(newTab)
-
-        if (newTab === defaultTab && !queryParams.get('tab')) return
-
-        router.push(`?tab=${newTab}`, { scroll: false })
+        if (newTab !== tab) {
+            setSelectedTab(newTab)
+            router.push(`?tab=${newTab}`, { scroll: false })
+        }
     }
 
     return { tab, setTab }
