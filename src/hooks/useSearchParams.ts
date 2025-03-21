@@ -1,21 +1,17 @@
-'use client'
-
 import { useState, useEffect } from 'react'
-import { usePathname, useSearchParams as useNextSearchParams } from 'next/navigation'
 
 /**
- * Custom hook to get URL search params that update when the URL changes.
+ * Custom hook to safely parse query parameters in the browser.
+ * Returns an instance of URLSearchParams.
  */
 export function useSearchParams() {
-    const nextSearchParams = useNextSearchParams()
-    const pathname = usePathname() // Ensure reactivity to route changes
-    const [queryParams, setQueryParams] = useState(
-        () => new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
-    )
+    const [queryParams, setQueryParams] = useState<URLSearchParams | null>(null)
 
     useEffect(() => {
-        setQueryParams(new URLSearchParams(window.location.search))
-    }, [nextSearchParams, pathname]) // Update when URL changes
+        if (typeof window !== 'undefined') {
+            setQueryParams(new URLSearchParams(window.location.search))
+        }
+    }, []) // Only run on mount
 
     return queryParams
 }
