@@ -1,7 +1,11 @@
 'use client'
 
+import dynamic from 'next/dynamic'
+
 import Profile from './ui/profile'
-import Tabs from './ui/tabs'
+const Tabs = dynamic(() => import('./ui/tabs'), {
+    ssr: false,
+})
 
 export default function Page() {
     return (
