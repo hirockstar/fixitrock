@@ -5,18 +5,21 @@ import { useRouter, useSearchParams } from 'next/navigation'
 function useTabs(tabs: string) {
     const router = useRouter()
     const queryParams = useSearchParams()
-    const currentTab = queryParams?.get('tab') || tabs
-    const [tab, setSelectedTab] = useState(currentTab)
-
+    const [tab, setSelectedTab] = useState(tabs)
     const [hasMounted, setHasMounted] = useState(false)
 
     useEffect(() => {
+        // This ensures the code runs only on the client side after mounting
         setHasMounted(true)
     }, [])
 
     useEffect(() => {
-        setSelectedTab(currentTab)
-    }, [currentTab])
+        if (hasMounted) {
+            const currentTab = queryParams?.get('tab') || tabs
+
+            setSelectedTab(currentTab)
+        }
+    }, [hasMounted, queryParams, tabs])
 
     const setTab = (tab: string) => {
         setSelectedTab(tab)
