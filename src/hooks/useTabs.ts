@@ -6,19 +6,25 @@ import { useRouter, useSearchParams } from 'next/navigation'
 function useTabs(defaultTab: string) {
     const router = useRouter()
     const queryParams = useSearchParams()
-    const [tab, setSelectedTab] = useState(defaultTab)
+
+    const initialTab = queryParams.get('tab')
+
+    const [tab, setSelectedTab] = useState<string>(initialTab || defaultTab)
 
     useEffect(() => {
-        if (queryParams) {
-            const currentTab = queryParams.get('tab') || defaultTab
+        const currentTab = queryParams.get('tab')
 
+        if (currentTab) {
             setSelectedTab(currentTab)
         }
-    }, [queryParams, defaultTab]) // Re-run if queryParams or defaultTab change
+    }, [queryParams])
 
-    const setTab = (tab: string) => {
-        setSelectedTab(tab)
-        router.push(`?tab=${tab}`, { scroll: false })
+    const setTab = (newTab: string) => {
+        setSelectedTab(newTab)
+
+        if (newTab === defaultTab && !queryParams.get('tab')) return
+
+        router.push(`?tab=${newTab}`, { scroll: false })
     }
 
     return { tab, setTab }
