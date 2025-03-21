@@ -1,6 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+
+import { useSearchParams } from './useSearchParams'
 
 function useTabs(tabs: string) {
     const router = useRouter()
@@ -9,7 +11,6 @@ function useTabs(tabs: string) {
     const [hasMounted, setHasMounted] = useState(false)
 
     useEffect(() => {
-        // This ensures the code runs only on the client side after mounting
         setHasMounted(true)
     }, [])
 

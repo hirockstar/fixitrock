@@ -21,6 +21,7 @@ export const TitleAction = ({ title, children, href, className }: TitleActionPro
             <div className='flex items-center justify-between px-1'>
                 <h1 className='my-2 text-left text-lg font-bold sm:text-xl'>{title}</h1>
                 <Button
+                    passHref
                     as={Link}
                     className='rounded-lg bg-default/30 backdrop-blur data-[hover=true]:bg-muted/50'
                     href={href}
