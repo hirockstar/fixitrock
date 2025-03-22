@@ -3,6 +3,8 @@ import { Tab, Tabs as UiTabs } from '@heroui/react'
 
 import useTabs from '®hooks/useTabs'
 
+import { Memoirs } from '../memoirs/ui'
+
 import { Quotes } from './quotes'
 import { Activity } from './activity'
 
@@ -27,6 +29,9 @@ export default function Tabs() {
             </Tab>
             <Tab key='photos' title='Photos' />
             <Tab key='videos' title='Videos' />
+            <Tab key='memoirs' title='Memoirs'>
+                <Memoirs />
+            </Tab>
             <Tab key='about' title='About' />
         </UiTabs>
     )
