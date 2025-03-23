@@ -1,7 +1,7 @@
 'use client'
 
-import Profile from './ui/profile'
-import Tabs from './ui/tabs'
+import Profile from '../ui/profile'
+import Tabs from '../ui/tabs'
 
 export default function Page() {
     return (

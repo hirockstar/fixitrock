@@ -37,7 +37,11 @@ export async function getMemoirs(
         if (!client) throw new Error('DriveClient init failed')
 
         const endpoint = pageParam || `/me/drive/root:/user${slug}:/children?top=${top}`
-        const res = await client.api(endpoint).expand('thumbnails($select=large)').get()
+        const res = await client
+            .api(endpoint)
+            .select(`id,name,size,folder,file,video`)
+            .expand('thumbnails($select=large)')
+            .get()
 
         if (!res.value?.length) return { value: [], status: 'empty' }
 

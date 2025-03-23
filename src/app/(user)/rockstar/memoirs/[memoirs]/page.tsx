@@ -12,23 +12,24 @@ export default function Page() {
     const { data, ref, isFetchingNextPage, isLoading } = useMemoirs(`/rockstar/memoirs/${memoirs}`)
 
     return (
-        <div className='grid grid-cols-[repeat(auto-fill,_minmax(176px,_1fr))] gap-2 px-1'>
+        <div className='grid grid-cols-[repeat(auto-fill,_minmax(128px,_1fr))] gap-1 px-1 md:grid-cols-[repeat(auto-fill,_minmax(208px,_1fr))]'>
             {isLoading ? (
                 <Skeleton />
             ) : (
                 data?.map((child) => (
                     <div
                         key={child.id}
-                        className='group relative scroll-m-10 overflow-hidden rounded-2xl border'
+                        className='group relative scroll-m-10 overflow-hidden rounded-sm'
                     >
                         <Image
                             isZoomed
                             alt={child.name}
-                            className='aspect-square min-h-44 cursor-pointer object-cover'
+                            className='aspect-square min-h-32 cursor-pointer !rounded-[2px] object-cover md:min-h-52'
                             classNames={{
-                                img: 'aspect-square min-h-44',
-                                wrapper: 'aspect-square min-h-44',
+                                img: 'aspect-square min-h-32 md:min-h-52',
+                                wrapper: 'aspect-square min-h-32 md:min-h-52',
                             }}
+                            radius='none'
                             src={child?.thumbnails?.[0].large?.url}
                             width={child?.thumbnails?.[0].large?.width}
                         />
@@ -64,10 +65,10 @@ const Skeleton = ({ length = 24 }: { length?: number }) => {
                 <Image
                     key={index}
                     alt='Loading skeleton'
-                    className='aspect-square min-h-44 min-w-full cursor-pointer object-cover'
+                    className='aspect-square min-h-32 min-w-full cursor-pointer object-cover md:min-h-52'
                     classNames={{
-                        img: 'aspect-square min-h-44 min-w-full',
-                        wrapper: 'aspect-square min-h-44 min-w-full',
+                        img: 'aspect-square min-h-32 min-w-full md:min-h-52',
+                        wrapper: 'aspect-square min-h-32 min-w-full md:min-h-52',
                     }}
                     isLoading={true}
                     src='https://rdrive-ui.vercel.app/icons/rdrive.png'
