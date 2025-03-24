@@ -33,6 +33,7 @@ export default function Memoirs() {
                                 href={`/rockstar/memoirs/${c.name}`}
                             >
                                 <Image
+                                    isZoomed
                                     alt={c.name}
                                     className='h-[240px] w-full object-cover object-center 2xl:h-[220px]'
                                     classNames={{ wrapper: '!max-w-full' }}
