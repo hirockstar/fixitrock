@@ -3,7 +3,7 @@ import { Tab, Tabs as UiTabs } from '@heroui/react'
 
 import useTabs from '®hooks/useTabs'
 
-import { Memoirs } from '../rockstar/memoirs/ui'
+import { Memoirs } from '../rockstar/(memoirs)/ui'
 
 import { Quotes } from './quotes'
 import { Activity } from './activity'

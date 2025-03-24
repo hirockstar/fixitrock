@@ -11,10 +11,10 @@ import Switch from './switch'
 type PreviewProps = {
     open: boolean
     setOpen: Dispatch<SetStateAction<boolean>>
-    data: DriveItem
+    c: DriveItem
 }
 
-export function Preview({ open, setOpen, data }: PreviewProps) {
+export function Preview({ open, setOpen, c }: PreviewProps) {
     const isDesktop = useMediaQuery('(min-width: 640px)')
 
     return (
@@ -29,7 +29,7 @@ export function Preview({ open, setOpen, data }: PreviewProps) {
                     onOpenChange={setOpen}
                 >
                     <ModalContent className='overflow-auto border p-2 dark:bg-black'>
-                        <Switch file={data} />
+                        <Switch file={c} />
                         <ModalHeader aria-hidden className='hidden' />
                     </ModalContent>
                 </Modal>
@@ -38,7 +38,7 @@ export function Preview({ open, setOpen, data }: PreviewProps) {
                     <DrawerContent className='overflow-auto p-2'>
                         <DrawerTitle aria-hidden />
                         <DrawerDescription aria-hidden />
-                        <Switch file={data} />
+                        <Switch file={c} />
                     </DrawerContent>
                 </Drawer>
             )}

@@ -39,7 +39,7 @@ export async function getMemoirs(
         const endpoint = pageParam || `/me/drive/root:/user${slug}:/children?top=${top}`
         const res = await client
             .api(endpoint)
-            .select(`id,name,size,folder,file,video`)
+            // .select(`id,name,size,folder,file,video,parentReference`)
             .expand('thumbnails($select=large)')
             .get()
 

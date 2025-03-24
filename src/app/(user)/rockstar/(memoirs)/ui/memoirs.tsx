@@ -8,7 +8,7 @@ import { formatDateTime } from '®lib/utils'
 import AnimatedDiv from '®ui/farmer/div'
 import { BlogCardAnimation, fromLeftVariant } from '®lib/FramerMotionVariants'
 
-import { Name, Date } from '../utils'
+import { Name, Date } from './utils'
 
 export default function Memoirs() {
     const { data, ref, isLoading, isFetchingNextPage } = useMemoirs('/rockstar/memoirs')

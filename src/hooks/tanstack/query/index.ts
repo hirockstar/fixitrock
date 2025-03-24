@@ -1,5 +1,6 @@
 import { useDrive } from './useDrive'
 import { useGallery } from './useGallery'
+import { useID } from './useID'
 import { useMemoirs } from './useMemoirs'
 import { useProfile } from './useProfile'
 import { useQuote } from './useQuote'
@@ -10,6 +11,7 @@ import { useSupabse } from './useSupabse'
 import { useTour } from './useTour'
 
 export {
+    useID,
     useGallery,
     useDrive,
     useProfile,

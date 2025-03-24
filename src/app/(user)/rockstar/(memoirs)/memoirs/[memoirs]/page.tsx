@@ -9,13 +9,22 @@ import { FaPlay } from 'react-icons/fa'
 import { useMemoirs } from '®hooks/tanstack/query'
 import { formatDuration } from '®lib/utils'
 
-import { Name } from '../utils'
+import { Name } from '../../ui/utils'
+import { Preview } from '../../ui/preview'
 
 export default function Page() {
     const { memoirs } = useParams<{ memoirs: string }>()
-    const { data, ref, isFetchingNextPage, isLoading, error } = useMemoirs(
-        `/rockstar/memoirs/${memoirs}`
-    )
+    const {
+        data,
+        ref,
+        isFetchingNextPage,
+        isLoading,
+        error,
+        selectItem,
+        selectedItem,
+        open,
+        setOpen,
+    } = useMemoirs(`/rockstar/memoirs/${memoirs}`)
     const pathname = usePathname()
     const title = memoirs.split('/').pop()
 
@@ -43,21 +52,17 @@ export default function Page() {
                         {error ? 'Lost? Go Back' : Name(title as string)}
                     </h1>
                 </div>
-                {/* <div className='flex'>
-                    <AvatarGroup size='sm'>
-                        <Avatar src='https://i.pravatar.cc/150?u=a042581f4e29026024d' />
-                        <Avatar src='https://i.pravatar.cc/150?u=a04258a2462d826712d' />
-                    </AvatarGroup>
-                </div> */}
             </Navbar>
             <div className='grid grid-cols-[repeat(auto-fill,_minmax(96px,_1fr))] gap-1 md:grid-cols-[repeat(auto-fill,_minmax(208px,_1fr))]'>
                 {isLoading ? (
                     <Skeleton />
                 ) : (
                     data?.map((child) => (
+                        // eslint-disable-next-line jsx-a11y/click-events-have-key-events
                         <div
                             key={child.id}
                             className='group relative scroll-m-10 overflow-hidden rounded-[2px]'
+                            onClick={() => selectItem(child)}
                         >
                             <Image
                                 isZoomed
@@ -93,6 +98,7 @@ export default function Page() {
                 <div ref={ref} />
                 {isFetchingNextPage && <Skeleton />}
             </div>
+            {selectedItem && <Preview c={selectedItem} open={open} setOpen={setOpen} />}
         </div>
     )
 }
