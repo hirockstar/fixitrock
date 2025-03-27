@@ -27,8 +27,8 @@ export default function Tabs() {
             <Tab key='quotes' title='Quotes'>
                 <Quotes />
             </Tab>
-            <Tab key='photos' title='Photos' />
-            <Tab key='videos' title='Videos' />
+            {/* <Tab key='photos' title='Photos' />
+            <Tab key='videos' title='Videos' /> */}
             <Tab key='memoirs' title='Memoirs'>
                 <Memoirs />
             </Tab>

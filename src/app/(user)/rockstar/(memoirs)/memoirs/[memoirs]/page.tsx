@@ -79,7 +79,7 @@ export default function Page() {
                             {child.file?.mimeType?.startsWith('video/') && (
                                 <>
                                     {child.video?.duration !== undefined && (
-                                        <h1 className='absolute bottom-2 left-2 z-30 flex items-center gap-0.5 rounded bg-black bg-opacity-50 px-1 text-xs text-white'>
+                                        <h1 className='absolute bottom-1 left-1 z-30 flex items-center gap-1 rounded bg-black bg-opacity-50 px-1 text-xs text-white'>
                                             <FaPlay size={10} />
                                             {formatDuration(child.video.duration)}
                                         </h1>

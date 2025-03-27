@@ -18,7 +18,7 @@ const SearchBar = () => {
     return (
         <AnimatedSearch open={open} setOpen={setOpen}>
             <div
-                className={`${open ? 'flex h-full max-h-[70vh] flex-col rounded-xl bg-background sm:h-[60dvh] sm:border' : ''} overflow-hidden`}
+                className={`${open ? 'flex h-full flex-col rounded-xl bg-background sm:h-[60dvh] sm:border' : ''} overflow-hidden`}
             >
                 <Input
                     classNames={{
