@@ -2,6 +2,8 @@
 import { Button, Modal, ModalContent, ModalHeader, Skeleton, User } from '@heroui/react'
 import { Dispatch, SetStateAction } from 'react'
 import { Download } from 'lucide-react'
+import Link from 'next/link'
+import { FaLocationDot } from 'react-icons/fa6'
 
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import { DriveItem } from '®/types/drive'
@@ -20,7 +22,7 @@ type PreviewProps = {
 
 function UserInfo({ data, isLoading }: { data?: DriveItem; isLoading: boolean }) {
     const address = data?.location?.address
-    const locationText = address
+    const location = address
         ? `${address.city}, ${address.locality}, ${address.postalCode}, ${address.state}, ${address.countryOrRegion}`
         : randomSlang()
 
@@ -28,12 +30,18 @@ function UserInfo({ data, isLoading }: { data?: DriveItem; isLoading: boolean })
         <User
             avatarProps={{ src: '/icons/fixitrock.png' }}
             description={
-                <Skeleton
-                    className='line-clamp-1 min-w-60 rounded text-xs text-muted-foreground'
-                    isLoaded={!isLoading}
+                <Link
+                    passHref
+                    className='flex items-center gap-1 text-xs text-muted-foreground'
+                    href={`https://www.google.com/maps/search/?api=1&query=${location}`}
+                    rel='noopener noreferrer'
+                    target='_blank'
                 >
-                    {locationText}
-                </Skeleton>
+                    <FaLocationDot />
+                    <Skeleton isLoaded={!isLoading}>
+                        <p className='line-clamp-1 text-xs text-muted-foreground'>{location}</p>
+                    </Skeleton>
+                </Link>
             }
             name='Rock Star 💕'
         />
@@ -125,7 +133,7 @@ export function Preview({ open, setOpen, c }: PreviewProps) {
                 <Drawer open={open} onOpenChange={setOpen}>
                     <DrawerContent className='overflow-auto p-2'>
                         <DrawerTitle>
-                            <div className='flex w-full items-center justify-between p-2'>
+                            <div className='flex w-full items-center justify-between gap-2 p-2'>
                                 <UserInfo data={data} isLoading={isLoading} />
                                 <Button
                                     isIconOnly
