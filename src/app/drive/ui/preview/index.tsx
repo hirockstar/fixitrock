@@ -15,33 +15,33 @@ type PreviewProps = {
 }
 
 export function Preview({ open, setOpen, data }: PreviewProps) {
-   const { isMobile } = useMediaQuery()
+    const isDesktop = useMediaQuery('(min-width: 640px)')
 
-   return (
-       <>
-           {isMobile ? (
-               <Modal
-                   hideCloseButton
-                   className='max-w-5xl'
-                   isOpen={open}
-                   placement='center'
-                   scrollBehavior='inside'
-                   onOpenChange={setOpen}
-               >
-                   <ModalContent className='overflow-auto border p-2 dark:bg-black'>
-                       <Switch file={data} />
-                       <ModalHeader aria-hidden className='hidden' />
-                   </ModalContent>
-               </Modal>
-           ) : (
-               <Drawer open={open} onOpenChange={setOpen}>
-                   <DrawerContent className='overflow-auto p-2'>
-                       <DrawerTitle aria-hidden />
-                       <DrawerDescription aria-hidden />
-                       <Switch file={data} />
-                   </DrawerContent>
-               </Drawer>
-           )}
-       </>
-   )
+    return (
+        <>
+            {isDesktop ? (
+                <Modal
+                    hideCloseButton
+                    className='max-w-5xl'
+                    isOpen={open}
+                    placement='center'
+                    scrollBehavior='inside'
+                    onOpenChange={setOpen}
+                >
+                    <ModalContent className='overflow-auto border p-2 dark:bg-black'>
+                        <Switch file={data} />
+                        <ModalHeader aria-hidden className='hidden' />
+                    </ModalContent>
+                </Modal>
+            ) : (
+                <Drawer open={open} onOpenChange={setOpen}>
+                    <DrawerContent className='overflow-auto p-2'>
+                        <DrawerTitle aria-hidden />
+                        <DrawerDescription aria-hidden />
+                        <Switch file={data} />
+                    </DrawerContent>
+                </Drawer>
+            )}
+        </>
+    )
 }
