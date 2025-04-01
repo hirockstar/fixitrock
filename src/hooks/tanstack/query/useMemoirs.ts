@@ -3,6 +3,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { useRouter as topLoaderRouter, usePathname } from 'next/navigation'
 import { useRouter } from 'nextjs-toploader/app'
+import React from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
@@ -14,7 +15,7 @@ import { DriveItem } from '®types/drive'
 export function useMemoirs(slug: string) {
     const { ref, inView } = useInView()
     const [selectedItem, setSelectedItem] = useState<DriveItem | null>(null)
-    const [open, setPreviewOpen] = useState(false)
+    const [open, setPreviewOpen] = React.useState(false)
     const searchParams = useSearchParams()
     const router = useRouter()
     const topLoader = topLoaderRouter()
