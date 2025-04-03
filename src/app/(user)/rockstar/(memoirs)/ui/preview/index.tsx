@@ -75,7 +75,7 @@ export function Preview({ open, setOpen, c }: PreviewProps) {
                 scrollBehavior='inside'
                 onOpenChange={setOpen}
             >
-                <ModalContent className='overflow-hidden border dark:bg-black'>
+                <ModalContent className='h-full max-h-[75vh] overflow-hidden border dark:bg-black'>
                     <Switch file={c} />
                     <ModalHeader aria-hidden className='hidden' />
                 </ModalContent>
@@ -85,7 +85,7 @@ export function Preview({ open, setOpen, c }: PreviewProps) {
 
     return (
         <Drawer open={open} onOpenChange={setOpen}>
-            <DrawerContent className='overflow-auto p-2'>
+            <DrawerContent className='gap-3 overflow-auto p-2'>
                 <DrawerTitle>
                     <div className='flex w-full items-center justify-between gap-2'>
                         <UserInfo data={data} isLoading={isLoading} />
@@ -99,8 +99,8 @@ export function Preview({ open, setOpen, c }: PreviewProps) {
                             <Download size={20} />
                         </Button>
                     </div>
-                    <Switch file={c} />
                 </DrawerTitle>
+                <Switch file={c} />
                 <DrawerDescription aria-hidden />
             </DrawerContent>
         </Drawer>
