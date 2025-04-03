@@ -11,16 +11,18 @@ export function ImagePreview({ file }: { file: DriveItem }) {
             : file['@microsoft.graph.downloadUrl']
 
     return (
-        <Image
-            isBlurred
-            alt={file.name}
-            classNames={{
-                img: 'h-full w-full object-cover',
-                wrapper: 'mx-auto flex h-full w-full items-center justify-center',
-            }}
-            // height={file.image?.height}
-            src={src}
-            // width={file.image?.width}
-        />
+        <div className='overflow-hidden rounded-sm'>
+            <Image
+                isBlurred
+                alt={file.name}
+                classNames={{
+                    img: 'h-full w-full object-cover',
+                    wrapper: 'mx-auto flex h-full w-full items-center justify-center',
+                }}
+                // height={file.image?.height}
+                src={src}
+                // width={file.image?.width}
+            />
+        </div>
     )
 }

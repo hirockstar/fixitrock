@@ -17,12 +17,14 @@ export function VideoPreview({ file }: { file: DriveItem }) {
 
     return (
         <>
-            {!isIframeLoaded && <Skeleton className='aspect-video w-full sm:h-full' />}
+            {!isIframeLoaded && (
+                <Skeleton className='aspect-video w-full overflow-hidden rounded-sm sm:h-full' />
+            )}
             {hiddenIframe}
             {isIframeLoaded && data && (
                 <iframe
                     allowFullScreen
-                    className={`aspect-video w-full sm:h-full`}
+                    className={`aspect-video w-full overflow-hidden rounded-sm sm:h-full`}
                     src={`https://fixitrock-my.sharepoint.com/personal/drive_fixitrock_com/_layouts/15/embed.aspx?UniqueId=${extractUniqueId(file['@microsoft.graph.downloadUrl'] || '')}&embed=%7B%22ust%22%3Atrue%2C%22hv%22%3A%22CopyEmbedCode%22%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create`}
                 />
             )}
