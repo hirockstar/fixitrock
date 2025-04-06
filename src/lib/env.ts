@@ -1,3 +1,4 @@
+// src/lib/env.ts
 import { createEnv } from '@t3-oss/env-nextjs'
 import { z } from 'zod'
 
@@ -18,8 +19,16 @@ export const env = createEnv({
             .string()
             .url('NEXT_PUBLIC_SITE_URL must be a valid URL')
             .min(1, 'NEXT_PUBLIC_SITE_URL cannot be empty'),
+
+        NEXT_PUBLIC_SUPABASE_URL: z.string().url('NEXT_PUBLIC_SUPABASE_URL must be a valid URL'),
+
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: z
+            .string()
+            .min(1, 'NEXT_PUBLIC_SUPABASE_ANON_KEY cannot be empty'),
     },
     experimental__runtimeEnv: {
         NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+        NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     },
 })
