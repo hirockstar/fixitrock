@@ -3,12 +3,13 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { getData } from '®actions/supabase/getData'
+import { Quote } from '®types/user'
 
 export function useQuote() {
-    const query = useQuery({
+    const query = useQuery<Quote[], Error>({
         queryKey: ['Quotes'],
         queryFn: async () => {
-            const data = await getData('quotes')
+            const data = await getData<Quote>('quotes')
 
             return data.reverse()
         },

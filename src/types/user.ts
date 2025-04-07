@@ -20,3 +20,10 @@ export const GallerySchema = z.object({
 })
 
 export type GalleryProps = z.infer<typeof GallerySchema>
+
+export type Quote = {
+    id: number
+    quote: string
+    username: string
+    lastModifiedDateTime: string
+}
