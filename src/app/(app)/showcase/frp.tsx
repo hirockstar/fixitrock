@@ -12,9 +12,10 @@ import { TitleAction } from '®ui'
 import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®ui/carousel'
 import { GridSkeleton } from '®ui/skeleton'
 import { ErrorState } from '®ui/state'
+import { FRP as Types } from '®types/invoice'
 
 export default function FRP() {
-    const { data, isLoading, error } = useSupabse('frp')
+    const { data, isLoading, error } = useSupabse<Types>('frp')
 
     return (
         <TitleAction href='/frp' title='FRP Bypass'>

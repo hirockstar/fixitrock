@@ -18,7 +18,7 @@ import { usePasswordGate } from '../hooks/usePasswordGate'
 
 export default function InvoicePage() {
     const router = useRouter()
-    const { data: invoices, isLoading } = useSupabse('invoice')
+    const { data: invoices, isLoading } = useSupabse<Invoice>('invoice')
     const { isLoggedIn, login, logout } = usePasswordGate(
         'invoice-password',
         process.env.NEXT_PUBLIC_INVOICE_PASSWORD as string

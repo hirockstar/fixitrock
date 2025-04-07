@@ -7,11 +7,12 @@ import { TbDatabaseStar, TbPlugConnectedX } from 'react-icons/tb'
 
 import { formatDateTime } from '®lib/utils'
 import { useSupabse } from '®tanstack/query'
+import { FRP } from '®types/invoice'
 import { GridSkeleton } from '®ui/skeleton'
 import { ErrorState } from '®ui/state'
 
 export default function Page() {
-    const { data, isLoading, error } = useSupabse('frp')
+    const { data, isLoading, error } = useSupabse<FRP>('frp')
 
     return (
         <section className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2'>

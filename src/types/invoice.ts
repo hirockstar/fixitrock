@@ -16,3 +16,21 @@ export type InvoiceProduct = {
     price: number
     created_at: string
 }
+
+export type FRP = {
+    id: number
+    title: string
+    img: string
+    link: string
+    count: number
+    created_at: string
+}
+
+export type Repair = {
+    id: number
+    title: string
+    img: string
+    link: string
+    count: number
+    created_at: string
+}
