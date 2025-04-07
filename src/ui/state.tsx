@@ -138,7 +138,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
     return (
         <div
             className={cn(
-                'group flex w-full select-none flex-col items-center gap-6 rounded-xl border py-12 text-center shadow-lg transition-all duration-300',
+                'group flex w-full select-none flex-col items-center gap-6 rounded-xl border py-12 text-center transition-all duration-300',
                 className
             )}
         >
