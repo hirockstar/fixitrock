@@ -2,32 +2,56 @@
 
 import { useEffect, useState } from 'react'
 
-export function usePasswordGate(storageKey: string, correctPassword: string) {
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+type Role = 'admin' | 'user' | null
+
+interface UsePasswordGateProps {
+    storageKey: string
+    adminPassword: string
+    userPassword?: string
+}
+
+export function usePasswordGate({ storageKey, adminPassword, userPassword }: UsePasswordGateProps) {
+    const [role, setRole] = useState<Role>(null)
 
     useEffect(() => {
         const stored = localStorage.getItem(storageKey)
 
-        if (stored === correctPassword) {
-            setIsLoggedIn(true)
+        // Check if the password matches either admin or user
+        if (stored === adminPassword) {
+            setRole('admin')
+        } else if (userPassword && stored === userPassword) {
+            setRole('user')
         }
-    }, [storageKey, correctPassword])
+    }, [storageKey, adminPassword, userPassword])
 
     const login = (password: string) => {
-        const isValid = password === correctPassword
+        let newRole: Role = null
 
-        if (isValid) {
-            localStorage.setItem(storageKey, password)
-            setIsLoggedIn(true)
+        if (password === adminPassword) {
+            newRole = 'admin'
+        } else if (userPassword && password === userPassword) {
+            newRole = 'user'
         }
 
-        return isValid
+        if (newRole) {
+            localStorage.setItem(storageKey, password)
+            setRole(newRole)
+
+            return true
+        }
+
+        return false
     }
 
     const logout = () => {
         localStorage.removeItem(storageKey)
-        setIsLoggedIn(false)
+        setRole(null)
     }
 
-    return { isLoggedIn, login, logout }
+    return {
+        isLoggedIn: !!role,
+        role,
+        login,
+        logout,
+    }
 }

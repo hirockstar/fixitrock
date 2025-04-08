@@ -31,10 +31,15 @@ export default function InvoiceDetailsPage() {
         isLoading,
         refetch,
     } = useSupabse<InvoiceProduct>('invoice_product', ['invoice_id', 'eq', id])
-    const { isLoggedIn, login, logout } = usePasswordGate(
-        'product-password',
-        process.env.NEXT_PUBLIC_PRODUCT_PASSWORD as string
-    )
+
+    const { isLoggedIn, role, login, logout } = usePasswordGate({
+        storageKey: 'product-password',
+        adminPassword: process.env.NEXT_PUBLIC_PRODUCT_PASSWORD as string,
+        userPassword: process.env.NEXT_PUBLIC_PRODUCT_USER_PASSWORD as string,
+    })
+
+    const isAdmin = role === 'admin'
+    const isUser = role === 'user'
     const [loginOpen, setLoginOpen] = useState(false)
     const [openModal, setOpenModal] = useState(false)
 
@@ -47,11 +52,13 @@ export default function InvoiceDetailsPage() {
 
         return { totalCost }
     }, [products])
+
     const filteredProducts = useMemo(() => {
         return (
             products?.filter((item) => item.name.toLowerCase().includes(search.toLowerCase())) || []
         )
     }, [products, search])
+
     const handleAdd = () => {
         setSelectedItem(null)
         setOpenModal(true)
@@ -66,6 +73,7 @@ export default function InvoiceDetailsPage() {
         setDeleteItem(item)
         setOpenModal(true)
     }
+
     const [deleteItem, setDeleteItem] = useState<InvoiceProduct | null>(null)
 
     return (
@@ -151,7 +159,7 @@ export default function InvoiceDetailsPage() {
 
                     <LoginModal
                         isOpen={loginOpen}
-                        label='Enter Invoice Password'
+                        label='Enter Password'
                         onClose={() => setLoginOpen(false)}
                         onSubmit={(val) => login(val)}
                     />
@@ -165,19 +173,30 @@ export default function InvoiceDetailsPage() {
                     <TableHeader>
                         <TableRow className='select-none border bg-muted/50 [&>:not(:last-child)]:border-r'>
                             <TableHead>Name</TableHead>
-                            {isLoggedIn && <TableHead className='text-center'>Purchase</TableHead>}
+                            {isLoggedIn || isUser ? (
+                                <TableHead className='text-center'>Purchase</TableHead>
+                            ) : null}
                             <TableHead className='text-center'>Price</TableHead>
-                            {isLoggedIn && <TableHead className='text-center'>Qty</TableHead>}
-                            {isLoggedIn && <TableHead className='text-center'>Total</TableHead>}
-                            {isLoggedIn && <TableHead className='text-center'>Edit</TableHead>}
+                            {isAdmin && (
+                                <>
+                                    <TableHead className='text-center'>Qty</TableHead>
+                                    <TableHead className='text-center'>Total</TableHead>
+                                    <TableHead className='text-center'>Edit</TableHead>
+                                </>
+                            )}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {isLoading ? (
                             Array.from({ length: 5 }).map((_, i) => (
                                 <TableRow key={i}>
-                                    {Array.from({ length: isLoggedIn ? 6 : 2 }).map((_, i) => (
-                                        <TableCell key={i}>
+                                    {Array.from({
+                                        length: role === 'admin' ? 6 : role === 'user' ? 3 : 2,
+                                    }).map((_, i) => (
+                                        <TableCell
+                                            key={i}
+                                            className='*:border-border [&>:not(:last-child)]:border-r'
+                                        >
                                             <Skeleton className='h-5 w-20 rounded-sm' />
                                         </TableCell>
                                     ))}
@@ -190,48 +209,48 @@ export default function InvoiceDetailsPage() {
                                     className='*:border-border [&>:not(:last-child)]:border-r'
                                 >
                                     <TableCell className='text-nowrap'>{item.name}</TableCell>
-                                    {isLoggedIn && (
+                                    {isLoggedIn || isUser ? (
                                         <TableCell className='text-center'>
                                             {item.purchase_price}
                                         </TableCell>
-                                    )}
+                                    ) : null}
                                     <TableCell className='text-center'>{item.price}</TableCell>
-                                    {isLoggedIn && (
-                                        <TableCell className='text-center'>{item.qty}</TableCell>
-                                    )}
-                                    {isLoggedIn && (
-                                        <TableCell className='text-center'>
-                                            {item.purchase_price * item.qty}
-                                        </TableCell>
-                                    )}
-                                    {isLoggedIn && (
-                                        <TableCell className='flex items-center justify-center gap-4'>
-                                            <Button
-                                                isIconOnly
-                                                className='border'
-                                                radius='full'
-                                                size='sm'
-                                                startContent={<Edit size={18} />}
-                                                variant='light'
-                                                onPress={() => handleEdit(item)}
-                                            />
-                                            <Button
-                                                isIconOnly
-                                                className='border'
-                                                color='danger'
-                                                radius='full'
-                                                size='sm'
-                                                startContent={<Delete />}
-                                                variant='light'
-                                                onPress={() => handleDelete(item)}
-                                            />
-                                        </TableCell>
+                                    {isAdmin && (
+                                        <>
+                                            <TableCell className='text-center'>
+                                                {item.qty}
+                                            </TableCell>
+                                            <TableCell className='text-center'>
+                                                {item.purchase_price * item.qty}
+                                            </TableCell>
+                                            <TableCell className='flex items-center justify-center gap-4'>
+                                                <Button
+                                                    isIconOnly
+                                                    className='border'
+                                                    radius='full'
+                                                    size='sm'
+                                                    startContent={<Edit size={18} />}
+                                                    variant='light'
+                                                    onPress={() => handleEdit(item)}
+                                                />
+                                                <Button
+                                                    isIconOnly
+                                                    className='border'
+                                                    color='danger'
+                                                    radius='full'
+                                                    size='sm'
+                                                    startContent={<Delete />}
+                                                    variant='light'
+                                                    onPress={() => handleDelete(item)}
+                                                />
+                                            </TableCell>
+                                        </>
                                     )}
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={isLoggedIn ? 6 : 2}>
+                                <TableCell colSpan={isLoggedIn ? 6 : isUser ? 4 : 2}>
                                     <p className='text-center text-sm text-muted-foreground'>
                                         No products found.
                                     </p>
@@ -239,7 +258,7 @@ export default function InvoiceDetailsPage() {
                             </TableRow>
                         )}
                     </TableBody>
-                    {isLoggedIn && (
+                    {isAdmin && (
                         <TableFooter>
                             <TableRow>
                                 <TableCell>Total: {products?.length}</TableCell>

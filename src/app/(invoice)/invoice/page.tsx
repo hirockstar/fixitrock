@@ -21,10 +21,10 @@ import { usePasswordGate } from '../hooks/usePasswordGate'
 export default function InvoicePage() {
     const router = useRouter()
     const { data: invoices, isLoading } = useSupabse<Invoice>('invoice')
-    const { isLoggedIn, login, logout } = usePasswordGate(
-        'invoice-password',
-        process.env.NEXT_PUBLIC_INVOICE_PASSWORD as string
-    )
+    const { isLoggedIn, login, logout } = usePasswordGate({
+        storageKey: 'invoice-password',
+        adminPassword: process.env.NEXT_PUBLIC_INVOICE_PASSWORD as string,
+    })
     const [loginOpen, setLoginOpen] = useState(false)
 
     const [openModal, setOpenModal] = useState(false)
@@ -111,7 +111,7 @@ export default function InvoicePage() {
                     />
                     <LoginModal
                         isOpen={loginOpen}
-                        label='Enter Invoice Password'
+                        label='Enter Password'
                         onClose={() => setLoginOpen(false)}
                         onSubmit={(val) => login(val)}
                     />
