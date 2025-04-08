@@ -99,7 +99,7 @@ export default function ProductModal({
     }
 
     const FormFields = () => (
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2.5'>
             <Input label='Product Name' {...register('name', { required: true })} size='sm' />
             <Input
                 label='Quantity'
@@ -147,7 +147,7 @@ export default function ProductModal({
             ) : (
                 <Button
                     fullWidth
-                    color='success'
+                    className='bg-foreground text-white dark:text-black'
                     isLoading={isSubmitting}
                     radius='full'
                     onPress={() => handleSubmit(onSubmit)()}
@@ -183,7 +183,7 @@ export default function ProductModal({
                     {isDeleteMode ? 'Confirm Delete' : isEdit ? 'Edit Product' : 'Add Product'}
                 </DrawerTitle>
                 {isDeleteMode ? <DeleteText /> : <FormFields />}
-                <DrawerFooter>
+                <DrawerFooter className='p-0'>
                     <FooterActions />
                 </DrawerFooter>
                 <DrawerDescription aria-hidden />

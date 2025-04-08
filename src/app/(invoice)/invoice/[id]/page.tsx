@@ -163,13 +163,13 @@ export default function InvoiceDetailsPage() {
                     className='overflow-hidden rounded-md border'
                 >
                     <TableHeader>
-                        <TableRow className='select-none bg-muted/50'>
+                        <TableRow className='select-none border bg-muted/50 [&>:not(:last-child)]:border-r'>
                             <TableHead>Name</TableHead>
-                            {isLoggedIn && <TableHead>Purchase</TableHead>}
-                            <TableHead>Price</TableHead>
-                            {isLoggedIn && <TableHead>Qty</TableHead>}
-                            {isLoggedIn && <TableHead>Total</TableHead>}
-                            {isLoggedIn && <TableHead>Edit</TableHead>}
+                            {isLoggedIn && <TableHead className='text-center'>Purchase</TableHead>}
+                            <TableHead className='text-center'>Price</TableHead>
+                            {isLoggedIn && <TableHead className='text-center'>Qty</TableHead>}
+                            {isLoggedIn && <TableHead className='text-center'>Total</TableHead>}
+                            {isLoggedIn && <TableHead className='text-center'>Edit</TableHead>}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -185,16 +185,27 @@ export default function InvoiceDetailsPage() {
                             ))
                         ) : filteredProducts?.length ? (
                             filteredProducts.map((item) => (
-                                <TableRow key={item.id}>
+                                <TableRow
+                                    key={item.id}
+                                    className='*:border-border [&>:not(:last-child)]:border-r'
+                                >
                                     <TableCell className='text-nowrap'>{item.name}</TableCell>
-                                    {isLoggedIn && <TableCell>{item.purchase_price}</TableCell>}
-                                    <TableCell>{item.price}</TableCell>
-                                    {isLoggedIn && <TableCell>{item.qty}</TableCell>}
                                     {isLoggedIn && (
-                                        <TableCell>{item.purchase_price * item.qty}</TableCell>
+                                        <TableCell className='text-center'>
+                                            {item.purchase_price}
+                                        </TableCell>
+                                    )}
+                                    <TableCell className='text-center'>{item.price}</TableCell>
+                                    {isLoggedIn && (
+                                        <TableCell className='text-center'>{item.qty}</TableCell>
                                     )}
                                     {isLoggedIn && (
-                                        <TableCell className='flex items-center gap-4'>
+                                        <TableCell className='text-center'>
+                                            {item.purchase_price * item.qty}
+                                        </TableCell>
+                                    )}
+                                    {isLoggedIn && (
+                                        <TableCell className='flex items-center justify-center gap-4'>
                                             <Button
                                                 isIconOnly
                                                 className='border'
@@ -235,7 +246,7 @@ export default function InvoiceDetailsPage() {
                                 <TableCell />
                                 <TableCell />
                                 <TableCell />
-                                <TableCell>₹{totalCost}</TableCell>
+                                <TableCell className='text-center'>₹{totalCost}</TableCell>
                                 <TableCell />
                             </TableRow>
                         </TableFooter>
