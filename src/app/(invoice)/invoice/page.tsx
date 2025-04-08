@@ -11,6 +11,8 @@ import { useSupabse } from '®hooks/tanstack/query'
 import { Separator } from '®ui/separator'
 import { formatDateTime } from '®lib/utils'
 import { Invoice } from '®types/invoice'
+import AnimatedDiv from '®ui/farmer/div'
+import { BlogCardAnimation, fromLeftVariant } from '®lib/FramerMotionVariants'
 
 import InvoiceModal from '../ui/modal'
 import LoginModal from '../ui/login'
@@ -121,65 +123,72 @@ export default function InvoicePage() {
                     <InvoiceSkeleton />
                 ) : filteredInvoices?.length ? (
                     filteredInvoices.map((invoice) => (
-                        <Card
+                        <AnimatedDiv
                             key={invoice.id}
-                            isPressable
-                            className='cursor-pointer rounded-2xl border border-dashed bg-transparent shadow-none'
-                            onPress={() => router.push(`/invoice/${invoice.id}`)}
+                            mobileVariants={BlogCardAnimation}
+                            variants={fromLeftVariant}
                         >
-                            <CardBody className='p-0'>
-                                <div className='flex items-center justify-between border-b border-dashed bg-muted/30 px-6 py-2'>
-                                    <div className='flex items-center gap-2'>
-                                        <Receipt className='h-4 w-4 text-muted-foreground' />
-                                        <span className='text-xs font-medium text-muted-foreground'>
-                                            INVOICE #{invoice?.number.toString().padStart(4, '0')}
-                                        </span>
+                            <Card
+                                fullWidth
+                                isPressable
+                                className='cursor-pointer rounded-2xl border border-dashed bg-transparent shadow-none'
+                                onPress={() => router.push(`/invoice/${invoice.id}`)}
+                            >
+                                <CardBody className='p-0'>
+                                    <div className='flex items-center justify-between border-b border-dashed bg-muted/30 px-6 py-2'>
+                                        <div className='flex items-center gap-2'>
+                                            <Receipt className='h-4 w-4 text-muted-foreground' />
+                                            <span className='text-xs font-medium text-muted-foreground'>
+                                                INVOICE #
+                                                {invoice?.number.toString().padStart(4, '0')}
+                                            </span>
+                                        </div>
+                                        {isLoggedIn && (
+                                            <Button
+                                                isIconOnly
+                                                className='border'
+                                                radius='full'
+                                                size='sm'
+                                                startContent={<Edit size={20} />}
+                                                variant='light'
+                                                onPress={() => handleEdit(invoice)}
+                                            />
+                                        )}
                                     </div>
-                                    {isLoggedIn && (
-                                        <Button
-                                            isIconOnly
-                                            className='border'
-                                            radius='full'
-                                            size='sm'
-                                            startContent={<Edit size={20} />}
-                                            variant='light'
-                                            onPress={() => handleEdit(invoice)}
-                                        />
-                                    )}
-                                </div>
 
-                                <CardHeader className='flex w-full flex-col px-6 py-4'>
-                                    <div className='flex w-full items-start justify-between'>
-                                        <h3 className='text-2xl font-semibold'>
-                                            {invoice.product}
-                                        </h3>
+                                    <CardHeader className='flex w-full flex-col px-6 py-4'>
+                                        <div className='flex w-full items-start justify-between'>
+                                            <h3 className='text-2xl font-semibold'>
+                                                {invoice.product}
+                                            </h3>
+                                            <span className='text-xs text-muted-foreground'>
+                                                {format(invoice.created_at, 'MMM d, yyyy')}
+                                            </span>
+                                        </div>
+                                        <p className='w-full text-start text-sm text-muted-foreground'>
+                                            <span className='font-semibold text-emerald-600 dark:text-emerald-400'>
+                                                Seller:
+                                            </span>{' '}
+                                            {invoice.seller}
+                                        </p>
+                                    </CardHeader>
+
+                                    <Separator />
+
+                                    <div className='flex items-center justify-between px-6 py-2'>
+                                        <div className='flex items-center gap-1.5'>
+                                            <MapPin className='h-4 w-4 text-muted-foreground' />
+                                            <span className='text-sm text-muted-foreground'>
+                                                {invoice.location}
+                                            </span>
+                                        </div>
                                         <span className='text-xs text-muted-foreground'>
-                                            {format(invoice.created_at, 'MMM d, yyyy')}
+                                            {formatDateTime(invoice.created_at)}
                                         </span>
                                     </div>
-                                    <p className='w-full text-start text-sm text-muted-foreground'>
-                                        <span className='font-semibold text-emerald-600 dark:text-emerald-400'>
-                                            Seller:
-                                        </span>{' '}
-                                        {invoice.seller}
-                                    </p>
-                                </CardHeader>
-
-                                <Separator />
-
-                                <div className='flex items-center justify-between px-6 py-2'>
-                                    <div className='flex items-center gap-1.5'>
-                                        <MapPin className='h-4 w-4 text-muted-foreground' />
-                                        <span className='text-sm text-muted-foreground'>
-                                            {invoice.location}
-                                        </span>
-                                    </div>
-                                    <span className='text-xs text-muted-foreground'>
-                                        {formatDateTime(invoice.created_at)}
-                                    </span>
-                                </div>
-                            </CardBody>
-                        </Card>
+                                </CardBody>
+                            </Card>
+                        </AnimatedDiv>
                     ))
                 ) : (
                     <div className='col-span-full text-center text-sm text-muted-foreground'>

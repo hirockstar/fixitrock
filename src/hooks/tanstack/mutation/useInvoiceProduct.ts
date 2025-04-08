@@ -35,5 +35,15 @@ export function useInvoiceProduct(invoiceId: string | number) {
         },
     })
 
-    return { addProduct, updateProduct }
+    const deleteProduct = useMutation({
+        mutationFn: async (id: string | number) => {
+            const { error } = await supabase.from('invoice_product').delete().eq('id', id)
+
+            if (error) throw error
+
+            return id
+        },
+    })
+
+    return { addProduct, updateProduct, deleteProduct }
 }
