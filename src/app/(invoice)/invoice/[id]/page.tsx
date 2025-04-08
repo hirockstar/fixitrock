@@ -21,7 +21,6 @@ import { InvoiceProduct } from '®types/invoice'
 import ProductModal from '®app/(invoice)/ui/product'
 import LoginModal from '®app/(invoice)/ui/login'
 import { Delete } from '®ui/icons'
-
 import { usePasswordGate } from '®app/(invoice)/hooks/usePasswordGate'
 
 export default function InvoiceDetailsPage() {
@@ -74,7 +73,7 @@ export default function InvoiceDetailsPage() {
             <Navbar
                 shouldHideOnScroll
                 classNames={{
-                    wrapper: 'h-auto w-full gap-1 p-0 py-1',
+                    wrapper: 'h-auto w-full gap-1 p-0 py-2',
                 }}
                 maxWidth='full'
             >
