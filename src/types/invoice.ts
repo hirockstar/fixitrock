@@ -11,6 +11,7 @@ export type InvoiceProduct = {
     id: string
     invoice_id: string
     name: string
+    compatibility: string
     qty: number
     purchase_price: number
     price: number

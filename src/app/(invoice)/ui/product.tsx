@@ -49,6 +49,7 @@ export default function ProductModal({
     } = useForm<Omit<InvoiceProduct, 'id' | 'created_at' | 'invoice_id'>>({
         defaultValues: {
             name: '',
+            compatibility: '',
             qty: undefined,
             purchase_price: undefined,
             price: undefined,
@@ -59,6 +60,7 @@ export default function ProductModal({
         if (initialData) {
             reset({
                 name: initialData.name || '',
+                compatibility: initialData.compatibility || '',
                 qty: initialData.qty || undefined,
                 purchase_price: initialData.purchase_price || undefined,
                 price: initialData.price || undefined,
@@ -101,6 +103,7 @@ export default function ProductModal({
     const FormFields = () => (
         <div className='flex flex-col gap-2.5'>
             <Input label='Product Name' {...register('name', { required: true })} size='sm' />
+            <Input label='Compatibility' {...register('compatibility')} size='sm' />
             <Input
                 label='Quantity'
                 type='number'

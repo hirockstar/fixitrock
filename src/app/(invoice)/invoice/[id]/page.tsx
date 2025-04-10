@@ -54,8 +54,14 @@ export default function InvoiceDetailsPage() {
     }, [products])
 
     const filteredProducts = useMemo(() => {
+        const searchTerm = search.toLowerCase()
+
         return (
-            products?.filter((item) => item.name.toLowerCase().includes(search.toLowerCase())) || []
+            products?.filter(
+                (item) =>
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    item.compatibility?.toLowerCase().includes(searchTerm)
+            ) || []
         )
     }, [products, search])
 
@@ -173,6 +179,7 @@ export default function InvoiceDetailsPage() {
                     <TableHeader>
                         <TableRow className='select-none border bg-muted/50 [&>:not(:last-child)]:border-r'>
                             <TableHead>Name</TableHead>
+                            <TableHead className='text-center'>Compatibility</TableHead>
                             {isLoggedIn || isUser ? (
                                 <TableHead className='text-center'>Purchase</TableHead>
                             ) : null}
@@ -209,6 +216,9 @@ export default function InvoiceDetailsPage() {
                                     className='*:border-border [&>:not(:last-child)]:border-r'
                                 >
                                     <TableCell className='text-nowrap'>{item.name}</TableCell>
+                                    <TableCell className='text-center'>
+                                        {item.compatibility}
+                                    </TableCell>
                                     {isLoggedIn || isUser ? (
                                         <TableCell className='text-center'>
                                             {item.purchase_price}
