@@ -198,7 +198,7 @@ export default function InvoiceDetailsPage() {
                             Array.from({ length: 5 }).map((_, i) => (
                                 <TableRow key={i}>
                                     {Array.from({
-                                        length: role === 'admin' ? 6 : role === 'user' ? 3 : 2,
+                                        length: role === 'admin' ? 7 : role === 'user' ? 4 : 3,
                                     }).map((_, i) => (
                                         <TableCell
                                             key={i}
@@ -216,7 +216,7 @@ export default function InvoiceDetailsPage() {
                                     className='*:border-border [&>:not(:last-child)]:border-r'
                                 >
                                     <TableCell className='text-nowrap'>{item.name}</TableCell>
-                                    <TableCell className='text-center'>
+                                    <TableCell className='max-w-xs text-center'>
                                         {item.compatibility}
                                     </TableCell>
                                     {isLoggedIn || isUser ? (
@@ -260,7 +260,7 @@ export default function InvoiceDetailsPage() {
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={isLoggedIn ? 6 : isUser ? 4 : 2}>
+                                <TableCell colSpan={isLoggedIn ? 7 : isUser ? 4 : 3}>
                                     <p className='text-center text-sm text-muted-foreground'>
                                         No products found.
                                     </p>
@@ -272,6 +272,7 @@ export default function InvoiceDetailsPage() {
                         <TableFooter>
                             <TableRow>
                                 <TableCell>Total: {products?.length}</TableCell>
+                                <TableCell />
                                 <TableCell />
                                 <TableCell />
                                 <TableCell />

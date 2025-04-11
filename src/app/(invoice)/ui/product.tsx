@@ -10,6 +10,7 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
+    Textarea,
 } from '@heroui/react'
 
 import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerTitle } from '®ui/drawer'
@@ -103,7 +104,7 @@ export default function ProductModal({
     const FormFields = () => (
         <div className='flex flex-col gap-2.5'>
             <Input label='Product Name' {...register('name', { required: true })} size='sm' />
-            <Input label='Compatibility' {...register('compatibility')} size='sm' />
+            <Textarea label='Compatibility' {...register('compatibility')} size='sm' />
             <Input
                 label='Quantity'
                 type='number'
