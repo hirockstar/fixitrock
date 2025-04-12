@@ -34,13 +34,13 @@ export async function GET(_request: Request) {
     return new ImageResponse(
         (
             <div style={{ fontFamily: 'Geist Sans' }} tw='flex h-full w-full bg-black text-white'>
-                <div tw='flex flex-col  w-full h-full max-w-[1070px] mx-auto mt-16'>
+                <div tw='flex flex-col w-full h-full mx-auto'>
                     <img
                         alt='Logo'
                         src={(await profile).user.cover}
                         style={{
                             width: '100%',
-                            height: '240px',
+                            height: '320px',
                             objectFit: 'cover',
                             borderBottomLeftRadius: '2rem',
                             borderBottomRightRadius: '2rem',
@@ -84,7 +84,7 @@ export async function GET(_request: Request) {
                                 style={{
                                     textAlign: 'center',
                                     fontWeight: 400,
-                                    fontSize: 25,
+                                    fontSize: 30,
                                     color: '#a1a1aa',
                                     marginTop: '0.5rem',
                                 }}
