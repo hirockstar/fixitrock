@@ -9,7 +9,7 @@ import { useProfile } from '®tanstack/query'
 import { Actions } from './actions'
 
 const user = {
-    name: 'Rock Star',
+    name: 'Rock Star 💕',
     username: 'rockstar',
     bio: 'I am a Rockstar',
     location: 'Mars',

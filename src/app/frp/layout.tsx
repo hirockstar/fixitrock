@@ -29,11 +29,11 @@ export const metadata: Metadata = {
     ],
     authors: [
         {
-            name: 'Rock Star',
+            name: 'Rock Star 💕',
             url: 'https://rockstar.bio',
         },
     ],
-    publisher: 'Rock Star',
+    publisher: 'Rock Star 💕',
     openGraph: {
         title: 'FRP Bypass',
         url: new URL(siteConfig.domain),

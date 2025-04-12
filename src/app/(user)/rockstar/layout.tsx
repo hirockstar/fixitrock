@@ -9,23 +9,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
 export const metadata: Metadata = {
     title: {
-        default: 'Rock Star',
-        template: `%s - Rock Star`,
+        default: 'Rock Star 💕',
+        template: `%s - Rock Star 💕`,
     },
     description: '',
     keywords: [],
     authors: [
         {
-            name: 'Rock Star',
+            name: 'Rock Star 💕',
             url: 'https://rockstar.bio',
         },
     ],
-    publisher: 'Rock Star',
+    publisher: 'Rock Star 💕',
     openGraph: {
-        title: 'Rock Star',
+        title: 'Rock Star 💕',
         url: new URL(siteConfig.domain),
         type: 'website',
-        images: `/og?slug=/FRP-Files&type=drive`,
+        images: `/rockstar/og`,
         siteName: siteConfig.title,
     },
 }

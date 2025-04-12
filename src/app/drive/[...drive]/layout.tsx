@@ -15,11 +15,11 @@ export async function generateMetadata({ params }: { params: Promise<{ drive: st
         keywords: title || 'Not Found',
         authors: [
             {
-                name: 'Rock Star',
+                name: 'Rock Star 💕',
                 url: 'https://rockstar.bio',
             },
         ],
-        publisher: 'Rock Star',
+        publisher: 'Rock Star 💕',
         openGraph: {
             title: title || '',
             url: new URL(siteConfig.domain),

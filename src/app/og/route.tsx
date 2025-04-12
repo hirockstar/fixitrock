@@ -230,7 +230,9 @@ export async function GET(request: Request) {
             width: 1200,
             height: 628,
             fonts,
-            headers,
+            headers: {
+                'Content-Disposition': `filename=${data.name}.webp`,
+            },
         })
     } catch (e) {
         return new Response(
