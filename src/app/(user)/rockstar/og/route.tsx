@@ -36,7 +36,7 @@ export async function GET(_request: Request) {
             <div style={{ fontFamily: 'Geist Sans' }} tw='flex h-full w-full bg-black text-white'>
                 <div tw='flex flex-col w-full h-full mx-auto'>
                     <img
-                        alt='Logo'
+                        alt='Cover'
                         src={(await profile).user.cover}
                         style={{
                             width: '100%',

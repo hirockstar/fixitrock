@@ -158,7 +158,7 @@ export function slugify(text: string): string {
 export function path(url: string, isFile?: boolean) {
     const path = url
         .replace(
-            `https://fixitrock-my.sharepoint.com/personal/drive_fixitrock_com/Documents/${siteConfig.baseDirectory}`,
+            `https://fixitrock-my.sharepoint.com/personal/ftp_fixitrock_com/Documents/${siteConfig.baseDirectory}`,
             ''
         )
         .trim()
