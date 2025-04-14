@@ -51,6 +51,7 @@ export default function ProductModal({
         defaultValues: {
             name: '',
             compatibility: '',
+            category: '',
             qty: undefined,
             purchase_price: undefined,
             price: undefined,
@@ -58,20 +59,30 @@ export default function ProductModal({
     })
 
     useEffect(() => {
+        if (!isOpen) return
+
         if (initialData) {
             reset({
                 name: initialData.name || '',
                 compatibility: initialData.compatibility || '',
+                category: initialData.category || '',
                 qty: initialData.qty || undefined,
                 purchase_price: initialData.purchase_price || undefined,
                 price: initialData.price || undefined,
             })
         } else {
-            reset()
+            reset({
+                name: '',
+                compatibility: '',
+                category: '',
+                qty: undefined,
+                purchase_price: undefined,
+                price: undefined,
+            })
         }
 
         setIsDeleteMode(isDeleting)
-    }, [initialData, reset, isDeleting])
+    }, [initialData, isOpen, reset, isDeleting])
 
     const onSubmit = async (data: Omit<InvoiceProduct, 'id' | 'created_at' | 'invoice_id'>) => {
         try {
@@ -105,6 +116,7 @@ export default function ProductModal({
         <div className='flex flex-col gap-2.5'>
             <Input label='Product Name' {...register('name', { required: true })} size='sm' />
             <Textarea label='Compatibility' {...register('compatibility')} size='sm' />
+            <Input label='Category' {...register('category')} disabled={isEdit} size='sm' />
             <Input
                 label='Quantity'
                 type='number'

@@ -1,11 +1,10 @@
 'use client'
 
+import React, { useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { useMemo, useState } from 'react'
 import { Button, Input, Navbar, Skeleton } from '@heroui/react'
-import { Edit, Plus, Search, X } from 'lucide-react'
+import { Edit, Minus, Plus, Search, X } from 'lucide-react'
 import { BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
-import React from 'react'
 
 import {
     Table,
@@ -16,12 +15,23 @@ import {
     TableHeader,
     TableRow,
 } from '®ui/table'
+import { Delete } from '®ui/icons'
 import { useSupabse } from '®hooks/tanstack/query'
-import { InvoiceProduct } from '®types/invoice'
+import { useInvoiceProduct } from '®hooks/tanstack/mutation'
+import { usePasswordGate } from '®app/(invoice)/hooks/usePasswordGate'
 import ProductModal from '®app/(invoice)/ui/product'
 import LoginModal from '®app/(invoice)/ui/login'
-import { Delete } from '®ui/icons'
-import { usePasswordGate } from '®app/(invoice)/hooks/usePasswordGate'
+import { InvoiceProduct } from '®types/invoice'
+import { cn } from '®lib/utils'
+
+export type StockStatus = 'available' | 'low' | 'out-of-stock'
+
+function getStockStatus(qty: number, threshold = 1): StockStatus {
+    if (qty <= 0) return 'out-of-stock'
+    if (qty <= threshold) return 'low'
+
+    return 'available'
+}
 
 export default function InvoiceDetailsPage() {
     const { id } = useParams<{ id: string }>()
@@ -34,67 +44,67 @@ export default function InvoiceDetailsPage() {
 
     const { isLoggedIn, role, login, logout } = usePasswordGate({
         storageKey: 'product-password',
-        adminPassword: process.env.NEXT_PUBLIC_PRODUCT_PASSWORD as string,
-        userPassword: process.env.NEXT_PUBLIC_PRODUCT_USER_PASSWORD as string,
+        adminPassword: process.env.NEXT_PUBLIC_PRODUCT_PASSWORD!,
+        userPassword: process.env.NEXT_PUBLIC_PRODUCT_USER_PASSWORD!,
     })
 
     const isAdmin = role === 'admin'
     const isUser = role === 'user'
+    const visibleColumns = isAdmin ? 9 : isUser ? 6 : 5
+
     const [loginOpen, setLoginOpen] = useState(false)
-    const [openModal, setOpenModal] = useState(false)
-
+    const [productModalOpen, setProductModalOpen] = useState(false)
     const [search, setSearch] = useState('')
-    const [selectedItem, setSelectedItem] = useState<InvoiceProduct | null>(null)
+    const [editableProduct, setEditableProduct] = useState<InvoiceProduct | null>(null)
+    const [deleteProduct, setDeleteProduct] = useState<InvoiceProduct | null>(null)
 
-    const { totalCost } = useMemo(() => {
-        const totalCost =
-            products?.reduce((acc, item) => acc + item.purchase_price * item.qty, 0) || 0
-
-        return { totalCost }
-    }, [products])
+    const { updateProduct } = useInvoiceProduct(id)
 
     const filteredProducts = useMemo(() => {
-        const searchTerm = search.toLowerCase()
+        const term = search.toLowerCase()
 
         return (
             products?.filter(
                 (item) =>
-                    item.name.toLowerCase().includes(searchTerm) ||
-                    item.compatibility?.toLowerCase().includes(searchTerm)
+                    item.name.toLowerCase().includes(term) ||
+                    item.compatibility?.toLowerCase().includes(term)
             ) || []
         )
-    }, [products, search])
+    }, [search, products])
+
+    const totalCost = useMemo(
+        () => filteredProducts.reduce((sum, item) => sum + item.purchase_price * item.qty, 0),
+        [filteredProducts]
+    )
 
     const handleAdd = () => {
-        setSelectedItem(null)
-        setOpenModal(true)
+        setEditableProduct(null)
+        setProductModalOpen(true)
     }
 
     const handleEdit = (item: InvoiceProduct) => {
-        setSelectedItem(item)
-        setOpenModal(true)
+        setEditableProduct(item)
+        setProductModalOpen(true)
     }
 
     const handleDelete = (item: InvoiceProduct) => {
-        setDeleteItem(item)
-        setOpenModal(true)
+        setDeleteProduct(item)
+        setProductModalOpen(true)
     }
-
-    const [deleteItem, setDeleteItem] = useState<InvoiceProduct | null>(null)
 
     return (
         <div className='flex flex-col space-y-2'>
+            {/* Navbar */}
             <Navbar
                 shouldHideOnScroll
-                classNames={{
-                    wrapper: 'h-auto w-full gap-1 p-0 py-2',
-                }}
+                classNames={{ wrapper: 'h-auto w-full gap-1 p-0 py-2' }}
                 maxWidth='full'
             >
                 <div className='hidden h-10 w-full select-none items-center gap-1.5 sm:flex'>
                     <h1 className='text-base font-bold sm:text-lg'>Products</h1>
                 </div>
-                <div className='flex w-full select-none items-center justify-end gap-2'>
+
+                <div className='flex w-full items-center justify-end gap-2'>
                     <Input
                         className='bg-transparent'
                         classNames={{
@@ -103,22 +113,23 @@ export default function InvoiceDetailsPage() {
                             base: 'sm:w-[90%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]',
                         }}
                         endContent={
-                            search ? (
+                            search && (
                                 <Button
                                     isIconOnly
                                     radius='full'
                                     size='sm'
-                                    startContent={<X className='h-4 w-4 shrink-0' />}
+                                    startContent={<X className='h-4 w-4' />}
                                     variant='light'
                                     onPress={() => setSearch('')}
                                 />
-                            ) : undefined
+                            )
                         }
-                        placeholder='Search by modal name'
-                        startContent={<Search className='h-4 w-4 shrink-0' />}
+                        placeholder='Search by model name'
+                        startContent={<Search className='h-4 w-4' />}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
+
                     {isLoggedIn && (
                         <Button
                             isIconOnly
@@ -130,6 +141,7 @@ export default function InvoiceDetailsPage() {
                             onPress={handleAdd}
                         />
                     )}
+
                     <Button
                         isIconOnly
                         className='h-10 w-10 min-w-10'
@@ -139,38 +151,12 @@ export default function InvoiceDetailsPage() {
                         startContent={
                             isLoggedIn ? <BiLogOutCircle size={24} /> : <BiLogInCircle size={24} />
                         }
-                        onPress={() => {
-                            if (isLoggedIn) {
-                                logout()
-                            } else {
-                                setLoginOpen(true)
-                            }
-                        }}
-                    />
-                    <ProductModal
-                        initialData={selectedItem || deleteItem}
-                        invoiceId={id}
-                        isDeleting={!!deleteItem}
-                        isOpen={openModal}
-                        onClose={() => {
-                            setOpenModal(false)
-                            setSelectedItem(null)
-                            setDeleteItem(null)
-                        }}
-                        onProductUpdated={() => {
-                            refetch()
-                            setDeleteItem(null)
-                        }}
-                    />
-
-                    <LoginModal
-                        isOpen={loginOpen}
-                        label='Enter Password'
-                        onClose={() => setLoginOpen(false)}
-                        onSubmit={(val) => login(val)}
+                        onPress={() => (isLoggedIn ? logout() : setLoginOpen(true))}
                     />
                 </div>
             </Navbar>
+
+            {/* Product Table */}
             <div className='rounded-lg border'>
                 <Table
                     aria-label='Invoice Products Table'
@@ -180,28 +166,29 @@ export default function InvoiceDetailsPage() {
                         <TableRow className='select-none border bg-muted/50 [&>:not(:last-child)]:border-r'>
                             <TableHead>Name</TableHead>
                             <TableHead className='text-center'>Compatibility</TableHead>
-                            {isLoggedIn || isUser ? (
+                            <TableHead className='text-center'>Category</TableHead>
+                            {(isLoggedIn || isUser) && (
                                 <TableHead className='text-center'>Purchase</TableHead>
-                            ) : null}
+                            )}
                             <TableHead className='text-center'>Price</TableHead>
+                            {isAdmin && <TableHead className='text-center'>Qty</TableHead>}
+                            <TableHead className='text-center'>Status</TableHead>
                             {isAdmin && (
                                 <>
-                                    <TableHead className='text-center'>Qty</TableHead>
                                     <TableHead className='text-center'>Total</TableHead>
-                                    <TableHead className='text-center'>Edit</TableHead>
+                                    <TableHead className='text-center'>Actions</TableHead>
                                 </>
                             )}
                         </TableRow>
                     </TableHeader>
+
                     <TableBody>
                         {isLoading ? (
-                            Array.from({ length: 5 }).map((_, i) => (
+                            [...Array(5)].map((_, i) => (
                                 <TableRow key={i}>
-                                    {Array.from({
-                                        length: role === 'admin' ? 7 : role === 'user' ? 4 : 3,
-                                    }).map((_, i) => (
+                                    {[...Array(visibleColumns)].map((_, j) => (
                                         <TableCell
-                                            key={i}
+                                            key={j}
                                             className='*:border-border [&>:not(:last-child)]:border-r'
                                         >
                                             <Skeleton className='h-5 w-20 rounded-sm' />
@@ -209,58 +196,120 @@ export default function InvoiceDetailsPage() {
                                     ))}
                                 </TableRow>
                             ))
-                        ) : filteredProducts?.length ? (
-                            filteredProducts.map((item) => (
-                                <TableRow
-                                    key={item.id}
-                                    className='*:border-border [&>:not(:last-child)]:border-r'
-                                >
-                                    <TableCell className='text-nowrap'>{item.name}</TableCell>
-                                    <TableCell className='max-w-xs text-center'>
-                                        {item.compatibility}
-                                    </TableCell>
-                                    {isLoggedIn || isUser ? (
-                                        <TableCell className='text-center'>
-                                            {item.purchase_price}
+                        ) : filteredProducts.length ? (
+                            filteredProducts.map((item) => {
+                                const status = getStockStatus(item.qty)
+
+                                return (
+                                    <TableRow
+                                        key={item.id}
+                                        className='*:border-border [&>:not(:last-child)]:border-r'
+                                    >
+                                        <TableCell className='text-nowrap'>{item.name}</TableCell>
+                                        <TableCell className='max-w-xs text-center'>
+                                            {item.compatibility}
                                         </TableCell>
-                                    ) : null}
-                                    <TableCell className='text-center'>{item.price}</TableCell>
-                                    {isAdmin && (
-                                        <>
+                                        <TableCell className='text-center'>
+                                            {item.category}
+                                        </TableCell>
+                                        {(isLoggedIn || isUser) && (
                                             <TableCell className='text-center'>
-                                                {item.qty}
+                                                {item.purchase_price}
                                             </TableCell>
-                                            <TableCell className='text-center'>
-                                                {item.purchase_price * item.qty}
-                                            </TableCell>
-                                            <TableCell className='flex items-center justify-center gap-4'>
+                                        )}
+                                        <TableCell className='text-center'>{item.price}</TableCell>
+
+                                        {isAdmin && (
+                                            <TableCell className='flex items-center justify-center gap-2'>
                                                 <Button
                                                     isIconOnly
                                                     className='border'
+                                                    disabled={
+                                                        updateProduct.isPending || item.qty <= 0
+                                                    }
                                                     radius='full'
                                                     size='sm'
-                                                    startContent={<Edit size={18} />}
+                                                    startContent={<Minus size={15} />}
                                                     variant='light'
-                                                    onPress={() => handleEdit(item)}
+                                                    onPress={() =>
+                                                        updateProduct.mutate(
+                                                            { id: item.id, qty: item.qty - 1 },
+                                                            { onSuccess: refetch }
+                                                        )
+                                                    }
                                                 />
+                                                <span className='w-6 text-center'>{item.qty}</span>
                                                 <Button
                                                     isIconOnly
                                                     className='border'
-                                                    color='danger'
+                                                    disabled={updateProduct.isPending}
                                                     radius='full'
                                                     size='sm'
-                                                    startContent={<Delete />}
+                                                    startContent={<Plus size={15} />}
                                                     variant='light'
-                                                    onPress={() => handleDelete(item)}
+                                                    onPress={() =>
+                                                        updateProduct.mutate(
+                                                            { id: item.id, qty: item.qty + 1 },
+                                                            { onSuccess: refetch }
+                                                        )
+                                                    }
                                                 />
                                             </TableCell>
-                                        </>
-                                    )}
-                                </TableRow>
-                            ))
+                                        )}
+
+                                        <TableCell className='text-center'>
+                                            <span
+                                                className={cn(
+                                                    'rounded-full px-2 py-0.5 text-xs font-semibold',
+                                                    status === 'available'
+                                                        ? 'bg-green-100 text-green-700'
+                                                        : status === 'low'
+                                                          ? 'bg-yellow-100 text-yellow-700'
+                                                          : 'bg-red-100 text-red-700'
+                                                )}
+                                            >
+                                                {status === 'available'
+                                                    ? 'Available'
+                                                    : status === 'low'
+                                                      ? 'Low Stock'
+                                                      : 'Out of Stock'}
+                                            </span>
+                                        </TableCell>
+
+                                        {isAdmin && (
+                                            <>
+                                                <TableCell className='text-center'>
+                                                    {item.purchase_price * item.qty}
+                                                </TableCell>
+                                                <TableCell className='flex items-center justify-center gap-4'>
+                                                    <Button
+                                                        isIconOnly
+                                                        className='border'
+                                                        radius='full'
+                                                        size='sm'
+                                                        startContent={<Edit size={18} />}
+                                                        variant='light'
+                                                        onPress={() => handleEdit(item)}
+                                                    />
+                                                    <Button
+                                                        isIconOnly
+                                                        className='border'
+                                                        color='danger'
+                                                        radius='full'
+                                                        size='sm'
+                                                        startContent={<Delete />}
+                                                        variant='light'
+                                                        onPress={() => handleDelete(item)}
+                                                    />
+                                                </TableCell>
+                                            </>
+                                        )}
+                                    </TableRow>
+                                )
+                            })
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={isLoggedIn ? 7 : isUser ? 4 : 3}>
+                                <TableCell colSpan={visibleColumns}>
                                     <p className='text-center text-sm text-muted-foreground'>
                                         No products found.
                                     </p>
@@ -268,14 +317,12 @@ export default function InvoiceDetailsPage() {
                             </TableRow>
                         )}
                     </TableBody>
+
                     {isAdmin && (
                         <TableFooter>
                             <TableRow>
-                                <TableCell>Total: {products?.length}</TableCell>
-                                <TableCell />
-                                <TableCell />
-                                <TableCell />
-                                <TableCell />
+                                <TableCell>Total: {filteredProducts.length}</TableCell>
+                                <TableCell colSpan={visibleColumns - 2} />
                                 <TableCell className='text-center'>₹{totalCost}</TableCell>
                                 <TableCell />
                             </TableRow>
@@ -283,6 +330,29 @@ export default function InvoiceDetailsPage() {
                     )}
                 </Table>
             </div>
+
+            <ProductModal
+                initialData={editableProduct || deleteProduct}
+                invoiceId={id}
+                isDeleting={!!deleteProduct}
+                isOpen={productModalOpen}
+                onClose={() => {
+                    setProductModalOpen(false)
+                    setEditableProduct(null)
+                    setDeleteProduct(null)
+                }}
+                onProductUpdated={() => {
+                    refetch()
+                    setDeleteProduct(null)
+                }}
+            />
+
+            <LoginModal
+                isOpen={loginOpen}
+                label='Enter Password'
+                onClose={() => setLoginOpen(false)}
+                onSubmit={(val) => login(val)}
+            />
         </div>
     )
 }
