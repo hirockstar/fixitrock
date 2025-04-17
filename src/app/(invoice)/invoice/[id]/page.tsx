@@ -22,7 +22,6 @@ import { usePasswordGate } from '®app/(invoice)/hooks/usePasswordGate'
 import ProductModal from '®app/(invoice)/ui/product'
 import LoginModal from '®app/(invoice)/ui/login'
 import { InvoiceProduct } from '®types/invoice'
-import { cn } from '®lib/utils'
 
 export type StockStatus = 'available' | 'low' | 'out-of-stock'
 
@@ -257,23 +256,12 @@ export default function InvoiceDetailsPage() {
                                             </TableCell>
                                         )}
 
-                                        <TableCell className='text-center'>
-                                            <span
-                                                className={cn(
-                                                    'rounded-full px-2 py-0.5 text-xs font-semibold',
-                                                    status === 'available'
-                                                        ? 'bg-green-100 text-green-700'
-                                                        : status === 'low'
-                                                          ? 'bg-yellow-100 text-yellow-700'
-                                                          : 'bg-red-100 text-red-700'
-                                                )}
-                                            >
-                                                {status === 'available'
-                                                    ? 'Available'
-                                                    : status === 'low'
-                                                      ? 'Low Stock'
-                                                      : 'Out of Stock'}
-                                            </span>
+                                        <TableCell className='text-center text-lg'>
+                                            {status === 'available'
+                                                ? '✅'
+                                                : status === 'low'
+                                                  ? '🟡'
+                                                  : '❌'}
                                         </TableCell>
 
                                         {isAdmin && (
