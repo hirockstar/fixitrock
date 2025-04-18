@@ -22,6 +22,8 @@ import { usePasswordGate } from '®app/(invoice)/hooks/usePasswordGate'
 import ProductModal from '®app/(invoice)/ui/product'
 import LoginModal from '®app/(invoice)/ui/login'
 import { InvoiceProduct } from '®types/invoice'
+import { getCategoryIcon } from '®app/(invoice)/hooks/getCategory'
+import SortDropdown from '®app/(invoice)/ui/sort'
 
 export type StockStatus = 'available' | 'low' | 'out-of-stock'
 
@@ -49,7 +51,7 @@ export default function InvoiceDetailsPage() {
 
     const isAdmin = role === 'admin'
     const isUser = role === 'user'
-    const visibleColumns = isAdmin ? 9 : isUser ? 6 : 5
+    const visibleColumns = isAdmin ? 8 : isUser ? 6 : 4
 
     const [loginOpen, setLoginOpen] = useState(false)
     const [productModalOpen, setProductModalOpen] = useState(false)
@@ -58,18 +60,28 @@ export default function InvoiceDetailsPage() {
     const [deleteProduct, setDeleteProduct] = useState<InvoiceProduct | null>(null)
 
     const { updateProduct } = useInvoiceProduct(id)
+    const categories = useMemo(() => {
+        const all = products?.map((p) => p.category || 'Uncategorized') || []
 
+        return Array.from(new Set(all)).sort()
+    }, [products])
+    const [selectedCategory, setSelectedCategory] = useState('all')
     const filteredProducts = useMemo(() => {
         const term = search.toLowerCase()
 
         return (
-            products?.filter(
-                (item) =>
+            products?.filter((item) => {
+                const matchesSearch =
                     item.name.toLowerCase().includes(term) ||
                     item.compatibility?.toLowerCase().includes(term)
-            ) || []
+
+                const matchesCategory =
+                    selectedCategory === 'all' || item.category === selectedCategory
+
+                return matchesSearch && matchesCategory
+            }) || []
         )
-    }, [search, products])
+    }, [search, selectedCategory, products])
 
     const totalCost = useMemo(
         () => filteredProducts.reduce((sum, item) => sum + item.purchase_price * item.qty, 0),
@@ -108,23 +120,30 @@ export default function InvoiceDetailsPage() {
                         className='bg-transparent'
                         classNames={{
                             inputWrapper:
-                                'h-10 min-h-10 w-full rounded-full border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
+                                'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
                             base: 'sm:w-[90%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]',
                         }}
                         endContent={
-                            search && (
-                                <Button
-                                    isIconOnly
-                                    radius='full'
-                                    size='sm'
-                                    startContent={<X className='h-4 w-4' />}
-                                    variant='light'
-                                    onPress={() => setSearch('')}
+                            <div className='flex'>
+                                {search && (
+                                    <Button
+                                        isIconOnly
+                                        radius='full'
+                                        size='sm'
+                                        startContent={<X className='h-4 w-4' />}
+                                        variant='light'
+                                        onPress={() => setSearch('')}
+                                    />
+                                )}
+                                <SortDropdown
+                                    categories={categories}
+                                    selected={selectedCategory}
+                                    onChange={setSelectedCategory}
                                 />
-                            )
+                            </div>
                         }
                         placeholder='Search by model name'
-                        startContent={<Search className='h-4 w-4' />}
+                        startContent={<Search className='h-4 w-4 shrink-0' />}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
@@ -163,13 +182,15 @@ export default function InvoiceDetailsPage() {
                 >
                     <TableHeader>
                         <TableRow className='select-none border bg-muted/50 [&>:not(:last-child)]:border-r'>
-                            <TableHead>Name</TableHead>
+                            <TableHead className='sticky left-0' />
+                            <TableHead className='text-center'>Modal</TableHead>
                             <TableHead className='text-center'>Compatibility</TableHead>
-                            <TableHead className='text-center'>Category</TableHead>
                             {(isLoggedIn || isUser) && (
-                                <TableHead className='text-center'>Purchase</TableHead>
+                                <>
+                                    <TableHead className='text-center'>Purchase</TableHead>
+                                    <TableHead className='text-center'>Price</TableHead>
+                                </>
                             )}
-                            <TableHead className='text-center'>Price</TableHead>
                             {isAdmin && <TableHead className='text-center'>Qty</TableHead>}
                             <TableHead className='text-center'>Status</TableHead>
                             {isAdmin && (
@@ -204,19 +225,25 @@ export default function InvoiceDetailsPage() {
                                         key={item.id}
                                         className='*:border-border [&>:not(:last-child)]:border-r'
                                     >
-                                        <TableCell className='text-nowrap'>{item.name}</TableCell>
+                                        <TableCell className='sticky left-0 text-center'>
+                                            {getCategoryIcon(item.category)}
+                                        </TableCell>
+                                        <TableCell className='text-nowrap text-center'>
+                                            {item.name}
+                                        </TableCell>
                                         <TableCell className='max-w-xs text-center'>
                                             {item.compatibility}
                                         </TableCell>
-                                        <TableCell className='text-center'>
-                                            {item.category}
-                                        </TableCell>
                                         {(isLoggedIn || isUser) && (
-                                            <TableCell className='text-center'>
-                                                {item.purchase_price}
-                                            </TableCell>
+                                            <>
+                                                <TableCell className='text-center'>
+                                                    {item.purchase_price}
+                                                </TableCell>
+                                                <TableCell className='text-center'>
+                                                    {item.price}
+                                                </TableCell>
+                                            </>
                                         )}
-                                        <TableCell className='text-center'>{item.price}</TableCell>
 
                                         {isAdmin && (
                                             <TableCell className='flex items-center justify-center gap-2'>
