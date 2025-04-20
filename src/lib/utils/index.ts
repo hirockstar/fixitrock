@@ -79,15 +79,16 @@ export const stateColors = {
     server: 'bg-red-500 text-red-500',
 }
 
-export function formatBytes(bytes: number, decimals = 2): string {
-    if (!Number.isFinite(bytes) || bytes < 0) return '0 Bytes'
+export const formatBytes = (bytes: number, decimals = 2): string => {
     if (bytes === 0) return '0 Bytes'
 
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-    const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    const readableSize = (bytes / Math.pow(1024, i)).toFixed(i > 0 ? decimals : 0)
 
-    return `${readableSize} ${sizes[i]}`
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
 export function formatDateTime(dateTimeString?: string | null | undefined): string {

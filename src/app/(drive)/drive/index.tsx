@@ -7,7 +7,7 @@ import { GiGhost } from 'react-icons/gi'
 import { useDrive } from '®tanstack/query'
 import { ErrorState } from '®ui/state'
 
-import { Grid } from './ui'
+import { Grid } from '../ui'
 
 export function Drive() {
     const { data, isLoading, selectItem, error } = useDrive('')

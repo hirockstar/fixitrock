@@ -23,7 +23,7 @@ export default function Tabs() {
             <Tab key='activity' title='Activity'>
                 <Activity />
             </Tab>
-            <Tab key='posts' title='Posts' />
+            {/* <Tab key='posts' title='Posts' /> */}
             <Tab key='quotes' title='Quotes'>
                 <Quotes />
             </Tab>
@@ -32,7 +32,7 @@ export default function Tabs() {
             <Tab key='memoirs' title='Memoirs'>
                 <Memoirs />
             </Tab>
-            <Tab key='about' title='About' />
+            {/* <Tab key='about' title='About' /> */}
         </UiTabs>
     )
 }

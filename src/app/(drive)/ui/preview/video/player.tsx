@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FaPlay } from 'react-icons/fa'
 import { RiPictureInPictureFill } from 'react-icons/ri'
 
+import { logWarning } from '®lib/utils'
 import { Slider } from '®ui/slider'
 
 interface CustomVideoPlayerProps {
@@ -75,7 +76,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         video.addEventListener('ended', handleVideoEnd)
 
         if (autoplay) {
-            video.play().catch((error) => console.error('Autoplay failed:', error))
+            video.play().catch((error) => logWarning('Autoplay failed:', error))
         }
 
         return () => {

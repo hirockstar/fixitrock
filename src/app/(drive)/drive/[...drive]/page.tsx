@@ -9,9 +9,9 @@ import { useDrive } from '®tanstack/query'
 import useLayout from '®hooks/useLayout'
 import { FolderEmpty, NotFound, SearchEmpty } from '®ui/state'
 
-import { Grid, Input, List, SortBy, SwitchLayout } from '../ui'
-import { ReadMe } from '../ui/preview/readme'
-import { Preview } from '../ui/preview'
+import { Grid, Input, List, SortBy, SwitchLayout } from '../../ui'
+import { ReadMe } from '../../ui/preview/readme'
+import { Preview } from '../../ui/preview'
 
 export default function Page() {
     const { drive } = useParams<{ drive: string[] }>()
