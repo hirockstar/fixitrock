@@ -130,7 +130,7 @@ export default function InvoiceDetailsPage() {
                             base: 'sm:w-[90%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]',
                         }}
                         endContent={
-                            <div className='flex'>
+                            <div className='flex items-center gap-0.5'>
                                 {search && (
                                     <Button
                                         isIconOnly
@@ -146,6 +146,7 @@ export default function InvoiceDetailsPage() {
                                     selected={selectedCategory}
                                     onChange={setSelectedCategory}
                                 />
+                                <span className='text-xs text-muted-foreground'>|</span>
                                 <StockDropdown selected={stockFilter} onChange={setStockFilter} />
                             </div>
                         }
