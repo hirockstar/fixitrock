@@ -116,6 +116,10 @@
     }
 }
 
+svg {
+  pointer-events: none;
+}
+
 .mdx {
     --base-size-4: 0.25rem;
     --base-size-8: 0.5rem;
