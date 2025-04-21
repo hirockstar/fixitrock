@@ -27,7 +27,7 @@ export default function SortDropdown({ categories, selected, onChange }: SortDro
                     radius='full'
                     size='sm'
                     startContent={
-                        selected === 'all' ? <ListFilter size={20} /> : getCategoryIcon(selected)
+                        selected === 'all' ? <ListFilter size={16} /> : getCategoryIcon(selected)
                     }
                     variant='light'
                 />

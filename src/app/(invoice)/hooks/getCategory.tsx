@@ -14,5 +14,5 @@ export const CategoryIcons: Record<string, CategoryIconComponent> = {
 export function getCategoryIcon(category: string): JSX.Element {
     const Icon = CategoryIcons[category] || RiFolderUnknowFill
 
-    return <Icon className='mx-auto h-5 w-5 text-muted-foreground' />
+    return <Icon className='mx-auto size-4 text-muted-foreground' />
 }

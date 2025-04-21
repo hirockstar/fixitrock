@@ -24,6 +24,7 @@ import LoginModal from '®app/(invoice)/ui/login'
 import { InvoiceProduct } from '®types/invoice'
 import { getCategoryIcon } from '®app/(invoice)/hooks/getCategory'
 import SortDropdown from '®app/(invoice)/ui/sort'
+import StockDropdown, { StockFilter } from '®app/(invoice)/ui/stock'
 
 export type StockStatus = 'available' | 'low' | 'out-of-stock'
 
@@ -66,6 +67,8 @@ export default function InvoiceDetailsPage() {
         return Array.from(new Set(all)).sort()
     }, [products])
     const [selectedCategory, setSelectedCategory] = useState('all')
+    const [stockFilter, setStockFilter] = useState<StockFilter>('all')
+
     const filteredProducts = useMemo(() => {
         const term = search.toLowerCase()
 
@@ -78,10 +81,13 @@ export default function InvoiceDetailsPage() {
                 const matchesCategory =
                     selectedCategory === 'all' || item.category === selectedCategory
 
-                return matchesSearch && matchesCategory
+                const status = getStockStatus(item.qty)
+                const matchesStock = stockFilter === 'all' || status === stockFilter
+
+                return matchesSearch && matchesCategory && matchesStock
             }) || []
         )
-    }, [search, selectedCategory, products])
+    }, [search, selectedCategory, stockFilter, products])
 
     const totalCost = useMemo(
         () => filteredProducts.reduce((sum, item) => sum + item.purchase_price * item.qty, 0),
@@ -140,6 +146,7 @@ export default function InvoiceDetailsPage() {
                                     selected={selectedCategory}
                                     onChange={setSelectedCategory}
                                 />
+                                <StockDropdown selected={stockFilter} onChange={setStockFilter} />
                             </div>
                         }
                         placeholder='Search by model name'
@@ -148,7 +155,7 @@ export default function InvoiceDetailsPage() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
 
-                    {isLoggedIn && (
+                    {isAdmin && (
                         <Button
                             isIconOnly
                             className='h-10 w-10 min-w-10 border'
@@ -246,40 +253,44 @@ export default function InvoiceDetailsPage() {
                                         )}
 
                                         {isAdmin && (
-                                            <TableCell className='flex items-center justify-center gap-2'>
-                                                <Button
-                                                    isIconOnly
-                                                    className='border'
-                                                    disabled={
-                                                        updateProduct.isPending || item.qty <= 0
-                                                    }
-                                                    radius='full'
-                                                    size='sm'
-                                                    startContent={<Minus size={15} />}
-                                                    variant='light'
-                                                    onPress={() =>
-                                                        updateProduct.mutate(
-                                                            { id: item.id, qty: item.qty - 1 },
-                                                            { onSuccess: refetch }
-                                                        )
-                                                    }
-                                                />
-                                                <span className='w-6 text-center'>{item.qty}</span>
-                                                <Button
-                                                    isIconOnly
-                                                    className='border'
-                                                    disabled={updateProduct.isPending}
-                                                    radius='full'
-                                                    size='sm'
-                                                    startContent={<Plus size={15} />}
-                                                    variant='light'
-                                                    onPress={() =>
-                                                        updateProduct.mutate(
-                                                            { id: item.id, qty: item.qty + 1 },
-                                                            { onSuccess: refetch }
-                                                        )
-                                                    }
-                                                />
+                                            <TableCell>
+                                                <div className='flex items-center justify-center gap-2'>
+                                                    <Button
+                                                        isIconOnly
+                                                        className='border'
+                                                        disabled={
+                                                            updateProduct.isPending || item.qty <= 0
+                                                        }
+                                                        radius='full'
+                                                        size='sm'
+                                                        startContent={<Minus size={15} />}
+                                                        variant='light'
+                                                        onPress={() =>
+                                                            updateProduct.mutate(
+                                                                { id: item.id, qty: item.qty - 1 },
+                                                                { onSuccess: refetch }
+                                                            )
+                                                        }
+                                                    />
+                                                    <span className='w-6 text-center'>
+                                                        {item.qty}
+                                                    </span>
+                                                    <Button
+                                                        isIconOnly
+                                                        className='border'
+                                                        disabled={updateProduct.isPending}
+                                                        radius='full'
+                                                        size='sm'
+                                                        startContent={<Plus size={15} />}
+                                                        variant='light'
+                                                        onPress={() =>
+                                                            updateProduct.mutate(
+                                                                { id: item.id, qty: item.qty + 1 },
+                                                                { onSuccess: refetch }
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
                                             </TableCell>
                                         )}
 
@@ -336,7 +347,9 @@ export default function InvoiceDetailsPage() {
                     {isAdmin && (
                         <TableFooter>
                             <TableRow>
-                                <TableCell>Total: {filteredProducts.length}</TableCell>
+                                <TableCell className='text-nowrap'>
+                                    Total: {filteredProducts.length}
+                                </TableCell>
                                 <TableCell colSpan={visibleColumns - 2} />
                                 <TableCell className='text-center'>₹{totalCost}</TableCell>
                                 <TableCell />
