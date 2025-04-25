@@ -52,7 +52,7 @@ export default function InvoiceDetailsPage() {
 
     const isAdmin = role === 'admin'
     const isUser = role === 'user'
-    const visibleColumns = isAdmin ? 8 : isUser ? 6 : 4
+    const visibleColumns = isAdmin ? 9 : isUser ? 6 : 4
 
     const [loginOpen, setLoginOpen] = useState(false)
     const [productModalOpen, setProductModalOpen] = useState(false)
@@ -91,6 +91,11 @@ export default function InvoiceDetailsPage() {
 
     const totalCost = useMemo(
         () => filteredProducts.reduce((sum, item) => sum + item.purchase_price * item.qty, 0),
+        [filteredProducts]
+    )
+
+    const totalProduct = useMemo(
+        () => filteredProducts.reduce((sum, item) => sum + item.qty, 0),
         [filteredProducts]
     )
 
@@ -186,11 +191,11 @@ export default function InvoiceDetailsPage() {
             <div className='rounded-lg border'>
                 <Table
                     aria-label='Invoice Products Table'
-                    className='overflow-hidden rounded-md border'
+                    className='overflow-clip rounded-md border'
                 >
                     <TableHeader>
                         <TableRow className='select-none border bg-muted/50 [&>:not(:last-child)]:border-r'>
-                            <TableHead className='sticky left-0' />
+                            <TableHead />
                             <TableHead className='text-center'>Modal</TableHead>
                             <TableHead className='text-center'>Compatibility</TableHead>
                             {(isLoggedIn || isUser) && (
@@ -219,7 +224,7 @@ export default function InvoiceDetailsPage() {
                                             key={j}
                                             className='*:border-border [&>:not(:last-child)]:border-r'
                                         >
-                                            <Skeleton className='h-5 w-20 rounded-sm' />
+                                            <Skeleton className='mx-auto h-5 w-20 rounded-sm' />
                                         </TableCell>
                                     ))}
                                 </TableRow>
@@ -233,7 +238,7 @@ export default function InvoiceDetailsPage() {
                                         key={item.id}
                                         className='*:border-border [&>:not(:last-child)]:border-r'
                                     >
-                                        <TableCell className='sticky left-0 text-center'>
+                                        <TableCell className='text-center'>
                                             {getCategoryIcon(item.category)}
                                         </TableCell>
                                         <TableCell className='text-nowrap text-center'>
@@ -351,7 +356,9 @@ export default function InvoiceDetailsPage() {
                                 <TableCell className='text-nowrap'>
                                     Total: {filteredProducts.length}
                                 </TableCell>
-                                <TableCell colSpan={visibleColumns - 2} />
+                                <TableCell colSpan={4} />
+                                <TableCell className='text-center'>{totalProduct}</TableCell>
+                                <TableCell />
                                 <TableCell className='text-center'>₹{totalCost}</TableCell>
                                 <TableCell />
                             </TableRow>
