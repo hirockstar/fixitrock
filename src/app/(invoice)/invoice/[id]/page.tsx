@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Button, Input, Navbar, Skeleton } from '@heroui/react'
+import { Button, Input, Navbar, Skeleton, Tooltip } from '@heroui/react'
 import { Edit, Minus, Plus, Search, X } from 'lucide-react'
 import { BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
 
@@ -22,9 +22,10 @@ import { usePasswordGate } from '®app/(invoice)/hooks/usePasswordGate'
 import ProductModal from '®app/(invoice)/ui/product'
 import LoginModal from '®app/(invoice)/ui/login'
 import { InvoiceProduct } from '®types/invoice'
-import { getCategoryIcon } from '®app/(invoice)/hooks/getCategory'
 import SortDropdown from '®app/(invoice)/ui/sort'
 import StockDropdown, { StockFilter } from '®app/(invoice)/ui/stock'
+import Export from '®app/(invoice)/ui/export'
+import { CategoryIcon } from '®app/(invoice)/hooks/getCategory'
 
 export type StockStatus = 'available' | 'low' | 'out-of-stock'
 
@@ -67,7 +68,7 @@ export default function InvoiceDetailsPage() {
         return Array.from(new Set(all)).sort()
     }, [products])
     const [selectedCategory, setSelectedCategory] = useState('all')
-    const [stockFilter, setStockFilter] = useState<StockFilter>('all')
+    const [stockFilter, setStockFilter] = useState<StockFilter[]>([])
 
     const filteredProducts = useMemo(() => {
         const term = search.toLowerCase()
@@ -82,7 +83,10 @@ export default function InvoiceDetailsPage() {
                     selectedCategory === 'all' || item.category === selectedCategory
 
                 const status = getStockStatus(item.qty)
-                const matchesStock = stockFilter === 'all' || status === stockFilter
+                const matchesStock =
+                    stockFilter.length === 0 ||
+                    stockFilter.includes('all') ||
+                    stockFilter.includes(status)
 
                 return matchesSearch && matchesCategory && matchesStock
             }) || []
@@ -162,15 +166,18 @@ export default function InvoiceDetailsPage() {
                     />
 
                     {isAdmin && (
-                        <Button
-                            isIconOnly
-                            className='h-10 w-10 min-w-10 border'
-                            radius='full'
-                            size='sm'
-                            startContent={<Plus size={24} />}
-                            variant='light'
-                            onPress={handleAdd}
-                        />
+                        <>
+                            <Button
+                                isIconOnly
+                                className='h-10 w-10 min-w-10 border'
+                                radius='full'
+                                size='sm'
+                                startContent={<Plus size={24} />}
+                                variant='light'
+                                onPress={handleAdd}
+                            />
+                            <Export products={filteredProducts} />
+                        </>
                     )}
 
                     <Button
@@ -238,8 +245,8 @@ export default function InvoiceDetailsPage() {
                                         key={item.id}
                                         className='*:border-border [&>:not(:last-child)]:border-r'
                                     >
-                                        <TableCell className='text-center'>
-                                            {getCategoryIcon(item.category)}
+                                        <TableCell className='min-w-full text-center'>
+                                            <CategoryIcon name={item.category} />
                                         </TableCell>
                                         <TableCell className='text-nowrap text-center'>
                                             {item.name}
@@ -301,11 +308,23 @@ export default function InvoiceDetailsPage() {
                                         )}
 
                                         <TableCell className='text-center text-lg'>
-                                            {status === 'available'
-                                                ? '✅'
-                                                : status === 'low'
-                                                  ? '🟡'
-                                                  : '❌'}
+                                            <Tooltip
+                                                content={
+                                                    <p className='text-sm'>
+                                                        {status === 'available'
+                                                            ? 'Available'
+                                                            : status === 'low'
+                                                              ? 'Low Stock'
+                                                              : 'Out of Stock'}
+                                                    </p>
+                                                }
+                                            >
+                                                {status === 'available'
+                                                    ? '✅'
+                                                    : status === 'low'
+                                                      ? '🟡'
+                                                      : '❌'}
+                                            </Tooltip>
                                         </TableCell>
 
                                         {isAdmin && (
@@ -313,26 +332,32 @@ export default function InvoiceDetailsPage() {
                                                 <TableCell className='text-center'>
                                                     {item.purchase_price * item.qty}
                                                 </TableCell>
-                                                <TableCell className='flex items-center justify-center gap-4'>
-                                                    <Button
-                                                        isIconOnly
-                                                        className='border'
-                                                        radius='full'
-                                                        size='sm'
-                                                        startContent={<Edit size={18} />}
-                                                        variant='light'
-                                                        onPress={() => handleEdit(item)}
-                                                    />
-                                                    <Button
-                                                        isIconOnly
-                                                        className='border'
-                                                        color='danger'
-                                                        radius='full'
-                                                        size='sm'
-                                                        startContent={<Delete />}
-                                                        variant='light'
-                                                        onPress={() => handleDelete(item)}
-                                                    />
+                                                <TableCell>
+                                                    <div className='flex items-center justify-center gap-4'>
+                                                        <Tooltip content={<p>Edit</p>}>
+                                                            <Button
+                                                                isIconOnly
+                                                                className='border'
+                                                                radius='full'
+                                                                size='sm'
+                                                                startContent={<Edit size={18} />}
+                                                                variant='light'
+                                                                onPress={() => handleEdit(item)}
+                                                            />
+                                                        </Tooltip>
+                                                        <Tooltip content={<p>Delete</p>}>
+                                                            <Button
+                                                                isIconOnly
+                                                                className='border'
+                                                                color='danger'
+                                                                radius='full'
+                                                                size='sm'
+                                                                startContent={<Delete />}
+                                                                variant='light'
+                                                                onPress={() => handleDelete(item)}
+                                                            />
+                                                        </Tooltip>
+                                                    </div>
                                                 </TableCell>
                                             </>
                                         )}

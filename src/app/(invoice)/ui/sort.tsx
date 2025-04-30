@@ -4,7 +4,7 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from '@
 import { ListFilter } from 'lucide-react'
 import React from 'react'
 
-import { getCategoryIcon } from '®app/(invoice)/hooks/getCategory'
+import { CategoryIcon } from '../hooks/getCategory'
 
 type SortDropdownProps = {
     categories: string[]
@@ -27,7 +27,11 @@ export default function SortDropdown({ categories, selected, onChange }: SortDro
                     radius='full'
                     size='sm'
                     startContent={
-                        selected === 'all' ? <ListFilter size={16} /> : getCategoryIcon(selected)
+                        selected === 'all' ? (
+                            <ListFilter size={16} />
+                        ) : (
+                            <CategoryIcon name={selected} />
+                        )
                     }
                     variant='light'
                 />

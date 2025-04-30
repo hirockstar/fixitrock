@@ -38,6 +38,8 @@
         "eslint-plugin-unused-imports": "^4",
         "geist": "^1",
         "gray-matter": "^4",
+        "jspdf": "^3.0.1",
+        "jspdf-autotable": "^5.0.2",
         "lucide-react": "^0",
         "motion": "^11",
         "next": "^15",

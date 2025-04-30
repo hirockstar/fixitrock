@@ -36,3 +36,10 @@ export type Repair = {
     count: number
     created_at: string
 }
+
+export type Category = {
+    id: string
+    name: string
+    image_url: string
+    created_at: string
+}

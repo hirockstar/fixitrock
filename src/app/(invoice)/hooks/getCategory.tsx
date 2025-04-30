@@ -1,18 +1,29 @@
-import type { ElementType, JSX } from 'react'
+'use client'
 
-import { RiFolderUnknowFill } from 'react-icons/ri'
-import { FaBatteryFull } from 'react-icons/fa'
-import { FaMobileScreen } from 'react-icons/fa6'
+import { Image } from '@heroui/react'
 
-export type CategoryIconComponent = ElementType
+import { useSupabse } from '®hooks/tanstack/query'
+import { Category } from '®types/invoice'
 
-export const CategoryIcons: Record<string, CategoryIconComponent> = {
-    Folders: FaMobileScreen,
-    Battery: FaBatteryFull,
+type Props = {
+    name: string
 }
 
-export function getCategoryIcon(category: string): JSX.Element {
-    const Icon = CategoryIcons[category] || RiFolderUnknowFill
+export function CategoryIcon({ name }: Props) {
+    const { data, isLoading } = useSupabse<Category>('category')
 
-    return <Icon className='mx-auto size-4 text-muted-foreground' />
+    const match = data?.find((item) => item.name === name)
+
+    if (!match) return null
+
+    return (
+        <div className='mx-auto flex w-10 items-center justify-center'>
+            <Image
+                alt={match.name}
+                className='size-10 rounded object-contain'
+                isLoading={isLoading}
+                src={match.image_url}
+            />
+        </div>
+    )
 }

@@ -7,8 +7,8 @@ import React from 'react'
 export type StockFilter = 'all' | 'available' | 'low' | 'out-of-stock'
 
 type StockDropdownProps = {
-    selected: StockFilter
-    onChange: (val: StockFilter) => void
+    selected: StockFilter[]
+    onChange: (val: StockFilter[]) => void
 }
 
 export default function StockDropdown({ selected, onChange }: StockDropdownProps) {
@@ -38,23 +38,31 @@ export default function StockDropdown({ selected, onChange }: StockDropdownProps
                     className='h-8 w-8 min-w-0 p-0'
                     radius='full'
                     size='sm'
-                    startContent={<p className='text-sm'>{getIcon(selected)}</p>}
+                    startContent={
+                        <p className='text-sm'>
+                            {selected.length === 1 ? (
+                                getIcon(selected[0])
+                            ) : selected.length > 1 ? (
+                                '🔘'
+                            ) : (
+                                <Target className='text-muted-foreground' size={16} />
+                            )}
+                        </p>
+                    }
                     variant='light'
                 />
             </DropdownTrigger>
 
             <DropdownMenu
-                disallowEmptySelection
                 aria-label='Stock Filter'
-                selectedKeys={new Set([selected])}
-                selectionMode='single'
+                selectedKeys={new Set(selected)}
+                selectionMode='multiple'
                 onSelectionChange={(keys) => {
-                    const [val] = Array.from(keys)
+                    const values = Array.from(keys) as StockFilter[]
 
-                    onChange(val as StockFilter)
+                    onChange(values)
                 }}
             >
-                <DropdownItem key='all'>All</DropdownItem>
                 <DropdownItem key='available'>Available</DropdownItem>
                 <DropdownItem key='low'>Low</DropdownItem>
                 <DropdownItem key='out-of-stock'>Out of Stock</DropdownItem>
