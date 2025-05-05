@@ -1,3 +1,5 @@
+'use client'
+
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -5,15 +7,77 @@ import { FileText } from 'lucide-react'
 
 import { InvoiceProduct } from '®types/invoice'
 
+// Removes emoji characters using a regex
+function stripEmojis(text: string) {
+    return text.replace(
+        /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD00-\uDDFF])/g,
+        ''
+    )
+}
+
+function getFormattedFileName(extension: string) {
+    const now = new Date()
+    const formattedDate = now
+        .toLocaleString('en-GB')
+        .replace(/\//g, '-')
+        .replace(/, /g, '-')
+        .replace(/:/g, '-')
+
+    return `${formattedDate}.${extension}`
+}
+
+// CSV export
+function exportToCSV(headers: string[], rows: (string | number)[][]) {
+    const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+
+    link.href = url
+    link.setAttribute('download', getFormattedFileName('csv'))
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+}
+
+// Excel export
+function exportToExcel(headers: string[], rows: (string | number)[][]) {
+    const table = `
+    <table>
+      <thead><tr>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}
+      </tbody>
+    </table>
+  `
+    const blob = new Blob([table], {
+        type: 'application/vnd.ms-excel;charset=utf-8;',
+    })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+
+    link.href = url
+    link.setAttribute('download', getFormattedFileName('xls'))
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+}
+
 function exportVisibleProducts(format: 'pdf' | 'csv' | 'excel', products: InvoiceProduct[]) {
-    const rows = products.map((item) => [item.name, item.compatibility, item.qty])
-    const headers = [['Model', 'Compatibility', 'Qty']]
+    const headers = ['Model', 'Compatibility', 'Qty']
+    const rows = products.map((item) => [
+        format === 'pdf' ? stripEmojis(item.name) : item.name,
+        format === 'pdf' ? stripEmojis(item.compatibility) : item.compatibility,
+        item.qty,
+    ])
 
     if (format === 'pdf') {
-        const doc = new jsPDF()
+        const doc = new jsPDF('l', 'mm', 'a4')
 
         autoTable(doc, {
-            head: headers,
+            head: [headers],
             body: rows,
             theme: 'grid',
             headStyles: {
@@ -21,11 +85,13 @@ function exportVisibleProducts(format: 'pdf' | 'csv' | 'excel', products: Invoic
                 textColor: 50,
                 halign: 'center',
                 fontStyle: 'bold',
+                valign: 'middle',
             },
             bodyStyles: {
                 textColor: 50,
                 fontSize: 10,
                 halign: 'center',
+                valign: 'middle',
             },
             styles: {
                 overflow: 'linebreak',
@@ -34,15 +100,17 @@ function exportVisibleProducts(format: 'pdf' | 'csv' | 'excel', products: Invoic
                 lineColor: [200, 200, 200],
             },
             columnStyles: {
-                0: { cellWidth: 'auto', overflow: 'visible' },
+                0: { overflow: 'visible', cellWidth: 100 },
+                // 1: { overflow: 'linebreak', cellWidth: 100 },
+                // 2: { halign: 'center', cellWidth: 20 },
             },
-            margin: { top: 20 },
         })
 
-        const now = new Date()
-        const formattedDate = now.toLocaleString('en-GB').replace(/[/,: ]/g, '-')
-
-        doc.save(`${formattedDate}.pdf`)
+        doc.save(getFormattedFileName('pdf'))
+    } else if (format === 'csv') {
+        exportToCSV(headers, rows)
+    } else if (format === 'excel') {
+        exportToExcel(headers, rows)
     }
 }
 
