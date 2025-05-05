@@ -73,7 +73,7 @@ function exportVisibleProducts(format: 'pdf' | 'csv' | 'excel', products: Invoic
     ])
 
     if (format === 'pdf') {
-        const doc = new jsPDF('l', 'mm', 'a4')
+        const doc = new jsPDF('p', 'mm', 'a4')
 
         autoTable(doc, {
             head: [headers],
