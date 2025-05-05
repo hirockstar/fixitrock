@@ -7,9 +7,8 @@ import { FileText } from 'lucide-react'
 
 import { InvoiceProduct } from '®types/invoice'
 
-// Removes emoji characters using a regex
-function stripEmojis(text: string) {
-    return text.replace(
+function stripEmojis(text: string | null | undefined) {
+    return (text || '').replace(
         /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD00-\uDDFF])/g,
         ''
     )
