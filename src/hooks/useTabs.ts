@@ -1,33 +1,15 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 
-import { useSearchParams } from './useSearchParams'
+import { usePathname, useSearchParams } from 'next/navigation'
 
-function useTabs(tabs: string) {
-    const router = useRouter()
-    const queryParams = useSearchParams()
-    const [tab, setSelectedTab] = useState(tabs)
-    const [hasMounted, setHasMounted] = useState(false)
+export function useTabs() {
+    const searchParams = useSearchParams()
+    const pathname = usePathname()
 
-    useEffect(() => {
-        setHasMounted(true)
-    }, [])
+    const tabParam = searchParams?.get('tab')
+    const tab = tabParam ? `${pathname}?tab=${tabParam}` : pathname
 
-    useEffect(() => {
-        if (hasMounted) {
-            const currentTab = queryParams?.get('tab') || tabs
-
-            setSelectedTab(currentTab)
-        }
-    }, [hasMounted, queryParams, tabs])
-
-    const setTab = (tab: string) => {
-        setSelectedTab(tab)
-        router.push(`?tab=${tab}`, { scroll: false })
+    return {
+        tab,
     }
-
-    return { tab, setTab, hasMounted }
 }
-
-export default useTabs
