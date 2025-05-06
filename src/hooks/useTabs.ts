@@ -1,6 +1,8 @@
 'use client'
 
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+
+import { useSearchParams } from './useSearchParams'
 
 export function useTabs() {
     const searchParams = useSearchParams()
