@@ -35,8 +35,12 @@ function SignupStepContent() {
                         label='Phone Number'
                         placeholder='+1 234 567 8901'
                         type='tel'
-                        value={auth.phone}
-                        onChange={(e) => auth.setPhone(e.target.value)}
+                        value={auth.phoneRaw}
+                        onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '').slice(0, 10)
+
+                            auth.setPhoneRaw(value)
+                        }}
                     />
                     {auth.error && <p className='mt-2 text-sm text-red-500'>{auth.error}</p>}
                 </DrawerHeader>
@@ -118,6 +122,25 @@ function SignupStepContent() {
                     value={auth.username}
                     onChange={(e) => auth.setUsername(e.target.value)}
                 />
+                {auth.username && (
+                    <div className='mt-1 min-h-[20px] text-sm'>
+                        {auth.checkingUsername && (
+                            <span className='text-gray-500'>Checking username...</span>
+                        )}
+                        {!auth.checkingUsername &&
+                            auth.usernameChecked &&
+                            auth.isUsernameUnique === true && (
+                                <span className='text-green-600'>Username is available ✓</span>
+                            )}
+                        {!auth.checkingUsername &&
+                            auth.usernameChecked &&
+                            auth.isUsernameUnique === false && (
+                                <span className='text-red-500'>
+                                    This username is already taken.
+                                </span>
+                            )}
+                    </div>
+                )}
                 <Input
                     required
                     disabled={auth.loading}

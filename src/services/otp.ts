@@ -1,11 +1,12 @@
 'use client'
-import { auth } from '®lib/firebase'
 import {
     RecaptchaVerifier,
     signInWithPhoneNumber,
     ConfirmationResult,
     UserCredential,
 } from 'firebase/auth'
+
+import { auth } from '®lib/firebase'
 
 // Ensure window typing for recaptcha
 declare global {
@@ -25,20 +26,25 @@ function getRecaptchaVerifier() {
             callback: () => {},
         })
     }
+
     return window.recaptchaVerifier
 }
 
 export async function sendOtp(phone: string): Promise<ConfirmationResult> {
     const verifier = getRecaptchaVerifier()
+
     // Render if not yet rendered
     await verifier.render()
     const confirmation = await signInWithPhoneNumber(auth, phone, verifier)
+
     window.confirmationResult = confirmation
+
     return confirmation
 }
 
 export async function verifyOtp(code: string): Promise<UserCredential> {
     if (!window.confirmationResult) throw new Error('No confirmation result found')
     const cred = await window.confirmationResult.confirm(code)
+
     return cred
 }
