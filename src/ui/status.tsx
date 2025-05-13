@@ -17,12 +17,11 @@ import { TbApps } from 'react-icons/tb'
 import { useRouter } from 'nextjs-toploader/app'
 
 import { useStorage } from '®tanstack/query'
-
-import { Drawer, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from './drawer'
-
 import { useMediaQuery } from '®hooks/useMediaQuery'
 import { formatBytes, stateColors } from '®lib/utils'
 import { FolderType, StorageType } from '®actions/drive/storage'
+
+import { Drawer, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from './drawer'
 
 export function Status() {
     const { data, isLoading } = useStorage()

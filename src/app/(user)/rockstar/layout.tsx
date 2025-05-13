@@ -1,10 +1,9 @@
 import { Metadata } from 'next'
 
 import { siteConfig } from '®config/site'
-import { DefaultLayout } from '®layout'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-    return <DefaultLayout>{children}</DefaultLayout>
+    return <>{children}</>
 }
 
 export const metadata: Metadata = {

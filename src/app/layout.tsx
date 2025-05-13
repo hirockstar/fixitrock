@@ -7,6 +7,7 @@ import { Sonner } from '®ui/sonner'
 import '../styles/globals.css'
 import { cn } from '®lib/utils'
 import { fontMono, fontSans } from '®lib/fonts'
+import SearchBar from '®components/search/bar'
 
 export default function RootLayout({
     children,
@@ -42,6 +43,7 @@ export default function RootLayout({
                     <div className='relative flex min-h-screen flex-col bg-background'>
                         <div className='flex-1 overflow-clip'>{children}</div>
                         {modal}
+                        <SearchBar />
                         <Footer />
                         <Sonner />
                     </div>

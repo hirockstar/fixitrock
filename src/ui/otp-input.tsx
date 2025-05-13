@@ -15,6 +15,7 @@ export function OTPInput({ value, onChange, length = 6, disabled = false }: OTPI
     const handleChange = (idx: number, val: string) => {
         if (!/^[0-9]?$/.test(val)) return
         const newValue = [...value]
+
         newValue[idx] = val
         onChange(newValue)
         if (val && idx < length - 1) {
@@ -36,15 +37,15 @@ export function OTPInput({ value, onChange, length = 6, disabled = false }: OTPI
                     ref={(el) => {
                         inputRefs.current[idx] = el
                     }}
-                    type='text'
+                    autoComplete='one-time-code'
+                    className='h-12 w-12 rounded-lg border border-input bg-background text-center font-mono text-2xl transition-all focus:border-primary focus:outline-none disabled:opacity-50'
+                    disabled={disabled}
                     inputMode='numeric'
                     maxLength={1}
-                    className='h-12 w-12 rounded-lg border border-input bg-background text-center font-mono text-2xl transition-all focus:border-primary focus:outline-none disabled:opacity-50'
+                    type='text'
                     value={value[idx] || ''}
                     onChange={(e) => handleChange(idx, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(idx, e)}
-                    disabled={disabled}
-                    autoComplete='one-time-code'
                 />
             ))}
         </div>
