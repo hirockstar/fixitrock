@@ -1,12 +1,12 @@
 import type { User } from 'firebase/auth'
 
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 import { sendOtp, verifyOtp } from '®services/otp'
 import { createClient } from '®supabase/client'
 import { auth as firebaseAuth } from '®lib/firebase'
+import { logWarning } from '®lib/utils'
 
 // Helper to create server-side session cookie
 async function setSessionCookie(providedUser?: User, target?: string) {
@@ -21,14 +21,12 @@ async function setSessionCookie(providedUser?: User, target?: string) {
         }
 
         if (!user) {
-            console.warn('[OTP] setSessionCookie – currentUser still null after 1 s')
+            logWarning('[OTP] setSessionCookie – currentUser still null after 1 s')
 
             return
         }
 
         const idToken = await user.getIdToken(true)
-
-        console.log('[OTP] setSessionCookie – idToken present =', !!idToken)
 
         if (!target) {
             throw new Error('No target provided for session cookie redirect')
@@ -93,7 +91,6 @@ export function useAuthOtp(onSuccess?: () => void) {
     const [error, setError] = useState('')
     const [isNewUser, setIsNewUser] = useState(false)
     const [redirecting, setRedirecting] = useState(false)
-    const router = useRouter()
     const toastIdRef = useRef<string | number | null>(null)
     const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(null)
     const [checkingUsername, setCheckingUsername] = useState(false)
@@ -161,7 +158,7 @@ export function useAuthOtp(onSuccess?: () => void) {
                     userError.message.includes('multiple (or no) rows returned')
                 ) {
                     // No user found, proceed to signup
-                    console.warn('[OTP] No user found for phone, proceeding to details step.')
+                    logWarning('[OTP] No user found for phone, proceeding to details step.')
                     setIsNewUser(true)
                     setStep('details')
 
@@ -184,7 +181,7 @@ export function useAuthOtp(onSuccess?: () => void) {
                 await setSessionCookie(cred.user, target)
                 if (onSuccess) onSuccess()
             } else {
-                console.warn('[OTP] User not found, proceeding to details step. Phone:', phone)
+                logWarning('[OTP] User not found, proceeding to details step. Phone:', phone)
                 setIsNewUser(true)
                 setStep('details')
             }
