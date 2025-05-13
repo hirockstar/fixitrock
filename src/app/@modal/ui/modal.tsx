@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { Button, Input } from '@heroui/react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Dialog, DialogContent } from '®ui/dialog'
 import {
@@ -17,8 +18,40 @@ import { useMediaQuery } from '®hooks/useMediaQuery'
 
 import { useAuthOtp } from '../hooks/useAuthOtp'
 
-function SignupStepContent() {
+function SignupStepContent({ onSignupSuccess }: { onSignupSuccess: () => void }) {
     const auth = useAuthOtp()
+    const lastSubmittedOtp = useRef('')
+
+    // Automatically verify OTP when 6 digits are entered, only once per unique OTP
+    useEffect(() => {
+        const otpValue = Array.isArray(auth.otp) ? auth.otp.join('') : auth.otp
+
+        if (
+            auth.step === 'otp' &&
+            otpValue.length === 6 &&
+            !auth.loading &&
+            lastSubmittedOtp.current !== otpValue
+        ) {
+            lastSubmittedOtp.current = otpValue
+            auth.handleVerifyOtp()
+        }
+    }, [auth.otp, auth.step, auth.loading])
+
+    // Style the reCAPTCHA overlay when it appears
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            const recaptchaOverlay = document.getElementById('rc-imageselect')
+
+            if (recaptchaOverlay) {
+                recaptchaOverlay.style.position = 'relative'
+                recaptchaOverlay.style.zIndex = '200'
+            }
+        })
+
+        observer.observe(document.body, { childList: true, subtree: true })
+
+        return () => observer.disconnect()
+    }, [])
 
     if (auth.step === 'phone') {
         return (
@@ -70,18 +103,31 @@ function SignupStepContent() {
                     <DrawerDescription>We sent a 6-digit code to {auth.phone}</DrawerDescription>
                     <div className='flex justify-center'>
                         <OTPInput
-                            disabled={auth.loading}
+                            disabled={auth.loading || auth.otpTimer === 0}
                             length={6}
                             value={auth.otp}
                             onChange={auth.setOtp}
                         />
                     </div>
                     {auth.error && <p className='mt-2 text-sm text-red-500'>{auth.error}</p>}
+                    {auth.otpTimer === 0 ? (
+                        <div className='mt-2 text-sm text-red-500'>
+                            OTP expired.{' '}
+                            <button className='underline' onClick={auth.resendOtp}>
+                                Resend OTP
+                            </button>
+                        </div>
+                    ) : (
+                        <div className='mt-2 text-sm text-gray-500'>
+                            OTP valid for {auth.otpTimer} seconds
+                        </div>
+                    )}
                 </DrawerHeader>
                 <DrawerFooter>
                     <Button
                         className='w-full'
                         color='primary'
+                        disabled={auth.loading || auth.otpTimer === 0}
                         isLoading={auth.loading}
                         onPress={auth.handleVerifyOtp}
                     >
@@ -176,24 +222,67 @@ function SignupStepContent() {
 
     return null
 }
+
 export default function SignupModal() {
     const router = useRouter()
     const isDesktop = useMediaQuery('(min-width: 640px)')
+    const [recaptchaOpen, setRecaptchaOpen] = useState(false)
+    const [open, setOpen] = useState(true)
+
+    // Track reCAPTCHA overlay presence
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            const recaptchaOverlay = document.getElementById('rc-imageselect')
+
+            setRecaptchaOpen(!!recaptchaOverlay)
+            if (recaptchaOverlay) {
+                console.log('[reCAPTCHA] rc-imageselect appeared')
+            } else {
+                console.log('[reCAPTCHA] rc-imageselect not present')
+            }
+        })
+
+        observer.observe(document.body, { childList: true, subtree: true })
+
+        return () => observer.disconnect()
+    }, [])
 
     const handleClose = () => {
-        router.back()
+        setOpen(false)
+        setTimeout(() => {
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur()
+            }
+        }, 0)
+        router.push('/')
+    }
+
+    // Only allow closing if reCAPTCHA is not open
+    const handleOpenChange = (nextOpen: boolean) => {
+        if (!recaptchaOpen && !nextOpen) handleClose()
+    }
+
+    // Handler to close modal on successful signup/profile redirect
+    const handleSignupSuccess = () => {
+        setOpen(false)
+        setTimeout(() => {
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur()
+            }
+        }, 0)
+        router.push('/')
     }
 
     return isDesktop ? (
-        <Dialog open onOpenChange={(open) => !open && handleClose()}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent className='max-w-md'>
-                <SignupStepContent />
+                <SignupStepContent onSignupSuccess={handleSignupSuccess} />
             </DialogContent>
         </Dialog>
     ) : (
-        <Drawer open onOpenChange={(open) => !open && handleClose()}>
+        <Drawer open={open} onOpenChange={handleOpenChange}>
             <DrawerContent>
-                <SignupStepContent />
+                <SignupStepContent onSignupSuccess={handleSignupSuccess} />
             </DrawerContent>
         </Drawer>
     )

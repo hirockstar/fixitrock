@@ -95,6 +95,8 @@ export function useAuthOtp(onSuccess?: () => void) {
     const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(null)
     const [checkingUsername, setCheckingUsername] = useState(false)
     const [usernameChecked, setUsernameChecked] = useState(false)
+    const [otpTimer, setOtpTimer] = useState(60)
+    const otpTimerRef = useRef<NodeJS.Timeout | null>(null)
 
     // Only allow Indian numbers
     const isIndian = true
@@ -129,11 +131,16 @@ export function useAuthOtp(onSuccess?: () => void) {
     }
 
     const handleVerifyOtp = async () => {
-        setLoading(true)
         setError('')
-        try {
-            const code = otp.join('')
+        const code = Array.isArray(otp) ? otp.join('') : otp
 
+        if (!code || code.length !== 6) {
+            setError('Please enter the 6-digit OTP code.')
+
+            return
+        }
+        setLoading(true)
+        try {
             const cred = await verifyOtp(code)
 
             if (!cred.user) {
@@ -174,14 +181,29 @@ export function useAuthOtp(onSuccess?: () => void) {
 
                 toastIdRef.current = toast('Redirecting to your profile…', { duration: Infinity })
                 await setSessionCookie(cred.user, target)
-                if (onSuccess) onSuccess()
+                if (onSuccess) {
+                    console.log('Calling onSuccess to close modal (existing user)')
+                    onSuccess()
+                }
             } else {
                 logWarning('[OTP] User not found, proceeding to details step. Phone:', phone)
                 setIsNewUser(true)
                 setStep('details')
             }
         } catch (err: unknown) {
-            setError((err as Error).message || 'Invalid code or user lookup failed')
+            // Show a generic message only for Firebase OTP errors
+            if (
+                err &&
+                typeof err === 'object' &&
+                'code' in err &&
+                (err as Record<string, unknown>).code === 'auth/invalid-verification-code'
+            ) {
+                setError('Invalid OTP code. Please try again or resend OTP.')
+            } else if (err instanceof Error && err.message) {
+                setError(err.message)
+            } else {
+                setError('An unexpected error occurred. Please try again.')
+            }
         } finally {
             setLoading(false)
         }
@@ -234,8 +256,10 @@ export function useAuthOtp(onSuccess?: () => void) {
 
             toastIdRef.current = toast('Redirecting to your profile…', { duration: Infinity })
             setRedirecting(true)
-            await setSessionCookie(undefined, target)
-            if (onSuccess) onSuccess()
+            if (onSuccess) {
+                console.log('Calling onSuccess to close modal (new user)')
+                onSuccess()
+            }
         } catch (err: unknown) {
             setError(formatSupabaseError(err))
         } finally {
@@ -303,6 +327,40 @@ export function useAuthOtp(onSuccess?: () => void) {
         return () => clearTimeout(timeout)
     }, [username])
 
+    const startOtpTimer = () => {
+        setOtpTimer(60)
+        if (otpTimerRef.current) clearInterval(otpTimerRef.current)
+        otpTimerRef.current = setInterval(() => {
+            setOtpTimer((prev) => {
+                if (prev <= 1) {
+                    clearInterval(otpTimerRef.current!)
+
+                    return 0
+                }
+
+                return prev - 1
+            })
+        }, 1000)
+    }
+
+    useEffect(() => {
+        if (step === 'otp') {
+            startOtpTimer()
+        } else {
+            setOtpTimer(60)
+            if (otpTimerRef.current) clearInterval(otpTimerRef.current)
+        }
+
+        return () => {
+            if (otpTimerRef.current) clearInterval(otpTimerRef.current)
+        }
+    }, [step])
+
+    const resendOtp = async () => {
+        await handleSendOtp()
+        startOtpTimer()
+    }
+
     return {
         step,
         setStep,
@@ -332,6 +390,8 @@ export function useAuthOtp(onSuccess?: () => void) {
         isUsernameUnique,
         checkingUsername,
         usernameChecked,
+        otpTimer,
+        resendOtp,
     }
 }
 
