@@ -218,7 +218,6 @@ export function useAuthOtp(onSuccess?: () => void) {
             const { error: dbError, data } = await supabase
                 .from('users')
                 .insert({
-                    auth_id: firebaseAuth.currentUser?.uid,
                     first_name: firstName,
                     last_name: lastName,
                     username,

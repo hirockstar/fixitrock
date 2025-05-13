@@ -1,4 +1,5 @@
 'use client'
+
 import {
     RecaptchaVerifier,
     signInWithPhoneNumber,
@@ -18,13 +19,34 @@ declare global {
 
 const RECAPTCHA_ID = 'recaptcha-container'
 
-function getRecaptchaVerifier() {
-    if (typeof window === 'undefined') throw new Error('recaptcha unavailable on server')
+function ensureRecaptchaContainerExists() {
+    if (!document.getElementById(RECAPTCHA_ID)) {
+        const container = document.createElement('div')
+
+        container.id = RECAPTCHA_ID
+        container.style.display = 'none'
+        document.body.appendChild(container)
+    }
+}
+
+function getRecaptchaVerifier(): RecaptchaVerifier {
+    if (typeof window === 'undefined') throw new Error('Recaptcha unavailable on server')
+
+    ensureRecaptchaContainerExists()
+
     if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, RECAPTCHA_ID, {
-            size: 'invisible',
-            callback: () => {},
-        })
+        window.recaptchaVerifier = new RecaptchaVerifier(
+            auth, // ✅ auth should be first
+            RECAPTCHA_ID,
+            {
+                size: 'invisible',
+                callback: () => {},
+                'expired-callback': () => {
+                    window.recaptchaVerifier?.clear()
+                    window.recaptchaVerifier = undefined
+                },
+            }
+        )
     }
 
     return window.recaptchaVerifier
@@ -33,8 +55,7 @@ function getRecaptchaVerifier() {
 export async function sendOtp(phone: string): Promise<ConfirmationResult> {
     const verifier = getRecaptchaVerifier()
 
-    // Render if not yet rendered
-    await verifier.render()
+    await verifier.render() // required once
     const confirmation = await signInWithPhoneNumber(auth, phone, verifier)
 
     window.confirmationResult = confirmation
@@ -44,7 +65,6 @@ export async function sendOtp(phone: string): Promise<ConfirmationResult> {
 
 export async function verifyOtp(code: string): Promise<UserCredential> {
     if (!window.confirmationResult) throw new Error('No confirmation result found')
-    const cred = await window.confirmationResult.confirm(code)
 
-    return cred
+    return await window.confirmationResult.confirm(code)
 }
