@@ -1,12 +1,12 @@
 import type { User } from 'firebase/auth'
 
 import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 import { sendOtp, verifyOtp } from '®services/otp'
 import { createClient } from '®supabase/client'
 import { auth as firebaseAuth } from '®lib/firebase'
-import { logWarning } from '®lib/utils'
 
 // Helper to create server-side session cookie
 async function setSessionCookie(providedUser?: User, target?: string) {
@@ -21,12 +21,14 @@ async function setSessionCookie(providedUser?: User, target?: string) {
         }
 
         if (!user) {
-            logWarning('[OTP] setSessionCookie – currentUser still null after 1 s')
+            console.warn('[OTP] setSessionCookie – currentUser still null after 1 s')
 
             return
         }
 
         const idToken = await user.getIdToken(true)
+
+        console.log('[OTP] setSessionCookie – idToken present =', !!idToken)
 
         if (!target) {
             throw new Error('No target provided for session cookie redirect')
@@ -74,7 +76,7 @@ async function setSessionCookie(providedUser?: User, target?: string) {
 
         form.submit()
     } catch (err) {
-        logWarning('[OTP] setSessionCookie error', err)
+        console.error('[OTP] setSessionCookie error', err)
     }
 }
 
@@ -91,6 +93,7 @@ export function useAuthOtp(onSuccess?: () => void) {
     const [error, setError] = useState('')
     const [isNewUser, setIsNewUser] = useState(false)
     const [redirecting, setRedirecting] = useState(false)
+    const router = useRouter()
     const toastIdRef = useRef<string | number | null>(null)
     const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(null)
     const [checkingUsername, setCheckingUsername] = useState(false)
@@ -119,14 +122,11 @@ export function useAuthOtp(onSuccess?: () => void) {
         setLoading(true)
         setError('')
         try {
+            console.log('[OTP] handleSendOtp → phone =', phone)
             await sendOtp(phone)
             setStep('otp')
         } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message)
-            } else {
-                setError('Failed to send OTP')
-            }
+            setError((err as Error).message || 'Failed to send OTP')
         } finally {
             setLoading(false)
         }
@@ -137,11 +137,15 @@ export function useAuthOtp(onSuccess?: () => void) {
         setError('')
         try {
             const code = otp.join('')
+
+            console.log('[OTP] verifyOtp entered – code =', code)
             const cred = await verifyOtp(code)
 
+            console.log('[OTP] cred.user =', cred.user)
             if (!cred.user) {
                 throw new Error('OTP verification failed: no user returned')
             }
+            console.log('[OTP] verifyOtp OK – phone =', phone)
             // Check if user exists by phone
             const supabase = createClient()
             const { data: user, error: userError } = await supabase
@@ -150,19 +154,21 @@ export function useAuthOtp(onSuccess?: () => void) {
                 .eq('number', phone)
                 .single()
 
+            console.log('[OTP] Supabase lookup → user =', user, 'error =', userError)
             if (userError) {
                 if (
                     userError.message &&
                     userError.message.includes('multiple (or no) rows returned')
                 ) {
                     // No user found, proceed to signup
+                    console.warn('[OTP] No user found for phone, proceeding to details step.')
                     setIsNewUser(true)
                     setStep('details')
 
                     return
                 }
-
-                logWarning('Supabase lookup error:', userError)
+                /* eslint-disable no-console */
+                console.error('Supabase lookup error:', userError)
                 if (userError.code === '42501' || userError.message?.includes('permission')) {
                     throw new Error('Permission denied while accessing profile. Check RLS.')
                 }
@@ -170,6 +176,7 @@ export function useAuthOtp(onSuccess?: () => void) {
             }
 
             if (user && user.username) {
+                console.log('[OTP] Existing user found, username =', user.username)
                 // Existing user: sign in
                 const target = '/@' + user.username
 
@@ -177,16 +184,12 @@ export function useAuthOtp(onSuccess?: () => void) {
                 await setSessionCookie(cred.user, target)
                 if (onSuccess) onSuccess()
             } else {
-                logWarning('[OTP] User not found, proceeding to details step. Phone:', phone)
+                console.warn('[OTP] User not found, proceeding to details step. Phone:', phone)
                 setIsNewUser(true)
                 setStep('details')
             }
         } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message)
-            } else {
-                setError('Invalid code or user lookup failed')
-            }
+            setError((err as Error).message || 'Invalid code or user lookup failed')
         } finally {
             setLoading(false)
         }
@@ -218,6 +221,7 @@ export function useAuthOtp(onSuccess?: () => void) {
                 return
             }
             // Insert new user profile
+            console.log('[OTP] Inserting new user...')
             const { error: dbError, data } = await supabase
                 .from('users')
                 .insert({
@@ -233,6 +237,7 @@ export function useAuthOtp(onSuccess?: () => void) {
                 .single()
 
             if (dbError || !data?.username) throw dbError || new Error('Signup failed')
+            console.log('[OTP] Cookie already set, proceeding to redirect')
             const target = '/@' + data.username
 
             toastIdRef.current = toast('Redirecting to your profile…', { duration: Infinity })
@@ -340,15 +345,18 @@ export function useAuthOtp(onSuccess?: () => void) {
 
 function formatSupabaseError(err: unknown): string {
     if (!err) return 'Unknown error'
-
     if (typeof err === 'string') return err
-    if (err instanceof Error) return err.message
-
+    if (err instanceof Error && err.message) return err.message
     if (typeof err === 'object' && err !== null) {
-        if ('message' in err && typeof err.message === 'string') return err.message
-        if ('error_description' in err && typeof err.error_description === 'string')
-            return err.error_description
-        if ('error' in err && typeof err.error === 'string') return err.error
+        if (
+            'error_description' in err &&
+            typeof (err as { error_description?: string }).error_description === 'string'
+        ) {
+            return (err as { error_description: string }).error_description
+        }
+        if ('error' in err && typeof (err as { error?: string }).error === 'string') {
+            return (err as { error: string }).error
+        }
     }
 
     return JSON.stringify(err)

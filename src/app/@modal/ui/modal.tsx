@@ -1,50 +1,70 @@
 'use client'
-
 import { useRouter } from 'next/navigation'
 import { Button, Input } from '@heroui/react'
 
-import { Dialog, DialogContent } from '®ui/dialog'
 import {
-    Drawer,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-} from '®ui/drawer'
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+    DialogClose,
+} from '®ui/dialog'
+import { Drawer, DrawerContent } from '®ui/drawer'
 import OTPInput from '®ui/otp-input'
-import { useMediaQuery } from '®hooks/useMediaQuery'
-
 import { useAuthOtp } from '../hooks/useAuthOtp'
 
-function SignupStepContent() {
+interface SignupModalProps {
+    fullPage?: boolean
+}
+
+function isMobile() {
+    if (typeof window === 'undefined') return false
+
+    return window.innerWidth < 640
+}
+
+export default function SignupModal({ fullPage = false }: SignupModalProps) {
     const auth = useAuthOtp()
+    const router = useRouter()
+
+    let stepContent: React.ReactNode = null
 
     if (auth.step === 'phone') {
-        return (
+        stepContent = (
             <>
-                <DrawerHeader>
-                    <DrawerTitle className='text-xl font-semibold'>
-                        Sign up or Sign in with your phone
-                    </DrawerTitle>
-                    <DrawerDescription className='mb-4 text-sm text-muted-foreground'>
-                        Enter your phone number to receive an OTP
-                    </DrawerDescription>
-                    <Input
-                        disabled={auth.loading}
-                        label='Phone Number'
-                        placeholder='+1 234 567 8901'
-                        type='tel'
-                        value={auth.phoneRaw}
-                        onChange={(e) => {
-                            const value = e.target.value.replace(/\D/g, '').slice(0, 10)
+                <DialogHeader>
+                    <DialogTitle>Sign up or Sign in with your phone</DialogTitle>
+                    <DialogDescription>
+                        Enter your Indian phone number to receive an OTP
+                    </DialogDescription>
+                </DialogHeader>
+                <div className='p-4'>
+                    <div className='flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900'>
+                        <span className='flex select-none items-center pr-2 text-base text-gray-500 dark:text-gray-400'>
+                            +91
+                            <span className='mx-2 h-5 w-px bg-gray-200 dark:bg-zinc-700' />
+                        </span>
+                        <Input
+                            className='flex-1 border-0 bg-transparent p-0 text-base shadow-none focus:ring-0'
+                            disabled={auth.loading}
+                            label={undefined}
+                            maxLength={10}
+                            placeholder='9876543210'
+                            size='lg'
+                            type='tel'
+                            value={auth.phoneRaw}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '').slice(0, 10)
 
-                            auth.setPhoneRaw(value)
-                        }}
-                    />
-                    {auth.error && <p className='mt-2 text-sm text-red-500'>{auth.error}</p>}
-                </DrawerHeader>
-                <DrawerFooter>
+                                auth.setPhoneRaw(value)
+                            }}
+                        />
+                    </div>
+                    {auth.error && <div className='mt-2 text-sm text-red-500'>{auth.error}</div>}
+                </div>
+                <DialogFooter>
                     <Button
                         className='w-full'
                         color='primary'
@@ -53,28 +73,33 @@ function SignupStepContent() {
                     >
                         Send OTP
                     </Button>
-                </DrawerFooter>
+                    {!fullPage && (
+                        <DialogClose asChild>
+                            <Button className='w-full' variant='light'>
+                                Cancel
+                            </Button>
+                        </DialogClose>
+                    )}
+                </DialogFooter>
             </>
         )
-    }
-
-    if (auth.step === 'otp') {
-        return (
+    } else if (auth.step === 'otp') {
+        stepContent = (
             <>
-                <DrawerHeader>
-                    <DrawerTitle>Enter OTP</DrawerTitle>
-                    <DrawerDescription>We sent a 6-digit code to {auth.phone}</DrawerDescription>
-                    <div className='flex justify-center'>
-                        <OTPInput
-                            disabled={auth.loading}
-                            length={6}
-                            value={auth.otp}
-                            onChange={auth.setOtp}
-                        />
-                    </div>
-                    {auth.error && <p className='mt-2 text-sm text-red-500'>{auth.error}</p>}
-                </DrawerHeader>
-                <DrawerFooter>
+                <DialogHeader>
+                    <DialogTitle>Enter OTP</DialogTitle>
+                    <DialogDescription>We sent a 6-digit code to {auth.phone}</DialogDescription>
+                </DialogHeader>
+                <div className='flex flex-col items-center p-4'>
+                    <OTPInput
+                        disabled={auth.loading}
+                        length={6}
+                        value={auth.otp}
+                        onChange={auth.setOtp}
+                    />
+                    {auth.error && <div className='mt-2 text-sm text-red-500'>{auth.error}</div>}
+                </div>
+                <DialogFooter>
                     <Button
                         className='w-full'
                         color='primary'
@@ -83,108 +108,123 @@ function SignupStepContent() {
                     >
                         Verify OTP
                     </Button>
-                </DrawerFooter>
+                    {!fullPage && (
+                        <DialogClose asChild>
+                            <Button className='w-full' variant='light'>
+                                Cancel
+                            </Button>
+                        </DialogClose>
+                    )}
+                </DialogFooter>
+            </>
+        )
+    } else if (auth.step === 'details') {
+        stepContent = (
+            <>
+                <DialogHeader>
+                    <DialogTitle>Complete your profile</DialogTitle>
+                    <DialogDescription>
+                        Please enter your details to finish signing up.
+                    </DialogDescription>
+                </DialogHeader>
+                <form
+                    className='space-y-4 p-4'
+                    onSubmit={(e) => {
+                        e.preventDefault()
+                        auth.handleSubmitDetails()
+                    }}
+                >
+                    <Input
+                        required
+                        disabled={auth.loading}
+                        label='First Name'
+                        value={auth.firstName}
+                        onChange={(e) => auth.setFirstName(e.target.value)}
+                    />
+                    <Input
+                        required
+                        disabled={auth.loading}
+                        label='Last Name'
+                        value={auth.lastName}
+                        onChange={(e) => auth.setLastName(e.target.value)}
+                    />
+                    <Input
+                        required
+                        disabled={auth.loading}
+                        label='Username'
+                        value={auth.username}
+                        onChange={(e) => auth.setUsername(e.target.value)}
+                    />
+                    {auth.username && (
+                        <div className='mt-1 min-h-[20px] text-sm'>
+                            {auth.checkingUsername && (
+                                <span className='text-gray-500'>Checking username...</span>
+                            )}
+                            {!auth.checkingUsername &&
+                                auth.usernameChecked &&
+                                auth.isUsernameUnique === true && (
+                                    <span className='text-green-600'>Username is available ✓</span>
+                                )}
+                            {!auth.checkingUsername &&
+                                auth.usernameChecked &&
+                                auth.isUsernameUnique === false && (
+                                    <span className='text-red-500'>
+                                        This username is already taken.
+                                    </span>
+                                )}
+                        </div>
+                    )}
+                    <Input
+                        required
+                        disabled={auth.loading}
+                        label='Date of Birth'
+                        type='date'
+                        value={auth.dob}
+                        onChange={(e) => auth.setDob(e.target.value)}
+                    />
+                    {auth.error && <div className='text-sm text-red-500'>{auth.error}</div>}
+                    <DialogFooter>
+                        <Button
+                            className='w-full'
+                            color='primary'
+                            disabled={
+                                auth.loading ||
+                                !auth.usernameChecked ||
+                                !auth.isUsernameUnique ||
+                                auth.checkingUsername
+                            }
+                            isLoading={auth.loading}
+                            type='submit'
+                        >
+                            Finish Signup
+                        </Button>
+                    </DialogFooter>
+                </form>
             </>
         )
     }
 
-    if (auth.step === 'details') {
+    if (typeof window !== 'undefined' && isMobile()) {
         return (
-            <form
-                className='space-y-4 px-4 pt-4'
-                onSubmit={(e) => {
-                    e.preventDefault()
-                    auth.handleSubmitDetails()
+            <Drawer
+                open
+                onOpenChange={(open) => {
+                    if (!open) router.back()
                 }}
             >
-                <DrawerTitle>Complete your profile</DrawerTitle>
-                <DrawerDescription>
-                    Please enter your details to finish signing up.
-                </DrawerDescription>
-                <Input
-                    required
-                    disabled={auth.loading}
-                    label='First Name'
-                    value={auth.firstName}
-                    onChange={(e) => auth.setFirstName(e.target.value)}
-                />
-                <Input
-                    required
-                    disabled={auth.loading}
-                    label='Last Name'
-                    value={auth.lastName}
-                    onChange={(e) => auth.setLastName(e.target.value)}
-                />
-                <Input
-                    required
-                    disabled={auth.loading}
-                    label='Username'
-                    value={auth.username}
-                    onChange={(e) => auth.setUsername(e.target.value)}
-                />
-                {auth.username && (
-                    <div className='mt-1 min-h-[20px] text-sm'>
-                        {auth.checkingUsername && (
-                            <span className='text-gray-500'>Checking username...</span>
-                        )}
-                        {!auth.checkingUsername &&
-                            auth.usernameChecked &&
-                            auth.isUsernameUnique === true && (
-                                <span className='text-green-600'>Username is available ✓</span>
-                            )}
-                        {!auth.checkingUsername &&
-                            auth.usernameChecked &&
-                            auth.isUsernameUnique === false && (
-                                <span className='text-red-500'>
-                                    This username is already taken.
-                                </span>
-                            )}
-                    </div>
-                )}
-                <Input
-                    required
-                    disabled={auth.loading}
-                    label='Date of Birth'
-                    type='date'
-                    value={auth.dob}
-                    onChange={(e) => auth.setDob(e.target.value)}
-                />
-                {auth.error && <p className='text-sm text-red-500'>{auth.error}</p>}
-                <DrawerFooter>
-                    <Button
-                        className='w-full'
-                        color='primary'
-                        isLoading={auth.loading}
-                        type='submit'
-                    >
-                        Finish Signup
-                    </Button>
-                </DrawerFooter>
-            </form>
+                <DrawerContent>{stepContent}</DrawerContent>
+            </Drawer>
         )
     }
 
-    return null
-}
-export default function SignupModal() {
-    const router = useRouter()
-    const isDesktop = useMediaQuery('(min-width: 640px)')
-
-    const handleClose = () => {
-        router.back()
-    }
-
-    return isDesktop ? (
-        <Dialog open onOpenChange={(open) => !open && handleClose()}>
-            <DialogContent className='max-w-md'>
-                <SignupStepContent />
-            </DialogContent>
+    return (
+        <Dialog
+            open
+            onOpenChange={(open) => {
+                if (!open) router.back()
+            }}
+        >
+            <DialogContent className='max-w-md'>{stepContent}</DialogContent>
         </Dialog>
-    ) : (
-        <Drawer open onOpenChange={(open) => !open && handleClose()}>
-            <DrawerContent>
-                <SignupStepContent />
-            </DrawerContent>
-        </Drawer>
     )
 }
