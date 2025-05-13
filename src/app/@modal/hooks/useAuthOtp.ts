@@ -192,6 +192,8 @@ export function useAuthOtp(onSuccess?: () => void) {
         }
     }
 
+    const DEFAULT_ROLE_UUID = '13cc2a2d-69d9-48cd-8660-15d0f6e0c298'
+
     const handleSubmitDetails = async () => {
         setLoading(true)
         setError('')
@@ -218,7 +220,6 @@ export function useAuthOtp(onSuccess?: () => void) {
                 return
             }
             // Insert new user profile
-            console.log('[OTP] Inserting new user...')
             const { error: dbError, data } = await supabase
                 .from('users')
                 .insert({
@@ -228,13 +229,12 @@ export function useAuthOtp(onSuccess?: () => void) {
                     number: phone,
                     dob,
                     created_at: new Date().toISOString(),
-                    role: 'subscriber',
+                    role: DEFAULT_ROLE_UUID,
                 })
                 .select('username')
                 .single()
 
             if (dbError || !data?.username) throw dbError || new Error('Signup failed')
-            console.log('[OTP] Cookie already set, proceeding to redirect')
             const target = '/@' + data.username
 
             toastIdRef.current = toast('Redirecting to your profile…', { duration: Infinity })
