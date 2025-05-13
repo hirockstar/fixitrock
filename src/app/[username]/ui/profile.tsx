@@ -1,10 +1,12 @@
 'use client'
 import { Button, Image, Listbox, ListboxItem, ScrollShadow, User } from '@heroui/react'
+import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, useState } from 'react'
 
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®/ui/drawer'
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '®/ui/sheet'
+import { useAuth } from '®app/@modal/hooks/useAuth'
 
 type PreviewProps = {
     open: boolean
@@ -13,11 +15,21 @@ type PreviewProps = {
 
 export function Profile() {
     const [open, setOpen] = useState(false)
+    const { user } = useAuth()
+    const router = useRouter()
+
+    const handlePress = () => {
+        if (user) {
+            setOpen(true)
+        } else {
+            router.push('/login')
+        }
+    }
 
     return (
         <>
-            <Button isIconOnly radius='full' size='sm' variant='flat' onPress={() => setOpen(true)}>
-                <Image alt='Fix iT Rock' height={30} src='/icons/rdrive.png' width={30} />
+            <Button isIconOnly radius='full' size='sm' variant='flat' onPress={handlePress}>
+                <Image alt='Fix iT Rock' height={30} src='/icons/fixitrock.png' width={30} />
             </Button>
             <SheetDrawer open={open} setOpen={setOpen} />
         </>

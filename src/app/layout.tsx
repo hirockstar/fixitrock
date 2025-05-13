@@ -38,7 +38,7 @@ export default function RootLayout({
                     fontMono.variable
                 )}
             >
-                <div className='hidden' id='recaptcha-container' style={{ display: 'none' }} />
+                <div id='recaptcha-container' />
                 <Providers>
                     <div className='relative flex min-h-screen flex-col bg-background'>
                         <div className='flex-1 overflow-clip'>{children}</div>
