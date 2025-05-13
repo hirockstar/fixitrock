@@ -11,6 +11,7 @@ Welcome to the Fix it Rock GitHub repository! This project is dedicated to provi
     - [Contributing](#contributing)
     - [Uploading Files](#uploading-files)
     - [License](#license)
+    - [🔑 Firebase Test Phone Number (for OTP)](#-firebase-test-phone-number-for-otp)
 
 ## About FixitRock
 
@@ -22,7 +23,7 @@ To get started with Fix it Rock, simply browse through the available files and r
 
 ## Contributing
 
-We welcome contributions from everyone! Here’s how you can help:
+We welcome contributions from everyone! Here's how you can help:
 
 1. **Fork the repository**: Create your own copy of the project.
 2. **Make your changes**: Improve the project by adding features, fixing bugs, or enhancing documentation.
@@ -43,3 +44,12 @@ If you have files that you would like to share with the community, you can uploa
 This project is open-source and available under the [MIT License](LICENSE). By contributing, you agree to license your contributions under the same terms.
 
 Thank you for being a part of the Fix iT Rock community! Together, we can make mobile repair resources more accessible for everyone
+
+## 🔑 Firebase Test Phone Number (for OTP)
+
+To test the OTP signup flow without a real phone, use the following test credentials (pre-configured in Firebase):
+
+- **Phone Number:** `+15055725630`
+- **OTP Code:** `123456`
+
+No SMS will be sent; just enter the code above after requesting an OTP.

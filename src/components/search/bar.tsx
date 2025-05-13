@@ -2,6 +2,7 @@
 import { Button, Image, Input } from '@heroui/react'
 import { Search, X } from 'lucide-react'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import AnimatedSearch, { useOpen } from '®ui/farmer/search'
 import { useSearch } from '®tanstack/query'
@@ -14,6 +15,7 @@ const SearchBar = () => {
     const [query, setQuery] = useState('')
     const { data, isLoading } = useSearch(query)
     const { open, setOpen } = useOpen()
+    const router = useRouter()
 
     return (
         <AnimatedSearch open={open} setOpen={setOpen}>
@@ -42,7 +44,13 @@ const SearchBar = () => {
                                 <X size={18} />
                             </Button>
                         ) : (
-                            <Button isIconOnly radius='full' size='sm' variant='flat'>
+                            <Button
+                                isIconOnly
+                                radius='full'
+                                size='sm'
+                                variant='flat'
+                                onPress={() => router.push('/signup')}
+                            >
                                 <Image
                                     alt='Fix iT Rock'
                                     height={30}

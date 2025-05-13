@@ -36,6 +36,8 @@
         "eslint-plugin-prettier": "^5",
         "eslint-plugin-react": "^7",
         "eslint-plugin-unused-imports": "^4",
+        "firebase": "^11.7.1",
+        "firebase-admin": "^13.3.0",
         "geist": "^1",
         "gray-matter": "^4",
         "jspdf": "^3.0.1",

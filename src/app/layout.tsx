@@ -10,8 +10,10 @@ import { fontMono, fontSans } from '®lib/fonts'
 
 export default function RootLayout({
     children,
+    modal,
 }: Readonly<{
     children: React.ReactNode
+    modal?: React.ReactNode
 }>) {
     return (
         <html suppressHydrationWarning lang='en'>
@@ -35,9 +37,11 @@ export default function RootLayout({
                     fontMono.variable
                 )}
             >
+                <div id='recaptcha-container' style={{ minHeight: 0 }} />
                 <Providers>
                     <div className='relative flex min-h-screen flex-col bg-background'>
                         <div className='flex-1 overflow-clip'>{children}</div>
+                        {modal}
                         <Footer />
                         <Sonner />
                     </div>
