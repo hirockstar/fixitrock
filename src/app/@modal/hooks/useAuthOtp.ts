@@ -74,7 +74,7 @@ async function setSessionCookie(providedUser?: User, target?: string) {
 
         form.submit()
     } catch (err) {
-        console.error('[OTP] setSessionCookie error', err)
+        logWarning('[OTP] setSessionCookie error', err)
     }
 }
 
@@ -119,7 +119,6 @@ export function useAuthOtp(onSuccess?: () => void) {
         setLoading(true)
         setError('')
         try {
-            console.log('[OTP] handleSendOtp → phone =', phone)
             await sendOtp(phone)
             setStep('otp')
         } catch (err: unknown) {
@@ -135,14 +134,11 @@ export function useAuthOtp(onSuccess?: () => void) {
         try {
             const code = otp.join('')
 
-            console.log('[OTP] verifyOtp entered – code =', code)
             const cred = await verifyOtp(code)
 
-            console.log('[OTP] cred.user =', cred.user)
             if (!cred.user) {
                 throw new Error('OTP verification failed: no user returned')
             }
-            console.log('[OTP] verifyOtp OK – phone =', phone)
             // Check if user exists by phone
             const supabase = createClient()
             const { data: user, error: userError } = await supabase
@@ -151,7 +147,6 @@ export function useAuthOtp(onSuccess?: () => void) {
                 .eq('number', phone)
                 .single()
 
-            console.log('[OTP] Supabase lookup → user =', user, 'error =', userError)
             if (userError) {
                 if (
                     userError.message &&
@@ -223,6 +218,7 @@ export function useAuthOtp(onSuccess?: () => void) {
             const { error: dbError, data } = await supabase
                 .from('users')
                 .insert({
+                    auth_id: firebaseAuth.currentUser?.uid,
                     first_name: firstName,
                     last_name: lastName,
                     username,
