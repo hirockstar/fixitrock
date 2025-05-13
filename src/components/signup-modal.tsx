@@ -74,7 +74,7 @@ export default function SignupModal({ fullPage = false }: SignupModalProps) {
                     >
                         Send OTP
                     </Button>
-                    {!fullPage && (
+                    {!fullPage && !auth.redirecting && (
                         <DialogClose asChild>
                             <Button className='w-full' variant='light'>
                                 Cancel
@@ -109,7 +109,7 @@ export default function SignupModal({ fullPage = false }: SignupModalProps) {
                     >
                         Verify OTP
                     </Button>
-                    {!fullPage && (
+                    {!fullPage && !auth.redirecting && (
                         <DialogClose asChild>
                             <Button className='w-full' variant='light'>
                                 Cancel
@@ -222,7 +222,7 @@ export default function SignupModal({ fullPage = false }: SignupModalProps) {
         <Dialog
             open
             onOpenChange={(open) => {
-                if (!open) router.back()
+                if (!open && !auth.redirecting) router.back()
             }}
         >
             <DialogContent className='max-w-md'>{stepContent}</DialogContent>
