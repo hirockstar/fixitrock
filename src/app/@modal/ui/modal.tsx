@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Button, Input } from '@heroui/react'
 import { useEffect, useRef, useState } from 'react'
 
@@ -43,8 +43,8 @@ function SignupStepContent({ onSignupSuccess }: { onSignupSuccess: () => void })
             const recaptchaOverlay = document.getElementById('rc-imageselect')
 
             if (recaptchaOverlay) {
-                recaptchaOverlay.style.position = 'relative'
-                recaptchaOverlay.style.zIndex = '200'
+                recaptchaOverlay.style.position = 'fixed'
+                recaptchaOverlay.style.zIndex = '99999'
             }
         })
 
@@ -52,6 +52,16 @@ function SignupStepContent({ onSignupSuccess }: { onSignupSuccess: () => void })
 
         return () => observer.disconnect()
     }, [])
+
+    // Clean up RecaptchaVerifier when leaving phone step or unmounting
+    useEffect(() => {
+        return () => {
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.clear()
+                window.recaptchaVerifier = undefined
+            }
+        }
+    }, [auth.step])
 
     if (auth.step === 'phone') {
         return (
@@ -85,11 +95,13 @@ function SignupStepContent({ onSignupSuccess }: { onSignupSuccess: () => void })
                     <Button
                         className='w-full'
                         color='primary'
+                        id='sign-in-button'
                         isLoading={auth.loading}
                         onPress={auth.handleSendOtp}
                     >
                         Send OTP
                     </Button>
+                    <div id='recaptcha-container' />
                 </DrawerFooter>
             </>
         )
@@ -225,9 +237,10 @@ function SignupStepContent({ onSignupSuccess }: { onSignupSuccess: () => void })
 
 export default function SignupModal() {
     const router = useRouter()
+    const pathname = usePathname()
     const isDesktop = useMediaQuery('(min-width: 640px)')
     const [recaptchaOpen, setRecaptchaOpen] = useState(false)
-    const [open, setOpen] = useState(true)
+    const modalOpen = pathname === '/login'
 
     // Track reCAPTCHA overlay presence
     useEffect(() => {
@@ -235,11 +248,6 @@ export default function SignupModal() {
             const recaptchaOverlay = document.getElementById('rc-imageselect')
 
             setRecaptchaOpen(!!recaptchaOverlay)
-            if (recaptchaOverlay) {
-                console.log('[reCAPTCHA] rc-imageselect appeared')
-            } else {
-                console.log('[reCAPTCHA] rc-imageselect not present')
-            }
         })
 
         observer.observe(document.body, { childList: true, subtree: true })
@@ -248,7 +256,6 @@ export default function SignupModal() {
     }, [])
 
     const handleClose = () => {
-        setOpen(false)
         setTimeout(() => {
             if (document.activeElement instanceof HTMLElement) {
                 document.activeElement.blur()
@@ -264,23 +271,18 @@ export default function SignupModal() {
 
     // Handler to close modal on successful signup/profile redirect
     const handleSignupSuccess = () => {
-        setOpen(false)
-        setTimeout(() => {
-            if (document.activeElement instanceof HTMLElement) {
-                document.activeElement.blur()
-            }
-        }, 0)
-        router.push('/')
+        handleClose()
     }
 
     return isDesktop ? (
-        <Dialog open={open} onOpenChange={handleOpenChange}>
+        <Dialog open={modalOpen} onOpenChange={handleOpenChange}>
+          
             <DialogContent className='max-w-md'>
                 <SignupStepContent onSignupSuccess={handleSignupSuccess} />
             </DialogContent>
         </Dialog>
     ) : (
-        <Drawer open={open} onOpenChange={handleOpenChange}>
+        <Drawer open={modalOpen} onOpenChange={handleOpenChange}>
             <DrawerContent>
                 <SignupStepContent onSignupSuccess={handleSignupSuccess} />
             </DrawerContent>

@@ -31,22 +31,14 @@ function ensureRecaptchaContainerExists() {
 
 function getRecaptchaVerifier(): RecaptchaVerifier {
     if (typeof window === 'undefined') throw new Error('Recaptcha unavailable on server')
-
     ensureRecaptchaContainerExists()
-
     if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-            auth, // ✅ auth should be first
-            RECAPTCHA_ID,
-            {
-                size: 'invisible',
-                callback: () => {},
-                'expired-callback': () => {
-                    window.recaptchaVerifier?.clear()
-                    window.recaptchaVerifier = undefined
-                },
-            }
-        )
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, RECAPTCHA_ID, {
+            size: 'normal',
+            callback: (response: string) => {
+                console.log('reCAPTCHA solved', response)
+            },
+        })
     }
 
     return window.recaptchaVerifier
@@ -55,7 +47,7 @@ function getRecaptchaVerifier(): RecaptchaVerifier {
 export async function sendOtp(phone: string): Promise<ConfirmationResult> {
     const verifier = getRecaptchaVerifier()
 
-    await verifier.render() // required once
+    await verifier.render()
     const confirmation = await signInWithPhoneNumber(auth, phone, verifier)
 
     window.confirmationResult = confirmation
