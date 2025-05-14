@@ -33,10 +33,19 @@ export async function POST(request: Request) {
         const secure = process.env.NODE_ENV === 'production' ? 'Secure; ' : ''
         const cookieHeader = `session=${sessionCookie}; Path=/; HttpOnly; ${secure}Max-Age=${expiresIn / 1000}; SameSite=Lax`
 
+        // Extract username from target (e.g. /@username)
+        let username = ''
+        if (target.startsWith('/@')) {
+            username = target.slice(2)
+        }
+        const usernameCookie = username
+            ? `username=${encodeURIComponent(username)}; Path=/; Max-Age=${expiresIn / 1000}; SameSite=Lax`
+            : ''
+
         return new Response(JSON.stringify({ success: true, target }), {
             status: 200,
             headers: {
-                'Set-Cookie': cookieHeader,
+                'Set-Cookie': [cookieHeader, usernameCookie].filter(Boolean).join(', '),
                 'Content-Type': 'application/json',
             },
         })
