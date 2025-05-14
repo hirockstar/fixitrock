@@ -18,7 +18,10 @@ export async function POST(request: Request) {
         target = form.get('target') as string
     }
     if (!idToken || !target) {
-        return new Response('Invalid request', { status: 400 })
+        return new Response(JSON.stringify({ error: 'Invalid request' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+        })
     }
 
     try {
@@ -30,19 +33,19 @@ export async function POST(request: Request) {
         const secure = process.env.NODE_ENV === 'production' ? 'Secure; ' : ''
         const cookieHeader = `session=${sessionCookie}; Path=/; HttpOnly; ${secure}Max-Age=${expiresIn / 1000}; SameSite=Lax`
 
-        // Return HTML with JS redirect
-        const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${target}"><script>window.location.replace('${target}')</script></head><body>Redirecting...</body></html>`
-
-        return new Response(html, {
+        return new Response(JSON.stringify({ success: true, target }), {
             status: 200,
             headers: {
                 'Set-Cookie': cookieHeader,
-                'Content-Type': 'text/html',
+                'Content-Type': 'application/json',
             },
         })
     } catch (error) {
         logWarning('Session login error', error)
 
-        return new Response('Unauthorized', { status: 401 })
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+            status: 401,
+            headers: { 'Content-Type': 'application/json' },
+        })
     }
 }

@@ -1368,3 +1368,8 @@ svg {
 .mdx .highlight pre:has(+ .zeroclipboard-container) {
     min-height: 52px;
 }
+
+#recaptcha-container {
+    pointer-events: auto;
+    z-index: 10000;
+}

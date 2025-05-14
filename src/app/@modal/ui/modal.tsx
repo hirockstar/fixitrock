@@ -276,7 +276,6 @@ export default function SignupModal() {
 
     return isDesktop ? (
         <Dialog open={modalOpen} onOpenChange={handleOpenChange}>
-          
             <DialogContent className='max-w-md'>
                 <SignupStepContent onSignupSuccess={handleSignupSuccess} />
             </DialogContent>

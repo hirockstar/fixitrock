@@ -32,47 +32,22 @@ async function setSessionCookie(providedUser?: User, target?: string) {
             throw new Error('No target provided for session cookie redirect')
         }
 
-        // Create a hidden iframe
-        let iframe = document.getElementById('session-iframe') as HTMLIFrameElement | null
+        // Use fetch to POST to /api/sessionLogin
+        const res = await fetch('/api/sessionLogin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken, target }),
+            credentials: 'include',
+        })
 
-        if (!iframe) {
-            iframe = document.createElement('iframe')
-            iframe.style.display = 'none'
-            iframe.id = 'session-iframe'
-            iframe.name = 'session-iframe'
-            document.body.appendChild(iframe)
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}))
+
+            throw new Error(data.error || 'Failed to set session cookie')
         }
 
-        // Create a form targeting the iframe
-        const form = document.createElement('form')
-
-        form.method = 'POST'
-        form.action = '/api/sessionLogin'
-        form.target = 'session-iframe'
-        form.style.display = 'none'
-
-        const idTokenInput = document.createElement('input')
-
-        idTokenInput.type = 'hidden'
-        idTokenInput.name = 'idToken'
-        idTokenInput.value = idToken
-        form.appendChild(idTokenInput)
-
-        const targetInput = document.createElement('input')
-
-        targetInput.type = 'hidden'
-        targetInput.name = 'target'
-        targetInput.value = target
-        form.appendChild(targetInput)
-
-        document.body.appendChild(form)
-
-        // Listen for iframe load to redirect main window
-        iframe.onload = () => {
-            window.location.replace(target!)
-        }
-
-        form.submit()
+        // On success, navigate to the target page
+        window.location.replace(target)
     } catch (err) {
         logWarning('[OTP] setSessionCookie error', err)
     }

@@ -39,52 +39,33 @@ export default async function UserProfilePage({
 
     const normalizePhone = (p?: string | null) => (p ? p.replace(/[^0-9]/g, '') : '')
 
-    if (firebaseUser && user) {
-    }
-
-    // Protect: Only allow the logged-in user to view their own profile
-    if (
-        !firebaseUser ||
-        !user ||
-        normalizePhone(firebaseUser.phone_number) !== normalizePhone(user.number)
-    ) {
-        // Redirect unauthorized users to signup
-        if (typeof window !== 'undefined') {
-            window.location.replace('/login')
-
-            return null
-        }
-
-        // SSR fallback: meta refresh
-        return (
-            <html>
-                <head>
-                    <meta content='0;url=/login' httpEquiv='refresh' />
-                </head>
-                <body>
-                    <div className='p-8 text-center text-red-500'>Redirecting to signup…</div>
-                </body>
-            </html>
-        )
-    }
-
     return (
         <div className='mx-auto max-w-lg p-8'>
-            <h1 className='mb-2 text-2xl font-bold'>@{user.username}</h1>
-            <div>First Name: {user.first_name}</div>
-            <div>Last Name: {user.last_name}</div>
-            <div>Phone: {user.number}</div>
-            <div>Date of Birth: {user.dob}</div>
-            <div>Role: {user.role}</div>
-            <div>Joined: {new Date(user.created_at).toLocaleDateString()}</div>
-            <form action='/api/logout' className='mt-8' method='POST'>
-                <button
-                    className='rounded bg-red-500 px-4 py-2 font-semibold text-white transition hover:bg-red-600'
-                    type='submit'
-                >
-                    Log out
-                </button>
-            </form>
+            <h1 className='mb-2 text-2xl font-bold'>@{user?.username || username}</h1>
+            {user ? (
+                <>
+                    <div>First Name: {user.first_name}</div>
+                    <div>Last Name: {user.last_name}</div>
+                    <div>Phone: {user.number}</div>
+                    <div>Date of Birth: {user.dob}</div>
+                    <div>Role: {user.role}</div>
+                    <div>Joined: {new Date(user.created_at).toLocaleDateString()}</div>
+                </>
+            ) : (
+                <div className='text-red-500'>User not found.</div>
+            )}
+            {firebaseUser &&
+                user &&
+                normalizePhone(firebaseUser.phone_number) === normalizePhone(user.number) && (
+                    <form action='/api/logout' className='mt-8' method='POST'>
+                        <button
+                            className='rounded bg-red-500 px-4 py-2 font-semibold text-white transition hover:bg-red-600'
+                            type='submit'
+                        >
+                            Log out
+                        </button>
+                    </form>
+                )}
         </div>
     )
 }
