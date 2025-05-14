@@ -15,10 +15,9 @@ import {
 } from '®ui/drawer'
 import OTPInput from '®ui/otp-input'
 import { useMediaQuery } from '®hooks/useMediaQuery'
+import { useAuthOtp } from '®lib/auth'
 
-import { useAuthOtp } from '../hooks/useAuthOtp'
-
-function SignupStepContent({ onSignupSuccess }: { onSignupSuccess: () => void }) {
+function SignupStepContent() {
     const auth = useAuthOtp()
     const lastSubmittedOtp = useRef('')
 
@@ -266,7 +265,6 @@ export default function SignupModal() {
                     Array.from(lastDiv.children).forEach((child) => {
                         ;(child as HTMLElement).style.pointerEvents = 'auto'
                     })
-                    console.log('reCAPTCHA challenge container detected as last element!', lastDiv)
                     lastDetectedRecaptchaDiv = last
                     // Stop observing and polling after first detection
                     if (observer) observer.disconnect()
@@ -314,11 +312,6 @@ export default function SignupModal() {
         if (!recaptchaOpen && !nextOpen) handleClose()
     }
 
-    // Handler to close modal on successful signup/profile redirect
-    const handleSignupSuccess = () => {
-        handleClose()
-    }
-
     return isDesktop ? (
         <Dialog open={modalOpen} onOpenChange={handleOpenChange}>
             <DialogContent
@@ -326,7 +319,7 @@ export default function SignupModal() {
                 onInteractOutside={(e) => e.preventDefault()}
                 onPointerDownOutside={(e) => e.preventDefault()}
             >
-                <SignupStepContent onSignupSuccess={handleSignupSuccess} />
+                <SignupStepContent />
             </DialogContent>
         </Dialog>
     ) : (
@@ -335,7 +328,7 @@ export default function SignupModal() {
                 onInteractOutside={(e) => e.preventDefault()}
                 onPointerDownOutside={(e) => e.preventDefault()}
             >
-                <SignupStepContent onSignupSuccess={handleSignupSuccess} />
+                <SignupStepContent />
             </DrawerContent>
         </Drawer>
     )

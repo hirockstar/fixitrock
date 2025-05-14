@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 
 import { createClient } from '®supabase/client'
 import { adminAuth } from '®lib/firebaseAdmin'
+import { useLogout } from '®lib/auth'
 
 export default async function UserProfilePage({
     params,
@@ -57,7 +58,7 @@ export default async function UserProfilePage({
             {firebaseUser &&
                 user &&
                 normalizePhone(firebaseUser.phone_number) === normalizePhone(user.number) && (
-                    <form action='/api/logout' className='mt-8' method='POST'>
+                    <form action={useLogout} className='mt-8'>
                         <button
                             className='rounded bg-red-500 px-4 py-2 font-semibold text-white transition hover:bg-red-600'
                             type='submit'

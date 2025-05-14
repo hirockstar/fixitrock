@@ -8,14 +8,19 @@ import '../styles/globals.css'
 import { cn } from '®lib/utils'
 import { fontMono, fontSans } from '®lib/fonts'
 import SearchBar from '®components/search/bar'
+import { AuthProvider } from '®provider/auth'
+import { getAuth } from '®lib/auth'
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
     modal,
 }: Readonly<{
     children: React.ReactNode
     modal?: React.ReactNode
 }>) {
+    const auth = await getAuth()
+    const initialUser = auth.status === 'authenticated' ? auth.user : null
+
     return (
         <html suppressHydrationWarning lang='en'>
             <head>
@@ -38,15 +43,17 @@ export default function RootLayout({
                     fontMono.variable
                 )}
             >
-                <Providers>
-                    <div className='relative flex min-h-screen flex-col bg-background'>
-                        <div className='flex-1 overflow-clip'>{children}</div>
-                        {modal}
-                        <SearchBar />
-                        <Footer />
-                        <Sonner />
-                    </div>
-                </Providers>
+                <AuthProvider initialUser={initialUser}>
+                    <Providers>
+                        <div className='relative flex min-h-screen flex-col bg-background'>
+                            <div className='flex-1 overflow-clip'>{children}</div>
+                            {modal}
+                            <SearchBar />
+                            <Footer />
+                            <Sonner />
+                        </div>
+                    </Providers>
+                </AuthProvider>
             </body>
         </html>
     )

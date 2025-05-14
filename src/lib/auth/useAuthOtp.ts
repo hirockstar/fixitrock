@@ -1,61 +1,14 @@
-import type { User } from 'firebase/auth'
-
 import { useState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 
 import { sendOtp, verifyOtp } from '®services/otp'
 import { createClient } from '®supabase/client'
-import { auth as firebaseAuth } from '®lib/firebase'
 import { logWarning } from '®lib/utils'
-
-// Helper to create server-side session cookie
-async function setSessionCookie(providedUser?: User, target?: string) {
-    try {
-        let user = providedUser || firebaseAuth.currentUser
-        let retries = 0
-
-        while (!user && retries < 10) {
-            await new Promise((r) => setTimeout(r, 100)) // 100 ms
-            user = firebaseAuth.currentUser
-            retries += 1
-        }
-
-        if (!user) {
-            logWarning('[OTP] setSessionCookie – currentUser still null after 1 s')
-
-            return
-        }
-
-        const idToken = await user.getIdToken(true)
-
-        if (!target) {
-            throw new Error('No target provided for session cookie redirect')
-        }
-
-        // Use fetch to POST to /api/sessionLogin
-        const res = await fetch('/api/sessionLogin', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken, target }),
-            credentials: 'include',
-        })
-
-        if (!res.ok) {
-            const data = await res.json().catch(() => ({}))
-
-            throw new Error(data.error || 'Failed to set session cookie')
-        }
-
-        // On success, navigate to the target page
-        window.location.replace(target)
-    } catch (err) {
-        logWarning('[OTP] setSessionCookie error', err)
-    }
-}
+import { setSessionCookie } from '®actions/auth'
 
 export function useAuthOtp(onSuccess?: () => void) {
     const [step, setStep] = useState<'phone' | 'otp' | 'details'>('phone')
-    const [phoneRaw, setPhoneRaw] = useState('') // Only the 10 digits
+    const [phoneRaw, setPhoneRaw] = useState('')
     const phone = '+91' + phoneRaw
     const [otp, setOtp] = useState(Array(6).fill(''))
     const [firstName, setFirstName] = useState('')
@@ -73,7 +26,6 @@ export function useAuthOtp(onSuccess?: () => void) {
     const [otpTimer, setOtpTimer] = useState(60)
     const otpTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-    // Only allow Indian numbers
     const isIndian = true
 
     const validatePhone = () => {
@@ -154,7 +106,8 @@ export function useAuthOtp(onSuccess?: () => void) {
                 // Existing user: sign in
                 const target = '/@' + user.username
 
-                await setSessionCookie(cred.user, target)
+                setRedirecting(true)
+                await setSessionCookie(target)
                 if (onSuccess) {
                     console.log('Calling onSuccess to close modal (existing user)')
                     onSuccess()
@@ -182,8 +135,6 @@ export function useAuthOtp(onSuccess?: () => void) {
             setLoading(false)
         }
     }
-
-    const DEFAULT_ROLE_UUID = '13cc2a2d-69d9-48cd-8660-15d0f6e0c298'
 
     const handleSubmitDetails = async () => {
         setLoading(true)
@@ -220,13 +171,11 @@ export function useAuthOtp(onSuccess?: () => void) {
                     number: phone,
                     dob,
                     created_at: new Date().toISOString(),
-                    role: DEFAULT_ROLE_UUID,
                 })
                 .select('username')
                 .single()
 
             if (dbError || !data?.username) throw dbError || new Error('Signup failed')
-            const target = '/@' + data.username
 
             setRedirecting(true)
             if (onSuccess) {

@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®/ui/drawer'
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '®/ui/sheet'
-import { useAuth } from '®app/@modal/hooks/useAuth'
+import { useAuth } from '®provider/auth'
 
 type PreviewProps = {
     open: boolean
@@ -19,11 +19,8 @@ export function Profile() {
     const router = useRouter()
 
     const handlePress = () => {
-        if (user) {
-            setOpen(true)
-        } else {
-            router.push('/login')
-        }
+        if (user) setOpen(true)
+        else router.push('/login')
     }
 
     return (
