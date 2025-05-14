@@ -154,7 +154,6 @@ export function useAuthOtp(onSuccess?: () => void) {
                 // Existing user: sign in
                 const target = '/@' + user.username
 
-                toastIdRef.current = toast('Redirecting to your profile…', { duration: Infinity })
                 await setSessionCookie(cred.user, target)
                 if (onSuccess) {
                     console.log('Calling onSuccess to close modal (existing user)')
@@ -229,7 +228,6 @@ export function useAuthOtp(onSuccess?: () => void) {
             if (dbError || !data?.username) throw dbError || new Error('Signup failed')
             const target = '/@' + data.username
 
-            toastIdRef.current = toast('Redirecting to your profile…', { duration: Infinity })
             setRedirecting(true)
             if (onSuccess) {
                 console.log('Calling onSuccess to close modal (new user)')
