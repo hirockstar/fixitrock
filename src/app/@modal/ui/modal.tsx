@@ -235,12 +235,57 @@ function SignupStepContent({ onSignupSuccess }: { onSignupSuccess: () => void })
     return null
 }
 
+// Track the last detected reCAPTCHA container to avoid infinite loop
+let lastDetectedRecaptchaDiv: Element | null = null
+
 export default function SignupModal() {
     const router = useRouter()
     const pathname = usePathname()
     const isDesktop = useMediaQuery('(min-width: 640px)')
     const [recaptchaOpen, setRecaptchaOpen] = useState(false)
     const modalOpen = pathname === '/login'
+
+    // --- Real-time reCAPTCHA challenge container detection ---
+    useEffect(() => {
+        let observer: MutationObserver | null = null
+        let interval: NodeJS.Timeout | null = null
+
+        function fixRecaptchaPointerEvents() {
+            const last = document.body.lastElementChild
+
+            if (
+                last &&
+                last.tagName === 'DIV' &&
+                last.querySelector &&
+                last.querySelector('iframe[src*="recaptcha/api2/bframe"]')
+            ) {
+                if (last !== lastDetectedRecaptchaDiv) {
+                    const lastDiv = last as HTMLElement
+
+                    lastDiv.style.pointerEvents = 'auto'
+                    Array.from(lastDiv.children).forEach((child) => {
+                        ;(child as HTMLElement).style.pointerEvents = 'auto'
+                    })
+                    console.log('reCAPTCHA challenge container detected as last element!', lastDiv)
+                    lastDetectedRecaptchaDiv = last
+                    // Stop observing and polling after first detection
+                    if (observer) observer.disconnect()
+                    if (interval) clearInterval(interval)
+                }
+            }
+        }
+
+        observer = new MutationObserver(fixRecaptchaPointerEvents)
+        observer.observe(document.body, { childList: true })
+        interval = setInterval(fixRecaptchaPointerEvents, 50)
+        fixRecaptchaPointerEvents()
+
+        return () => {
+            if (observer) observer.disconnect()
+            if (interval) clearInterval(interval)
+        }
+    }, [])
+    // --- End reCAPTCHA detection ---
 
     // Track reCAPTCHA overlay presence
     useEffect(() => {
@@ -276,13 +321,20 @@ export default function SignupModal() {
 
     return isDesktop ? (
         <Dialog open={modalOpen} onOpenChange={handleOpenChange}>
-            <DialogContent className='max-w-md'>
+            <DialogContent
+                className='max-w-md'
+                onInteractOutside={(e) => e.preventDefault()}
+                onPointerDownOutside={(e) => e.preventDefault()}
+            >
                 <SignupStepContent onSignupSuccess={handleSignupSuccess} />
             </DialogContent>
         </Dialog>
     ) : (
         <Drawer open={modalOpen} onOpenChange={handleOpenChange}>
-            <DrawerContent>
+            <DrawerContent
+                onInteractOutside={(e) => e.preventDefault()}
+                onPointerDownOutside={(e) => e.preventDefault()}
+            >
                 <SignupStepContent onSignupSuccess={handleSignupSuccess} />
             </DrawerContent>
         </Drawer>
