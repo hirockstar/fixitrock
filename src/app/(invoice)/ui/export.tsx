@@ -1,12 +1,20 @@
 'use client'
 
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
+import {
+    addToast,
+    Button,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+} from '@heroui/react'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import { FileText } from 'lucide-react'
 
 import { InvoiceProduct } from '®types/invoice'
 
+// Utility: Strip emojis for PDF export
 function stripEmojis(text: string | null | undefined) {
     return (text || '').replace(
         /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD00-\uDDFF])/g,
@@ -14,6 +22,7 @@ function stripEmojis(text: string | null | undefined) {
     )
 }
 
+// Utility: Generate file name
 function getFormattedFileName(extension: string) {
     const now = new Date()
     const formattedDate = now
@@ -64,55 +73,88 @@ function exportToExcel(headers: string[], rows: (string | number)[][]) {
     document.body.removeChild(link)
 }
 
+// PDF/CSV/Excel Export with toast
 function exportVisibleProducts(format: 'pdf' | 'csv' | 'excel', products: InvoiceProduct[]) {
-    const headers = ['Model', 'Compatibility', 'Qty']
+    const headers = ['Model', 'Purchase', 'Qty']
     const rows = products.map((item) => [
         format === 'pdf' ? stripEmojis(item.name) : item.name,
-        format === 'pdf' ? stripEmojis(item.compatibility) : item.compatibility,
+        item.purchase_price,
         item.qty,
     ])
 
-    if (format === 'pdf') {
-        const doc = new jsPDF('p', 'mm', 'a4')
-
-        autoTable(doc, {
-            head: [headers],
-            body: rows,
-            theme: 'grid',
-            headStyles: {
-                fillColor: [243, 244, 246],
-                textColor: 50,
-                halign: 'center',
-                fontStyle: 'bold',
-                valign: 'middle',
-            },
-            bodyStyles: {
-                textColor: 50,
-                fontSize: 10,
-                halign: 'center',
-                valign: 'middle',
-            },
-            styles: {
-                overflow: 'linebreak',
-                cellPadding: 4,
-                lineWidth: 0.1,
-                lineColor: [200, 200, 200],
-            },
-            columnStyles: {
-                0: { overflow: 'visible', cellWidth: 100 },
-                // 1: { overflow: 'linebreak', cellWidth: 100 },
-                // 2: { halign: 'center', cellWidth: 20 },
-            },
-        })
-
-        doc.save(getFormattedFileName('pdf'))
-    } else if (format === 'csv') {
-        exportToCSV(headers, rows)
-    } else if (format === 'excel') {
-        exportToExcel(headers, rows)
+    const titleMap = {
+        pdf: 'Exporting to PDF',
+        csv: 'Exporting to CSV',
+        excel: 'Exporting to Excel',
     }
+
+    addToast({
+        title: titleMap[format],
+        description: 'Please wait while the file is being prepared...',
+        promise: new Promise<void>((resolve, reject) => {
+            try {
+                if (format === 'pdf') {
+                    const doc = new jsPDF('p', 'mm', 'a4')
+
+                    autoTable(doc, {
+                        head: [headers],
+                        body: rows,
+                        theme: 'grid',
+                        headStyles: {
+                            fillColor: [243, 244, 246],
+                            textColor: 50,
+                            halign: 'center',
+                            fontStyle: 'bold',
+                            valign: 'middle',
+                        },
+                        bodyStyles: {
+                            textColor: 50,
+                            fontSize: 10,
+                            halign: 'center',
+                            valign: 'middle',
+                        },
+                        styles: {
+                            overflow: 'linebreak',
+                            cellPadding: 4,
+                            lineWidth: 0.1,
+                            lineColor: [200, 200, 200],
+                        },
+                        columnStyles: {
+                            0: { overflow: 'visible', cellWidth: 100 },
+                        },
+                    })
+
+                    doc.save(getFormattedFileName('pdf'))
+                } else if (format === 'csv') {
+                    exportToCSV(headers, rows)
+                } else {
+                    exportToExcel(headers, rows)
+                }
+                resolve()
+            } catch (error) {
+                reject(error)
+            }
+        }),
+    })
 }
 
+// WhatsApp/Clipboard Export
+function exportToCopy(products: InvoiceProduct[]) {
+    const lines = products.map(
+        (item, index) =>
+            `${index + 1}. ${stripEmojis(item.name)} - ${item.purchase_price} - Qty: ${item.qty}`
+    )
+
+    const message = ['*Model* - *Purchase* - *Qty*', ...lines].join('\n')
+
+    addToast({
+        title: 'Copying Content',
+        description: 'Preparing text for clipboard...',
+        promise: navigator.clipboard.writeText(message),
+    })
+}
+
+// Export Dropdown Component
 type ExportDropdownProps = {
     products: InvoiceProduct[]
 }
@@ -139,6 +181,9 @@ export default function Export({ products }: ExportDropdownProps) {
                 </DropdownItem>
                 <DropdownItem key='excel' onPress={() => exportVisibleProducts('excel', products)}>
                     Export as Excel
+                </DropdownItem>
+                <DropdownItem key='copy' onPress={() => exportToCopy(products)}>
+                    Copy to Clipboard
                 </DropdownItem>
             </DropdownMenu>
         </Dropdown>

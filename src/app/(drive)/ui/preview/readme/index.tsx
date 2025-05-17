@@ -1,16 +1,16 @@
 'use client'
 
-import { Player } from '@lottiefiles/react-lottie-player'
 import matter from 'gray-matter'
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import { useEffect, useState } from 'react'
+import { SiMarkdown } from 'react-icons/si'
 
-import { IMG, Title, YouTube } from './components'
 import { useReadme } from '®hooks/tanstack/query'
 import { ErrorState } from '®ui/state'
-import { SiMarkdown } from 'react-icons/si'
-import { cn } from '®lib/utils'
+import { cn, logWarning } from '®lib/utils'
+
+import { IMG, Title, YouTube } from './components'
 
 type ReadMeProps = {
     slug?: string
@@ -33,6 +33,7 @@ export function ReadMe({ slug, src: initialSrc, className }: ReadMeProps) {
 
                 if (src.startsWith('http')) {
                     const response = await fetch(src)
+
                     if (!response.ok)
                         throw new Error(`Failed to fetch MDX content: ${response.statusText}`)
                     content = await response.text()
@@ -40,9 +41,10 @@ export function ReadMe({ slug, src: initialSrc, className }: ReadMeProps) {
 
                 const { content: mdxContent } = matter(content)
                 const serializedContent = await serialize(mdxContent)
+
                 setMdxSource(serializedContent)
             } catch (err) {
-                console.error('MDX processing error:', err)
+                logWarning('MDX processing error:', err)
             }
         }
 
@@ -50,7 +52,7 @@ export function ReadMe({ slug, src: initialSrc, className }: ReadMeProps) {
     }, [src])
 
     if (error) {
-        return <ErrorState message={error.message} icons={[SiMarkdown]} />
+        return <ErrorState icons={[SiMarkdown]} message={error.message} />
     }
 
     if (!mdxSource) {

@@ -7,11 +7,15 @@ import { Sonner } from '®ui/sonner'
 import '../styles/globals.css'
 import { cn } from '®lib/utils'
 import { fontMono, fontSans } from '®lib/fonts'
+import { AuthProvider } from '®provider/auth'
+import SearchBar from '®components/search/bar'
 
 export default function RootLayout({
     children,
+    modal,
 }: Readonly<{
     children: React.ReactNode
+    modal?: React.ReactNode
 }>) {
     return (
         <html suppressHydrationWarning lang='en'>
@@ -35,13 +39,17 @@ export default function RootLayout({
                     fontMono.variable
                 )}
             >
-                <Providers>
-                    <div className='relative flex min-h-screen flex-col bg-background'>
-                        <div className='flex-1 overflow-clip'>{children}</div>
-                        <Footer />
-                        <Sonner />
-                    </div>
-                </Providers>
+                <AuthProvider>
+                    <Providers>
+                        <div className='relative flex min-h-screen flex-col bg-background'>
+                            <div className='flex-1 overflow-clip'>{children}</div>
+                            {modal}
+                            <SearchBar />
+                            <Footer />
+                            <Sonner />
+                        </div>
+                    </Providers>
+                </AuthProvider>
             </body>
         </html>
     )

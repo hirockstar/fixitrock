@@ -5,6 +5,7 @@ import { useState } from 'react'
 
 import AnimatedSearch, { useOpen } from '®ui/farmer/search'
 import { useSearch } from '®tanstack/query'
+import { Profile } from '®app/[users]/ui/profile'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
@@ -42,14 +43,7 @@ const SearchBar = () => {
                                 <X size={18} />
                             </Button>
                         ) : (
-                            <Button isIconOnly radius='full' size='sm' variant='flat'>
-                                <Image
-                                    alt='Fix iT Rock'
-                                    height={30}
-                                    src='/icons/fixitrock.png'
-                                    width={30}
-                                />
-                            </Button>
+                            <Profile />
                         )
                     }
                     placeholder='Work in progress . . . ' //What do you need?
