@@ -9,7 +9,7 @@ import { TbDatabaseStar, TbPlugConnectedX } from 'react-icons/tb'
 import { useSupabse } from '®tanstack/query'
 import { formatDateTime } from '®lib/utils'
 import { TitleAction } from '®ui'
-import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®ui/carousel'
+import { Carousel, CarouselContent, CarouselItem } from '®ui/carousel'
 import { GridSkeleton } from '®ui/skeleton'
 import { ErrorState } from '®ui/state'
 import { FRP as Types } from '®types/invoice'
@@ -44,7 +44,7 @@ export default function FRP() {
                                     shadow='none'
                                 >
                                     <Link passHref href={f.link} target='_blank'>
-                                        <CardHeader className='mb-[1px] p-2'>
+                                        <CardHeader className='mb-px p-2'>
                                             <h1 className='line-clamp-1 text-start text-[13px]'>
                                                 {f.title}
                                             </h1>
@@ -52,12 +52,12 @@ export default function FRP() {
                                         <Image
                                             isBlurred
                                             alt={f.title}
-                                            className='aspect-video h-40 rounded-lg bg-default/5 object-contain p-2 dark:bg-default/10'
+                                            className='bg-default/5 dark:bg-default/10 aspect-video h-40 rounded-lg object-contain p-2'
                                             classNames={{ wrapper: 'mx-auto' }}
                                             loading='lazy'
                                             src={f.img}
                                         />
-                                        <CardFooter className='justify-end p-2 text-xs text-muted-foreground'>
+                                        <CardFooter className='text-muted-foreground justify-end p-2 text-xs'>
                                             <p>{formatDateTime(f.created_at)}</p>
                                         </CardFooter>
                                     </Link>
@@ -66,7 +66,6 @@ export default function FRP() {
                         ))
                     )}
                 </CarouselContent>
-                {!isLoading && !error && <CarouselDots />}
             </Carousel>
         </TitleAction>
     )

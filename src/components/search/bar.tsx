@@ -19,13 +19,13 @@ const SearchBar = () => {
     return (
         <AnimatedSearch open={open} setOpen={setOpen}>
             <div
-                className={`${open ? 'flex h-full flex-col rounded-xl bg-background sm:h-[60dvh] sm:border' : ''} overflow-hidden`}
+                className={`${open ? 'bg-background flex h-full flex-col rounded-xl sm:h-[60dvh] sm:border' : ''} overflow-hidden`}
             >
                 <Input
                     classNames={{
-                        inputWrapper: `h-11 min-h-10 overflow-hidden bg-background/80 shadow-none backdrop-blur data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 ${
+                        inputWrapper: `bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 h-11 min-h-10 overflow-hidden shadow-none backdrop-blur ${
                             open
-                                ? 'rounded-none border-b p-2 !px-2.5'
+                                ? 'rounded-none border-b p-2 px-2.5!'
                                 : 'overflow-hidden rounded-xl border'
                         }`,
                         mainWrapper: 'overflow-hidden',
@@ -34,7 +34,7 @@ const SearchBar = () => {
                         query ? (
                             <Button
                                 isIconOnly
-                                className='data-[hover]:bg-foreground/10'
+                                className='data-hover:bg-foreground/10'
                                 radius='full'
                                 size='sm'
                                 variant='light'
@@ -70,7 +70,7 @@ const SearchBar = () => {
                 )}
 
                 {open && (
-                    <div className='sticky bottom-0 hidden select-none items-center justify-between border-t p-1.5 lg:flex'>
+                    <div className='sticky bottom-0 hidden items-center justify-between border-t p-1.5 select-none lg:flex'>
                         <Image
                             alt='Fix iT Rock'
                             height={30}

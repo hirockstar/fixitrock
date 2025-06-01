@@ -17,12 +17,11 @@ import { TbApps } from 'react-icons/tb'
 import { useRouter } from 'nextjs-toploader/app'
 
 import { useStorage } from '®tanstack/query'
-
-import { Drawer, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from './drawer'
-
 import { useMediaQuery } from '®hooks/useMediaQuery'
 import { formatBytes, stateColors } from '®lib/utils'
 import { FolderType, StorageType } from '®actions/drive/storage'
+
+import { Drawer, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from './drawer'
 
 export function Status() {
     const { data, isLoading } = useStorage()
@@ -93,7 +92,7 @@ function Drive({ data }: { data: StorageType }) {
                 fullWidth
                 isHoverable
                 isPressable
-                className='border bg-transparent hover:bg-muted/30 dark:hover:bg-[#0a0a0a]'
+                className='hover:bg-muted/30 border bg-transparent dark:hover:bg-[#0a0a0a]'
                 shadow='none'
             >
                 <CardBody className='flex-row items-center gap-2.5'>
@@ -102,7 +101,7 @@ function Drive({ data }: { data: StorageType }) {
                         <div className='flex items-center gap-2'>
                             <span className='font-semibold'>Fix iT Rock (C:)</span>
                         </div>
-                        <div className='relative h-4 overflow-hidden rounded bg-muted'>
+                        <div className='bg-muted relative h-4 overflow-hidden rounded'>
                             <motion.div
                                 animate={{ width: `${usedPercentage}%` }}
                                 className={`h-full ${stateColors[data.state]}`}
@@ -113,7 +112,7 @@ function Drive({ data }: { data: StorageType }) {
                                 {usedPercentage.toFixed(1)}%
                             </div>
                         </div>
-                        <p className='flex gap-1 text-xs text-muted-foreground'>
+                        <p className='text-muted-foreground flex gap-1 text-xs'>
                             {formatBytes(data.remaining)} free of {formatBytes(data.total)}
                         </p>
                     </div>
@@ -126,17 +125,17 @@ function Drive({ data }: { data: StorageType }) {
 const folderIcons = {
     Apple: {
         icon: FaApple,
-        color: 'bg-gradient-to-r from-green-500 to-teal-400',
+        color: 'bg-linear-to-r from-green-500 to-teal-400',
         des: 'IPSW & device tools',
     },
     Apps: {
         icon: TbApps,
-        color: 'bg-gradient-to-r from-purple-500 to-indigo-400',
+        color: 'bg-linear-to-r from-purple-500 to-indigo-400',
         des: 'Apps for all platforms',
     },
     Games: {
         icon: Gamepad2,
-        color: 'bg-gradient-to-r from-orange-500 to-yellow-400',
+        color: 'bg-linear-to-r from-orange-500 to-yellow-400',
         des: 'Games for all platforms',
     },
 }
@@ -163,7 +162,7 @@ function Folder({ folder, setOpen }: { folder: FolderType; setOpen: (open: boole
                 fullWidth
                 isHoverable
                 isPressable
-                className='border bg-transparent hover:bg-muted/30 dark:hover:bg-[#0a0a0a]'
+                className='hover:bg-muted/30 border bg-transparent dark:hover:bg-[#0a0a0a]'
                 shadow='none'
                 onPress={() => {
                     setOpen(false)
@@ -175,11 +174,11 @@ function Folder({ folder, setOpen }: { folder: FolderType; setOpen: (open: boole
                     <div className='w-full space-y-0.5'>
                         <div className='flex items-center justify-between'>
                             <span className='font-semibold'>{folder.name}</span>
-                            <span className='text-sm text-muted-foreground'>
+                            <span className='text-muted-foreground text-sm'>
                                 {formatBytes(folder.size)}
                             </span>
                         </div>
-                        <div className='relative h-2 overflow-hidden rounded bg-muted'>
+                        <div className='bg-muted relative h-2 overflow-hidden rounded'>
                             <motion.div
                                 animate={{ width: '100%' }}
                                 className={`h-full ${color}`}
@@ -187,7 +186,7 @@ function Folder({ folder, setOpen }: { folder: FolderType; setOpen: (open: boole
                                 transition={{ duration: 1, ease: 'easeOut' }}
                             />
                         </div>
-                        <p className='text-xs text-muted-foreground'>{des}</p>
+                        <p className='text-muted-foreground text-xs'>{des}</p>
                     </div>
                 </CardBody>
             </Card>

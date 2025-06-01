@@ -45,7 +45,7 @@ export function Input({ value = '', hotKey, end, onChange, ...inputProps }: Inpu
             className='bg-transparent'
             classNames={{
                 inputWrapper:
-                    'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
+                    'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none group-data-[focus=true]:bg-transparent data-[hover=true]:bg-transparent',
                 base: 'sm:w-[90%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]',
             }}
             endContent={
@@ -53,7 +53,7 @@ export function Input({ value = '', hotKey, end, onChange, ...inputProps }: Inpu
                     {!value && hotKey && (
                         <Button
                             isIconOnly
-                            className='hidden h-5 w-5 !min-w-5 rounded border bg-default/20 text-[12px] dark:bg-default/40 sm:block'
+                            className='bg-default/20 dark:bg-default/40 hidden h-5 w-5 min-w-5! rounded border text-[12px] sm:block'
                             radius='none'
                             size='sm'
                             variant='light'
@@ -68,7 +68,7 @@ export function Input({ value = '', hotKey, end, onChange, ...inputProps }: Inpu
             startContent={
                 <>
                     {isLoading ? (
-                        <Loader className='h-4 w-4 shrink-0 animate-spin text-muted-foreground' />
+                        <Loader className='text-muted-foreground h-4 w-4 shrink-0 animate-spin' />
                     ) : (
                         <Search className='h-4 w-4 shrink-0' />
                     )}

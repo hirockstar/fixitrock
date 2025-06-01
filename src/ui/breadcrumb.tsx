@@ -1,78 +1,102 @@
-'use client'
+import * as React from 'react'
+import { Slot } from '@radix-ui/react-slot'
+import { ChevronRight, MoreHorizontal } from 'lucide-react'
 
-import { Button, ScrollShadow } from '@heroui/react'
-import { useRouter } from 'nextjs-toploader/app'
-import { usePathname } from 'next/navigation'
+import { cn } from '®lib/utils'
 
-import { ChevronRight, Home } from './icons'
+function Breadcrumb({ ...props }: React.ComponentProps<'nav'>) {
+    return <nav aria-label='breadcrumb' data-slot='breadcrumb' {...props} />
+}
 
-const HomeCrumb = () => {
-    const router = useRouter()
-
+function BreadcrumbList({ className, ...props }: React.ComponentProps<'ol'>) {
     return (
-        <Button
-            isIconOnly
-            aria-label='Fix iT Rock'
-            className='sticky left-0 z-10 ml-2'
-            radius='full'
-            size='sm'
-            variant='light'
-            onPress={() => router.push('/drive')}
-        >
-            <Home />
-        </Button>
+        <ol
+            className={cn(
+                'text-muted-foreground flex flex-wrap items-center gap-1.5 text-sm break-words sm:gap-2.5',
+                className
+            )}
+            data-slot='breadcrumb-list'
+            {...props}
+        />
     )
 }
 
-const Breadcrumb: React.FC = () => {
-    const router = useRouter()
-    const pathname = usePathname()
-    const paths = pathname.split('/').filter(Boolean)
-
-    if (paths.length > 0) {
-        return (
-            <nav className='flex items-center rounded-md border'>
-                <HomeCrumb />
-                <ScrollShadow
-                    hideScrollBar
-                    isEnabled
-                    className='inline-flex flex-row-reverse items-center'
-                    orientation='horizontal'
-                    visibility='auto'
-                >
-                    {paths
-                        .slice(0)
-                        .reverse()
-                        .map((p: string, i: number) => (
-                            <div
-                                key={i}
-                                className={`flex items-center ${p === 'drive' ? 'hidden' : ''}`}
-                            >
-                                <Button
-                                    aria-label={p.replaceAll('-', ' ')}
-                                    className='m-1 h-7 min-w-0 rounded p-1'
-                                    isDisabled={i === 0}
-                                    startContent={<ChevronRight />}
-                                    variant='light'
-                                    onPress={() => {
-                                        const href = `/${paths
-                                            .slice(0, paths.length - i)
-                                            .map((p) => encodeURIComponent(p))
-                                            .join('/')}`
-
-                                        router.push(href)
-                                    }}
-                                >
-                                    {p.replaceAll('-', ' ')}
-                                </Button>
-                            </div>
-                        ))}
-                </ScrollShadow>
-            </nav>
-        )
-    }
-
-    return <HomeCrumb />
+function BreadcrumbItem({ className, ...props }: React.ComponentProps<'li'>) {
+    return (
+        <li
+            className={cn('inline-flex items-center gap-1.5', className)}
+            data-slot='breadcrumb-item'
+            {...props}
+        />
+    )
 }
 
-export default Breadcrumb
+function BreadcrumbLink({
+    asChild,
+    className,
+    ...props
+}: React.ComponentProps<'a'> & {
+    asChild?: boolean
+}) {
+    const Comp = asChild ? Slot : 'a'
+
+    return (
+        <Comp
+            className={cn('hover:text-foreground transition-colors', className)}
+            data-slot='breadcrumb-link'
+            {...props}
+        />
+    )
+}
+
+function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
+    return (
+        <span
+            aria-current='page'
+            aria-disabled='true'
+            className={cn('text-foreground font-normal', className)}
+            data-slot='breadcrumb-page'
+            role='link'
+            {...props}
+        />
+    )
+}
+
+function BreadcrumbSeparator({ children, className, ...props }: React.ComponentProps<'li'>) {
+    return (
+        <li
+            aria-hidden='true'
+            className={cn('[&>svg]:size-3.5', className)}
+            data-slot='breadcrumb-separator'
+            role='presentation'
+            {...props}
+        >
+            {children ?? <ChevronRight />}
+        </li>
+    )
+}
+
+function BreadcrumbEllipsis({ className, ...props }: React.ComponentProps<'span'>) {
+    return (
+        <span
+            aria-hidden='true'
+            className={cn('flex size-9 items-center justify-center', className)}
+            data-slot='breadcrumb-ellipsis'
+            role='presentation'
+            {...props}
+        >
+            <MoreHorizontal className='size-4' />
+            <span className='sr-only'>More</span>
+        </span>
+    )
+}
+
+export {
+    Breadcrumb,
+    BreadcrumbList,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+    BreadcrumbEllipsis,
+}

@@ -15,7 +15,7 @@ export default function Page() {
     const { data, isLoading, error } = useSupabse<FRP>('frp')
 
     return (
-        <section className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2'>
+        <section className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-2'>
             {isLoading ? (
                 <GridSkeleton />
             ) : error ? (
@@ -33,18 +33,18 @@ export default function Page() {
                         shadow='none'
                     >
                         <Link passHref href={f.link} target='_blank'>
-                            <CardHeader className='mb-[1px] p-2'>
+                            <CardHeader className='mb-px p-2'>
                                 <h1 className='line-clamp-1 text-start text-[13px]'>{f.title}</h1>
                             </CardHeader>
                             <Image
                                 isBlurred
                                 alt={f.title}
-                                className='aspect-video h-40 rounded-lg bg-default/5 object-contain p-2 dark:bg-default/10'
+                                className='bg-default/5 dark:bg-default/10 aspect-video h-40 rounded-lg object-contain p-2'
                                 classNames={{ wrapper: 'mx-auto' }}
                                 loading='lazy'
                                 src={f.img}
                             />
-                            <CardFooter className='justify-end p-2 text-xs text-muted-foreground'>
+                            <CardFooter className='text-muted-foreground justify-end p-2 text-xs'>
                                 <p>{formatDateTime(f.created_at)}</p>
                             </CardFooter>
                         </Link>

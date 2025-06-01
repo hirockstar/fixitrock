@@ -14,7 +14,7 @@ export default function Memoirs() {
     const { data, ref, isLoading, isFetchingNextPage } = useMemoirs('/rockstar/memoirs')
 
     return (
-        <main className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2 px-1'>
+        <main className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-2 px-1'>
             {isLoading ? (
                 <Skeleton />
             ) : (
@@ -36,13 +36,13 @@ export default function Memoirs() {
                                     isZoomed
                                     alt={c.name}
                                     className='h-[240px] w-full object-cover object-center 2xl:h-[220px]'
-                                    classNames={{ wrapper: '!max-w-full' }}
+                                    classNames={{ wrapper: 'max-w-full!' }}
                                     src={
                                         c.thumbnails[0].large?.url ||
                                         'https://avatars.githubusercontent.com/u/45270927?v=4'
                                     }
                                 />
-                                <p className='absolute bottom-0 z-20 flex w-full justify-between rounded-b-lg bg-black bg-opacity-20 p-1 px-3 text-xs leading-relaxed text-white'>
+                                <p className='bg-opacity-20 absolute bottom-0 z-20 flex w-full justify-between rounded-b-lg bg-black p-1 px-3 text-xs leading-relaxed text-white'>
                                     <span>{Name(c.name)} </span>
                                     <span>{formatDateTime(Date(c.name))}</span>
                                 </p>
@@ -64,7 +64,7 @@ const Skeleton = ({ length = 15 }: { length?: number }) => {
                     key={index}
                     alt='Loading skeleton'
                     className='h-[240px] w-full object-cover object-center 2xl:h-[220px]'
-                    classNames={{ wrapper: '!max-w-full' }}
+                    classNames={{ wrapper: 'max-w-full!' }}
                     isLoading={true}
                     src='https://rdrive-ui.vercel.app/icons/rdrive.png'
                 />

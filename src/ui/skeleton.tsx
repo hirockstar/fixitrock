@@ -58,7 +58,7 @@ export const QuoteSkeleton = ({
                             <Skeleton className='h-4 w-56 rounded' />
                             <Skeleton className='h-4 w-48 rounded' />
                         </span>
-                        <div className='flex items-center justify-between text-xs text-muted-foreground'>
+                        <div className='text-muted-foreground flex items-center justify-between text-xs'>
                             <Skeleton className='h-4 w-20 rounded-lg' />
                             <Skeleton className='h-4 w-20 rounded-lg' />
                         </div>
@@ -76,7 +76,7 @@ export const ListSkeleton = () => {
                     <Skeleton className='size-10 flex-shrink-0 rounded-lg' />
                     <div className='flex flex-grow flex-col gap-y-2'>
                         <Skeleton className='h-4 w-auto rounded-lg sm:max-w-lg' />
-                        <span className='flex items-center gap-2 text-xs text-muted-foreground'>
+                        <span className='text-muted-foreground flex items-center gap-2 text-xs'>
                             <Skeleton className='h-4 w-14 rounded-lg sm:w-20' /> •{' '}
                             <Skeleton className='h-4 w-14 rounded-lg sm:w-20' /> •{' '}
                             <Skeleton className='h-4 w-14 rounded-lg sm:w-20' />

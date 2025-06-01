@@ -95,7 +95,7 @@ export default function Tabs() {
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
                     >
-                        <div className='flex h-full items-center justify-center whitespace-nowrap text-sm font-[var(--www-mattmannucci-me-geist-regular-font-family)] leading-5'>
+                        <div className='flex h-full items-center justify-center text-sm leading-5 font-(--www-mattmannucci-me-geist-regular-font-family) whitespace-nowrap'>
                             {tab}
                         </div>
                     </div>

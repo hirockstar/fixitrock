@@ -45,7 +45,7 @@ export default function Page() {
                 }}
                 maxWidth='full'
             >
-                <div className='flex h-10 w-full select-none items-center gap-1.5'>
+                <div className='flex h-10 w-full items-center gap-1.5 select-none'>
                     <Button
                         as={Link}
                         className='h-8 w-8 min-w-0 p-0'
@@ -64,7 +64,7 @@ export default function Page() {
                     end={
                         <div className='ml-0.5 flex items-center gap-0.5'>
                             <SwitchLayout />
-                            <span className='text-xs text-muted-foreground'>|</span>
+                            <span className='text-muted-foreground text-xs'>|</span>
                             <SortBy sort={sort} />
                         </div>
                     }

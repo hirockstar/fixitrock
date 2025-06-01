@@ -3,12 +3,12 @@ import type { Metadata, Viewport } from 'next'
 import Footer from '®components/footer'
 import { META_THEME_COLORS, siteConfig } from '®config/site'
 import { Providers } from '®provider'
-import { Sonner } from '®ui/sonner'
 import '../styles/globals.css'
+import '../styles/mdx.css'
 import { cn } from '®lib/utils'
-import { fontMono, fontSans } from '®lib/fonts'
 import { AuthProvider } from '®provider/auth'
 import SearchBar from '®components/search/bar'
+import { fontVariables } from '®lib/fonts'
 
 export default function RootLayout({
     children,
@@ -32,21 +32,14 @@ export default function RootLayout({
                     }}
                 />
             </head>
-            <body
-                className={cn(
-                    'min-h-svh bg-background font-sans antialiased',
-                    fontSans.variable,
-                    fontMono.variable
-                )}
-            >
+            <body className={cn('bg-background min-h-svh font-sans antialiased', fontVariables)}>
                 <AuthProvider>
                     <Providers>
-                        <div className='relative flex min-h-screen flex-col bg-background'>
+                        <div className='bg-background relative flex min-h-screen flex-col'>
                             <div className='flex-1 overflow-clip'>{children}</div>
                             {modal}
                             <SearchBar />
                             <Footer />
-                            <Sonner />
                         </div>
                     </Providers>
                 </AuthProvider>

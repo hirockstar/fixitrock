@@ -11,7 +11,7 @@ import { useDrive } from '®tanstack/query'
 import { formatBytes, formatDateTime } from '®lib/utils'
 import { DriveItem } from '®types/drive'
 import { TitleAction } from '®ui'
-import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®ui/carousel'
+import { Carousel, CarouselContent, CarouselItem } from '®ui/carousel'
 import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
 import { GridSkeleton } from '®ui/skeleton'
 import { ErrorState } from '®ui/state'
@@ -59,11 +59,11 @@ export default function Firmware() {
                                         <Card
                                             aria-label={c?.name}
                                             as={Link}
-                                            className='w-full select-none rounded-2xl border bg-transparent'
+                                            className='w-full rounded-2xl border bg-transparent select-none'
                                             href={`/drive/${c.name}`}
                                             shadow='none'
                                         >
-                                            <CardHeader className='mb-[1px] p-2'>
+                                            <CardHeader className='mb-px p-2'>
                                                 <h1 className='truncate text-start text-[13px]'>
                                                     {c?.name}
                                                 </h1>
@@ -73,7 +73,7 @@ export default function Firmware() {
                                                 src={c?.thumbnails?.[0]?.large?.url || ''}
                                                 type='Grid'
                                             />
-                                            <CardFooter className='grid grid-cols-3 p-2 text-xs text-muted-foreground'>
+                                            <CardFooter className='text-muted-foreground grid grid-cols-3 p-2 text-xs'>
                                                 <p className='truncate text-start'>
                                                     {formatBytes(c?.size)}
                                                 </p>
@@ -98,7 +98,6 @@ export default function Firmware() {
                         ))
                     )}
                 </CarouselContent>
-                {!isLoading && <CarouselDots />}
             </Carousel>
         </TitleAction>
     )

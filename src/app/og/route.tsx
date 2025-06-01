@@ -78,10 +78,10 @@ function getDesign<T extends ContentType>(
                     style={{ fontFamily: 'Geist Sans' }}
                     tw='flex h-full w-full bg-black text-white'
                 >
-                    {/* <div tw='flex border absolute border-stone-700 border-dashed inset-y-0 left-16 w-[1px]' />
-                    <div tw='flex border absolute border-stone-700 border-dashed inset-y-0 right-16 w-[1px]' />
-                    <div tw='flex border absolute border-stone-700 inset-x-0 h-[1px] top-16' />
-                    <div tw='flex border absolute border-stone-700 inset-x-0 h-[1px] bottom-16' /> */}
+                    {/* <div tw='flex border absolute border-stone-700 border-dashed inset-y-0 left-16 w-px' />
+                    <div tw='flex border absolute border-stone-700 border-dashed inset-y-0 right-16 w-px' />
+                    <div tw='flex border absolute border-stone-700 inset-x-0 h-px top-16' />
+                    <div tw='flex border absolute border-stone-700 inset-x-0 h-px bottom-16' /> */}
                     <div tw='flex absolute flex-row top-24 right-24 text-white'>
                         <img
                             alt='Fix iT Rock'

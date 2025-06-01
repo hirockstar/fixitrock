@@ -33,7 +33,7 @@ export function Grid({
     const isDesktop = useMediaQuery('(min-width: 640px)')
 
     return (
-        <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2'>
+        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-2'>
             {isLoading ? (
                 <GridSkeleton />
             ) : (
@@ -56,7 +56,7 @@ export function Grid({
                             >
                                 <Card
                                     aria-label={c?.name}
-                                    className='w-full select-none rounded-2xl border bg-transparent'
+                                    className='w-full rounded-2xl border bg-transparent select-none'
                                     isPressable={isDesktop}
                                     shadow='none'
                                     onPress={() => onSelect(c)}
@@ -64,7 +64,7 @@ export function Grid({
                                     <MagicCard
                                         className={`${focus?.name === c.name ? 'bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
                                     >
-                                        <CardHeader className='mb-[1px] p-2'>
+                                        <CardHeader className='mb-px p-2'>
                                             <h1 className='truncate text-start text-[13px]'>
                                                 {c?.name}
                                             </h1>
@@ -74,7 +74,7 @@ export function Grid({
                                             src={c?.thumbnails?.[0]?.large?.url || ''}
                                             type='Grid'
                                         />
-                                        <CardFooter className='grid grid-cols-3 p-2 text-xs text-muted-foreground'>
+                                        <CardFooter className='text-muted-foreground grid grid-cols-3 p-2 text-xs'>
                                             <p className='truncate text-start'>
                                                 {formatBytes(c?.size)}
                                             </p>

@@ -1,9 +1,9 @@
 'use client'
 import React from 'react'
 
-import ImagePreview from './image'
-
 import { DriveItem } from '®/types/drive'
+
+import ImagePreview from './image'
 import { ReadMe } from './readme'
 import Video from './video'
 

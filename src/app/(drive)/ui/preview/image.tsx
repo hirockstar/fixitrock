@@ -16,7 +16,7 @@ const ImagePreview: FC<{ file: DriveItem }> = ({ file }) => {
             // isBlurred
             alt={file.name}
             className='object-contain p-0.5'
-            classNames={{ img: '!max-h-[60vh]', wrapper: 'mx-auto' }}
+            classNames={{ img: 'max-h-[60vh]!', wrapper: 'mx-auto' }}
             height={file.thumbnails?.[0]?.large?.height}
             loading='lazy'
             src={src}

@@ -64,15 +64,15 @@ export default function InvoicePage() {
                 }}
                 maxWidth='full'
             >
-                <div className='hidden h-10 w-full select-none items-center gap-1.5 sm:flex'>
+                <div className='hidden h-10 w-full items-center gap-1.5 select-none sm:flex'>
                     <h1 className='text-base font-bold sm:text-lg'>Invoice</h1>
                 </div>
-                <div className='flex w-full select-none items-center gap-2'>
+                <div className='flex w-full items-center gap-2 select-none'>
                     <Input
                         className='bg-transparent'
                         classNames={{
                             inputWrapper:
-                                'h-10 min-h-10 w-full rounded-full border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
+                                'h-10 min-h-10 w-full rounded-full border bg-transparent shadow-none group-data-[focus=true]:bg-transparent data-[hover=true]:bg-transparent',
                         }}
                         placeholder='Search by number or product or seller'
                         startContent={<Search className='h-4 w-4 shrink-0' />}
@@ -118,7 +118,7 @@ export default function InvoicePage() {
                 </div>
             </Navbar>
 
-            <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2'>
+            <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-2'>
                 {isLoading ? (
                     <InvoiceSkeleton />
                 ) : filteredInvoices?.length ? (
@@ -135,10 +135,10 @@ export default function InvoicePage() {
                                 onPress={() => router.push(`/invoice/${invoice.id}`)}
                             >
                                 <CardBody className='p-0'>
-                                    <div className='flex items-center justify-between border-b border-dashed bg-muted/30 px-6 py-2'>
+                                    <div className='bg-muted/30 flex items-center justify-between border-b border-dashed px-6 py-2'>
                                         <div className='flex items-center gap-2'>
-                                            <Receipt className='h-4 w-4 text-muted-foreground' />
-                                            <span className='text-xs font-medium text-muted-foreground'>
+                                            <Receipt className='text-muted-foreground h-4 w-4' />
+                                            <span className='text-muted-foreground text-xs font-medium'>
                                                 INVOICE #
                                                 {invoice?.number.toString().padStart(4, '0')}
                                             </span>
@@ -161,11 +161,11 @@ export default function InvoicePage() {
                                             <h3 className='text-2xl font-semibold'>
                                                 {invoice.product}
                                             </h3>
-                                            <span className='text-xs text-muted-foreground'>
+                                            <span className='text-muted-foreground text-xs'>
                                                 {format(invoice.created_at, 'MMM d, yyyy')}
                                             </span>
                                         </div>
-                                        <p className='w-full text-start text-sm text-muted-foreground'>
+                                        <p className='text-muted-foreground w-full text-start text-sm'>
                                             <span className='font-semibold text-emerald-600 dark:text-emerald-400'>
                                                 Seller:
                                             </span>{' '}
@@ -177,12 +177,12 @@ export default function InvoicePage() {
 
                                     <div className='flex items-center justify-between px-6 py-2'>
                                         <div className='flex items-center gap-1.5'>
-                                            <MapPin className='h-4 w-4 text-muted-foreground' />
-                                            <span className='text-sm text-muted-foreground'>
+                                            <MapPin className='text-muted-foreground h-4 w-4' />
+                                            <span className='text-muted-foreground text-sm'>
                                                 {invoice.location}
                                             </span>
                                         </div>
-                                        <span className='text-xs text-muted-foreground'>
+                                        <span className='text-muted-foreground text-xs'>
                                             {formatDateTime(invoice.created_at)}
                                         </span>
                                     </div>
@@ -191,7 +191,7 @@ export default function InvoicePage() {
                         </AnimatedDiv>
                     ))
                 ) : (
-                    <div className='col-span-full text-center text-sm text-muted-foreground'>
+                    <div className='text-muted-foreground col-span-full text-center text-sm'>
                         No invoices found.
                     </div>
                 )}
@@ -209,9 +209,9 @@ const InvoiceSkeleton = ({ length = 12 }: { length?: number }) => {
                     className='rounded-2xl border border-dashed bg-transparent shadow-none'
                 >
                     <CardBody className='p-0'>
-                        <div className='flex items-center justify-between border-b border-dashed bg-muted/30 px-6 py-2'>
+                        <div className='bg-muted/30 flex items-center justify-between border-b border-dashed px-6 py-2'>
                             <div className='flex items-center gap-2'>
-                                <Receipt className='h-4 w-4 text-muted-foreground' />
+                                <Receipt className='text-muted-foreground h-4 w-4' />
                                 <Skeleton className='h-4 w-24 rounded-sm' />
                             </div>
                             <Skeleton className='h-8 w-8 rounded-full' />
@@ -232,7 +232,7 @@ const InvoiceSkeleton = ({ length = 12 }: { length?: number }) => {
 
                         <div className='flex items-center justify-between px-6 py-2'>
                             <div className='flex items-center gap-1.5'>
-                                <MapPin className='h-4 w-4 text-muted-foreground' />
+                                <MapPin className='text-muted-foreground h-4 w-4' />
 
                                 <Skeleton className='h-4 w-28 rounded-sm' />
                             </div>

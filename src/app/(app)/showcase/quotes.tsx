@@ -8,7 +8,7 @@ import { TbDatabaseStar, TbPlugConnectedX } from 'react-icons/tb'
 import { useQuote } from '®tanstack/query'
 import { formatDateTime } from '®lib/utils'
 import { TitleAction } from '®ui'
-import { Carousel, CarouselContent, CarouselDots, CarouselItem } from '®ui/carousel'
+import { Carousel, CarouselContent, CarouselItem } from '®ui/carousel'
 import { QuoteSkeleton } from '®ui/skeleton'
 import { ErrorState } from '®ui/state'
 
@@ -36,12 +36,12 @@ export default function Quotes() {
                     ) : (
                         data?.slice(0, 6).map((q) => (
                             <CarouselItem key={q.id} className='basis-[300px]'>
-                                <Card className='flex w-full select-none flex-col justify-between bg-muted shadow-none'>
+                                <Card className='bg-muted flex w-full flex-col justify-between shadow-none select-none'>
                                     <CardBody className='flex flex-1 flex-col'>
-                                        <p className='flex h-[180px] items-center justify-center text-balance text-center text-lg font-semibold'>
+                                        <p className='flex h-[180px] items-center justify-center text-center text-lg font-semibold text-balance'>
                                             "{q.quote}"
                                         </p>
-                                        <div className='flex items-center justify-between text-xs text-muted-foreground'>
+                                        <div className='text-muted-foreground flex items-center justify-between text-xs'>
                                             <span>{formatDateTime(q.lastModifiedDateTime)}</span>
                                             <span>— Rock Star 💕</span>
                                         </div>
@@ -51,7 +51,6 @@ export default function Quotes() {
                         ))
                     )}
                 </CarouselContent>
-                {!isLoading && <CarouselDots />}
             </Carousel>
         </TitleAction>
     )

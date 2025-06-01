@@ -24,10 +24,10 @@ export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
                 {siteConfig.suggestion.map((s) => (
                     <ListboxItem
                         key={s.title}
-                        className='rounded-md border data-[hover=true]:bg-muted/50'
+                        className='data-[hover=true]:bg-muted/50 rounded-md border'
                         startContent={
                             <div className='flex size-10 items-center rounded-lg border'>
-                                <s.icon className='mx-auto text-muted-foreground' size={18} />
+                                <s.icon className='text-muted-foreground mx-auto' size={18} />
                             </div>
                         }
                         textValue={s.title}
@@ -35,7 +35,7 @@ export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
                     >
                         <div className='flex flex-col'>
                             <h2 className='line-clamp-1 text-[15px] font-medium'>{s.title}</h2>
-                            <p className='line-clamp-1 text-xs text-muted-foreground'>
+                            <p className='text-muted-foreground line-clamp-1 text-xs'>
                                 {s.description}
                             </p>
                         </div>
@@ -49,10 +49,10 @@ export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
                 {siteConfig.themes.map((t) => (
                     <ListboxItem
                         key={t.title}
-                        className='rounded-md border data-[hover=true]:bg-muted/50'
+                        className='data-[hover=true]:bg-muted/50 rounded-md border'
                         startContent={
                             <div className='flex size-10 items-center rounded-lg border'>
-                                <t.icon className='mx-auto text-muted-foreground' size={18} />
+                                <t.icon className='text-muted-foreground mx-auto' size={18} />
                             </div>
                         }
                         textValue={t.title}
@@ -60,7 +60,7 @@ export function Suggestion({ setOpen }: { setOpen: (open: boolean) => void }) {
                     >
                         <div className='flex flex-col'>
                             <h2 className='line-clamp-1 text-[15px] font-medium'>{t.title}</h2>
-                            <p className='line-clamp-1 text-xs text-muted-foreground'>
+                            <p className='text-muted-foreground line-clamp-1 text-xs'>
                                 {t.description}
                             </p>
                         </div>

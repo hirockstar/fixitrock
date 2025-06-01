@@ -50,14 +50,14 @@ export function DriveItem({
             {data.value.map((c) => (
                 <ListboxItem
                     key={c.id}
-                    className='overflow-hidden border data-[hover=true]:bg-muted/50'
+                    className='data-[hover=true]:bg-muted/50 overflow-hidden border'
                     startContent={''}
                     textValue={c.name}
                     onPress={() => handleRoute(() => router.push(path(c.webUrl, !!c.file)))}
                 >
                     <div className='flex flex-col'>
                         <h2 className='truncate text-[13px]'>{c.name}</h2>
-                        <p className='items-center text-xs text-muted-foreground'>
+                        <p className='text-muted-foreground items-center text-xs'>
                             {[
                                 c?.file && c?.size && formatBytes(c.size),
                                 c?.lastModifiedDateTime && formatDateTime(c?.lastModifiedDateTime),

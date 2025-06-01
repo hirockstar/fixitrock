@@ -37,7 +37,7 @@ export default function Page() {
                 }}
                 maxWidth='full'
             >
-                <div className='flex h-10 w-full select-none items-center gap-1.5'>
+                <div className='flex h-10 w-full items-center gap-1.5 select-none'>
                     <Button
                         as={Link}
                         className='h-8 w-8 min-w-0 p-0'
@@ -48,12 +48,12 @@ export default function Page() {
                     >
                         <ChevronLeft size={20} />
                     </Button>
-                    <h1 className='text-nowrap text-base font-bold'>
+                    <h1 className='text-base font-bold text-nowrap'>
                         {error ? 'Lost? Go Back' : Name(title as string)}
                     </h1>
                 </div>
             </Navbar>
-            <div className='grid grid-cols-[repeat(auto-fill,_minmax(96px,_1fr))] gap-1 md:grid-cols-[repeat(auto-fill,_minmax(208px,_1fr))]'>
+            <div className='grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-1 md:grid-cols-[repeat(auto-fill,minmax(208px,1fr))]'>
                 {isLoading ? (
                     <Skeleton />
                 ) : (
@@ -67,7 +67,7 @@ export default function Page() {
                             <Image
                                 isZoomed
                                 alt={child.name}
-                                className='aspect-square min-h-24 cursor-pointer !rounded-[2px] object-cover md:min-h-52'
+                                className='aspect-square min-h-24 cursor-pointer rounded-[2px]! object-cover md:min-h-52'
                                 classNames={{
                                     img: 'aspect-square min-h-24 md:min-h-52',
                                     wrapper: 'aspect-square min-h-24 md:min-h-52',
@@ -79,12 +79,12 @@ export default function Page() {
                             {child.file?.mimeType?.startsWith('video/') && (
                                 <>
                                     {child.video?.duration !== undefined && (
-                                        <h1 className='absolute bottom-1 left-1 z-30 flex items-center gap-1 rounded bg-black bg-opacity-50 px-1 text-xs text-white'>
+                                        <h1 className='bg-opacity-50 absolute bottom-1 left-1 z-30 flex items-center gap-1 rounded bg-black px-1 text-xs text-white'>
                                             <FaPlay size={10} />
                                             {formatDuration(child.video.duration)}
                                         </h1>
                                     )}
-                                    <div className='absolute inset-0 z-20 flex items-center justify-center overflow-hidden bg-black bg-opacity-20'>
+                                    <div className='bg-opacity-20 absolute inset-0 z-20 flex items-center justify-center overflow-hidden bg-black'>
                                         <FaPlay
                                             className='scale-100 transform text-white opacity-50 transition-transform group-hover:scale-110'
                                             size={40}

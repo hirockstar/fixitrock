@@ -12,7 +12,7 @@ export function Quotes() {
     const { data, isLoading } = useQuote()
 
     return (
-        <div className='grid grid-cols-[repeat(auto-fill,_minmax(280px,_1fr))] gap-2 px-1'>
+        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-2 px-1'>
             {isLoading ? (
                 <QuoteSkeleton />
             ) : (
@@ -22,12 +22,12 @@ export function Quotes() {
                         mobileVariants={BlogCardAnimation}
                         variants={fromLeftVariant}
                     >
-                        <Card className='flex w-full select-none flex-col justify-between bg-muted shadow-none'>
+                        <Card className='bg-muted flex w-full flex-col justify-between shadow-none select-none'>
                             <CardBody className='flex flex-1 flex-col'>
-                                <p className='flex h-[180px] items-center justify-center text-balance text-center text-lg font-semibold'>
+                                <p className='flex h-[180px] items-center justify-center text-center text-lg font-semibold text-balance'>
                                     "{q.quote}"
                                 </p>
-                                <div className='flex items-center justify-between text-xs text-muted-foreground'>
+                                <div className='text-muted-foreground flex items-center justify-between text-xs'>
                                     <span>{formatDateTime(q.lastModifiedDateTime)}</span>
                                     <span>— Rock Star 💕</span>
                                 </div>
