@@ -56,7 +56,7 @@ export function Navbar({
         updateURL(value, sortField, sortOrder)
     }
 
-    const backHref = `/space/${title?.split('/').slice(0, -1).join('/')}`
+    const backHref = `/Space/${title?.split('/').slice(0, -1).join('/')}`
     const lastSegment = title?.split('/').pop()
 
     return (

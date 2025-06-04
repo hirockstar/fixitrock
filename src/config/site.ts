@@ -15,7 +15,7 @@ export const siteConfig = {
         'We Provide Mobile Firmwares Drivers Flash Tool FRP Dump FIle EMMC ISP PinOut Samsung MDM File Windows Files.',
     domain: process.env.NEXT_PUBLIC_SITE_URL || 'https://fixitrock.com',
     baseDirectory: 'Drive',
-    directoryUrl: '/space',
+    directoryUrl: '/Space',
     cacheControlHeader: 'max-age=0, s-maxage=60, stale-while-revalidate',
     suggestion: [
         {

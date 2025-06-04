@@ -35,7 +35,7 @@ export function Grid({
     const onSelect = useSelectItem(setActive, setOpen)
 
     return (
-        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 p-2 2xl:px-[2rem]'>
+        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 p-2 2xl:px-[2rem]'>
             {data?.value.map((c) => {
                 const isFolderOrPreviewable = isFolder(c) || isPreviewable(c)
                 const href = isFolderOrPreviewable ? getHref(c) : undefined
@@ -57,20 +57,20 @@ export function Grid({
                             <AnimatedDiv
                                 mobileVariants={BlogCardAnimation}
                                 variants={fromLeftVariant}
+                                className="w-full h-full"
                             >
                                 <Card
                                     aria-label={c?.name}
-                                    className='w-full rounded-2xl border bg-transparent select-none'
-                                    isPressable={isDesktop}
+                                    className={`w-full h-full rounded-xl border bg-transparent select-none transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] ${focus?.name === c.name ? 'ring-2 ring-teal-400/50 bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
                                     shadow='none'
                                     onPress={() => onSelect(c)}
                                     {...cardProps}
                                 >
                                     <MagicCard
-                                        className={`${focus?.name === c.name ? 'bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
+                                        className="h-full flex flex-col"
                                     >
-                                        <CardHeader className='mb-px p-2'>
-                                            <h1 className='truncate text-start text-[13px]'>
+                                        <CardHeader className='p-3 pb-1'>
+                                            <h1 className='truncate text-start text-sm font-medium'>
                                                 {c?.name}
                                             </h1>
                                         </CardHeader>
@@ -79,12 +79,14 @@ export function Grid({
                                             src={c?.thumbnails?.[0]?.large?.url || ''}
                                             type='Grid'
                                         />
-                                        <CardFooter className='text-muted-foreground grid grid-cols-3 p-2 text-xs'>
-                                            <p className='truncate text-start'>
+
+                                        <CardFooter className='text-muted-foreground grid grid-cols-2 p-3 pt-2 text-xs gap-2'>
+                                            <p className='truncate text-start flex items-center gap-1'>
+                                                <span className="text-[10px]">📦</span>
                                                 {formatBytes(c?.size)}
                                             </p>
-                                            <p className='truncate text-center' />
-                                            <p className='truncate text-right'>
+                                            <p className='truncate text-end flex items-center justify-end gap-1'>
+                                                <span className="text-[10px]">🕒</span>
                                                 {formatDateTime(c?.lastModifiedDateTime)}
                                             </p>
                                         </CardFooter>

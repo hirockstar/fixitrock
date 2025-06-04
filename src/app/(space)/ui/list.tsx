@@ -16,6 +16,7 @@ import { Menu } from '®app/(space)/ui'
 
 import { getHref } from '../utils'
 import { useSelectItem } from '../hooks'
+import { ArrowRight } from 'lucide-react'
 
 export function List({
     data,
@@ -57,48 +58,59 @@ export function List({
                                 key={c.id}
                                 mobileVariants={BlogCardAnimation}
                                 variants={fromTopVariant}
+
                             >
                                 <Card
                                     key={c.id}
-                                    disableRipple
                                     isHoverable
                                     aria-label={c?.name}
-                                    className={`data-[hover=true]:bg-muted/30 w-full rounded-lg border bg-transparent p-0.5 pl-1 select-none dark:data-[hover=true]:bg-[#0a0a0a] ${focus?.name === c.name ? 'bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
-                                    isPressable={isDesktop}
+                                    className={`group transition-all data-[hover=true]:bg-muted/30 dark:data-[hover=true]:bg-[#0a0a0a] duration-200 active:scale-[0.98] w-full rounded-xl border bg-transparent p-0 select-none ${focus?.name === c.name ? 'ring-2 ring-teal-400/50 bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
                                     shadow='none'
                                     onPress={() => onSelect(c)}
                                     {...cardProps}
                                 >
-                                    <CardBody className='flex flex-row items-center gap-2 p-0.5'>
+                                    <CardBody className='flex flex-row items-center gap-2 p-3'>
                                         <Thumbnail
                                             name={c?.name as string}
                                             src={c?.thumbnails?.[0]?.large?.url}
                                             type='List'
                                         />
-                                        <div className='flex-1 space-y-[2px] overflow-hidden'>
-                                            <h2 className='truncate text-start text-[13px]'>
+                                        <div className='flex-1 min-w-0 space-y-1'>
+                                            <h2 className='truncate text-start text-sm font-medium group-hover:text-teal-500 transition-colors'>
                                                 {c?.name}
                                             </h2>
-                                            <p className='text-muted-foreground text-xs'>
+                                            <div className='text-muted-foreground text-xs flex flex-wrap gap-x-2 gap-y-0.5'>
                                                 {[
-                                                    formatBytes(c?.size),
-                                                    c?.folder?.childCount &&
-                                                        formatCount(c.folder.childCount),
-                                                    c?.lastModifiedDateTime &&
-                                                        formatDateTime(c?.lastModifiedDateTime),
+                                                    c?.size && (
+                                                        <span key="size" className="flex items-center gap-1">
+                                                            <span className="text-[10px]">📦</span>
+                                                            {formatBytes(c.size)}
+                                                        </span>
+                                                    ),
+                                                    c?.folder?.childCount && (
+                                                        <span key="count" className="flex items-center gap-1">
+                                                            <span className="text-[10px]">📁</span>
+                                                            {formatCount(c.folder.childCount)}
+                                                        </span>
+                                                    ),
+                                                    c?.lastModifiedDateTime && (
+                                                        <span key="date" className="flex items-center gap-1">
+                                                            <span className="text-[10px]">🕒</span>
+                                                            {formatDateTime(c.lastModifiedDateTime)}
+                                                        </span>
+                                                    ),
                                                 ]
                                                     .filter(Boolean)
                                                     .map((item, index, arr) => (
-                                                        <span key={index}>
+                                                        <span key={index} className="inline-flex items-center">
                                                             {item}
-                                                            {index < arr.length - 1 && (
-                                                                <span className='mx-2'>•</span>
-                                                            )}
                                                         </span>
                                                     ))}
-                                            </p>
+                                            </div>
                                         </div>
-                                        <span className='w-10' />
+                                        <div className='flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity'>
+                                            <ArrowRight className='text-muted-foreground' size={18} />
+                                        </div>
                                     </CardBody>
                                 </Card>
                             </AnimatedDiv>

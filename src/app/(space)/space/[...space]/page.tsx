@@ -1,12 +1,15 @@
 import { cookies } from 'next/headers'
 import { Suspense } from 'react'
+import { notFound } from 'next/navigation'
 
 import { Navbar } from '®app/(space)/ui/navbar'
-import { SortField } from '®types/drive'
+import { SortField, SortOrder } from '®types/drive'
 import { GridSkeleton, ListSkeleton } from '®ui/skeleton'
 import { siteConfig } from '®config/site'
+import { getChildren, getReadme } from '®actions/drive'
+import { Readme } from '®app/(space)/ui/preview'
+import { Data } from './data'
 
-import { DriveGrid } from './drive'
 
 type PageProps = {
     params: { space?: string[] }
@@ -62,13 +65,13 @@ export default async function Page(context: PageProps) {
                             <ListSkeleton />
                         </div>
                     ) : (
-                        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 px-2'>
+                        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-2 px-2 2xl:px-[2rem]'>
                             <GridSkeleton />
                         </div>
                     )
                 }
             >
-                <DriveGrid
+                <Space
                     layout={layout}
                     query={query}
                     sortField={sortField}
@@ -79,7 +82,38 @@ export default async function Page(context: PageProps) {
         </main>
     )
 }
+interface Props {
+    space: string
+    query: string
+    sortField?: SortField
+    sortOrder?: SortOrder
+    layout: 'grid' | 'list'
+}
 
+async function Space({ space, ...props }: Props) {
+    try {
+        const initial = await getChildren(`/${space}`, undefined, 50)
+        const raw = await getReadme(`/${space}`)
+
+        return (
+            <>
+                <Data
+                    initial={{ ...initial, nextPage: initial['@odata.nextLink'] }}
+                    space={space}
+                    {...props}
+                />
+                <Readme className='rounded-lg border p-2 2xl:px-[2rem]' raw={raw || ''} />
+            </>
+        )
+    } catch (error) {
+        // Check if it's a "resource not found" error
+        if (error instanceof Error && error.message.includes('could not be found')) {
+            notFound()
+        }
+        // Re-throw other errors
+        throw error
+    }
+}
 export async function generateMetadata({ params }: { params: Promise<{ space: string[] }> }) {
     const space = (await params).space
     const drivePath = space.join('/')

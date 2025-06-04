@@ -12,7 +12,7 @@ export default function SpacePage() {
         <main className='mt-6'>
             <Suspense
                 fallback={
-                    <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 px-2 2xl:px-[2rem]'>
+                    <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 px-2 2xl:px-[2rem]'>
                         <GridSkeleton />
                     </div>
                 }
@@ -24,9 +24,9 @@ export default function SpacePage() {
 }
 
 export const metadata: Metadata = {
-    title: 'Space',
+    title: 'Space - Mobile Repair Resources',
     description:
-        'We Provide Mobile Firmwares Drivers Flash Tool FRP Dump FIle EMMC ISP PinOut Samsung MDM File Windows Files.',
+        'Your digital space for mobile repair tools, firmware files, and guides. Everything you need in one place.',
     keywords: [
         'fixitrock',
         'flash tool',
