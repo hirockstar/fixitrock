@@ -2,6 +2,7 @@
 
 import { Card, CardFooter, CardHeader } from '@heroui/react'
 import React from 'react'
+import Link from 'next/link'
 
 import { useMediaQuery } from '®hooks/useMediaQuery'
 import { BlogCardAnimation, fromLeftVariant } from '®lib/FramerMotionVariants'
@@ -13,8 +14,10 @@ import { MagicCard } from '®ui/magiccard'
 import { GridSkeleton } from '®ui/skeleton'
 import { Thumbnail } from '®ui'
 import { Menu } from '®app/(space)/ui'
+import { isFolder, isPreviewable } from '®lib/utils'
 
 import { useSelectItem } from '../hooks'
+import { getHref } from '../utils'
 
 export function Grid({
     data,
@@ -33,64 +36,74 @@ export function Grid({
 
     return (
         <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 p-2 2xl:px-[2rem]'>
-            {data?.value.map((c) => (
-                <ContextMenu
-                    key={c.id}
-                    onOpenChange={(open) => {
-                        setOpen(open)
-                        if (open) {
-                            setActive(c)
-                        } else {
-                            setActive(null)
-                        }
-                    }}
-                >
-                    <ContextMenuTrigger onClick={() => onSelect(c)}>
-                        <AnimatedDiv mobileVariants={BlogCardAnimation} variants={fromLeftVariant}>
-                            <Card
-                                aria-label={c?.name}
-                                className='w-full rounded-2xl border bg-transparent select-none'
-                                isPressable={isDesktop}
-                                shadow='none'
-                                onPress={() => onSelect(c)}
-                            >
-                                <MagicCard
-                                    className={`${focus?.name === c.name ? 'bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
-                                >
-                                    <CardHeader className='mb-px p-2'>
-                                        <h1 className='truncate text-start text-[13px]'>
-                                            {c?.name}
-                                        </h1>
-                                    </CardHeader>
-                                    <Thumbnail
-                                        name={c?.name as string}
-                                        src={c?.thumbnails?.[0]?.large?.url || ''}
-                                        type='Grid'
-                                    />
-                                    <CardFooter className='text-muted-foreground grid grid-cols-3 p-2 text-xs'>
-                                        <p className='truncate text-start'>
-                                            {formatBytes(c?.size)}
-                                        </p>
-                                        <p className='truncate text-center' />
-                                        <p className='truncate text-right'>
-                                            {formatDateTime(c?.lastModifiedDateTime)}
-                                        </p>
-                                    </CardFooter>
-                                </MagicCard>
-                            </Card>
-                        </AnimatedDiv>
-                    </ContextMenuTrigger>
-                    <Menu
-                        c={c}
-                        open={active?.id === c.id && open}
-                        setOpen={(open) => {
-                            setActive(c)
+            {data?.value.map((c) => {
+                const isFolderOrPreviewable = isFolder(c) || isPreviewable(c)
+                const href = isFolderOrPreviewable ? getHref(c) : undefined
+                const cardProps = href ? { as: Link, href } : {}
+
+                return (
+                    <ContextMenu
+                        key={c.id}
+                        onOpenChange={(open) => {
                             setOpen(open)
+                            if (open) {
+                                setActive(c)
+                            } else {
+                                setActive(null)
+                            }
                         }}
-                        onSelected={onSelect}
-                    />
-                </ContextMenu>
-            ))}
+                    >
+                        <ContextMenuTrigger onClick={() => onSelect(c)}>
+                            <AnimatedDiv
+                                mobileVariants={BlogCardAnimation}
+                                variants={fromLeftVariant}
+                            >
+                                <Card
+                                    aria-label={c?.name}
+                                    className='w-full rounded-2xl border bg-transparent select-none'
+                                    isPressable={isDesktop}
+                                    shadow='none'
+                                    onPress={() => onSelect(c)}
+                                    {...cardProps}
+                                >
+                                    <MagicCard
+                                        className={`${focus?.name === c.name ? 'bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
+                                    >
+                                        <CardHeader className='mb-px p-2'>
+                                            <h1 className='truncate text-start text-[13px]'>
+                                                {c?.name}
+                                            </h1>
+                                        </CardHeader>
+                                        <Thumbnail
+                                            name={c?.name as string}
+                                            src={c?.thumbnails?.[0]?.large?.url || ''}
+                                            type='Grid'
+                                        />
+                                        <CardFooter className='text-muted-foreground grid grid-cols-3 p-2 text-xs'>
+                                            <p className='truncate text-start'>
+                                                {formatBytes(c?.size)}
+                                            </p>
+                                            <p className='truncate text-center' />
+                                            <p className='truncate text-right'>
+                                                {formatDateTime(c?.lastModifiedDateTime)}
+                                            </p>
+                                        </CardFooter>
+                                    </MagicCard>
+                                </Card>
+                            </AnimatedDiv>
+                        </ContextMenuTrigger>
+                        <Menu
+                            c={c}
+                            open={active?.id === c.id && open}
+                            setOpen={(open) => {
+                                setActive(c)
+                                setOpen(open)
+                            }}
+                            onSelected={onSelect}
+                        />
+                    </ContextMenu>
+                )
+            })}
             {loadMore && <GridSkeleton />}
         </div>
     )
