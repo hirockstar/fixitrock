@@ -16,7 +16,7 @@ import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
 import { GridSkeleton } from '®ui/skeleton'
 import { ErrorState } from '®ui/state'
 import { Thumbnail } from '®ui'
-import { Menu } from '®app/(drive)/ui'
+import { Menu } from '®app/(space)/ui'
 
 export default function Firmware() {
     const { data, isLoading, selectItem, error } = useDrive('', 12)

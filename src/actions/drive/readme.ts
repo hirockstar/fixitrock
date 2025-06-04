@@ -1,10 +1,12 @@
 'use server'
 
+import { cache } from 'react'
+
 import { siteConfig } from '®config/site'
 import { logWarning } from '®lib/utils'
 import { DriveClient } from '®lib/utils/DriveClient'
 
-export async function getReadme(slug: string): Promise<string | null> {
+export const getReadme = cache(async function getReadme(slug: string): Promise<string | null> {
     const client = await DriveClient()
 
     try {
@@ -13,7 +15,21 @@ export async function getReadme(slug: string): Promise<string | null> {
             .select('@microsoft.graph.downloadUrl')
             .get()
 
-        return res['@microsoft.graph.downloadUrl'] || null
+        const downloadUrl = res['@microsoft.graph.downloadUrl']
+
+        if (!downloadUrl) return null
+
+        const contentRes = await fetch(downloadUrl)
+
+        if (!contentRes.ok) {
+            logWarning(`Failed to fetch README.md content for: ${slug}`)
+
+            return null
+        }
+
+        const markdown = await contentRes.text()
+
+        return markdown
     } catch (error: unknown) {
         if (error instanceof Error && (error as { statusCode?: number }).statusCode === 404) {
             logWarning(`No README.md found for: ${slug}`)
@@ -23,4 +39,4 @@ export async function getReadme(slug: string): Promise<string | null> {
 
         return null
     }
-}
+})

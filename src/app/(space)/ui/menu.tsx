@@ -66,7 +66,7 @@ export function Menu({
                 <ContextMenuItem disabled className='w-full flex-col gap-1'>
                     <Rename /> Rename
                 </ContextMenuItem>
-                <ContextMenuItem disabled className='w-full flex-col gap-1 text-danger'>
+                <ContextMenuItem disabled className='text-danger w-full flex-col gap-1'>
                     <Delete /> Delete
                 </ContextMenuItem>
             </div>
@@ -115,7 +115,7 @@ export function Menu({
                         </ListboxItem>
                         <ListboxItem
                             key='delete'
-                            classNames={{ title: 'flex flex-col items-center text-danger' }}
+                            classNames={{ title: 'text-danger flex flex-col items-center' }}
                             textValue='Delete'
                         >
                             <Delete /> Delete

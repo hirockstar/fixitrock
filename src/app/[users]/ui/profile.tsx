@@ -51,14 +51,14 @@ const UserDetails = () => (
 const NavLinks = () => (
     <Listbox variant='flat'>
         <ListboxItem
-            className='flex items-center gap-2 rounded-md p-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+            className='text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md p-2 text-sm'
             onPress={() => {}}
         >
             <Image alt='Fix iT Rock' height={20} src='/icons/rdrive.png' width={20} />
             <span>My Profile</span>
         </ListboxItem>
         <ListboxItem
-            className='flex items-center gap-2 rounded-md p-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+            className='text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md p-2 text-sm'
             onPress={() => {}}
         >
             <Image alt='Fix iT Rock' height={20} src='/icons/rdrive.png' width={20} />
@@ -84,7 +84,7 @@ function SheetDrawer({ open, setOpen }: PreviewProps) {
                             <NavLinks />
                         </ScrollShadow>
                         <SheetFooter className='flex border-t p-2'>
-                            <p className='text-start text-xs text-muted-foreground'>
+                            <p className='text-muted-foreground text-start text-xs'>
                                 Fix it Rock © 2025
                             </p>
                         </SheetFooter>

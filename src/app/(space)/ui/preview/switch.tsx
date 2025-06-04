@@ -4,8 +4,8 @@ import React from 'react'
 import { DriveItem } from '®/types/drive'
 
 import ImagePreview from './image'
-import { ReadMe } from './readme'
 import Video from './video'
+import { Readme } from './readme'
 
 const Switch: React.FC<{ file: DriveItem }> = ({ file }) => {
     const mimeType = file?.file?.mimeType
@@ -17,7 +17,7 @@ const Switch: React.FC<{ file: DriveItem }> = ({ file }) => {
         return <Video file={file} />
     }
     if (file.name.endsWith('.md') || file.name.endsWith('.mdx')) {
-        return <ReadMe src={file['@microsoft.graph.downloadUrl'] ?? ''} />
+        return <Readme src={file['@microsoft.graph.downloadUrl'] ?? ''} />
     }
 }
 

@@ -1,31 +1,32 @@
-import { useEffect, useState } from 'react'
+'use client'
 
-import useLocalStorage from './useLocalStorage'
+import { useState, useEffect } from 'react'
+import Cookies from 'js-cookie'
 
-export const layouts: Array<{ id: number; name: 'Grid' | 'List' }> = [
-    { id: 1, name: 'List' },
-    { id: 2, name: 'Grid' },
-]
+export type Layout = 'grid' | 'list'
 
-const DEFAULT_LAYOUT = layouts.find((l) => l.name === 'Grid')!.name
-
-type Layout = 'Grid' | 'List'
+const DEFAULT_LAYOUT: Layout = 'grid'
 
 function useLayout() {
-    const [layout, setLayout] = useLocalStorage<Layout>('layout', DEFAULT_LAYOUT)
-    const [hydrated, setHydrated] = useState(false)
+    const [layout, setLayoutState] = useState<Layout>(DEFAULT_LAYOUT)
 
     useEffect(() => {
-        setHydrated(true)
+        const cookieLayout = Cookies.get('layout') as Layout | undefined
+
+        if (cookieLayout === 'grid' || cookieLayout === 'list') {
+            setLayoutState(cookieLayout)
+        } else {
+            Cookies.set('layout', DEFAULT_LAYOUT, { expires: 365 })
+            setLayoutState(DEFAULT_LAYOUT)
+        }
     }, [])
 
-    useEffect(() => {
-        if (!layouts.some((l) => l.name === layout)) {
-            setLayout(DEFAULT_LAYOUT)
-        }
-    }, [layout, setLayout])
+    const setLayout = (newLayout: Layout) => {
+        Cookies.set('layout', newLayout, { expires: 365 })
+        setLayoutState(newLayout)
+    }
 
-    return { layout: hydrated ? layout : null, setLayout, hydrated }
+    return { layout, setLayout }
 }
 
 export default useLayout

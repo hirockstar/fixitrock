@@ -1,5 +1,7 @@
 'use server'
 
+import { cache } from 'react'
+
 import { siteConfig } from '®config/site'
 import useHidden from '®hooks/useHidden'
 import { logWarning } from '®lib/utils'
@@ -27,7 +29,7 @@ async function getThumbnails(id: string): Promise<DriveItem['thumbnails'] | null
     }
 }
 
-export async function getChildren(
+export const getChildren = cache(async function getChildren(
     slug: string,
     pageParam?: string,
     top: number = 50
@@ -39,6 +41,7 @@ export async function getChildren(
 
         const endpoint =
             pageParam || `/me/drive/root:/${siteConfig.baseDirectory}${slug}:/children?top=${top}`
+
         const res = await client.api(endpoint).expand('thumbnails($select=large)').get()
 
         if (!res.value?.length) return { value: [], status: 'empty' }
@@ -66,4 +69,4 @@ export async function getChildren(
         logWarning(error instanceof Error ? error.message : '')
         throw error
     }
-}
+})

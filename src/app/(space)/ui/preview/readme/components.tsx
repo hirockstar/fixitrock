@@ -20,7 +20,7 @@ export const LI = ({ className, ...props }: React.HTMLAttributes<HTMLElement>) =
 
 export const Blockquote = ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => {
     return (
-        <Card className={cn('rounded-lg border p-1.5 dark:bg-default/10', className)} shadow='none'>
+        <Card className={cn('dark:bg-default/10 rounded-lg border p-1.5', className)} shadow='none'>
             <blockquote
                 className={cn('ml-1 border-l-2 border-[hsl(var(--ring))] pl-4 italic', className)}
                 {...props}
@@ -30,7 +30,7 @@ export const Blockquote = ({ className, ...props }: React.HTMLAttributes<HTMLEle
 }
 
 export const HR = ({ className, ...props }: React.HTMLAttributes<HTMLHRElement>) => {
-    return <hr className={cn('my-2 border-border sm:my-6', className)} {...props} />
+    return <hr className={cn('border-border my-2 sm:my-6', className)} {...props} />
 }
 
 export const A = ({ className, ...props }: React.ComponentProps<typeof Link>) => {
@@ -82,7 +82,7 @@ export function YouTube({ id }: { id: string }) {
             <iframe
                 allowFullScreen
                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                className='absolute left-0 top-0 h-full w-full'
+                className='absolute top-0 left-0 h-full w-full'
                 src={`https://www.youtube.com/embed/${id}`}
                 title='YouTube video player'
             />

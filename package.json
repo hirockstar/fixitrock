@@ -64,6 +64,7 @@
         "geist": "^1",
         "gray-matter": "^4",
         "input-otp": "^1.4.2",
+        "js-cookie": "^3.0.5",
         "jspdf": "^3.0.1",
         "jspdf-autotable": "^5.0.2",
         "lucide-react": "^0.511.0",
@@ -93,6 +94,7 @@
         "zod": "^3.25.46"
     },
     "devDependencies": {
+        "@types/js-cookie": "^3.0.6",
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",

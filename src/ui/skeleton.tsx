@@ -5,18 +5,19 @@ import { cn } from '®lib/utils'
 
 import { MagicCard } from './magiccard'
 
-export const GridSkeleton = ({
-    length = 15,
-    className,
-}: {
+type GridSkeletonProps = {
     length?: number
     className?: string
-}) => {
+}
+
+export const GridSkeleton = ({ length = 18, className }: GridSkeletonProps) => {
+    if (!length) return null
+
     return (
         <>
-            {Array.from({ length }).map((_, index) => (
+            {Array.from({ length }).map((_, i) => (
                 <Card
-                    key={index}
+                    key={i}
                     className={cn('rounded-2xl border bg-transparent', className)}
                     shadow='none'
                 >

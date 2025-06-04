@@ -1,7 +1,8 @@
 'use client'
 
 import { Button, Input as Drive, InputProps as Props } from '@heroui/react'
-import { Loader, Search } from 'lucide-react'
+import { Loader, Search, Undo2 } from 'lucide-react'
+import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -10,9 +11,10 @@ type InputProps = {
     hotKey?: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     end?: React.ReactNode
+    href?: string
 } & Props
 
-export function Input({ value = '', hotKey, end, onChange, ...inputProps }: InputProps) {
+export function Input({ value = '', hotKey, end, href, onChange, ...inputProps }: InputProps) {
     const inputRef = useRef<HTMLInputElement>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -42,11 +44,13 @@ export function Input({ value = '', hotKey, end, onChange, ...inputProps }: Inpu
     return (
         <Drive
             ref={inputRef}
+            fullWidth
             className='bg-transparent'
             classNames={{
                 inputWrapper:
                     'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none group-data-[focus=true]:bg-transparent data-[hover=true]:bg-transparent',
-                base: 'sm:w-[90%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]',
+                base: 'sm:w-[40%] lg:w-[25%]',
+                input: 'truncate overflow-hidden',
             }}
             endContent={
                 <>
@@ -70,7 +74,19 @@ export function Input({ value = '', hotKey, end, onChange, ...inputProps }: Inpu
                     {isLoading ? (
                         <Loader className='text-muted-foreground h-4 w-4 shrink-0 animate-spin' />
                     ) : (
-                        <Search className='h-4 w-4 shrink-0' />
+                        <>
+                            <Button
+                                as={Link}
+                                className='h-8 w-12 min-w-0 p-0 sm:hidden'
+                                href={href}
+                                radius='full'
+                                size='sm'
+                                variant='light'
+                            >
+                                <Undo2 size={18} />
+                            </Button>
+                            <Search className='hidden h-4 w-4 shrink-0 sm:block' />
+                        </>
                     )}
                 </>
             }

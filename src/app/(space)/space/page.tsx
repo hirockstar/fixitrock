@@ -1,19 +1,30 @@
+import { Suspense } from 'react'
 import { Metadata } from 'next'
 
+import { GridSkeleton } from '®ui/skeleton'
 import { siteConfig } from '®config/site'
+import { getChildren } from '®actions/drive'
 
-import { Drive } from '.'
+import { Grid } from '../ui'
 
-export default function Page() {
+export default function SpacePage() {
     return (
-        <main className='mx-auto mt-4 w-full p-1 md:px-4 2xl:px-[10%]'>
-            <Drive />
+        <main className='mt-6'>
+            <Suspense
+                fallback={
+                    <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 px-2 2xl:px-[2rem]'>
+                        <GridSkeleton />
+                    </div>
+                }
+            >
+                <Space />
+            </Suspense>
         </main>
     )
 }
 
 export const metadata: Metadata = {
-    title: 'Drive',
+    title: 'Space',
     description:
         'We Provide Mobile Firmwares Drivers Flash Tool FRP Dump FIle EMMC ISP PinOut Samsung MDM File Windows Files.',
     keywords: [
@@ -50,4 +61,10 @@ export const metadata: Metadata = {
         images: '/drive/og',
     },
     category: 'technology',
+}
+
+async function Space() {
+    const data = await getChildren('')
+
+    return <Grid data={data} />
 }

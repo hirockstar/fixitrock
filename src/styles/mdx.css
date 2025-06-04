@@ -129,7 +129,6 @@
 .mdx {
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
-    margin: 0;
     color: var(--fgColor-default);
     background-color: hsl(var(--background));
     font-family:
@@ -138,6 +137,7 @@
     font-size: 16px;
     line-height: 1.5;
     word-wrap: break-word;
+    @apply m-2 2xl:mx-[2rem] p-4
 }
 
 .mdx .octicon {
