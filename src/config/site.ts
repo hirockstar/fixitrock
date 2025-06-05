@@ -25,13 +25,13 @@ export const siteConfig = {
             icon: SiGhostery,
         },
         {
-            href: '/drive/Apps',
+            href: '/Space/Apps',
             title: 'Apps',
             description: 'Download apps for Android, MacOS, Windows, and Linux',
             icon: TbApps,
         },
         {
-            href: '/drive/Games',
+            href: '/Space/Games',
             title: 'Games',
             description: 'Download games for Android, MacOS, Windows, and Linux',
             icon: TbDeviceGamepad2,
@@ -43,19 +43,19 @@ export const siteConfig = {
             icon: TbApps,
         },
         {
-            href: '/drive/Drivers',
+            href: '/Space/Drivers',
             title: 'USB Drivers',
             description: 'Download Android USB flashing drivers',
             icon: BsUsbSymbol,
         },
         {
-            href: '/drive/Flash-Tool',
+            href: '/Space/Flash-Tool',
             title: 'Flashing Tools',
             description: 'Tools for flashing mobile devices',
             icon: MdPhonelinkSetup,
         },
         {
-            href: '/drive/iCloud',
+            href: '/Space/iCloud',
             title: 'iCloud Bypass Solutions',
             description: 'Say goodbye to iCloud locks: Unlock now.',
             icon: BsApple,

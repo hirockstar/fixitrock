@@ -24,7 +24,7 @@ export default function Firmware() {
     const [open, setOpen] = React.useState(false)
 
     return (
-        <TitleAction href='/drive' title='Firmware'>
+        <TitleAction href='/Space' title='Firmware'>
             <Carousel
                 plugins={[
                     Autoplay({
@@ -39,7 +39,7 @@ export default function Firmware() {
                         <ErrorState
                             icons={[TbDatabaseStar, ImOnedrive, TbPlugConnectedX]}
                             message={error.message}
-                            title='OneDrive API says “Nope, Not Today.'
+                            title='OneDrive API says "Nope, Not Today.'
                         />
                     ) : (
                         data?.value.map((c: DriveItem) => (
@@ -60,7 +60,7 @@ export default function Firmware() {
                                             aria-label={c?.name}
                                             as={Link}
                                             className='w-full rounded-2xl border bg-transparent select-none'
-                                            href={`/drive/${c.name}`}
+                                            href={`/Space/${c.name}`}
                                             shadow='none'
                                         >
                                             <CardHeader className='mb-px p-2'>

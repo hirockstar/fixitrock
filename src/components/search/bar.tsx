@@ -1,6 +1,6 @@
 'use client'
 import { Button, Image, Input } from '@heroui/react'
-import { Search, X } from 'lucide-react'
+import { Search, User, X } from 'lucide-react'
 import { useState } from 'react'
 
 import AnimatedSearch, { useOpen } from '®ui/farmer/search'
@@ -23,11 +23,10 @@ const SearchBar = () => {
             >
                 <Input
                     classNames={{
-                        inputWrapper: `bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 h-11 min-h-10 overflow-hidden shadow-none backdrop-blur ${
-                            open
+                        inputWrapper: `bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 h-11 min-h-10 overflow-hidden shadow-none backdrop-blur ${open
                                 ? 'rounded-none border-b p-2 px-2.5!'
                                 : 'overflow-hidden rounded-xl border'
-                        }`,
+                            }`,
                         mainWrapper: 'overflow-hidden',
                     }}
                     endContent={
@@ -43,7 +42,8 @@ const SearchBar = () => {
                                 <X size={18} />
                             </Button>
                         ) : (
-                            <Profile />
+                            <User />
+                            // <Profile />
                         )
                     }
                     placeholder='Work in progress . . . ' //What do you need?

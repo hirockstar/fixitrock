@@ -52,13 +52,13 @@ export const metadata: Metadata = {
     },
     metadataBase: new URL(siteConfig.domain),
     openGraph: {
-        title: 'Drive',
+        title: 'Space - Mobile Repair Resources',
         description:
-            'We Provide Mobile Firmwares Drivers Flash Tool FRP Dump FIle EMMC ISP PinOut Samsung MDM File Windows Files.',
+            'Your digital space for mobile repair tools, firmware files, and guides. Everything you need in one place.',
         url: new URL(siteConfig.domain),
         siteName: siteConfig.title,
         type: 'website',
-        images: '/drive/og',
+        images: '/Space/og',
     },
     category: 'technology',
 }

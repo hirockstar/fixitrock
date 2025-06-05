@@ -134,7 +134,7 @@ export async function generateMetadata({ params }: { params: Promise<{ space: st
             title: title || '',
             url: new URL(siteConfig.domain),
             type: 'website',
-            images: `/space/og?slug=/${drivePath}`,
+            images: `/Space/og?slug=/${drivePath}`,
             siteName: siteConfig.title,
         },
     }
