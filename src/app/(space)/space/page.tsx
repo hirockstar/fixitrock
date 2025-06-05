@@ -12,7 +12,7 @@ export default function SpacePage() {
         <main className='mt-6'>
             <Suspense
                 fallback={
-                    <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 px-2 2xl:px-[2rem]'>
+                    <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 px-2'>
                         <GridSkeleton />
                     </div>
                 }

@@ -21,7 +21,7 @@ export async function DriveGrid({ space, ...props }: Props) {
                 space={space}
                 {...props}
             />
-            <Readme className='rounded-lg border p-2 2xl:px-[2rem]' raw={raw || ''} />
+            <Readme className='rounded-lg border p-2' raw={raw || ''} />
         </>
     )
 }

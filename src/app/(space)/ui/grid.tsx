@@ -4,7 +4,6 @@ import { Card, CardFooter, CardHeader } from '@heroui/react'
 import React from 'react'
 import Link from 'next/link'
 
-import { useMediaQuery } from '®hooks/useMediaQuery'
 import { BlogCardAnimation, fromLeftVariant } from '®lib/FramerMotionVariants'
 import { formatBytes, formatDateTime } from '®lib/utils'
 import { Drive, DriveItem } from '®types/drive'
@@ -31,11 +30,10 @@ export function Grid({
 }) {
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
-    const isDesktop = useMediaQuery('(min-width: 640px)')
     const onSelect = useSelectItem(setActive, setOpen)
 
     return (
-        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 p-2 2xl:px-[2rem]'>
+        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 p-2'>
             {data?.value.map((c) => {
                 const isFolderOrPreviewable = isFolder(c) || isPreviewable(c)
                 const href = isFolderOrPreviewable ? getHref(c) : undefined
@@ -55,20 +53,18 @@ export function Grid({
                     >
                         <ContextMenuTrigger onClick={() => onSelect(c)}>
                             <AnimatedDiv
+                                className='h-full w-full'
                                 mobileVariants={BlogCardAnimation}
                                 variants={fromLeftVariant}
-                                className="w-full h-full"
                             >
                                 <Card
                                     aria-label={c?.name}
-                                    className={`w-full h-full rounded-xl border bg-transparent select-none transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] ${focus?.name === c.name ? 'ring-2 ring-teal-400/50 bg-teal-400/20 dark:bg-teal-400/25' : ''}`}
+                                    className={`h-full w-full rounded-xl border bg-transparent transition-all duration-200 select-none hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] ${focus?.name === c.name ? 'bg-teal-400/20 ring-2 ring-teal-400/50 dark:bg-teal-400/25' : ''}`}
                                     shadow='none'
                                     onPress={() => onSelect(c)}
                                     {...cardProps}
                                 >
-                                    <MagicCard
-                                        className="h-full flex flex-col"
-                                    >
+                                    <MagicCard className='flex h-full flex-col'>
                                         <CardHeader className='p-3 pb-1'>
                                             <h1 className='truncate text-start text-sm font-medium'>
                                                 {c?.name}
@@ -80,13 +76,13 @@ export function Grid({
                                             type='Grid'
                                         />
 
-                                        <CardFooter className='text-muted-foreground grid grid-cols-2 p-3 pt-2 text-xs gap-2'>
-                                            <p className='truncate text-start flex items-center gap-1'>
-                                                <span className="text-[10px]">📦</span>
+                                        <CardFooter className='text-muted-foreground grid grid-cols-2 gap-2 p-3 pt-2 text-xs'>
+                                            <p className='flex items-center gap-1 truncate text-start'>
+                                                <span className='text-[10px]'>📦</span>
                                                 {formatBytes(c?.size)}
                                             </p>
-                                            <p className='truncate text-end flex items-center justify-end gap-1'>
-                                                <span className="text-[10px]">🕒</span>
+                                            <p className='flex items-center justify-end gap-1 truncate text-end'>
+                                                <span className='text-[10px]'>🕒</span>
                                                 {formatDateTime(c?.lastModifiedDateTime)}
                                             </p>
                                         </CardFooter>

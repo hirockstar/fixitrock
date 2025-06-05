@@ -8,8 +8,8 @@ import { GridSkeleton, ListSkeleton } from '®ui/skeleton'
 import { siteConfig } from '®config/site'
 import { getChildren, getReadme } from '®actions/drive'
 import { Readme } from '®app/(space)/ui/preview'
-import { Data } from './data'
 
+import { Data } from './data'
 
 type PageProps = {
     params: { space?: string[] }
@@ -21,12 +21,10 @@ type PageProps = {
     }
 }
 
-export default async function Page(context: PageProps) {
-    const params = await context.params
-    const searchParams = await context.searchParams
-
+export default async function Page({ params, searchParams }: PageProps) {
     const space = (params.space ?? []).join('/')
     const query = searchParams.s ?? ''
+
     const validSortFields: SortField[] = ['name', 'type', 'size', 'lastModifiedDateTime']
     const isValidSort = (field: string): field is SortField =>
         validSortFields.includes(field as SortField)
@@ -38,7 +36,7 @@ export default async function Page(context: PageProps) {
     const sortOrder =
         sortField && searchParams.order === 'desc' ? 'desc' : sortField ? 'asc' : undefined
 
-    const cookieStore = await cookies()
+    const cookieStore = cookies()
     let layout: 'grid' | 'list'
 
     if (searchParams.layout === 'list' || searchParams.layout === 'grid') {
@@ -82,6 +80,7 @@ export default async function Page(context: PageProps) {
         </main>
     )
 }
+
 interface Props {
     space: string
     query: string
@@ -106,16 +105,15 @@ async function Space({ space, ...props }: Props) {
             </>
         )
     } catch (error) {
-        // Check if it's a "resource not found" error
         if (error instanceof Error && error.message.includes('could not be found')) {
             notFound()
         }
-        // Re-throw other errors
         throw error
     }
 }
-export async function generateMetadata({ params }: { params: Promise<{ space: string[] }> }) {
-    const space = (await params).space
+
+export async function generateMetadata({ params }: { params: { space: string[] } }) {
+    const space = params.space
     const drivePath = space.join('/')
     const title = space[space.length - 1]
 
