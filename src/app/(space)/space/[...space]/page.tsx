@@ -2,17 +2,17 @@ import { cookies } from 'next/headers'
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 
-import { Navbar } from '®app/(space)/ui/navbar'
+import { Navbar } from '®app/(Space)/ui/navbar'
 import { SortField, SortOrder } from '®types/drive'
 import { GridSkeleton, ListSkeleton } from '®ui/skeleton'
 import { siteConfig } from '®config/site'
 import { getChildren, getReadme } from '®actions/drive'
-import { Readme } from '®app/(space)/ui/preview'
+import { Readme } from '®app/(Space)/ui/preview'
 
 import { Data } from './data'
 
 type PageProps = {
-    params: Promise<{ space?: string[] }>
+    params: Promise<{ Space?: string[] }>
     searchParams: Promise<{
         s?: string
         sort?: string
@@ -22,11 +22,10 @@ type PageProps = {
 }
 
 export default async function Page({ params, searchParams }: PageProps) {
-    // Await both params and searchParams
     const resolvedParams = await params
     const resolvedSearchParams = await searchParams
 
-    const spaceArr = resolvedParams.space ?? []
+    const spaceArr = resolvedParams.Space ?? []
     const { s = '', sort, order, layout: layoutParam } = resolvedSearchParams
 
     const space = spaceArr.join('/')
@@ -116,9 +115,9 @@ async function Space({ space, ...props }: Props) {
     }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ space: string[] }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ Space?: string[] }> }) {
     const resolvedParams = await params
-    const space = resolvedParams.space
+    const space = resolvedParams.Space ?? []
     const drivePath = space.join('/')
     const title = space[space.length - 1]
 

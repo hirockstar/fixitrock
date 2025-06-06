@@ -12,7 +12,7 @@ import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
 import AnimatedDiv from '®ui/farmer/div'
 import { ListSkeleton } from '®ui/skeleton'
 import { Thumbnail } from '®ui'
-import { Menu } from '®app/(space)/ui'
+import { Menu } from '®app/(Space)/ui'
 
 import { getHref } from '../utils'
 import { useSelectItem } from '../hooks'

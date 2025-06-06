@@ -7,9 +7,9 @@ import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
 import { getChildren } from '®actions/drive'
-import { getDriveItems } from '®app/(space)/utils'
-import { Grid } from '®app/(space)/ui/grid'
-import { List } from '®app/(space)/ui/list'
+import { getDriveItems } from '®app/(Space)/utils'
+import { Grid } from '®app/(Space)/ui/grid'
+import { List } from '®app/(Space)/ui/list'
 
 interface Props {
     space: string

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button, Link, Navbar as Header } from '@heroui/react'
 import { ChevronLeft } from 'lucide-react'
 
-import { Input, SortBy, SwitchLayout } from '®app/(space)/ui'
+import { Input, SortBy, SwitchLayout } from '®app/(Space)/ui'
 import { cn } from '®lib/utils'
 import { SortField, SortOrder } from '®types/drive'
 

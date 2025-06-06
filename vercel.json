@@ -1,0 +1,16 @@
+{
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "redirects": [
+        {
+            "source": "/drive",
+            "destination": "https://fixitrock.com/Space",
+            "permanent": true
+        },
+        {
+            "source": "/drive/:path*",
+            "destination": "https://fixitrock.com/Space/:path*",
+            "permanent": true
+        }
+    ]
+}
