@@ -3,8 +3,9 @@
 import { siteConfig } from '®config/site'
 import { logWarning } from '®lib/utils'
 import { DriveClient } from '®lib/utils/DriveClient'
+import { cache } from 'react'
 
-export async function getMeta(meta: string) {
+export const getMeta = cache(async (meta: string) => {
     const client = await DriveClient()
 
     if (!client) {
@@ -56,4 +57,4 @@ export async function getMeta(meta: string) {
 
         return {}
     }
-}
+})

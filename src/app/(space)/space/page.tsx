@@ -58,7 +58,7 @@ export const metadata: Metadata = {
         url: new URL(siteConfig.domain),
         siteName: siteConfig.title,
         type: 'website',
-        images: '/Space/og',
+        images: '/space/og',
     },
     category: 'technology',
 }
