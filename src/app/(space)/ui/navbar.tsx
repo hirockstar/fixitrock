@@ -8,6 +8,7 @@ import { ChevronLeft } from 'lucide-react'
 import { Input, SortBy, SwitchLayout } from '®app/(space)/ui'
 import { cn } from '®lib/utils'
 import { SortField, SortOrder } from '®types/drive'
+import { formatTitle } from '../utils'
 
 interface NavbarProps {
     title?: string
@@ -79,7 +80,7 @@ export function Navbar({
                 >
                     <ChevronLeft size={20} />
                 </Button>
-                <h1 className='truncate text-base font-bold sm:text-lg'>{lastSegment}</h1>
+                <h1 className='truncate text-base font-bold sm:text-lg'>{formatTitle(lastSegment)}</h1>
             </div>
 
             <Input
@@ -92,7 +93,7 @@ export function Navbar({
                 }
                 hotKey='/'
                 href={backHref}
-                placeholder={`Search in ${lastSegment} . . .`}
+                placeholder={`Search in ${formatTitle(lastSegment)} . . .`}
                 value={query}
                 onInput={(e) => handleQueryChange(e.currentTarget.value)}
             />

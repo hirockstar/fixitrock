@@ -8,6 +8,7 @@ import { GridSkeleton, ListSkeleton } from '®ui/skeleton'
 import { siteConfig } from '®config/site'
 import { getChildren, getReadme } from '®actions/drive'
 import { Readme } from '®app/(space)/ui/preview'
+import { formatTitle } from '®app/(space)/utils'
 
 import { Data } from './data'
 
@@ -119,7 +120,7 @@ export async function generateMetadata({ params }: { params: Promise<{ space?: s
     const resolvedParams = await params
     const space = resolvedParams.space ?? []
     const drivePath = space.join('/')
-    const title = space[space.length - 1]
+    const title = formatTitle(space[space.length - 1])
 
     return {
         title: title || 'Page Not Found',

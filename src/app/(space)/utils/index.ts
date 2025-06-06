@@ -6,10 +6,11 @@ export function getHref(item: DriveItem): string {
     const path =
         item?.parentReference?.path
             ?.replace(`/drive/root:/${siteConfig.baseDirectory}`, siteConfig.directoryUrl)
-            .replace(/\/$/, '') || ''
+            .replace(/\/$/, '')
+            .toLowerCase() || ''
 
-    if (isFolder(item)) return `${path}/${item.name}`
-    if (isPreviewable(item)) return `${path}/?view=${item.name}`
+    if (isFolder(item)) return `${path}/${item.name.toLowerCase()}`
+    if (isPreviewable(item)) return `${path}/?view=${item.name.toLowerCase()}`
 
     return getDownloadUrl(item) || ''
 }
@@ -52,10 +53,10 @@ export function getDriveItems({
     const filtered = !sanitizedQuery.length
         ? data
         : data.filter((item) => {
-              const tokens = sanitizeQuery(item.name)
+            const tokens = sanitizeQuery(item.name)
 
-              return sanitizedQuery.every((q) => tokens.some((t) => t.includes(q)))
-          })
+            return sanitizedQuery.every((q) => tokens.some((t) => t.includes(q)))
+        })
 
     const sorted = sortField ? sortItems(filtered, sortField, sortOrder) : filtered
 
@@ -63,4 +64,12 @@ export function getDriveItems({
         ...item,
         href: getHref(item),
     }))
+}
+
+export function formatTitle(text: string | undefined): string {
+    if (!text) return ''
+    return text
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('-')
 }
