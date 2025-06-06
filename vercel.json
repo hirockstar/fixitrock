@@ -12,13 +12,13 @@
             "permanent": true
         },
         {
-            "source": "/drive",
-            "destination": "/Space",
+            "source": "https://fixitrock.com/drive",
+            "destination": "https://fixitrock.com/Space",
             "permanent": true
         },
         {
-            "source": "/drive/:path*",
-            "destination": "/Space/:path*",
+            "source": "https://fixitrock.com/drive/:path*",
+            "destination": "https://fixitrock.com/Space/:path*",
             "permanent": true
         }
     ]
