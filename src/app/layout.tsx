@@ -70,7 +70,7 @@ export const metadata: Metadata = {
         url: new URL(siteConfig.domain),
         siteName: siteConfig.title,
         type: 'website',
-        images: '/drive/og',
+        images: '/space/og',
         locale: 'en_US',
     },
     category: 'technology',

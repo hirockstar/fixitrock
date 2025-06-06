@@ -38,7 +38,7 @@ export const metadata: Metadata = {
         title: 'FRP Bypass',
         url: new URL(siteConfig.domain),
         type: 'website',
-        images: `/og?slug=/FRP-Files&type=drive`,
+        images: `/space/og?slug=/FRP-Files`,
         siteName: siteConfig.title,
     },
 }

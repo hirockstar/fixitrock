@@ -20,6 +20,11 @@
             "source": "/drive/:path*",
             "destination": "https://fixitrock.com/space/:path*",
             "permanent": true
+        },
+        {
+            "source": "/drive/og",
+            "destination": "/space/og",
+            "permanent": true
         }
     ]
 }
