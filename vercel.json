@@ -1,17 +1,6 @@
 {
     "redirects": [
         {
-            "source": "/:path*",
-            "has": [
-                {
-                    "type": "host",
-                    "value": "rockstar.bio"
-                }
-            ],
-            "destination": "https://fixitrock.com/rockstar",
-            "permanent": true
-        },
-        {
             "source": "/drive",
             "destination": "https://fixitrock.com/space",
             "permanent": true
