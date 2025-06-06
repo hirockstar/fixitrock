@@ -251,7 +251,7 @@ export default function InvoiceDetailsPage() {
                                         <TableCell className='text-nowrap text-center'>
                                             {item.name}
                                         </TableCell>
-                                        <TableCell className='max-w-xs text-center'>
+                                        <TableCell className='max-w-xs text-center whitespace-normal'>
                                             {item.compatibility}
                                         </TableCell>
                                         {(isLoggedIn || isUser) && (
@@ -314,16 +314,16 @@ export default function InvoiceDetailsPage() {
                                                         {status === 'available'
                                                             ? 'Available'
                                                             : status === 'low'
-                                                              ? 'Low Stock'
-                                                              : 'Out of Stock'}
+                                                                ? 'Low Stock'
+                                                                : 'Out of Stock'}
                                                     </p>
                                                 }
                                             >
                                                 {status === 'available'
                                                     ? '✅'
                                                     : status === 'low'
-                                                      ? '🟡'
-                                                      : '❌'}
+                                                        ? '🟡'
+                                                        : '❌'}
                                             </Tooltip>
                                         </TableCell>
 

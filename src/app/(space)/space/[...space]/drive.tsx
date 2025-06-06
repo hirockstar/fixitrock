@@ -1,6 +1,6 @@
 import { getChildren, getReadme } from '®actions/drive'
 import { SortField, SortOrder } from '®types/drive'
-import { Readme } from '®app/(Space)/ui/preview/readme'
+import { Readme } from '®app/(space)/ui/preview/readme'
 
 import { Data } from './data'
 interface Props {

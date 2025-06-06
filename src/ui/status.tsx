@@ -166,7 +166,7 @@ function Folder({ folder, setOpen }: { folder: FolderType; setOpen: (open: boole
                 shadow='none'
                 onPress={() => {
                     setOpen(false)
-                    route.push(`/Space/${folder.name}`)
+                    route.push(`/space/${folder.name}`)
                 }}
             >
                 <CardBody className='flex-row items-center gap-2.5'>

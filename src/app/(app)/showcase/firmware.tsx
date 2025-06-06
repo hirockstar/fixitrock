@@ -16,7 +16,7 @@ import { ContextMenu, ContextMenuTrigger } from '®ui/context-menu'
 import { GridSkeleton } from '®ui/skeleton'
 import { ErrorState } from '®ui/state'
 import { Thumbnail } from '®ui'
-import { Menu } from '®app/(Space)/ui'
+import { Menu } from '®app/(space)/ui'
 
 export default function Firmware() {
     const { data, isLoading, selectItem, error } = useDrive('', 12)
@@ -24,7 +24,7 @@ export default function Firmware() {
     const [open, setOpen] = React.useState(false)
 
     return (
-        <TitleAction href='/Space' title='Firmware'>
+        <TitleAction href='/space' title='Firmware'>
             <Carousel
                 plugins={[
                     Autoplay({
@@ -60,7 +60,7 @@ export default function Firmware() {
                                             aria-label={c?.name}
                                             as={Link}
                                             className='w-full rounded-2xl border bg-transparent select-none'
-                                            href={`/Space/${c.name}`}
+                                            href={`/space/${c.name}`}
                                             shadow='none'
                                         >
                                             <CardHeader className='mb-px p-2'>
