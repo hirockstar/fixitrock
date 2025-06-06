@@ -12,6 +12,11 @@
             "permanent": true
         },
         {
+            "source": "/drive",
+            "destination": "/Space",
+            "permanent": true
+        },
+        {
             "source": "/drive/:path*",
             "destination": "/Space/:path*",
             "permanent": true
