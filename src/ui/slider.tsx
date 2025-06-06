@@ -5,14 +5,19 @@ import * as SliderPrimitive from '@radix-ui/react-slider'
 
 import { cn } from '®lib/utils'
 
+interface SliderProps extends React.ComponentProps<typeof SliderPrimitive.Root> {
+    bufferedProgress?: number
+}
+
 function Slider({
     className,
     defaultValue,
     value,
     min = 0,
     max = 100,
+    bufferedProgress,
     ...props
-}: React.ComponentProps<typeof SliderPrimitive.Root>) {
+}: SliderProps) {
     const _values = React.useMemo(
         () =>
             Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max],
@@ -38,6 +43,12 @@ function Slider({
                 )}
                 data-slot='slider-track'
             >
+                {bufferedProgress !== undefined && (
+                    <div
+                        className='bg-muted/50 absolute h-full'
+                        style={{ width: `${bufferedProgress}%` }}
+                    />
+                )}
                 <SliderPrimitive.Range
                     className={cn(
                         'bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full'

@@ -244,10 +244,9 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                             <p>{formatTime(videoRef.current ? videoRef.current.currentTime : 0)}</p>
                             <div className='relative w-full'>
                                 <Slider
-                                    hideThumb
                                     aria-label='Video Track'
                                     bufferedProgress={bufferedProgress}
-                                    className=''
+                                    className='[&_[data-slot=slider-thumb]]:hidden'
                                     max={100}
                                     min={0}
                                     value={[progress]}

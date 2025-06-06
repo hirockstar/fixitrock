@@ -12,35 +12,39 @@ import { Readme } from '®app/(space)/ui/preview'
 import { Data } from './data'
 
 type PageProps = {
-    params: { space?: string[] }
-    searchParams: {
+    params: Promise<{ space?: string[] }>
+    searchParams: Promise<{
         s?: string
         sort?: string
         order?: 'asc' | 'desc'
         layout?: 'grid' | 'list'
-    }
+    }>
 }
 
 export default async function Page({ params, searchParams }: PageProps) {
-    const space = (params.space ?? []).join('/')
-    const query = searchParams.s ?? ''
+    // Await both params and searchParams
+    const resolvedParams = await params
+    const resolvedSearchParams = await searchParams
+
+    const spaceArr = resolvedParams.space ?? []
+    const { s = '', sort, order, layout: layoutParam } = resolvedSearchParams
+
+    const space = spaceArr.join('/')
+    const query = s
 
     const validSortFields: SortField[] = ['name', 'type', 'size', 'lastModifiedDateTime']
     const isValidSort = (field: string): field is SortField =>
         validSortFields.includes(field as SortField)
 
-    const sortField = isValidSort(searchParams.sort ?? '')
-        ? (searchParams.sort as SortField)
-        : undefined
+    const sortField = isValidSort(sort ?? '') ? (sort as SortField) : undefined
 
-    const sortOrder =
-        sortField && searchParams.order === 'desc' ? 'desc' : sortField ? 'asc' : undefined
+    const sortOrder = sortField && order === 'desc' ? 'desc' : sortField ? 'asc' : undefined
 
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     let layout: 'grid' | 'list'
 
-    if (searchParams.layout === 'list' || searchParams.layout === 'grid') {
-        layout = searchParams.layout
+    if (layoutParam === 'list' || layoutParam === 'grid') {
+        layout = layoutParam
     } else if (cookieStore.get('layout')?.value === 'list') {
         layout = 'list'
     } else {
@@ -112,8 +116,9 @@ async function Space({ space, ...props }: Props) {
     }
 }
 
-export async function generateMetadata({ params }: { params: { space: string[] } }) {
-    const space = params.space
+export async function generateMetadata({ params }: { params: Promise<{ space: string[] }> }) {
+    const resolvedParams = await params
+    const space = resolvedParams.space
     const drivePath = space.join('/')
     const title = space[space.length - 1]
 

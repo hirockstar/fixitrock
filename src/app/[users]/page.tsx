@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { getUser } from '®actions/auth'
 
 type Props = {
-    params: { users: string }
+    params: Promise<{ users: string }>
 }
 
 export default async function Users({ params }: Props) {
