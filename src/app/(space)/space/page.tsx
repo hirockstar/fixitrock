@@ -24,7 +24,7 @@ export default function SpacePage() {
 }
 
 export const metadata: Metadata = {
-    title: 'Space - Mobile Repair Resources',
+    title: 'Space ~ Mobile Repair Resources',
     description:
         'Your digital space for mobile repair tools, firmware files, and guides. Everything you need in one place.',
     keywords: [
