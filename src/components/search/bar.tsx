@@ -5,7 +5,6 @@ import { useState } from 'react'
 
 import AnimatedSearch, { useOpen } from '®ui/farmer/search'
 import { useSearch } from '®tanstack/query'
-import { Profile } from '®app/[users]/ui/profile'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
@@ -24,8 +23,8 @@ const SearchBar = () => {
                 <Input
                     classNames={{
                         inputWrapper: `bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 h-11 min-h-10 overflow-hidden shadow-none backdrop-blur ${open
-                                ? 'rounded-none border-b p-2 px-2.5!'
-                                : 'overflow-hidden rounded-xl border'
+                            ? 'rounded-none border-b p-2 px-2.5!'
+                            : 'overflow-hidden rounded-xl border'
                             }`,
                         mainWrapper: 'overflow-hidden',
                     }}
@@ -43,7 +42,6 @@ const SearchBar = () => {
                             </Button>
                         ) : (
                             <User />
-                            // <Profile />
                         )
                     }
                     placeholder='Work in progress . . . ' //What do you need?

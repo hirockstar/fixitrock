@@ -225,6 +225,13 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                     src={videoSrc}
                     width={width}
                     onClick={togglePlay}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            togglePlay()
+                        }
+                    }}
+                    tabIndex={0}
                 >
                     Your browser does not support the video tag.
                 </video>
@@ -232,6 +239,14 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                     <div
                         className='absolute inset-0 flex items-center justify-center'
                         onClick={togglePlay}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault()
+                                togglePlay()
+                            }
+                        }}
+                        role="button"
+                        tabIndex={0}
                     >
                         <FaPlay className='text-white opacity-60' size={50} />
                     </div>

@@ -126,7 +126,7 @@ export default function InvoiceDetailsPage() {
                 classNames={{ wrapper: 'h-auto w-full gap-1 p-0 py-2' }}
                 maxWidth='full'
             >
-                <div className='hidden h-10 w-full select-none items-center gap-1.5 sm:flex'>
+                <div className='hidden h-10 w-full items-center gap-1.5 select-none sm:flex'>
                     <h1 className='text-base font-bold sm:text-lg'>Products</h1>
                 </div>
 
@@ -135,7 +135,7 @@ export default function InvoiceDetailsPage() {
                         className='bg-transparent'
                         classNames={{
                             inputWrapper:
-                                'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent',
+                                'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none group-data-[focus=true]:bg-transparent data-[hover=true]:bg-transparent',
                             base: 'sm:w-[90%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]',
                         }}
                         endContent={
