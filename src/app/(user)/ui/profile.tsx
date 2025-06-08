@@ -50,14 +50,14 @@ export default function Profile() {
                             className='size-36'
                             classNames={{
                                 wrapper:
-                                    'size-36 rounded-full bg-default/20 object-cover text-2xl backdrop-blur dark:bg-default/40 sm:rounded-lg',
+                                    'bg-default/20 dark:bg-default/40 size-36 rounded-full object-cover text-2xl backdrop-blur sm:rounded-lg',
                             }}
                             src={data?.user.avatar}
                         />
                         <div className='flex flex-col items-center sm:mt-10 sm:items-start'>
                             <h1 className='font-serif text-[36px] font-bold'>{user.name}</h1>
-                            <span className='flex gap-1 text-xs text-muted-foreground'>
-                                <span className='font-bold text-foreground'>@{user.username}</span>
+                            <span className='text-muted-foreground flex gap-1 text-xs'>
+                                <span className='text-foreground font-bold'>@{user.username}</span>
                                 <span>•</span>
                                 <span>{Counts(user.followers)} Followers</span>
                             </span>

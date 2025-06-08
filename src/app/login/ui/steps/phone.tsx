@@ -60,11 +60,11 @@ export function StepPhone({
                 if (isPhoneValid) handleSendOtp()
             }}
         >
-            <DrawerHeader className='w-full text-balance py-2'>
+            <DrawerHeader className='w-full py-2 text-balance'>
                 <DrawerTitle className='text-xl font-semibold'>
                     Enter Your Mobile Number
                 </DrawerTitle>
-                <DrawerDescription className='text-sm text-muted-foreground'>
+                <DrawerDescription className='text-muted-foreground text-sm'>
                     We will send you an OTP to verify your number.
                 </DrawerDescription>
             </DrawerHeader>
@@ -75,7 +75,7 @@ export function StepPhone({
                 maxLength={10}
                 name='phone'
                 placeholder='9927XXXXXX'
-                startContent={<span className='text-sm text-muted-foreground'>+91</span>}
+                startContent={<span className='text-muted-foreground text-sm'>+91</span>}
                 type='tel'
                 value={phone}
                 onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
@@ -93,7 +93,7 @@ export function StepPhone({
                 <div className='mx-auto flex' id='recaptcha-container' />
                 <Link
                     passHref
-                    className='text-center text-xs text-muted-foreground hover:text-primary'
+                    className='text-muted-foreground hover:text-primary text-center text-xs'
                     href='/terms'
                     target='_blank'
                 >

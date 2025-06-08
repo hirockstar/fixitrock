@@ -245,7 +245,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                                 togglePlay()
                             }
                         }}
-                        role="button"
+                        role='button'
                         tabIndex={0}
                     >
                         <FaPlay className='text-white opacity-60' size={50} />
@@ -270,7 +270,7 @@ export const VideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                             </div>
                             <p>{formatTime(duration)}</p>
                         </div>
-                        <div className='flex w-full items-center justify-between lg:-mb-2 lg:mt-2'>
+                        <div className='flex w-full items-center justify-between lg:mt-2 lg:-mb-2'>
                             <div className='flex w-full max-w-32'>
                                 <Button
                                     isIconOnly

@@ -32,14 +32,14 @@ function UserInfo({ data, isLoading }: { data?: DriveItem; isLoading: boolean })
             description={
                 <Link
                     passHref
-                    className='flex items-center gap-1 text-xs text-muted-foreground'
+                    className='text-muted-foreground flex items-center gap-1 text-xs'
                     href={`https://www.google.com/maps/search/?api=1&query=${location}`}
                     rel='noopener noreferrer'
                     target='_blank'
                 >
                     <FaLocationDot />
                     <Skeleton isLoaded={!isLoading}>
-                        <p className='line-clamp-1 text-xs text-muted-foreground'>{location}</p>
+                        <p className='text-muted-foreground line-clamp-1 text-xs'>{location}</p>
                     </Skeleton>
                 </Link>
             }

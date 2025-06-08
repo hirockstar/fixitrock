@@ -26,6 +26,7 @@ type CarouselContextProps = {
     scrollNext: () => void
     canScrollPrev: boolean
     canScrollNext: boolean
+    selectedIndex: number
 } & CarouselProps
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
@@ -58,11 +59,13 @@ function Carousel({
     )
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
     const [canScrollNext, setCanScrollNext] = React.useState(false)
+    const [selectedIndex, setSelectedIndex] = React.useState(0)
 
     const onSelect = React.useCallback((api: CarouselApi) => {
         if (!api) return
         setCanScrollPrev(api.canScrollPrev())
         setCanScrollNext(api.canScrollNext())
+        setSelectedIndex(api.selectedScrollSnap())
     }, [])
 
     const scrollPrev = React.useCallback(() => {
@@ -113,6 +116,7 @@ function Carousel({
                 scrollNext,
                 canScrollPrev,
                 canScrollNext,
+                selectedIndex,
             }}
         >
             <div
@@ -224,4 +228,39 @@ function CarouselNext({
     )
 }
 
-export { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext }
+function CarouselDots({ className, ...props }: React.ComponentProps<'div'>) {
+    const { api, selectedIndex } = useCarousel()
+    const [totalSlides, setTotalSlides] = React.useState(0)
+
+    React.useEffect(() => {
+        if (!api) return
+        setTotalSlides(api.scrollSnapList().length)
+    }, [api])
+
+    return (
+        <div className={cn('mt-4 flex justify-center gap-2', className)} {...props}>
+            {Array.from({ length: totalSlides }).map((_, index) => (
+                <Button
+                    key={index}
+                    variant='ghost'
+                    size='icon'
+                    className={cn(
+                        'h-2 w-2 rounded-full transition-all',
+                        selectedIndex === index ? 'bg-primary' : 'bg-muted'
+                    )}
+                    onClick={() => api?.scrollTo(index)}
+                />
+            ))}
+        </div>
+    )
+}
+
+export {
+    type CarouselApi,
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselPrevious,
+    CarouselNext,
+    CarouselDots,
+}

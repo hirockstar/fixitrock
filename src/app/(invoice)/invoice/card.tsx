@@ -19,10 +19,10 @@ export default function InvoiceCard(invoice: Invoice) {
             shadow='none'
         >
             <CardBody className='p-0'>
-                <div className='flex items-center justify-between border-b border-dashed bg-muted/30 px-6 py-2'>
+                <div className='bg-muted/30 flex items-center justify-between border-b border-dashed px-6 py-2'>
                     <div className='flex items-center gap-2'>
-                        <Receipt className='h-4 w-4 text-muted-foreground' />
-                        <span className='text-xs font-medium text-muted-foreground'>
+                        <Receipt className='text-muted-foreground h-4 w-4' />
+                        <span className='text-muted-foreground text-xs font-medium'>
                             INVOICE #{invoice?.id?.toString().padStart(4, '0')}
                         </span>
                     </div>
@@ -31,11 +31,11 @@ export default function InvoiceCard(invoice: Invoice) {
                 <CardHeader className='flex w-full flex-col px-6 py-4'>
                     <div className='flex w-full items-start justify-between'>
                         <h3 className='text-2xl font-semibold'>{invoice.product}</h3>
-                        <span className='text-xs text-muted-foreground'>
+                        <span className='text-muted-foreground text-xs'>
                             {format(invoice.created_at, 'MMM d, yyyy')}
                         </span>
                     </div>
-                    <p className='w-full text-start text-sm text-muted-foreground'>
+                    <p className='text-muted-foreground w-full text-start text-sm'>
                         <span className='font-semibold text-emerald-600 dark:text-emerald-400'>
                             Seller:
                         </span>{' '}
@@ -47,10 +47,10 @@ export default function InvoiceCard(invoice: Invoice) {
 
                 <div className='flex items-center justify-between px-6 py-2'>
                     <div className='flex items-center gap-1.5'>
-                        <MapPin className='h-4 w-4 text-muted-foreground' />
-                        <span className='text-sm text-muted-foreground'>{invoice.location}</span>
+                        <MapPin className='text-muted-foreground h-4 w-4' />
+                        <span className='text-muted-foreground text-sm'>{invoice.location}</span>
                     </div>
-                    <span className='text-xs text-muted-foreground'>
+                    <span className='text-muted-foreground text-xs'>
                         {formatDateTime(invoice.created_at)}
                     </span>
                 </div>

@@ -19,7 +19,7 @@ const Shortcut: React.FC<ShortcutProps> = ({ tooltip, icon }) => (
         <Button
             isIconOnly
             aria-label={tooltip}
-            className='h-6 w-6 min-w-0 rounded-sm border bg-default/10 dark:bg-default/30'
+            className='bg-default/10 dark:bg-default/30 h-6 w-6 min-w-0 rounded-sm border'
             size='sm'
             variant='light'
         >
@@ -37,8 +37,8 @@ const icons: Icon[] = [
 
 export default function ShortcutKey() {
     return (
-        <div className='flex select-none items-center gap-2'>
-            <h3 className='text-sm text-muted-foreground'>Shortcut Key</h3>
+        <div className='flex items-center gap-2 select-none'>
+            <h3 className='text-muted-foreground text-sm'>Shortcut Key</h3>
             <div className='flex gap-2'>
                 {icons.map(({ tooltip, icon }, index) => (
                     <Shortcut key={index} icon={icon} tooltip={tooltip} />

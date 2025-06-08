@@ -12,14 +12,14 @@ export function Actions({ onFollow, onMessage, isFollowing }: ActionsProps) {
     return (
         <div className='flex gap-4 sm:mt-10'>
             <Button
-                className='h-[34px] rounded-lg border bg-background/30 backdrop-blur data-[hover=true]:bg-muted/50'
+                className='bg-background/30 data-[hover=true]:bg-muted/50 h-[34px] rounded-lg border backdrop-blur'
                 startContent={isFollowing ? <UserPlus size={20} /> : <User size={20} />}
                 onPress={onFollow}
             >
                 {isFollowing ? 'Following' : 'Follow'}
             </Button>
             <Button
-                className='h-[34px] rounded-lg border bg-background/30 backdrop-blur data-[hover=true]:bg-muted/50'
+                className='bg-background/30 data-[hover=true]:bg-muted/50 h-[34px] rounded-lg border backdrop-blur'
                 startContent={<MessageCircle size={20} />}
                 onPress={onMessage}
             >

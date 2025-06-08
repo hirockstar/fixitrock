@@ -155,7 +155,7 @@ export default function InvoiceDetailsPage() {
                                     selected={selectedCategory}
                                     onChange={setSelectedCategory}
                                 />
-                                <span className='text-xs text-muted-foreground'>|</span>
+                                <span className='text-muted-foreground text-xs'>|</span>
                                 <StockDropdown selected={stockFilter} onChange={setStockFilter} />
                             </div>
                         }
@@ -201,7 +201,7 @@ export default function InvoiceDetailsPage() {
                     className='overflow-clip rounded-md border'
                 >
                     <TableHeader>
-                        <TableRow className='select-none border bg-muted/50 [&>:not(:last-child)]:border-r'>
+                        <TableRow className='bg-muted/50 border select-none [&>:not(:last-child)]:border-r'>
                             <TableHead />
                             <TableHead className='text-center'>Modal</TableHead>
                             <TableHead className='text-center'>Compatibility</TableHead>
@@ -248,7 +248,7 @@ export default function InvoiceDetailsPage() {
                                         <TableCell className='min-w-full text-center'>
                                             <CategoryIcon name={item.category} />
                                         </TableCell>
-                                        <TableCell className='text-nowrap text-center'>
+                                        <TableCell className='text-center text-nowrap'>
                                             {item.name}
                                         </TableCell>
                                         <TableCell className='max-w-xs text-center whitespace-normal'>
@@ -314,16 +314,16 @@ export default function InvoiceDetailsPage() {
                                                         {status === 'available'
                                                             ? 'Available'
                                                             : status === 'low'
-                                                                ? 'Low Stock'
-                                                                : 'Out of Stock'}
+                                                              ? 'Low Stock'
+                                                              : 'Out of Stock'}
                                                     </p>
                                                 }
                                             >
                                                 {status === 'available'
                                                     ? '✅'
                                                     : status === 'low'
-                                                        ? '🟡'
-                                                        : '❌'}
+                                                      ? '🟡'
+                                                      : '❌'}
                                             </Tooltip>
                                         </TableCell>
 
@@ -367,7 +367,7 @@ export default function InvoiceDetailsPage() {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={visibleColumns}>
-                                    <p className='text-center text-sm text-muted-foreground'>
+                                    <p className='text-muted-foreground text-center text-sm'>
                                         No products found.
                                     </p>
                                 </TableCell>

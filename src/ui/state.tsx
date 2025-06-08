@@ -8,7 +8,7 @@ import { cn } from '®lib/utils'
 
 export const NotFound = () => {
     return (
-        <div className='flex select-none flex-col items-center gap-4 rounded-xl p-4'>
+        <div className='flex flex-col items-center gap-4 rounded-xl p-4 select-none'>
             <Image
                 isBlurred
                 alt='Page not found.'
@@ -26,7 +26,7 @@ export const NotFound = () => {
 
 export const FolderEmpty = () => {
     return (
-        <div className='flex select-none flex-col items-center gap-4 rounded-xl p-4'>
+        <div className='flex flex-col items-center gap-4 rounded-xl p-4 select-none'>
             <Image
                 isBlurred
                 alt='This folder is empty.'
@@ -41,7 +41,7 @@ export const FolderEmpty = () => {
 
 export const SearchEmpty = ({ query }: { query: string }) => {
     return (
-        <div className='flex select-none flex-col items-center gap-4 rounded-xl p-4'>
+        <div className='flex flex-col items-center gap-4 rounded-xl p-4 select-none'>
             <Image
                 isBlurred
                 alt='Oops! The folder is empty.'
@@ -50,7 +50,7 @@ export const SearchEmpty = ({ query }: { query: string }) => {
                 src='/onedrive/empty_search_v2.svg'
                 width={200}
             />
-            <h4 className='max-w-full break-words text-center font-semibold sm:text-xl'>
+            <h4 className='max-w-full text-center font-semibold break-words sm:text-xl'>
                 We couldn&apos;t find any results for <span className='break-words'>{query}</span>
             </h4>
         </div>
@@ -59,10 +59,10 @@ export const SearchEmpty = ({ query }: { query: string }) => {
 
 export default function LimitExceeded() {
     return (
-        <div className='mx-auto w-full max-w-2xl rounded-lg bg-white px-6 py-8 text-center shadow-lg dark:bg-gray-800 sm:px-8 sm:py-10'>
+        <div className='mx-auto w-full max-w-2xl rounded-lg bg-white px-6 py-8 text-center shadow-lg sm:px-8 sm:py-10 dark:bg-gray-800'>
             <motion.div
                 animate={{ opacity: 1, y: 0 }}
-                className='mb-4 text-2xl font-extrabold text-gray-800 dark:text-gray-200 sm:text-5xl'
+                className='mb-4 text-2xl font-extrabold text-gray-800 sm:text-5xl dark:text-gray-200'
                 initial={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.6 }}
             >
@@ -71,7 +71,7 @@ export default function LimitExceeded() {
 
             <motion.p
                 animate={{ opacity: 1 }}
-                className='mb-6 text-base leading-relaxed text-gray-600 dark:text-gray-400 sm:text-lg'
+                className='mb-6 text-base leading-relaxed text-gray-600 sm:text-lg dark:text-gray-400'
                 initial={{ opacity: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
             >
@@ -112,7 +112,7 @@ export default function LimitExceeded() {
 
             <motion.div
                 animate={{ opacity: 1 }}
-                className='mt-8 text-xs text-gray-500 dark:text-gray-400 sm:text-sm'
+                className='mt-8 text-xs text-gray-500 sm:text-sm dark:text-gray-400'
                 initial={{ opacity: 0 }}
                 transition={{ duration: 1.2, delay: 0.6 }}
             >
@@ -138,31 +138,31 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
     return (
         <div
             className={cn(
-                'group flex w-full select-none flex-col items-center gap-6 rounded-xl border py-12 text-center transition-all duration-300',
+                'group flex w-full flex-col items-center gap-6 rounded-xl border py-12 text-center transition-all duration-300 select-none',
                 className
             )}
         >
             <div className='isolate flex justify-center gap-4'>
                 {icons.length === 3 ? (
                     <>
-                        <div className='relative left-3 top-1 grid size-14 -rotate-6 place-items-center rounded-lg bg-background shadow-md ring-1 ring-border transition duration-300 group-hover:-translate-x-4 group-hover:-translate-y-0.5'>
+                        <div className='bg-background ring-border relative top-1 left-3 grid size-14 -rotate-6 place-items-center rounded-lg shadow-md ring-1 transition duration-300 group-hover:-translate-x-4 group-hover:-translate-y-0.5'>
                             {React.createElement(icons[0], {
                                 className: 'w-7 h-7',
                             })}
                         </div>
-                        <div className='relative z-10 grid size-14 place-items-center rounded-lg bg-background shadow-md ring-1 ring-border transition duration-300 group-hover:-translate-y-1'>
+                        <div className='bg-background ring-border relative z-10 grid size-14 place-items-center rounded-lg shadow-md ring-1 transition duration-300 group-hover:-translate-y-1'>
                             {React.createElement(icons[1], {
                                 className: 'w-7 h-7',
                             })}
                         </div>
-                        <div className='relative right-3 top-1 grid size-14 rotate-6 place-items-center rounded-lg bg-background shadow-md ring-1 ring-border transition duration-300 group-hover:-translate-y-1 group-hover:translate-x-4'>
+                        <div className='bg-background ring-border relative top-1 right-3 grid size-14 rotate-6 place-items-center rounded-lg shadow-md ring-1 transition duration-300 group-hover:translate-x-4 group-hover:-translate-y-1'>
                             {React.createElement(icons[2], {
                                 className: 'w-7 h-7',
                             })}
                         </div>
                     </>
                 ) : (
-                    <div className='grid size-14 place-items-center rounded-lg bg-background shadow-md ring-1 ring-border transition duration-300'>
+                    <div className='bg-background ring-border grid size-14 place-items-center rounded-lg shadow-md ring-1 transition duration-300'>
                         {icons[0] &&
                             React.createElement(icons[0], {
                                 className: 'w-7 h-7',
@@ -172,7 +172,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
             </div>
             <div className='mt-1 space-y-1.5'>
                 <h4 className='text-xl font-extrabold'>{title}</h4>
-                <p className='text-sm text-muted-foreground'>{message}</p>
+                <p className='text-muted-foreground text-sm'>{message}</p>
             </div>
         </div>
     )

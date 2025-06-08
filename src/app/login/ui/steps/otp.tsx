@@ -101,11 +101,11 @@ export function StepOtp({
         >
             <DrawerHeader className='w-full py-2'>
                 <DrawerTitle className='text-xl font-semibold'>Enter Verification Code</DrawerTitle>
-                <DrawerDescription className='text-sm text-accent-foreground'>
+                <DrawerDescription className='text-accent-foreground text-sm'>
                     Enter the verification code sent to <br />
                     <strong>+91 {phone}</strong>{' '}
                     <button
-                        className='ml-1 font-medium text-danger hover:underline'
+                        className='text-danger ml-1 font-medium hover:underline'
                         type='button'
                         onClick={() => setStep('phone')}
                     >
@@ -138,18 +138,18 @@ export function StepOtp({
                 </Button>
 
                 {secondsLeft > 0 && (
-                    <p className='flex items-center gap-1 text-sm text-muted-foreground'>
+                    <p className='text-muted-foreground flex items-center gap-1 text-sm'>
                         <Timer size={18} />
                         <span className='tabular-nums'>{formatTime(secondsLeft)}</span>
                     </p>
                 )}
 
-                <div className='flex items-center gap-1 text-center text-xs text-muted-foreground'>
+                <div className='text-muted-foreground flex items-center gap-1 text-center text-xs'>
                     <p>Didn’t receive the OTP?</p>
                     <button
                         className={`font-medium ${
                             secondsLeft > 0
-                                ? 'cursor-not-allowed text-muted-foreground'
+                                ? 'text-muted-foreground cursor-not-allowed'
                                 : 'text-primary hover:underline'
                         }`}
                         disabled={secondsLeft > 0}

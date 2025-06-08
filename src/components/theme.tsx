@@ -24,9 +24,9 @@ function ThemeSwitcher() {
             classNames={{
                 base: 'rounded-full border',
                 tabContent: 'group-data-[selected=true]:text-none text-black dark:text-white',
-                tabList: 'gap-1 bg-background',
+                tabList: 'bg-background gap-1',
                 tab: 'px-2',
-                cursor: 'border-[0.5px] shadow-none group-data-[selected=true]:bg-default/20 dark:group-data-[selected=true]:bg-default/40',
+                cursor: 'group-data-[selected=true]:bg-default/20 dark:group-data-[selected=true]:bg-default/40 border-[0.5px] shadow-none',
             }}
             defaultSelectedKey='light'
             radius='full'

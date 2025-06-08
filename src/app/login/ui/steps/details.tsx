@@ -107,7 +107,7 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
         >
             <DrawerHeader className='w-full py-2'>
                 <DrawerTitle className='text-xl font-semibold'>Interdouce Yourself</DrawerTitle>
-                <DrawerDescription className='text-sm text-muted-foreground'>
+                <DrawerDescription className='text-muted-foreground text-sm'>
                     We need some more information to create your account.
                 </DrawerDescription>
             </DrawerHeader>
@@ -130,7 +130,7 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                     description={`Only lowercase letters, numbers, and underscores. ${username.length}/${MAX_LENGTH}`}
                     endContent={
                         checkingUsername ? (
-                            <Loader className='h-4 w-4 shrink-0 animate-spin text-muted-foreground' />
+                            <Loader className='text-muted-foreground h-4 w-4 shrink-0 animate-spin' />
                         ) : usernameChecked ? (
                             isUsernameUnique ? (
                                 <span>✅</span>

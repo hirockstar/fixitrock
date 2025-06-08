@@ -80,7 +80,9 @@ export function Navbar({
                 >
                     <ChevronLeft size={20} />
                 </Button>
-                <h1 className='truncate text-base font-bold sm:text-lg'>{formatTitle(lastSegment)}</h1>
+                <h1 className='truncate text-base font-bold sm:text-lg'>
+                    {formatTitle(lastSegment)}
+                </h1>
             </div>
 
             <Input

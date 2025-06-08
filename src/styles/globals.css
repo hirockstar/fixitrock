@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin '../../hero.ts';
 
 @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
@@ -113,7 +113,7 @@
 
 @layer base {
     * {
-        @apply scroll-smooth border-border outline-ring/50;
+        @apply border-border outline-ring/50 scroll-smooth;
     }
 
     html {
@@ -123,7 +123,7 @@
     }
 
     body {
-        @apply overscroll-none bg-background text-foreground;
+        @apply bg-background text-foreground overscroll-none;
     }
 
     html body[data-scroll-locked] {
@@ -577,7 +577,7 @@ svg {
 .mdx h4,
 .mdx h5,
 .mdx h6 {
-    @apply mb-4 mt-6 font-semibold leading-[1.25];
+    @apply mt-6 mb-4 leading-[1.25] font-semibold;
 }
 
 .mdx h1 {
@@ -603,7 +603,7 @@ svg {
 }
 
 .mdx h6 {
-    @apply text-xs text-muted-foreground sm:text-sm md:text-base;
+    @apply text-muted-foreground text-xs sm:text-sm md:text-base;
 }
 
 .mdx p {
@@ -1019,7 +1019,7 @@ svg {
     font-size: 85%;
     white-space: break-spaces;
     border-radius: 6px;
-    @apply border bg-default/10;
+    @apply bg-default/10 border;
 }
 
 .mdx code br,
@@ -1065,7 +1065,7 @@ svg {
     line-height: 1.45;
     color: var(--fgColor-default);
     border-radius: 6px;
-    @apply border bg-muted/50;
+    @apply bg-muted/50 border;
 }
 
 .mdx pre code,

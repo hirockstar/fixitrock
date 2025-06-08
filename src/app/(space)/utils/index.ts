@@ -53,10 +53,10 @@ export function getDriveItems({
     const filtered = !sanitizedQuery.length
         ? data
         : data.filter((item) => {
-            const tokens = sanitizeQuery(item.name)
+              const tokens = sanitizeQuery(item.name)
 
-            return sanitizedQuery.every((q) => tokens.some((t) => t.includes(q)))
-        })
+              return sanitizedQuery.every((q) => tokens.some((t) => t.includes(q)))
+          })
 
     const sorted = sortField ? sortItems(filtered, sortField, sortOrder) : filtered
 

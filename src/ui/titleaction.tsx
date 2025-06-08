@@ -23,7 +23,7 @@ export const TitleAction = ({ title, children, href, className }: TitleActionPro
                 <Button
                     passHref
                     as={Link}
-                    className='rounded-lg bg-default/30 backdrop-blur data-[hover=true]:bg-muted/50'
+                    className='bg-default/30 data-[hover=true]:bg-muted/50 rounded-lg backdrop-blur'
                     href={href}
                     size='sm'
                     onPress={() => router.push(href)}

@@ -119,7 +119,7 @@ function Steps() {
                 />
             )}
 
-            {error && <p className='select-none text-center text-sm text-red-500'>{error}</p>}
+            {error && <p className='text-center text-sm text-red-500 select-none'>{error}</p>}
         </>
     )
 }

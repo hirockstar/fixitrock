@@ -15,7 +15,7 @@ export default function Tabs() {
     return (
         <UiTabs
             classNames={{
-                base: 'sticky top-0 z-20 w-full border-b bg-background py-0.5',
+                base: 'bg-background sticky top-0 z-20 w-full border-b py-0.5',
             }}
             selectedKey={tab}
             variant='underlined'
