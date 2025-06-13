@@ -242,12 +242,12 @@ function CarouselDots({ className, ...props }: React.ComponentProps<'div'>) {
             {Array.from({ length: totalSlides }).map((_, index) => (
                 <Button
                     key={index}
-                    variant='ghost'
-                    size='icon'
                     className={cn(
                         'h-2 w-2 rounded-full transition-all',
                         selectedIndex === index ? 'bg-primary' : 'bg-muted'
                     )}
+                    size='icon'
+                    variant='ghost'
                     onClick={() => api?.scrollTo(index)}
                 />
             ))}
