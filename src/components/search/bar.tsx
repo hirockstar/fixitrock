@@ -1,10 +1,11 @@
 'use client'
 import { Button, Image, Input } from '@heroui/react'
-import { Search, User, X } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 
 import AnimatedSearch, { useOpen } from '®ui/farmer/search'
 import { useSearch } from '®tanstack/query'
+import { Profile } from '®app/[users]/ui/profile'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
@@ -42,7 +43,7 @@ const SearchBar = () => {
                                 <X size={18} />
                             </Button>
                         ) : (
-                            <User />
+                            <Profile />
                         )
                     }
                     placeholder='Work in progress . . . ' //What do you need?

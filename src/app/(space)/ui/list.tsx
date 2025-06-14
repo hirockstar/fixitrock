@@ -33,7 +33,7 @@ export function List({
     const onSelect = useSelectItem(setActive, setOpen)
 
     return (
-        <div className='flex flex-col gap-2 p-2'>
+        <div className='flex flex-col gap-2'>
             {data?.value.map((c) => {
                 const isFolderOrPreviewable = isFolder(c) || isPreviewable(c)
                 const href = isFolderOrPreviewable ? getHref(c) : undefined
@@ -66,7 +66,7 @@ export function List({
                                     onPress={() => onSelect(c)}
                                     {...cardProps}
                                 >
-                                    <CardBody className='flex flex-row items-center gap-2 p-3'>
+                                    <CardBody className='flex flex-row items-center gap-2 p-2'>
                                         <Thumbnail
                                             name={c?.name as string}
                                             src={c?.thumbnails?.[0]?.large?.url}

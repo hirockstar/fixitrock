@@ -66,7 +66,7 @@ export function Navbar({
             shouldHideOnScroll
             className={cn('', className)}
             classNames={{
-                wrapper: 'h-auto p-0 px-2 py-2',
+                wrapper: 'h-auto p-0 py-2',
             }}
             maxWidth='full'
         >

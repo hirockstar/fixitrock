@@ -25,11 +25,7 @@ export function LoginModal() {
 
     return isDesktop ? (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent
-                className='max-w-md'
-                onInteractOutside={(e) => e.preventDefault()}
-                onPointerDownOutside={(e) => e.preventDefault()}
-            >
+            <DialogContent className='sm:max-w-md'>
                 <Steps />
             </DialogContent>
         </Dialog>

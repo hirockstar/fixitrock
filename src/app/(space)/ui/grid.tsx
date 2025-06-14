@@ -33,7 +33,7 @@ export function Grid({
     const onSelect = useSelectItem(setActive, setOpen)
 
     return (
-        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 p-2'>
+        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4'>
             {data?.value.map((c) => {
                 const isFolderOrPreviewable = isFolder(c) || isPreviewable(c)
                 const href = isFolderOrPreviewable ? getHref(c) : undefined

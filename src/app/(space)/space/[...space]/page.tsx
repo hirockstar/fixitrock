@@ -52,7 +52,7 @@ export default async function Page({ params, searchParams }: PageProps) {
     }
 
     return (
-        <main className='flex flex-col'>
+        <main className='flex flex-col gap-2'>
             <Navbar
                 initialQuery={query}
                 initialSortField={sortField}
@@ -63,11 +63,11 @@ export default async function Page({ params, searchParams }: PageProps) {
             <Suspense
                 fallback={
                     layout === 'list' ? (
-                        <div className='flex flex-col gap-2 px-2'>
+                        <div className='flex flex-col gap-2'>
                             <ListSkeleton />
                         </div>
                     ) : (
-                        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-2 px-2 2xl:px-[2rem]'>
+                        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-2'>
                             <GridSkeleton />
                         </div>
                     )

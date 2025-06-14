@@ -4,7 +4,7 @@ import { Firmware, FRP, Quotes } from './showcase'
 
 export default function Page() {
     return (
-        <main className='mx-auto mb-10 space-y-10 p-1 py-4 sm:p-4 2xl:px-[10%]'>
+        <main className='mx-auto mb-10 space-y-10 p-2 2xl:p-[2rem]'>
             <Firmware />
             <FRP />
             <Quotes />
