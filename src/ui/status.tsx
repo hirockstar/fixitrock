@@ -11,7 +11,7 @@ import {
 } from '@heroui/react'
 import { FolderIcon, Gamepad2, HardDrive } from 'lucide-react'
 import { motion } from 'motion/react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { FaApple } from 'react-icons/fa'
 import { TbApps } from 'react-icons/tb'
 import { useRouter } from 'nextjs-toploader/app'
@@ -36,15 +36,16 @@ export function Status() {
     const stateClass = `size-1.5 rounded-full ${stateColors[storage.state]}`
     const stateLabel = `${storage.state.charAt(0).toUpperCase()}${storage.state.slice(1)}`
 
-    const Content = ({ setOpen }: { setOpen: (open: boolean) => void }) => (
+    const Content = React.memo(({ setOpen }: { setOpen: (open: boolean) => void }) => (
         <>
             <Drive data={storage} />
             {folders.map((folder) => (
                 <Folder key={folder.name} folder={folder} setOpen={setOpen} />
             ))}
         </>
-    )
-    const TriggerButton = (
+    ))
+
+    const TriggerButton = useMemo(() => (
         <Button
             className={`h-8 rounded-sm p-1 text-xs r${stateColors[storage.state]}`}
             startContent={<span aria-hidden='true' className={stateClass} />}
@@ -52,7 +53,7 @@ export function Status() {
         >
             {stateLabel}
         </Button>
-    )
+    ), [storage.state, stateClass, stateLabel])
 
     return (
         <>
@@ -77,7 +78,7 @@ export function Status() {
     )
 }
 
-function Drive({ data }: { data: StorageType }) {
+const Drive = React.memo(({ data }: { data: StorageType }) => {
     const usedSpace = data.total - data.remaining
     const usedPercentage = (usedSpace / data.total) * 100
 
@@ -120,7 +121,7 @@ function Drive({ data }: { data: StorageType }) {
             </Card>
         </motion.div>
     )
-}
+})
 
 const folderIcons = {
     Apple: {
@@ -140,7 +141,7 @@ const folderIcons = {
     },
 }
 
-function Folder({ folder, setOpen }: { folder: FolderType; setOpen: (open: boolean) => void }) {
+const Folder = React.memo(({ folder, setOpen }: { folder: FolderType; setOpen: (open: boolean) => void }) => {
     const route = useRouter()
     const {
         icon: IconComponent,
@@ -192,4 +193,4 @@ function Folder({ folder, setOpen }: { folder: FolderType; setOpen: (open: boole
             </Card>
         </motion.div>
     )
-}
+})
