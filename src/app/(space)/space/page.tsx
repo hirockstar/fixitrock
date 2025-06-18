@@ -1,11 +1,11 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 
+import { Grid } from '../ui'
+
 import { GridSkeleton } from '®ui/skeleton'
 import { siteConfig } from '®config/site'
 import { getChildren } from '®actions/drive'
-
-import { Grid } from '../ui'
 
 export default function SpacePage() {
     return (
@@ -24,7 +24,7 @@ export default function SpacePage() {
 }
 
 export const metadata: Metadata = {
-    title: 'Space ~ Mobile Repair Resources',
+    title: 'Space',
     description:
         'Your digital space for mobile repair tools, firmware files, and guides. Everything you need in one place.',
     keywords: [

@@ -6,16 +6,16 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®/ui/drawer'
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '®/ui/sheet'
-import { useAuth } from '®provider/auth'
+import { useSession } from '®provider/session'
 
 type PreviewProps = {
     open: boolean
     setOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export function Profile() {
+export default function Profile() {
     const [open, setOpen] = useState(false)
-    const { user } = useAuth()
+    const { user, signOut } = useSession()
     const router = useRouter()
 
     const handlePress = () => {
@@ -28,47 +28,47 @@ export function Profile() {
             <Button isIconOnly radius='full' size='sm' variant='flat' onPress={handlePress}>
                 <Image alt='Fix iT Rock' height={30} src='/icons/fixitrock.png' width={30} />
             </Button>
-            <SheetDrawer open={open} setOpen={setOpen} />
+            <SheetDrawer open={open} setOpen={setOpen} signOut={signOut} />
         </>
     )
 }
 
-const UserDetails = () => (
-    <User
-        avatarProps={{
-            src: '/icons/rdrive.png',
-            className: 'w-12 h-12',
-        }}
-        classNames={{
-            base: 'flex justify-start px-2 sm:px-0',
-            name: 'text-md',
-        }}
-        description='Software & Hardware'
-        name='Rock Star 💕'
-    />
-)
+const UserDetails = () => {
+    const { user } = useSession()
+
+    if (!user) return null
+
+    return (
+        <User
+            avatarProps={{
+                src: user.avatar_url || '/icons/fixitrock.png',
+                fallback: user.name,
+                className: 'w-12 h-12',
+            }}
+            classNames={{
+                base: 'flex justify-start px-2 sm:px-0',
+                name: 'text-md',
+            }}
+            description={user.username ? `@${user.username}` : ''}
+            name={user.name || 'User'}
+        />
+    )
+}
 
 const NavLinks = () => (
     <Listbox variant='flat'>
-        <ListboxItem
-            className='text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md p-2 text-sm'
-            onPress={() => {}}
-        >
-            <Image alt='Fix iT Rock' height={20} src='/icons/rdrive.png' width={20} />
-            <span>My Profile</span>
-        </ListboxItem>
-        <ListboxItem
-            className='text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md p-2 text-sm'
-            onPress={() => {}}
-        >
-            <Image alt='Fix iT Rock' height={20} src='/icons/rdrive.png' width={20} />
-            <span>Settings</span>
-        </ListboxItem>
+        <ListboxItem onPress={() => {}}>My Profile</ListboxItem>
+        <ListboxItem onPress={() => {}}>Settings</ListboxItem>
     </Listbox>
 )
 
-function SheetDrawer({ open, setOpen }: PreviewProps) {
+function SheetDrawer({ open, setOpen, signOut }: PreviewProps & { signOut: () => Promise<void> }) {
     const isDesktop = useMediaQuery('(min-width: 640px)')
+
+    const handleSignOut = async () => {
+        setOpen(false)
+        await signOut()
+    }
 
     return (
         <>
@@ -83,7 +83,10 @@ function SheetDrawer({ open, setOpen }: PreviewProps) {
                         <ScrollShadow hideScrollBar className='flex-1 lg:pr-3'>
                             <NavLinks />
                         </ScrollShadow>
-                        <SheetFooter className='flex border-t p-2'>
+                        <SheetFooter className='flex flex-col gap-2 border-t p-2'>
+                            <Button fullWidth color='danger' onPress={handleSignOut}>
+                                Logout
+                            </Button>
                             <p className='text-muted-foreground text-start text-xs'>
                                 Fix it Rock © 2025
                             </p>
@@ -98,6 +101,9 @@ function SheetDrawer({ open, setOpen }: PreviewProps) {
                         <div className='w-full space-y-4'>
                             <UserDetails />
                             <NavLinks />
+                            <Button fullWidth color='danger' onPress={handleSignOut}>
+                                Logout
+                            </Button>
                         </div>
                     </DrawerContent>
                 </Drawer>

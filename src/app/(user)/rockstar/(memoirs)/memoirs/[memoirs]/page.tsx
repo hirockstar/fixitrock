@@ -6,11 +6,11 @@ import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { FaPlay } from 'react-icons/fa'
 
-import { useMemoirs } from '®hooks/tanstack/query'
-import { formatDuration } from '®lib/utils'
-
 import { Name } from '../../ui/utils'
 import { Preview } from '../../ui/preview'
+
+import { useMemoirs } from '®hooks/tanstack/query'
+import { formatDuration } from '®lib/utils'
 
 export default function Page() {
     const { memoirs } = useParams<{ memoirs: string }>()
@@ -116,7 +116,7 @@ const Skeleton = ({ length = 21 }: { length?: number }) => {
                         wrapper: 'aspect-square min-h-24 min-w-full md:min-h-52',
                     }}
                     isLoading={true}
-                    src='https://rdrive-ui.vercel.app/icons/rdrive.png'
+                    src='https://rdrive-ui.vercel.app/icons/fixitrock.png'
                 />
             ))}
         </>

@@ -66,7 +66,7 @@ const Skeleton = ({ length = 15 }: { length?: number }) => {
                     className='h-[240px] w-full object-cover object-center 2xl:h-[220px]'
                     classNames={{ wrapper: 'max-w-full!' }}
                     isLoading={true}
-                    src='https://rdrive-ui.vercel.app/icons/rdrive.png'
+                    src='https://rdrive-ui.vercel.app/icons/fixitrock.png'
                 />
             ))}
         </>

@@ -4,14 +4,14 @@ import { useState } from 'react'
 import { ConfirmationResult } from 'firebase/auth'
 import { usePathname, useRouter } from 'next/navigation'
 
-import { UserDetails } from '®app/login/types'
-import { useMediaQuery } from '®hooks/useMediaQuery'
-import { Drawer, DrawerContent } from '®ui/drawer'
-import { Dialog, DialogContent } from '®ui/dialog'
-
 import { LoginStep } from '../types'
 
 import { StepDetails, StepOtp, StepPhone } from './steps'
+
+import { User } from '®app/login/types'
+import { useMediaQuery } from '®hooks/useMediaQuery'
+import { Drawer, DrawerContent } from '®ui/drawer'
+import { Dialog, DialogContent } from '®ui/dialog'
 
 export function LoginModal() {
     const router = useRouter()
@@ -51,9 +51,9 @@ function Steps() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
-    const [user, setUserState] = useState<Partial<UserDetails>>({})
+    const [user, setUserState] = useState<Partial<User>>({})
 
-    const setUser = (val: Partial<UserDetails>) => {
+    const setUser = (val: Partial<User>) => {
         setUserState((prev) => ({ ...prev, ...val }))
     }
 
@@ -115,7 +115,7 @@ function Steps() {
                 />
             )}
 
-            {error && <p className='text-center text-sm text-red-500 select-none'>{error}</p>}
+            {error && <p className='text-center text-sm text-red-500'>{error}</p>}
         </>
     )
 }

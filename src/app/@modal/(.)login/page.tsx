@@ -1,14 +1,11 @@
-'use client'
-
 import { redirect } from 'next/navigation'
 
+import { userSession } from '®actions/auth'
 import { LoginModal } from '®app/login/ui/modal'
-import { useAuth } from '®provider/auth'
 
-export default function Modal() {
-    const { user, loading } = useAuth()
+export default async function LoginModalPage() {
+    const user = await userSession()
 
-    if (loading) return
     if (user) {
         redirect(`/`)
     }

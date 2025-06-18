@@ -4,15 +4,14 @@ import { Button, Form, Input, Radio, RadioGroup } from '@heroui/react'
 import { AtSign, Loader, UserRound } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import { checkUsernameAvailable, verifyAndSaveUser } from '®actions/auth'
+import { checkUsername, createUser } from '®actions/auth'
 import { useDebounce } from '®app/login/hooks/useDebounce'
-import { UserDetails } from '®app/login/types'
-import { firebaseAuth } from '®firebase/client'
+import { User } from '®app/login/types'
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
 
 interface StepDetailsProps {
-    user: Partial<UserDetails>
-    setUser: (val: Partial<UserDetails>) => void
+    user: Partial<User>
+    setUser: (val: Partial<User>) => void
     loading: boolean
     setLoading: (val: boolean) => void
     setError: (val: string) => void
@@ -51,7 +50,7 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
 
         const check = async () => {
             setCheckingUsername(true)
-            const available = await checkUsernameAvailable(debouncedUsername)
+            const available = await checkUsername(debouncedUsername)
 
             setIsUsernameUnique(available)
             setUsernameChecked(true)
@@ -73,14 +72,15 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
         setLoading(true)
 
         try {
-            const authUser = firebaseAuth.currentUser
-
-            if (!authUser) throw new Error('User not logged in')
-            const token = await authUser.getIdToken(true)
-
-            if (!token) throw new Error('Token missing')
-
-            const res = await verifyAndSaveUser(token, user as UserDetails)
+            const res = await createUser({
+                name: user.name as string,
+                username: user.username as string,
+                gender: user.gender as string,
+                dob: user.dob ?? null,
+                role: (user.role as 'user' | 'shopkeeper') ?? 'user',
+                team_id: user.team_id ?? null,
+                avatar_url: user.avatar_url ?? null,
+            })
 
             if (res?.error) throw new Error(res.error)
 

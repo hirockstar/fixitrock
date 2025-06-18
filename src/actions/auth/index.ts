@@ -1,9 +1,4 @@
-import {
-    getUserSession,
-    checkUsernameAvailable,
-    revokeUserSession,
-    verifyAndSaveUser,
-} from './auth'
+import { userSession, checkUsername, startSession, createUser, signOut } from './auth'
 import { getUser } from './getUser'
 
-export { verifyAndSaveUser, getUserSession, revokeUserSession, checkUsernameAvailable, getUser }
+export { userSession, checkUsername, getUser, startSession, createUser, signOut }

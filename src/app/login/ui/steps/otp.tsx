@@ -8,7 +8,7 @@ import { InputOtp } from '@heroui/input-otp'
 import { Dispatch, SetStateAction } from 'react'
 import { Timer } from 'lucide-react'
 
-import { verifyAndSaveUser } from '®actions/auth'
+import { startSession } from '®actions/auth'
 import { LoginStep } from '®app/login/types'
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
 
@@ -61,9 +61,7 @@ export function StepOtp({
             const result = await confirmationResult.confirm(otp)
             const token = await result.user.getIdToken(true)
 
-            document.cookie = `firebase_id_token=${token}; path=/`
-
-            const res = await verifyAndSaveUser(token)
+            const res = await startSession(token)
 
             if (res?.error) throw new Error(res.error)
 
@@ -115,6 +113,7 @@ export function StepOtp({
             </DrawerHeader>
 
             <InputOtp
+                autoFocus
                 autoSave=''
                 className='mx-auto flex w-full items-center justify-center gap-5'
                 classNames={{
@@ -125,6 +124,8 @@ export function StepOtp({
                 variant='underlined'
                 onValueChange={setOtp}
             />
+
+            <div id='recaptcha-container' style={{ margin: '1rem 0' }} />
 
             <DrawerFooter className='flex w-full flex-col items-center space-y-2'>
                 <Button
@@ -145,7 +146,7 @@ export function StepOtp({
                 )}
 
                 <div className='text-muted-foreground flex items-center gap-1 text-center text-xs'>
-                    <p>Didn’t receive the OTP?</p>
+                    <p>Didn't receive the OTP?</p>
                     <button
                         className={`font-medium ${
                             secondsLeft > 0
