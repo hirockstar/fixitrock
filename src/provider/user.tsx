@@ -69,31 +69,50 @@ export function UserProvider({ children }: { children: ReactNode }) {
         ;(async () => {
             try {
                 const sessionUser = await userSession()
-                setUser(sessionUser)
-                setLoading(false)
-                setSessionExpired(false)
-                // Try to get Firebase ID token if logged in
-                try {
-                    const fbUser = firebaseAuth.currentUser
-                    if (fbUser) {
-                        const token = await fbUser.getIdToken()
-                        setIdToken(token)
-                    } else {
-                        setIdToken(null)
+                if (!sessionUser) {
+                    // Don't set sessionExpired if we're on a NotFound page
+                    const isNotFoundPage = window.location.pathname.includes('/@') && 
+                        !document.querySelector('main')  // NotFound pages typically don't have main content
+                    
+                    if (!isNotFoundPage) {
+                        setSessionExpired(true)
                     }
-                } catch (err) {
+                    setUser(null)
+                    setLoading(false)
                     setIdToken(null)
-                    if (process.env.NODE_ENV === 'development') {
-                        console.error('Error getting Firebase ID token:', err)
+                } else {
+                    setUser(sessionUser)
+                    setLoading(false)
+                    setSessionExpired(false)
+                    // Try to get Firebase ID token if logged in
+                    try {
+                        const fbUser = firebaseAuth.currentUser
+                        if (fbUser) {
+                            const token = await fbUser.getIdToken()
+                            setIdToken(token)
+                        } else {
+                            setIdToken(null)
+                        }
+                    } catch (err) {
+                        setIdToken(null)
+                        if (process.env.NODE_ENV === 'development') {
+                            console.error('Error getting Firebase ID token:', err)
+                        }
                     }
                 }
             } catch (err) {
-                setSessionExpired(true)
+                // Don't set sessionExpired if we're on a NotFound page
+                const isNotFoundPage = window.location.pathname.includes('/@') && 
+                    !document.querySelector('main')  // NotFound pages typically don't have main content
+                
+                if (!isNotFoundPage) {
+                    setSessionExpired(true)
+                }
                 setUser(null)
                 setLoading(false)
                 setIdToken(null)
                 if (process.env.NODE_ENV === 'development') {
-                    console.error('Session expired or error in userSession:', err)
+                    console.error('Error in userSession:', err)
                 }
             }
         })()
