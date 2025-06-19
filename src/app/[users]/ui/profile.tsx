@@ -1,7 +1,8 @@
 'use client'
-import { Button, Image, Listbox, ListboxItem, ScrollShadow, User } from '@heroui/react'
+import { Button, Image, ScrollShadow, User, Skeleton } from '@heroui/react'
 import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, useState } from 'react'
+import { FaUser } from 'react-icons/fa'
 
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®/ui/drawer'
@@ -16,7 +17,7 @@ type PreviewProps = {
 
 export default function Profile() {
     const [open, setOpen] = useState(false)
-    const { user, signOut } = useUser()
+    const { user, loading, signOut } = useUser()
     const router = useRouter()
 
     const handlePress = () => {
@@ -27,7 +28,18 @@ export default function Profile() {
     return (
         <>
             <Button isIconOnly radius='full' size='sm' variant='flat' onPress={handlePress}>
-                <Image alt='Fix iT Rock' height={30} src='/icons/fixitrock.png' width={30} />
+                {loading ? (
+                    <Skeleton className='rounded-full size-20' />
+                ) : user ? (
+                    <Image
+                        alt={user.name}
+                        height={30}
+                        src={user.avatar_url || 'https://cdn3d.iconscout.com/3d/premium/thumb/boy-7215504-5873316.png'}
+                        width={30}
+                    />
+                ) : (
+                    <FaUser aria-label='Login' size={18} />
+                )}
             </Button>
             <SheetDrawer open={open} setOpen={setOpen} signOut={signOut} />
         </>
@@ -42,7 +54,7 @@ const UserDetails = () => {
     return (
         <User
             avatarProps={{
-                src: user.avatar_url || '/icons/fixitrock.png',
+                src: user.avatar_url || 'https://cdn3d.iconscout.com/3d/premium/thumb/boy-7215504-5873316.png',
                 fallback: user.name,
                 className: 'w-12 h-12',
             }}

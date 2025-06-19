@@ -48,7 +48,7 @@ function DrawerContent({
             <DrawerOverlay />
             <DrawerPrimitive.Content
                 className={cn(
-                    'group/drawer-content bg-background bg-content1 fixed z-50 flex h-auto flex-col rounded-t-3xl focus:outline-none dark:bg-[#0a0a0a]',
+                    'group/drawer-content bg-background fixed z-50 flex h-auto flex-col rounded-t-3xl focus:outline-none dark:bg-[#0a0a0a]',
                     'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b',
                     'min-h-min data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t',
                     'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-sm',
@@ -58,7 +58,7 @@ function DrawerContent({
                 {...props}
             >
                 {showbar && (
-                    <div className='bg-default mx-auto mt-2 mb-3 h-1 w-[70px] rounded-full' />
+                    <div className='bg-default mx-auto mt-2.5 mb-4 h-1 w-[80px] rounded-full' />
                 )}
                 <div className={cn('flex flex-1 flex-col', className)}>{children}</div>
             </DrawerPrimitive.Content>

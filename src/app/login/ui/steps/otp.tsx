@@ -115,17 +115,14 @@ export function StepOtp({
             <InputOtp
                 autoFocus
                 autoSave=''
-                className='mx-auto flex w-full items-center justify-center gap-5'
+                className='mx-auto flex w-full items-center justify-center'
                 classNames={{
-                    segmentWrapper: 'gap-x-4',
+                    segmentWrapper: 'gap-x-5',
                 }}
                 length={OTP_LENGTH}
                 value={otp}
-                variant='underlined'
                 onValueChange={setOtp}
             />
-
-            <div id='recaptcha-container' style={{ margin: '1rem 0' }} />
 
             <DrawerFooter className='flex w-full flex-col items-center space-y-2'>
                 <Button
