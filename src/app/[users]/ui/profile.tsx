@@ -6,7 +6,8 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { useMediaQuery } from '®/hooks/useMediaQuery'
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®/ui/drawer'
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '®/ui/sheet'
-import { useSession } from '®provider/session'
+import NavLinks from '®app/login/ui/navlinks'
+import { useUser } from '®provider/user'
 
 type PreviewProps = {
     open: boolean
@@ -15,7 +16,7 @@ type PreviewProps = {
 
 export default function Profile() {
     const [open, setOpen] = useState(false)
-    const { user, signOut } = useSession()
+    const { user, signOut } = useUser()
     const router = useRouter()
 
     const handlePress = () => {
@@ -34,7 +35,7 @@ export default function Profile() {
 }
 
 const UserDetails = () => {
-    const { user } = useSession()
+    const { user } = useUser()
 
     if (!user) return null
 
@@ -55,12 +56,6 @@ const UserDetails = () => {
     )
 }
 
-const NavLinks = () => (
-    <Listbox variant='flat'>
-        <ListboxItem onPress={() => {}}>My Profile</ListboxItem>
-        <ListboxItem onPress={() => {}}>Settings</ListboxItem>
-    </Listbox>
-)
 
 function SheetDrawer({ open, setOpen, signOut }: PreviewProps & { signOut: () => Promise<void> }) {
     const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -68,6 +63,10 @@ function SheetDrawer({ open, setOpen, signOut }: PreviewProps & { signOut: () =>
     const handleSignOut = async () => {
         setOpen(false)
         await signOut()
+    }
+
+    const handleClose = () => {
+        setOpen(false)
     }
 
     return (
@@ -81,7 +80,7 @@ function SheetDrawer({ open, setOpen, signOut }: PreviewProps & { signOut: () =>
                             </SheetTitle>
                         </SheetHeader>
                         <ScrollShadow hideScrollBar className='flex-1 lg:pr-3'>
-                            <NavLinks />
+                            <NavLinks onClose={handleClose} />
                         </ScrollShadow>
                         <SheetFooter className='flex flex-col gap-2 border-t p-2'>
                             <Button fullWidth color='danger' onPress={handleSignOut}>
@@ -100,7 +99,7 @@ function SheetDrawer({ open, setOpen, signOut }: PreviewProps & { signOut: () =>
                         <DrawerDescription aria-hidden />
                         <div className='w-full space-y-4'>
                             <UserDetails />
-                            <NavLinks />
+                            <NavLinks onClose={handleClose} />
                             <Button fullWidth color='danger' onPress={handleSignOut}>
                                 Logout
                             </Button>

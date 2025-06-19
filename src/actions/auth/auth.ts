@@ -74,7 +74,6 @@ export async function createUser(user: {
     username: string
     gender: string
     dob?: string | null
-    role?: 'user' | 'shopkeeper'
     team_id?: number | null
     avatar_url?: string | null
 }) {
@@ -101,7 +100,6 @@ export async function createUser(user: {
                 username: user.username,
                 gender: user.gender,
                 dob: user.dob,
-                role: user.role || 'user',
                 team_id: user.team_id,
                 avatar_url: user.avatar_url,
                 active: true,

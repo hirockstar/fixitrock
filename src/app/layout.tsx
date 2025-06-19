@@ -7,7 +7,7 @@ import '../styles/globals.css'
 import { cn } from '®lib/utils'
 import SearchBar from '®components/search/bar'
 import { fontVariables } from '®lib/fonts'
-import { SessionProvider } from '®provider/session'
+import { UserProvider } from '®provider/user'
 
 export default function RootLayout({
     children,
@@ -32,7 +32,7 @@ export default function RootLayout({
                 />
             </head>
             <body className={cn('bg-background min-h-svh font-sans antialiased', fontVariables)}>
-                <SessionProvider>
+                <UserProvider>
                     <Providers>
                         <div className='bg-background relative flex min-h-screen flex-col'>
                             <div className='flex-1 overflow-clip'>{children}</div>
@@ -41,7 +41,7 @@ export default function RootLayout({
                             <Footer />
                         </div>
                     </Providers>
-                </SessionProvider>
+                </UserProvider>
             </body>
         </html>
     )
