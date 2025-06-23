@@ -14,6 +14,7 @@ import { GridSkeleton } from '®ui/skeleton'
 import { Thumbnail } from '®ui'
 import { Menu } from '®app/(space)/ui'
 import { isFolder, isPreviewable } from '®lib/utils'
+import { useKeyboardNavigation } from '®hooks'
 
 import { useSelectItem } from '../hooks'
 import { getHref } from '../utils'
@@ -31,10 +32,19 @@ export function Grid({
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
     const onSelect = useSelectItem(setActive, setOpen)
+    const { selectedIndex, listRef, getItemRef } = useKeyboardNavigation({
+        length: data?.value.length ?? 0,
+        mode: 'grid',
+        onSelect: (index) => {
+            const c = data?.value?.[index]
+
+            if (c) onSelect(c)
+        },
+    })
 
     return (
-        <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4'>
-            {data?.value.map((c) => {
+        <div ref={listRef} className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4'>
+            {data?.value.map((c, index) => {
                 const isFolderOrPreviewable = isFolder(c) || isPreviewable(c)
                 const href = isFolderOrPreviewable ? getHref(c) : undefined
                 const cardProps = href ? { as: Link, href } : {}
@@ -53,13 +63,15 @@ export function Grid({
                     >
                         <ContextMenuTrigger onClick={() => onSelect(c)}>
                             <AnimatedDiv
+                                ref={getItemRef(index)}
                                 className='h-full w-full'
                                 mobileVariants={BlogCardAnimation}
                                 variants={fromLeftVariant}
                             >
                                 <Card
                                     aria-label={c?.name}
-                                    className={`h-full w-full rounded-xl border bg-transparent transition-all duration-200 select-none hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] ${focus?.name === c.name ? 'bg-teal-400/20 ring-2 ring-teal-400/50 dark:bg-teal-400/25' : ''}`}
+                                    className={`h-full w-full rounded-xl border bg-transparent transition-all duration-200 select-none hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] ${selectedIndex === index ? 'dark:border-bg-teal-400/25 border-teal-400/20' : focus?.name === c.name ? 'bg-teal-400/20 ring-2 ring-teal-400/50 dark:bg-teal-400/25' : ''}`}
+                                    data-index={index}
                                     shadow='none'
                                     onPress={() => onSelect(c)}
                                     {...cardProps}

@@ -61,7 +61,7 @@
         "eslint-plugin-unused-imports": "^4",
         "firebase": "^11",
         "firebase-admin": "^13",
-        "framer-motion": "11.5.6",
+        "framer-motion": "^12",
         "geist": "^1",
         "gray-matter": "^4",
         "input-otp": "^1.4.2",

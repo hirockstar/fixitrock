@@ -3,7 +3,7 @@
 import { Card, CardBody } from '@heroui/react'
 import React from 'react'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { CornerDownLeft } from 'lucide-react'
 
 import { BlogCardAnimation, fromTopVariant } from '®lib/FramerMotionVariants'
 import { formatBytes, formatCount, formatDateTime, isFolder, isPreviewable } from '®lib/utils'
@@ -13,6 +13,7 @@ import AnimatedDiv from '®ui/farmer/div'
 import { ListSkeleton } from '®ui/skeleton'
 import { Thumbnail } from '®ui'
 import { Menu } from '®app/(space)/ui'
+import { useKeyboardNavigation } from '®hooks'
 
 import { getHref } from '../utils'
 import { useSelectItem } from '../hooks'
@@ -31,10 +32,19 @@ export function List({
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
     const onSelect = useSelectItem(setActive, setOpen)
+    const { selectedIndex, listRef } = useKeyboardNavigation({
+        length: data?.value.length ?? 0,
+        mode: 'list',
+        onSelect: (index) => {
+            const c = data?.value?.[index]
+
+            if (c) onSelect(c)
+        },
+    })
 
     return (
-        <div className='flex flex-col gap-2'>
-            {data?.value.map((c) => {
+        <div ref={listRef} className='flex flex-col gap-2'>
+            {data?.value.map((c, index) => {
                 const isFolderOrPreviewable = isFolder(c) || isPreviewable(c)
                 const href = isFolderOrPreviewable ? getHref(c) : undefined
                 const cardProps = href ? { as: Link, href } : {}
@@ -61,10 +71,11 @@ export function List({
                                     key={c.id}
                                     isHoverable
                                     aria-label={c?.name}
-                                    className={`group data-[hover=true]:bg-muted/30 w-full rounded-xl border bg-transparent p-0 transition-all duration-200 select-none active:scale-[0.98] dark:data-[hover=true]:bg-[#0a0a0a] ${focus?.name === c.name ? 'bg-teal-400/20 ring-2 ring-teal-400/50 dark:bg-teal-400/25' : ''}`}
+                                    className={`group data-[hover=true]:bg-muted/30 w-full rounded-xl border bg-transparent p-0 transition-all duration-200 select-none active:scale-[0.98] dark:data-[hover=true]:bg-[#0a0a0a] ${selectedIndex === index ? 'dark:border-bg-teal-400/25 border-teal-400/20' : focus?.name === c.name ? 'bg-teal-400/20 ring-2 ring-teal-400/50 dark:bg-teal-400/25' : ''}`}
                                     shadow='none'
                                     onPress={() => onSelect(c)}
                                     {...cardProps}
+                                    data-index={index}
                                 >
                                     <CardBody className='flex flex-row items-center gap-2 p-2'>
                                         <Thumbnail
@@ -117,12 +128,12 @@ export function List({
                                                     ))}
                                             </div>
                                         </div>
-                                        <div className='flex-shrink-0 opacity-0 transition-opacity group-hover:opacity-100'>
-                                            <ArrowRight
-                                                className='text-muted-foreground'
+                                        {selectedIndex === index && (
+                                            <CornerDownLeft
+                                                className='text-muted-foreground opacity-70'
                                                 size={18}
                                             />
-                                        </div>
+                                        )}
                                     </CardBody>
                                 </Card>
                             </AnimatedDiv>
