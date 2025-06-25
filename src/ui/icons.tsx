@@ -566,7 +566,7 @@ export function SortType(props: SVGProps<SVGSVGElement>) {
         >
             <path
                 clipRule='evenodd'
-                d='M6 7c0-1.886 0-2.828.586-3.414S8.114 3 10 3h4c1.886 0 2.828 0 3.414.586S18 5.114 18 7v3h-3.172a1 1 0 0 1-.707-.293L12.293 7.88A3 3 0 0 0 10.172 7zm0 2c-.932 0-1.398 0-1.765.152a2 2 0 0 0-1.083 1.083C3 10.602 3 11.068 3 12v5.8c0 1.12 0 1.68.218 2.108a2 2 0 0 0 .874.874C4.52 21 5.08 21 6.2 21h11.6c1.12 0 1.68 0 2.108-.218a2 2 0 0 0 .874-.874C21 19.48 21 18.92 21 17.8v-2.6c0-1.12 0-1.68-.218-2.108a2 2 0 0 0-.874-.874c-.402-.205-.92-.217-1.908-.218h-3.172a3 3 0 0 1-2.12-.879l-1.83-1.828A1 1 0 0 0 10.173 9z'
+                d='M6 7c0-1.886 0-2.828.586-3.414S8.114 3 10 3h4c1.886 0 2.828 0 3.414.586S18 5.114 18 7v3h-3.172a1 1 0 0 1-.707-.293L12.293 7.88A3 3 0 0 0 10.172 7zm0 2c-.932 0-1.398 0-1.765.152a2 2 0 0 0-1.083 1.083C3 10.602 3 11.068 3 12v5.8c0 1.12 0 1.68.218 2.108a2 2 0 0 0 .874.874C4.52 21 5.08 21 6.2 21h11.6c1.12 0 1.68 0 2.108-.218a2 2 0 0 0 .874-.874c.402-.205.62-.72.632-1.708.633h-3.172a3 3 0 0 1-2.12-.879l-1.83-1.828A1 1 0 0 0 10.173 9z'
                 fill='currentColor'
                 fillRule='evenodd'
             />
@@ -595,29 +595,95 @@ export function Dots(props: SVGProps<SVGSVGElement>) {
     )
 }
 
-// export function Share(props: SVGProps<SVGSVGElement>) {
-//     return (
-//         <svg
-//             height={20}
-//             viewBox='0 0 24 24'
-//             width={20}
-//             xmlns='http://www.w3.org/2000/svg'
-//             {...props}
-//         >
-//             <g
-//                 color='currentColor'
-//                 fill='none'
-//                 stroke='currentColor'
-//                 strokeLinecap='round'
-//                 strokeLinejoin='round'
-//                 strokeWidth={1.5}
-//             >
-//                 <path d='M11.026 3a9.028 9.028 0 0 0 1.003 18A9.03 9.03 0 0 0 21 13' />
-//                 <path d='m21 6.025l-1-.002c-3.737-.01-5.605-.015-6.918.93c-.437.313-.82.695-1.135 1.131C11 9.395 11 11.264 11 15m10-8.975a.7.7 0 0 0-.175-.472C20.06 4.647 18.071 3 18.071 3M21 6.025a.7.7 0 0 1-.174.422C20.06 7.353 18.07 9 18.07 9' />
-//             </g>
-//         </svg>
-//     )
-// }
+export function VerifiedBlue(props: SVGProps<SVGSVGElement>) {
+    return (
+        <span
+            className='verified-badge-animated'
+            style={{ display: 'inline-block', lineHeight: 0, position: 'relative' }}
+        >
+            <svg
+                fill='none'
+                height='24'
+                style={{ display: 'block' }}
+                viewBox='0 0 64 64'
+                width='24'
+                xmlns='http://www.w3.org/2000/svg'
+                {...props}
+            >
+                {/* Badge shape with blue-cyan gradient and soft white border */}
+                <path
+                    d='M32 2L58 16V36C58 48 45 58 32 62C19 58 6 48 6 36V16L32 2Z'
+                    fill='url(#blueCyanGrad)'
+                    filter='url(#badgeShadow)'
+                    stroke='white'
+                    strokeWidth='3'
+                />
+                {/* Inner glow */}
+                <path
+                    d='M32 6L54 18V35C54 45 43 54 32 58C21 54 10 45 10 35V18L32 6Z'
+                    fill='url(#innerBlueGlow)'
+                />
+                {/* Large, bold checkmark */}
+                <path
+                    d='M22 36L31 45L46 25'
+                    stroke='white'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='5'
+                />
+                {/* Animated shine sweep */}
+                <rect
+                    fill='url(#shineGrad)'
+                    height='44'
+                    opacity='0.7'
+                    rx='22'
+                    width='44'
+                    x='10'
+                    y='10'
+                >
+                    <animate
+                        attributeName='x'
+                        dur='2.2s'
+                        from='-44'
+                        repeatCount='indefinite'
+                        to='64'
+                    />
+                </rect>
+                <defs>
+                    <linearGradient
+                        gradientUnits='userSpaceOnUse'
+                        id='blueCyanGrad'
+                        x1='0'
+                        x2='64'
+                        y1='0'
+                        y2='64'
+                    >
+                        <stop stopColor='#2196F3' />
+                        <stop offset='1' stopColor='#00E5FF' />
+                    </linearGradient>
+                    <radialGradient cx='0.5' cy='0.5' id='innerBlueGlow' r='0.7'>
+                        <stop offset='0%' stopColor='#BBDEFB' stopOpacity='0.7' />
+                        <stop offset='100%' stopColor='transparent' />
+                    </radialGradient>
+                    <linearGradient id='shineGrad' x1='0' x2='1' y1='0' y2='1'>
+                        <stop offset='0%' stopColor='white' stopOpacity='0.0' />
+                        <stop offset='50%' stopColor='white' stopOpacity='0.25' />
+                        <stop offset='100%' stopColor='white' stopOpacity='0.0' />
+                    </linearGradient>
+                    <filter height='120%' id='badgeShadow' width='120%' x='-10%' y='-10%'>
+                        <feDropShadow
+                            dx='0'
+                            dy='2'
+                            floodColor='#1976D2'
+                            floodOpacity='0.18'
+                            stdDeviation='2'
+                        />
+                    </filter>
+                </defs>
+            </svg>
+        </span>
+    )
+}
 
 export function CopyLink(props: SVGProps<SVGSVGElement>) {
     return (
@@ -684,7 +750,7 @@ export function Rename(props: SVGProps<SVGSVGElement>) {
             {...props}
         >
             <path
-                d='M8.5 2a.5.5 0 0 0 0 1h1v14h-1a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-1V3h1a.5.5 0 0 0 0-1zm-4 2h4v1h-4A1.5 1.5 0 0 0 3 6.5v7A1.5 1.5 0 0 0 4.5 15h4v1h-4A2.5 2.5 0 0 1 2 13.5v-7A2.5 2.5 0 0 1 4.5 4m11 11h-4v1h4a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 15.5 4h-4v1h4A1.5 1.5 0 0 1 17 6.5v7a1.5 1.5 0 0 1-1.5 1.5'
+                d='M8.5 2a.5.5 0 0 0 0 1h1v14h-1a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-1V3h1a.5.5 0 0 0 0-1zm-4 2h4v1h-4A1.5 1.5 0 0 0 3 6.5v7A1.5 1.5 0 0 0 4.5 15h4v1h-4A2.5 2.5 0 0 1 2 13.5v-7A2.5 2.5 0 0 1 4.5 4m11 11h-4v1h4A2.5 2.5 0 0 0 21 16.5v-7A2.5 2.5 0 0 0 18.5 7h-4v1h4A1.5 1.5 0 0 1 20 9.5v7a1.5 1.5 0 0 1-1.5 1.5'
                 fill='currentColor'
             />
         </svg>

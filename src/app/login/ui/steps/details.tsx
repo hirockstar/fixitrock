@@ -77,8 +77,6 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                 username: user.username as string,
                 gender: user.gender as string,
                 dob: user.dob ?? null,
-                team_id: user.team_id ?? null,
-                avatar_url: user.avatar_url ?? null,
             })
 
             if (res?.error) throw new Error(res.error)

@@ -1,7 +1,9 @@
 'use server'
 import { cache } from 'react'
-import { NavLink } from "®app/login/types"
-import { createClient } from "®supabase/server"
+
+import { NavLink } from '®app/login/types'
+import { logWarning } from '®lib/utils'
+import { createClient } from '®supabase/server'
 
 export const navLinks = cache(async (role: string): Promise<NavLink[]> => {
     try {
@@ -14,13 +16,15 @@ export const navLinks = cache(async (role: string): Promise<NavLink[]> => {
             .order('sort_order', { ascending: true })
 
         if (error) {
-            console.error(`[Supabase nav_links error]`, error)
+            logWarning(`[Supabase nav_links error]`, error)
             throw error
         }
+
         // Ensure only plain objects are returned
         return data ? JSON.parse(JSON.stringify(data)) : []
     } catch (err) {
-        console.error(`[navLinks error]`, err)
+        logWarning(`[navLinks error]`, err)
+
         return []
     }
 })

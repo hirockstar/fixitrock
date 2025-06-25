@@ -4,14 +4,14 @@ import { useState } from 'react'
 import { ConfirmationResult } from 'firebase/auth'
 import { usePathname, useRouter } from 'next/navigation'
 
-import { LoginStep } from '../types'
-
-import { StepDetails, StepOtp, StepPhone } from './steps'
-
 import { User } from '®app/login/types'
 import { useMediaQuery } from '®hooks/useMediaQuery'
 import { Drawer, DrawerContent } from '®ui/drawer'
 import { Dialog, DialogContent } from '®ui/dialog'
+
+import { LoginStep } from '../types'
+
+import { StepDetails, StepOtp, StepPhone } from './steps'
 
 export function LoginModal() {
     const router = useRouter()

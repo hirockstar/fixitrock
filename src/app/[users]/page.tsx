@@ -3,6 +3,8 @@ import { Metadata } from 'next'
 
 import { getUser } from '®actions/auth'
 
+import { Profile } from './ui'
+
 type Props = {
     params: Promise<{ users: string }>
 }
@@ -20,14 +22,14 @@ export default async function Users({ params }: Props) {
     }
 
     const user = await getUser(cleanUsername)
+
     if (!user) {
         return notFound()
     }
 
     return (
-        <div className='mx-auto max-w-xl p-4'>
-            <h1 className='text-2xl font-bold'>@{user.username}</h1>
-            <p className='text-gray-500'>{user.phone}</p>
+        <div>
+            <Profile {...user} />
         </div>
     )
 }
@@ -37,17 +39,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const username = rawUsername.split('/')[0]
     const decoded = username ? decodeURIComponent(username) : ''
     const cleanUsername = decoded.startsWith('@') ? decoded.slice(1) : decoded
-    
+
     const user = await getUser(cleanUsername)
+
     if (!user) {
         return {
             title: 'User Not Found',
-            description: 'The requested user profile could not be found.'
+            description: 'The requested user profile could not be found.',
         }
     }
 
     return {
-        title: `@${user.username}`,
-        description: `Profile of ${user.name}`
+        title: user.name,
+        description: user.bio,
+        // Additional metadata fields
+        openGraph: {
+            title: user.name,
+            description: user.bio || '',
+            images: user.avatar ? [user.avatar as string] : undefined,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: user.name,
+            description: user.bio || '',
+            images: user.avatar ? [user.avatar as string] : undefined,
+        },
+        creator: user.username,
     }
 }

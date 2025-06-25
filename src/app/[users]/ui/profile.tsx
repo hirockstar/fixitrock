@@ -1,59 +1,105 @@
 'use client'
 
-import { Image } from '@heroui/react'
+import { Button, Image } from '@heroui/react'
 import React from 'react'
+import { ArrowLeft, Calendar, MapPin, Share } from 'lucide-react'
+import Link from 'next/link'
 
 import { User } from '®app/login/types'
+import { formatDateTime } from '®lib/utils'
+import { VerifiedBlue } from '®ui/icons'
 
-import { Actions } from '.'
+import { Actions } from './actions'
 
 export default function Profile(user: User) {
     const [isFollowing, setIsFollowing] = React.useState(false)
-
-    const handleFollow = () => {
-        setIsFollowing(!isFollowing)
-    }
-    const handleMessage = () => {
-        window.open(`https://wa.me/${user.phone}`, '_blank')
-    }
+    const handleFollow = () => setIsFollowing(!isFollowing)
+    const handleMessage = () =>
+        window.open(
+            `https://api.whatsapp.com/send/?phone=${user.phone.replace(/^\+/, '')}`,
+            '_blank'
+        )
 
     return (
         <>
-            <Image
-                disableSkeleton
-                alt={`${user.name} cover`}
-                className='h-40 w-full rounded-b-[50px] object-cover lg:h-[240px] lg:rounded-none'
-                radius='none'
-                src={user.avatar_url || undefined}
-            />
-            <div className='relative -top-20 z-10 flex w-full px-[5%] sm:-top-16 sm:px-[5%] lg:px-[10%]'>
-                <div className='flex w-full flex-col items-center gap-4 sm:flex-row sm:justify-between'>
-                    <div className='flex flex-col items-center sm:flex-row sm:gap-4'>
-                        <Image
-                            isBlurred
-                            isLoading
-                            alt={`${user.name} avatar`}
-                            className='size-36'
-                            classNames={{
-                                wrapper:
-                                    'bg-default/20 dark:bg-default/40 size-36 rounded-full object-cover text-2xl backdrop-blur sm:rounded-lg',
-                            }}
-                            src={user.avatar_url || undefined}
-                        />
-                        <div className='flex flex-col items-center sm:mt-10 sm:items-start'>
-                            <h1 className='font-serif text-[36px] font-bold'>{user.name}</h1>
-                            <span className='text-muted-foreground flex gap-1 text-xs'>
-                                <span className='text-foreground font-bold'>@{user.username}</span>
-                                {/* <span>•</span> */}
-                            </span>
-                        </div>
-                    </div>
-                    <Actions
-                        isFollowing={isFollowing}
-                        onFollow={handleFollow}
-                        onMessage={handleMessage}
+            <>
+                <Image
+                    disableSkeleton
+                    alt={`${user.name} cover`}
+                    className='h-30 w-full rounded-none object-cover md:h-[220px]'
+                    radius='none'
+                    src={user.cover || ''}
+                />
+                <div className='absolute top-0 z-10 flex w-full justify-between p-2 md:hidden'>
+                    <Button
+                        isIconOnly
+                        className='text-white'
+                        radius='full'
+                        size='sm'
+                        startContent={<ArrowLeft size={20} />}
+                        variant='light'
+                    />
+                    <Button
+                        isIconOnly
+                        className='text-white'
+                        radius='full'
+                        size='sm'
+                        startContent={<Share size={20} />}
+                        variant='light'
                     />
                 </div>
+            </>
+            <div className='relative -top-20 z-10 flex w-full flex-col gap-4 px-[5%] md:-top-6 md:flex-row md:items-center lg:px-[10%]'>
+                <div className='relative w-fit'>
+                    <Image
+                        isBlurred
+                        alt={`${user.name} avatar`}
+                        className='size-32 md:size-36'
+                        classNames={{
+                            wrapper:
+                                'bg-default/20 dark:bg-default/40 size-32 overflow-hidden rounded-full object-cover text-2xl backdrop-blur md:size-36 md:rounded-lg',
+                        }}
+                        src={
+                            user.avatar ||
+                            (user.gender === 'female'
+                                ? '/fallback/girl.png'
+                                : user.gender === 'other'
+                                  ? '/fallback/other.png'
+                                  : '/fallback/boy.png')
+                        }
+                    />
+
+                    {/* <div className='absolute right-2 bottom-2 md:right-0 md:bottom-0'>
+                        online icon
+                    </div> */}
+                </div>
+                <div className='flex flex-1 flex-col gap-1.5'>
+                    <h1 className='flex items-center gap-2 text-3xl font-bold'>
+                        {user.name} {user.verified && <VerifiedBlue />}
+                    </h1>
+                    <p className='text-muted-foreground md:hidden'>@{user.username}</p>
+                    <p className='text-muted-foreground max-w-2xl'>{user.bio}</p>
+                    <div className='text-muted-foreground flex flex-wrap items-center gap-4 text-sm md:hidden'>
+                        <Link
+                            passHref
+                            className='flex items-center gap-1'
+                            href={`https://www.google.com/maps/search/?api=1&query=${user.location}`}
+                            target='blank'
+                        >
+                            <MapPin className='h-4 w-4' />
+                            {user.location}
+                        </Link>
+                        <div className='flex items-center gap-1'>
+                            <Calendar className='h-4 w-4' />
+                            Joined {formatDateTime(user.created_at)}
+                        </div>
+                    </div>
+                </div>
+                <Actions
+                    isFollowing={isFollowing}
+                    onFollow={handleFollow}
+                    onMessage={handleMessage}
+                />
             </div>
         </>
     )
