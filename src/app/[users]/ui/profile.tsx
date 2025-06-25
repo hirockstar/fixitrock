@@ -26,7 +26,7 @@ export default function Profile(user: User) {
                 <Image
                     disableSkeleton
                     alt={`${user.name} cover`}
-                    className='h-30 w-full rounded-none object-cover md:h-[220px]'
+                    className='h-30 w-full rounded-none object-cover lg:h-[220px]'
                     radius='none'
                     src={user.cover || ''}
                 />
@@ -49,7 +49,7 @@ export default function Profile(user: User) {
                     />
                 </div>
             </>
-            <div className='relative -top-20 z-10 flex w-full flex-col gap-4 px-[5%] md:-top-6 md:flex-row md:items-center lg:px-[10%]'>
+            <div className='relative -top-20 z-10 flex w-full flex-col gap-4 px-[5%] md:-top-10 md:flex-row md:items-center lg:px-[10%]'>
                 <div className='relative w-fit'>
                     <Image
                         isBlurred
@@ -78,7 +78,7 @@ export default function Profile(user: User) {
                         {user.name} {user.verified && <VerifiedBlue />}
                     </h1>
                     <p className='text-muted-foreground md:hidden'>@{user.username}</p>
-                    <p className='text-muted-foreground max-w-2xl'>{user.bio}</p>
+                    <p className='text-muted-foreground max-w-2xl text-xs'>{user.bio}</p>
                     <div className='text-muted-foreground flex flex-wrap items-center gap-4 text-sm md:hidden'>
                         <Link
                             passHref
