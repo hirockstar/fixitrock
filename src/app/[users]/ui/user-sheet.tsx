@@ -41,7 +41,7 @@ export default function UserSheet() {
                         alt={user.name}
                         height={30}
                         src={
-                            user.avatar_url ||
+                            user.avatar ||
                             'https://cdn3d.iconscout.com/3d/premium/thumb/boy-7215504-5873316.png'
                         }
                         width={30}
@@ -64,7 +64,7 @@ const UserDetails = () => {
         <User
             avatarProps={{
                 src:
-                    user.avatar_url ||
+                    user.avatar ||
                     'https://cdn3d.iconscout.com/3d/premium/thumb/boy-7215504-5873316.png',
                 fallback: user.name,
                 className: 'w-12 h-12',

@@ -74,8 +74,6 @@ export async function createUser(user: {
     username: string
     gender: string
     dob?: string | null
-    team_id?: number | null
-    avatar_url?: string | null
 }) {
     try {
         const cookieStore = await cookies()
@@ -100,8 +98,6 @@ export async function createUser(user: {
                 username: user.username,
                 gender: user.gender,
                 dob: user.dob,
-                team_id: user.team_id,
-                avatar_url: user.avatar_url,
                 active: true,
             })
             .select()
