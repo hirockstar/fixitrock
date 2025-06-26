@@ -12,16 +12,16 @@ interface ActionsProps {
 
 export function Actions({ onFollow, onMessage, isFollowing }: ActionsProps) {
     return (
-        <div className='flex min-w-[300px] gap-3'>
+        <div className='flex min-w-[300px] gap-4'>
             <Button
-                className='w-full rounded-lg bg-green-500 text-white'
+                className='h-[34px] w-full rounded-lg bg-green-500 text-white'
                 startContent={<FaWhatsapp size={20} />}
                 onPress={onMessage}
             >
                 WhatsApp
             </Button>
             <Button
-                className='w-full rounded-lg'
+                className='h-[34px] w-full rounded-lg'
                 color='primary'
                 startContent={isFollowing ? <UserPlus size={20} /> : <Plus size={20} />}
                 onPress={onFollow}

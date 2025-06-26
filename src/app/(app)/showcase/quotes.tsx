@@ -16,7 +16,7 @@ export default function Quotes() {
     const { data, isLoading, error } = useQuote()
 
     return (
-        <TitleAction href='/rockstar?tab=quotes' title='Quotes'>
+        <TitleAction href='/@rockstar?tab=quotes' title='Quotes'>
             <Carousel
                 plugins={[
                     Autoplay({

@@ -26,7 +26,7 @@ export default function Profile(user: User) {
                 <Image
                     disableSkeleton
                     alt={`${user.name} cover`}
-                    className='h-30 w-full rounded-none object-cover lg:h-[220px]'
+                    className='h-30 w-full rounded-none object-cover lg:h-[240px]'
                     radius='none'
                     src={user.cover || ''}
                 />
@@ -49,8 +49,8 @@ export default function Profile(user: User) {
                     />
                 </div>
             </>
-            <div className='relative -top-20 z-10 flex w-full flex-col gap-4 px-[5%] md:-top-10 md:flex-row md:items-center lg:px-[10%]'>
-                <div className='relative w-fit'>
+            <div className='relative z-10 flex w-full flex-col px-[5%] md:flex-row md:gap-4 lg:px-[10%]'>
+                <div className='relative -top-20 w-fit shrink-0 md:-top-16'>
                     <Image
                         isBlurred
                         alt={`${user.name} avatar`}
@@ -73,33 +73,35 @@ export default function Profile(user: User) {
                         online icon
                     </div> */}
                 </div>
-                <div className='flex flex-1 flex-col gap-1.5'>
-                    <h1 className='flex items-center gap-2 text-3xl font-bold'>
-                        {user.name} {user.verified && <VerifiedBlue />}
-                    </h1>
-                    <p className='text-muted-foreground md:hidden'>@{user.username}</p>
-                    <p className='text-muted-foreground max-w-2xl text-xs'>{user.bio}</p>
-                    <div className='text-muted-foreground flex flex-wrap items-center gap-4 text-sm md:hidden'>
-                        <Link
-                            passHref
-                            className='flex items-center gap-1'
-                            href={`https://www.google.com/maps/search/?api=1&query=${user.location}`}
-                            target='blank'
-                        >
-                            <MapPin className='h-4 w-4' />
-                            {user.location}
-                        </Link>
-                        <div className='flex items-center gap-1'>
-                            <Calendar className='h-4 w-4' />
-                            Joined {formatDateTime(user.created_at)}
+                <div className='relative -top-16 flex w-full flex-col gap-4 md:-top-10 md:flex-row md:items-center'>
+                    <div className='flex flex-1 flex-col gap-1.5'>
+                        <h1 className='flex items-center gap-2 text-3xl font-bold'>
+                            {user.name} {user.verified && <VerifiedBlue />}
+                        </h1>
+                        <p className='text-muted-foreground md:hidden'>@{user.username}</p>
+                        <p className='text-muted-foreground max-w-2xl'>{user.bio}</p>
+                        <div className='text-muted-foreground flex flex-wrap items-center gap-4 text-sm md:hidden'>
+                            <Link
+                                passHref
+                                className='flex items-center gap-1'
+                                href={`https://www.google.com/maps/search/?api=1&query=${user.location}`}
+                                target='blank'
+                            >
+                                <MapPin className='h-4 w-4' />
+                                {user.location}
+                            </Link>
+                            <div className='flex items-center gap-1'>
+                                <Calendar className='h-4 w-4' />
+                                Joined {formatDateTime(user.created_at)}
+                            </div>
                         </div>
                     </div>
+                    <Actions
+                        isFollowing={isFollowing}
+                        onFollow={handleFollow}
+                        onMessage={handleMessage}
+                    />
                 </div>
-                <Actions
-                    isFollowing={isFollowing}
-                    onFollow={handleFollow}
-                    onMessage={handleMessage}
-                />
             </div>
         </>
     )

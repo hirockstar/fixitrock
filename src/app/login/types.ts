@@ -19,6 +19,17 @@ export type User = {
     verified: boolean
 }
 
+export type TabsConfig = {
+    title: string
+    component: string
+}
+
+export type Roles = {
+    id: number
+    role: string
+    tabs?: TabsConfig[]
+}
+
 export type NavLink = {
     id: number
     title: string
@@ -28,4 +39,11 @@ export type NavLink = {
     sort_order?: number
     active?: boolean
     role?: number | null // bigint or null
+}
+
+export type Quotes = {
+    id: number
+    quote: string
+    username: string
+    lastModifiedDateTime?: string | null
 }
