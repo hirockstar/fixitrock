@@ -3,9 +3,8 @@ export type Product = {
     createdBy: string
     slug: string
     name: string
-    compatible: string
     description?: string
-    img?: Record<string, unknown>
+    img?: Array<string> | Array<{ url: string; alt?: string }>
     purchase: number
     staff_price?: number
     price?: number
