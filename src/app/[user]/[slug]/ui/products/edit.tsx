@@ -16,13 +16,8 @@ import {
 } from '@heroui/react'
 import { Plus, X } from 'lucide-react'
 
-import { addProduct } from '®actions/products'
-
-interface AddProductModalProps {
-    isOpen: boolean
-    onClose: () => void
-    onSuccess?: () => void
-}
+import { updateProduct } from '®actions/products'
+import { Product } from '®types/products'
 
 // Predefined categories for better UX
 const CATEGORIES = [
@@ -51,20 +46,36 @@ const BRANDS = [
     'Other',
 ]
 
-export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProductModalProps) {
+interface EditProductModalProps {
+    isOpen: boolean
+    onClose: () => void
+    onSuccess?: () => void
+    product: Product | null
+}
+
+export default function EditProductModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    product,
+}: EditProductModalProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [newImageUrl, setNewImageUrl] = useState('')
     const [images, setImages] = useState<string[]>([])
     const [errors, setErrors] = useState<Record<string, string>>({})
 
-    // Reset form when modal opens/closes
+    // Populate form when product changes
     useEffect(() => {
-        if (!isOpen) {
-            setImages([])
+        if (product && isOpen) {
+            setImages(
+                Array.isArray(product.img)
+                    ? product.img.map((img) => (typeof img === 'string' ? img : img.url))
+                    : []
+            )
             setNewImageUrl('')
             setErrors({})
         }
-    }, [isOpen])
+    }, [product, isOpen])
 
     const addImage = () => {
         if (newImageUrl.trim() && !images.includes(newImageUrl.trim())) {
@@ -102,6 +113,8 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
     }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        if (!product) return
+
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
 
@@ -111,7 +124,8 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
 
         setIsLoading(true)
         try {
-            const result = await addProduct({
+            const result = await updateProduct({
+                id: product.id,
                 name: formData.get('name') as string,
                 description: (formData.get('description') as string) || undefined,
                 purchase: parseFloat(formData.get('purchase') as string),
@@ -125,26 +139,28 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                 category: (formData.get('category') as string) || undefined,
                 brand: (formData.get('brand') as string) || undefined,
                 img: images.length > 0 ? images : undefined,
-                other: {},
+                other: product.other || {},
             })
 
             if (result.success) {
                 onClose()
                 onSuccess?.()
             } else {
-                setErrors({ submit: result.error || 'Failed to add product' })
+                setErrors({ submit: result.error || 'Failed to update product' })
             }
         } catch {
-            setErrors({ submit: 'An error occurred while adding the product' })
+            setErrors({ submit: 'An error occurred while updating the product' })
         } finally {
             setIsLoading(false)
         }
     }
 
+    if (!product) return null
+
     return (
         <Modal isOpen={isOpen} size='2xl' onClose={onClose}>
             <ModalContent>
-                <ModalHeader>Add New Product</ModalHeader>
+                <ModalHeader>Edit Product</ModalHeader>
                 <ModalBody className='flex max-h-[70vh] flex-col gap-4 overflow-y-auto'>
                     <Form className='space-y-6' validationErrors={errors} onSubmit={handleSubmit}>
                         {/* Basic Information */}
@@ -155,6 +171,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                             <Input
                                 isClearable
                                 isRequired
+                                defaultValue={product.name}
                                 errorMessage={errors.name}
                                 isInvalid={!!errors.name}
                                 label='Product Name *'
@@ -163,6 +180,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                 variant='bordered'
                             />
                             <Textarea
+                                defaultValue={product.description || ''}
                                 label='Description'
                                 minRows={2}
                                 name='description'
@@ -177,6 +195,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                             <div className='grid grid-cols-1 gap-3 md:grid-cols-3'>
                                 <Input
                                     isRequired
+                                    defaultValue={product.purchase.toString()}
                                     errorMessage={errors.purchase}
                                     isInvalid={!!errors.purchase}
                                     label='Purchase Price *'
@@ -189,6 +208,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                     variant='bordered'
                                 />
                                 <Input
+                                    defaultValue={product.staff_price?.toString() || ''}
                                     label='Staff Price'
                                     min='0'
                                     name='staff_price'
@@ -199,6 +219,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                     variant='bordered'
                                 />
                                 <Input
+                                    defaultValue={product.price?.toString() || ''}
                                     label='Customer Price'
                                     min='0'
                                     name='price'
@@ -217,6 +238,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                             <div className='grid grid-cols-1 gap-3 md:grid-cols-3'>
                                 <Input
                                     isRequired
+                                    defaultValue={product.qty.toString()}
                                     errorMessage={errors.qty}
                                     isInvalid={!!errors.qty}
                                     label='Quantity *'
@@ -227,6 +249,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                     variant='bordered'
                                 />
                                 <Select
+                                    defaultSelectedKeys={product.category ? [product.category] : []}
                                     label='Category'
                                     name='category'
                                     placeholder='Select category'
@@ -239,6 +262,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                     ))}
                                 </Select>
                                 <Select
+                                    defaultSelectedKeys={product.brand ? [product.brand] : []}
                                     label='Brand'
                                     name='brand'
                                     placeholder='Select brand'
@@ -308,7 +332,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess }: AddProdu
                                 Cancel
                             </Button>
                             <Button color='primary' isLoading={isLoading} type='submit'>
-                                Add Product
+                                Update Product
                             </Button>
                         </div>
                     </Form>

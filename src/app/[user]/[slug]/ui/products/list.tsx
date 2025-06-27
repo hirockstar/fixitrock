@@ -1,10 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardBody, CardFooter, Button, Image, Chip, Badge, Tooltip } from '@heroui/react'
-import { Edit, Trash2, Eye, Package } from 'lucide-react'
+import { Card, CardBody, CardFooter, Button, Image, Chip } from '@heroui/react'
+import { Edit, Trash2, Eye } from 'lucide-react'
 
 import { Product } from '®types/products'
+import { logWarning } from '®lib/utils'
+
+import EditProductModal from './edit'
+import DeleteProductModal from './delete'
 
 interface ProductsListProps {
     products: Product[]
@@ -12,7 +16,10 @@ interface ProductsListProps {
 }
 
 export default function ProductsList({ products, canManage }: ProductsListProps) {
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+    const [deletingProduct, setDeletingProduct] = useState<Product | null>(null)
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-IN', {
@@ -29,79 +36,154 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
     }
 
     const handleEdit = (product: Product) => {
-        // TODO: Implement edit functionality
-        console.log('Edit product:', product)
+        setEditingProduct(product)
+        setIsEditModalOpen(true)
     }
 
     const handleDelete = (product: Product) => {
-        // TODO: Implement delete functionality
-        console.log('Delete product:', product)
+        setDeletingProduct(product)
+        setIsDeleteModalOpen(true)
     }
 
     const handleView = (product: Product) => {
-        setSelectedProduct(product)
+        // TODO: Implement view functionality
+        logWarning('View product:', product)
+    }
+
+    const handleEditSuccess = () => {
+        setIsEditModalOpen(false)
+        setEditingProduct(null)
+        // Refresh the page to show updated data
+        window.location.reload()
+    }
+
+    const handleDeleteSuccess = () => {
+        setIsDeleteModalOpen(false)
+        setDeletingProduct(null)
+        // Refresh the page to show updated data
+        window.location.reload()
+    }
+
+    const handleCloseEdit = () => {
+        setIsEditModalOpen(false)
+        setEditingProduct(null)
+    }
+
+    const handleCloseDelete = () => {
+        setIsDeleteModalOpen(false)
+        setDeletingProduct(null)
     }
 
     if (products.length === 0) {
         return (
-            <div className='flex flex-col items-center justify-center py-12 text-center'>
-                <Package className='mb-4 h-16 w-16 text-gray-400' />
-                <h3 className='mb-2 text-lg font-semibold text-gray-600'>No Products Found</h3>
-                <p className='max-w-md text-gray-500'>
-                    {canManage
-                        ? "You haven't added any products yet. Click the + button to add your first product!"
-                        : "This user hasn't added any products yet."}
-                </p>
+            <div className='flex flex-col items-center justify-center py-12'>
+                <div className='text-center'>
+                    <div className='mx-auto h-12 w-12 text-gray-400'>
+                        <svg fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                            <path
+                                d='M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                strokeWidth={2}
+                            />
+                        </svg>
+                    </div>
+                    <h3 className='mt-2 text-sm font-medium text-gray-900'>No products</h3>
+                    <p className='mt-1 text-sm text-gray-500'>
+                        Get started by creating a new product.
+                    </p>
+                </div>
             </div>
         )
     }
 
     return (
-        <div className='space-y-6'>
-            {/* Products Grid */}
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-                {products.map((product) => {
-                    const stockStatus = getStockStatus(product.qty)
-                    const mainImage =
-                        Array.isArray(product.img) && product.img.length > 0
-                            ? typeof product.img[0] === 'string'
-                                ? product.img[0]
-                                : product.img[0].url
-                            : null
-
-                    return (
-                        <Card key={product.id} className='transition-shadow hover:shadow-lg'>
-                            <CardBody className='p-4'>
+        <>
+            <div className='space-y-6'>
+                {/* Products Grid */}
+                <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                    {products.map((product) => (
+                        <Card key={product.id} className='overflow-hidden'>
+                            <CardBody className='p-0'>
                                 {/* Product Image */}
-                                <div className='relative mb-3'>
-                                    <Image
-                                        alt={product.name}
-                                        className='h-48 w-full rounded-lg object-cover'
-                                        fallbackSrc='/icons/fallback.png'
-                                        src={mainImage || '/icons/fallback.png'}
-                                    />
-                                    <Badge
-                                        className='absolute top-2 right-2'
-                                        color={stockStatus.color}
-                                    >
-                                        {stockStatus.text}
-                                    </Badge>
+                                <div className='aspect-square overflow-hidden'>
+                                    {product.img && product.img.length > 0 ? (
+                                        <Image
+                                            alt={product.name}
+                                            className='h-full w-full object-cover'
+                                            fallbackSrc='/icons/fallback.png'
+                                            src={
+                                                typeof product.img[0] === 'string'
+                                                    ? product.img[0]
+                                                    : product.img[0].url
+                                            }
+                                        />
+                                    ) : (
+                                        <div className='flex h-full w-full items-center justify-center bg-gray-100'>
+                                            <svg
+                                                className='h-12 w-12 text-gray-400'
+                                                fill='none'
+                                                stroke='currentColor'
+                                                viewBox='0 0 24 24'
+                                            >
+                                                <path
+                                                    d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+                                                    strokeLinecap='round'
+                                                    strokeLinejoin='round'
+                                                    strokeWidth={2}
+                                                />
+                                            </svg>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Product Info */}
-                                <div className='space-y-2'>
-                                    <h3 className='line-clamp-2 text-lg font-semibold'>
-                                        {product.name}
-                                    </h3>
+                                <div className='p-4'>
+                                    <div className='flex items-start justify-between'>
+                                        <h3 className='line-clamp-2 text-sm font-semibold'>
+                                            {product.name}
+                                        </h3>
+                                        <Chip
+                                            color={getStockStatus(product.qty).color}
+                                            size='sm'
+                                            variant='flat'
+                                        >
+                                            {getStockStatus(product.qty).text}
+                                        </Chip>
+                                    </div>
 
                                     {product.description && (
-                                        <p className='line-clamp-2 text-sm text-gray-600'>
+                                        <p className='mt-1 line-clamp-2 text-xs text-gray-600'>
                                             {product.description}
                                         </p>
                                     )}
 
-                                    {/* Category and Brand */}
-                                    <div className='flex flex-wrap gap-1'>
+                                    <div className='mt-2 space-y-1'>
+                                        <div className='flex justify-between text-xs'>
+                                            <span className='text-gray-500'>Purchase:</span>
+                                            <span className='font-medium'>
+                                                {formatPrice(product.purchase)}
+                                            </span>
+                                        </div>
+                                        {product.staff_price && (
+                                            <div className='flex justify-between text-xs'>
+                                                <span className='text-gray-500'>Staff:</span>
+                                                <span className='font-medium'>
+                                                    {formatPrice(product.staff_price)}
+                                                </span>
+                                            </div>
+                                        )}
+                                        {product.price && (
+                                            <div className='flex justify-between text-xs'>
+                                                <span className='text-gray-500'>Customer:</span>
+                                                <span className='font-medium'>
+                                                    {formatPrice(product.price)}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className='mt-2 flex gap-1'>
                                         {product.category && (
                                             <Chip color='primary' size='sm' variant='flat'>
                                                 {product.category}
@@ -113,102 +195,65 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
                                             </Chip>
                                         )}
                                     </div>
-
-                                    {/* Pricing */}
-                                    <div className='space-y-1'>
-                                        <div className='flex justify-between text-sm'>
-                                            <span className='text-gray-600'>Purchase:</span>
-                                            <span className='font-medium'>
-                                                {formatPrice(product.purchase)}
-                                            </span>
-                                        </div>
-                                        {product.staff_price && (
-                                            <div className='flex justify-between text-sm'>
-                                                <span className='text-gray-600'>Staff:</span>
-                                                <span className='font-medium'>
-                                                    {formatPrice(product.staff_price)}
-                                                </span>
-                                            </div>
-                                        )}
-                                        {product.price && (
-                                            <div className='flex justify-between text-sm'>
-                                                <span className='text-gray-600'>Customer:</span>
-                                                <span className='font-medium text-green-600'>
-                                                    {formatPrice(product.price)}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Quantity */}
-                                    <div className='flex items-center justify-between'>
-                                        <span className='text-sm text-gray-600'>Quantity:</span>
-                                        <span
-                                            className={`font-semibold ${
-                                                product.qty === 0
-                                                    ? 'text-red-600'
-                                                    : product.qty <= 5
-                                                      ? 'text-orange-600'
-                                                      : 'text-green-600'
-                                            }`}
-                                        >
-                                            {product.qty}
-                                        </span>
-                                    </div>
                                 </div>
                             </CardBody>
 
                             {/* Action Buttons */}
-                            <CardFooter className='pt-0'>
+                            <CardFooter className='p-4 pt-0'>
                                 <div className='flex w-full gap-2'>
-                                    <Tooltip content='View Details'>
-                                        <Button
-                                            isIconOnly
-                                            size='sm'
-                                            variant='light'
-                                            onPress={() => handleView(product)}
-                                        >
-                                            <Eye size={16} />
-                                        </Button>
-                                    </Tooltip>
-
+                                    <Button
+                                        className='flex-1'
+                                        size='sm'
+                                        variant='flat'
+                                        onPress={() => handleView(product)}
+                                    >
+                                        <Eye size={14} />
+                                        View
+                                    </Button>
                                     {canManage && (
                                         <>
-                                            <Tooltip content='Edit Product'>
-                                                <Button
-                                                    isIconOnly
-                                                    color='primary'
-                                                    size='sm'
-                                                    variant='light'
-                                                    onPress={() => handleEdit(product)}
-                                                >
-                                                    <Edit size={16} />
-                                                </Button>
-                                            </Tooltip>
-                                            <Tooltip content='Delete Product'>
-                                                <Button
-                                                    isIconOnly
-                                                    color='danger'
-                                                    size='sm'
-                                                    variant='light'
-                                                    onPress={() => handleDelete(product)}
-                                                >
-                                                    <Trash2 size={16} />
-                                                </Button>
-                                            </Tooltip>
+                                            <Button
+                                                isIconOnly
+                                                color='primary'
+                                                size='sm'
+                                                variant='flat'
+                                                onPress={() => handleEdit(product)}
+                                            >
+                                                <Edit size={14} />
+                                            </Button>
+                                            <Button
+                                                isIconOnly
+                                                color='danger'
+                                                size='sm'
+                                                variant='flat'
+                                                onPress={() => handleDelete(product)}
+                                            >
+                                                <Trash2 size={14} />
+                                            </Button>
                                         </>
                                     )}
                                 </div>
                             </CardFooter>
                         </Card>
-                    )
-                })}
+                    ))}
+                </div>
             </div>
 
-            {/* Product Count */}
-            <div className='text-center text-sm text-gray-500'>
-                Showing {products.length} product{products.length !== 1 ? 's' : ''}
-            </div>
-        </div>
+            {/* Edit Modal */}
+            <EditProductModal
+                isOpen={isEditModalOpen}
+                product={editingProduct}
+                onClose={handleCloseEdit}
+                onSuccess={handleEditSuccess}
+            />
+
+            {/* Delete Modal */}
+            <DeleteProductModal
+                isOpen={isDeleteModalOpen}
+                product={deletingProduct}
+                onClose={handleCloseDelete}
+                onSuccess={handleDeleteSuccess}
+            />
+        </>
     )
 }

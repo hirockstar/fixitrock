@@ -4,15 +4,14 @@ import { Button, Input, Navbar } from '@heroui/react'
 import { Plus, Search } from 'lucide-react'
 import { useState } from 'react'
 
-import { logWarning } from '®lib/utils'
-
 import AddProductModal from './add'
 
 interface NavBarProps {
     canManage: boolean
+    onProductChange?: () => void
 }
 
-export default function NavBar({ canManage }: NavBarProps) {
+export default function NavBar({ canManage, onProductChange }: NavBarProps) {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
     const handleAddProduct = () => {
@@ -20,7 +19,7 @@ export default function NavBar({ canManage }: NavBarProps) {
     }
 
     const handleAddSuccess = () => {
-        logWarning('Product added successfully')
+        onProductChange?.()
     }
 
     return (
