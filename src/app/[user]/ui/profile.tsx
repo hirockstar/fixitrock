@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 import { User } from '®app/login/types'
 import { formatDateTime } from '®lib/utils'
-import { VerifiedBlue } from '®ui/icons'
+import { Verified } from '®ui/icons'
 
 import { Actions } from './actions'
 
@@ -28,7 +28,7 @@ export default function Profile(user: User) {
                     alt={`${user.name} cover`}
                     className='h-30 w-full rounded-none object-cover lg:h-[240px]'
                     radius='none'
-                    src={user.cover || ''}
+                    src={user.cover || '/fallback/cover.png'}
                 />
                 <div className='absolute top-0 z-10 flex w-full justify-between p-2 md:hidden'>
                     <Button
@@ -76,20 +76,22 @@ export default function Profile(user: User) {
                 <div className='relative -top-16 flex w-full flex-col gap-4 md:-top-10 md:flex-row md:items-center'>
                     <div className='flex flex-1 flex-col gap-1.5'>
                         <h1 className='flex items-center gap-2 text-3xl font-bold'>
-                            {user.name} {user.verified && <VerifiedBlue />}
+                            {user.name} {user.verified && <Verified />}
                         </h1>
                         <p className='text-muted-foreground md:hidden'>@{user.username}</p>
                         <p className='text-muted-foreground max-w-2xl'>{user.bio}</p>
                         <div className='text-muted-foreground flex flex-wrap items-center gap-4 text-sm md:hidden'>
-                            <Link
-                                passHref
-                                className='flex items-center gap-1'
-                                href={`https://www.google.com/maps/search/?api=1&query=${user.location}`}
-                                target='blank'
-                            >
-                                <MapPin className='h-4 w-4' />
-                                {user.location}
-                            </Link>
+                            {user.location && (
+                                <Link
+                                    passHref
+                                    className='flex items-center gap-1'
+                                    href={`https://www.google.com/maps/search/?api=1&query=${user.location}`}
+                                    target='blank'
+                                >
+                                    <MapPin className='h-4 w-4' />
+                                    {user.location}
+                                </Link>
+                            )}
                             <div className='flex items-center gap-1'>
                                 <Calendar className='h-4 w-4' />
                                 Joined {formatDateTime(user.created_at)}
