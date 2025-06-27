@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { Metadata } from 'next'
 
 import { getUser } from '®actions/auth'
@@ -7,17 +7,23 @@ import { getTabs } from '®actions/supabase'
 import { Profile, Tabs } from './ui'
 
 type Props = {
-    params: Promise<{ users: string }>
+    params: Promise<{ user: string }>
 }
 
 export default async function Users({ params }: Props) {
-    const { users: rawUsername } = await params
+    const { user: rawUsername } = await params
     // Get everything before any slash
     const username = rawUsername.split('/')[0]
     const decoded = username ? decodeURIComponent(username) : ''
-    const cleanUsername = decoded.startsWith('@') ? decoded.slice(1) : decoded
 
-    // If username is empty, show 404
+    // If username does not start with '@', redirect to '@username'
+    if (!decoded.startsWith('@')) {
+        redirect(`/@${decoded}`)
+    }
+
+    const cleanUsername = decoded.slice(1) // Remove '@'
+
+    // If username is empty after removing '@', show 404
     if (!cleanUsername) {
         return notFound()
     }
@@ -42,7 +48,7 @@ export default async function Users({ params }: Props) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { users: rawUsername } = await params
+    const { user: rawUsername } = await params
     const username = rawUsername.split('/')[0]
     const decoded = username ? decodeURIComponent(username) : ''
     const cleanUsername = decoded.startsWith('@') ? decoded.slice(1) : decoded

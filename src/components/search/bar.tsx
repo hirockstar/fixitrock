@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 import { useSearch } from '®tanstack/query'
 import AnimatedSearch, { useOpen } from '®ui/farmer/search'
-import { UserSheet } from '®app/[users]/ui'
+import { UserSheet } from '®app/[user]/ui'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
