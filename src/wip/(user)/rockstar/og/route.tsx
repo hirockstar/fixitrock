@@ -2,34 +2,8 @@ import { ImageResponse } from 'next/og'
 
 import { getProfile } from '®actions/user/profile'
 
-type FontOptions = {
-    name: string
-    data: Buffer
-    weight: 400 | 600
-    style: 'normal'
-}
-async function loadAssets(): Promise<FontOptions[]> {
-    try {
-        const [{ base64Font: normal }, { base64Font: mono }, { base64Font: semibold }] =
-            await Promise.all([
-                import('../../../og/geist-regular-otf.json').then((mod) => mod.default || mod),
-                import('../../../og/geistmono-regular-otf.json').then((mod) => mod.default || mod),
-                import('../../../og/geist-semibold-otf.json').then((mod) => mod.default || mod),
-            ])
-
-        return [
-            { name: 'Geist', data: Buffer.from(normal, 'base64'), weight: 400, style: 'normal' },
-            { name: 'Geist Mono', data: Buffer.from(mono, 'base64'), weight: 400, style: 'normal' },
-            { name: 'Geist', data: Buffer.from(semibold, 'base64'), weight: 600, style: 'normal' },
-        ]
-    } catch (e) {
-        throw new Error(`Failed to load fonts: ${e instanceof Error ? e.message : String(e)}`)
-    }
-}
-
 export async function GET(_request: Request) {
     const profile = getProfile('rockstar')
-    const [fonts] = await Promise.all([loadAssets()])
 
     return new ImageResponse(
         (
@@ -99,7 +73,7 @@ export async function GET(_request: Request) {
         {
             width: 1200,
             height: 628,
-            fonts,
+
             headers: {
                 'Content-Disposition': `filename=Rock Star.webp`,
             },
