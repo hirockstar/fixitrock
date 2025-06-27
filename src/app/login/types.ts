@@ -23,11 +23,16 @@ export type TabsConfig = {
     title: string
     component: string
 }
+export type SlugConfig = {
+    slug: string
+    component: string
+}
 
 export type Roles = {
     id: number
     role: string
     tabs?: TabsConfig[]
+    slug?: SlugConfig[]
 }
 
 export type NavLink = {
