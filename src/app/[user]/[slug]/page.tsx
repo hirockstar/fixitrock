@@ -4,6 +4,12 @@ import { getUser } from '®actions/auth'
 import { getSlug } from '®actions/supabase/getSlug'
 
 import Products from './ui/products'
+const components: Record<
+    string,
+    React.ComponentType<{ params: { user: string; slug: string } }>
+> = {
+    Products: Products,
+}
 
 type Props = {
     params: Promise<{ user: string; slug: string }>
@@ -21,15 +27,12 @@ export default async function SlugPage({ params }: Props) {
 
     if (!slugConfig) return redirect(`/@${cleanUsername}`)
 
-    const components: Record<string, React.ComponentType> = {
-        Products: Products,
-    }
     const SectionComponent =
         components[slugConfig.component] || (() => <div>Component not found</div>)
 
     return (
         <>
-            <SectionComponent />
+            <SectionComponent params={{ user: cleanUsername, slug }} />
         </>
     )
 }

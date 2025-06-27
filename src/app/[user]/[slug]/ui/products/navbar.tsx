@@ -2,44 +2,12 @@
 
 import { Button, Input, Navbar } from '@heroui/react'
 import { Plus, Search } from 'lucide-react'
-import { useParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
 
-import { useUser } from '®provider/user'
-import { canManageProducts } from '®actions/products'
-import { logWarning } from '®lib/utils'
+interface NavBarProps {
+    canManage: boolean
+}
 
-export default function NavBar() {
-    const { user } = useUser()
-    const params = useParams()
-    const [canManage, setCanManage] = useState(false)
-    const [loading, setLoading] = useState(true)
-
-    // Check if the logged-in user can manage products on this profile
-    useEffect(() => {
-        async function checkPermissions() {
-            if (!user) {
-                setCanManage(false)
-                setLoading(false)
-
-                return
-            }
-
-            try {
-                const canManageResult = await canManageProducts(params.user as string)
-
-                setCanManage(canManageResult)
-            } catch {
-                logWarning('Error checking permissions')
-                setCanManage(false)
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        checkPermissions()
-    }, [user, params.user])
-
+export default function NavBar({ canManage }: NavBarProps) {
     const handleAddProduct = () => {}
 
     return (
@@ -87,7 +55,7 @@ export default function NavBar() {
                 />
 
                 {/* Only show Add Product button if user can manage products on this profile */}
-                {!loading && canManage && (
+                {canManage && (
                     <Button
                         isIconOnly
                         className='h-10 w-10 min-w-10 border'
