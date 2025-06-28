@@ -9,7 +9,7 @@ import { logWarning } from '®lib/utils'
 
 import EditProductModal from './edit'
 import DeleteProductModal from './delete'
-import AddProductModal from './add-product-modal'
+import AddProductModal from './add'
 
 interface ProductsListProps {
     products: Product[]

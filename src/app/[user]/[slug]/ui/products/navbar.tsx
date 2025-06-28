@@ -3,7 +3,7 @@
 import { Button, Input, Navbar, useDisclosure } from '@heroui/react'
 import { Plus, Search } from 'lucide-react'
 
-import AddProductModal from './add-product-modal'
+import AddProductModal from './add'
 
 interface NavBarProps {
     canManage: boolean
