@@ -1,26 +1,16 @@
 'use client'
 
-import { Button, Input, Navbar } from '@heroui/react'
+import { Button, Input, Navbar, useDisclosure } from '@heroui/react'
 import { Plus, Search } from 'lucide-react'
-import { useState } from 'react'
 
-import AddProductModal from './add'
+import AddProductModal from './add-product-modal'
 
 interface NavBarProps {
     canManage: boolean
-    onProductChange?: () => void
 }
 
-export default function NavBar({ canManage, onProductChange }: NavBarProps) {
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-
-    const handleAddProduct = () => {
-        setIsAddModalOpen(true)
-    }
-
-    const handleAddSuccess = () => {
-        onProductChange?.()
-    }
+export default function NavBar({ canManage }: NavBarProps) {
+    const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     return (
         <>
@@ -40,31 +30,8 @@ export default function NavBar({ canManage, onProductChange }: NavBarProps) {
                                 'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none group-data-[focus=true]:bg-transparent data-[hover=true]:bg-transparent',
                             base: 'sm:w-[90%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]',
                         }}
-                        // endContent={
-                        //     <div className='flex items-center gap-0.5'>
-                        //         {search && (
-                        //             <Button
-                        //                 isIconOnly
-                        //                 radius='full'
-                        //                 size='sm'
-                        //                 startContent={<X className='h-4 w-4' />}
-                        //                 variant='light'
-                        //                 onPress={() => setSearch('')}
-                        //             />
-                        //         )}
-                        //         <SortDropdown
-                        //             categories={categories}
-                        //             selected={selectedCategory}
-                        //             onChange={setSelectedCategory}
-                        //         />
-                        //         <span className='text-muted-foreground text-xs'>|</span>
-                        //         <StockDropdown selected={stockFilter} onChange={setStockFilter} />
-                        //     </div>
-                        // }
                         placeholder='Search by model name'
                         startContent={<Search className='h-4 w-4 shrink-0' />}
-                        // value={search}
-                        // onChange={(e) => setSearch(e.target.value)}
                     />
 
                     {/* Only show Add Product button if user can manage products on this profile */}
@@ -76,18 +43,23 @@ export default function NavBar({ canManage, onProductChange }: NavBarProps) {
                             size='sm'
                             startContent={<Plus size={24} />}
                             variant='light'
-                            onPress={handleAddProduct}
+                            onPress={onOpen}
                         />
                     )}
+                    <Button
+                        isIconOnly
+                        className='h-10 w-10 min-w-10 border'
+                        radius='full'
+                        size='sm'
+                        startContent={<Plus size={24} />}
+                        variant='light'
+                        onPress={onOpen}
+                    />
                 </div>
             </Navbar>
 
             {/* Add Product Modal */}
-            <AddProductModal
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
-                onSuccess={handleAddSuccess}
-            />
+            <AddProductModal isOpen={isOpen} onOpenChange={onOpenChange} />
         </>
     )
 }

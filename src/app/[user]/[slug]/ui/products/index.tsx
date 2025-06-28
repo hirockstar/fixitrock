@@ -1,5 +1,4 @@
-import { canManageProducts, getUserProducts } from '®actions/products'
-import { Product } from '®types/products'
+import { userProducts } from '®actions/products'
 
 import NavBar from './navbar'
 import ProductsList from './list'
@@ -12,27 +11,8 @@ interface ProductsProps {
 }
 
 export default async function Products({ params }: ProductsProps) {
-    // Call server actions directly in server component with error handling
-    let canManage = false
-    let products: Product[] = []
-
-    try {
-        canManage = await canManageProducts(params.user)
-    } catch {
-        // If there's an error, default to false (no permissions)
-        canManage = false
-    }
-
-    try {
-        const result = await getUserProducts(params.user)
-
-        if (result.success) {
-            products = result.products
-        }
-    } catch {
-        // If there's an error, products will remain empty array
-        products = []
-    }
+    // Get products data and actions in one call
+    const { products, canManage } = await userProducts(params.user)
 
     return (
         <div className='flex w-full flex-col gap-4 p-2 md:mt-2 md:px-[5%] 2xl:px-[10%]'>

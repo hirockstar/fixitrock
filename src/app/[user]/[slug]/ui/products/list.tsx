@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { Card, CardBody, CardFooter, Button, Image, Chip } from '@heroui/react'
-import { Edit, Trash2, Eye } from 'lucide-react'
+import { Edit, Trash2, Eye, Plus } from 'lucide-react'
 
 import { Product } from '®types/products'
 import { logWarning } from '®lib/utils'
 
 import EditProductModal from './edit'
 import DeleteProductModal from './delete'
+import AddProductModal from './add-product-modal'
 
 interface ProductsListProps {
     products: Product[]
@@ -20,6 +21,7 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
     const [deletingProduct, setDeletingProduct] = useState<Product | null>(null)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-IN', {
@@ -50,6 +52,10 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
         logWarning('View product:', product)
     }
 
+    const handleAddProduct = () => {
+        setIsAddModalOpen(true)
+    }
+
     const handleEditSuccess = () => {
         setIsEditModalOpen(false)
         setEditingProduct(null)
@@ -74,26 +80,46 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
         setDeletingProduct(null)
     }
 
+    const handleCloseAdd = () => {
+        setIsAddModalOpen(false)
+    }
+
     if (products.length === 0) {
         return (
-            <div className='flex flex-col items-center justify-center py-12'>
-                <div className='text-center'>
-                    <div className='mx-auto h-12 w-12 text-gray-400'>
-                        <svg fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                            <path
-                                d='M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                            />
-                        </svg>
+            <>
+                <div className='flex flex-col items-center justify-center py-12'>
+                    <div className='text-center'>
+                        <div className='mx-auto h-12 w-12 text-gray-400'>
+                            <svg fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                <path
+                                    d='M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth={2}
+                                />
+                            </svg>
+                        </div>
+                        <h3 className='mt-2 text-sm font-medium text-gray-900'>No products</h3>
+                        <p className='mt-1 text-sm text-gray-500'>
+                            Get started by creating a new product.
+                        </p>
+                        {canManage && (
+                            <div className='mt-6'>
+                                <Button
+                                    color='primary'
+                                    startContent={<Plus size={16} />}
+                                    onPress={handleAddProduct}
+                                >
+                                    Add Product
+                                </Button>
+                            </div>
+                        )}
                     </div>
-                    <h3 className='mt-2 text-sm font-medium text-gray-900'>No products</h3>
-                    <p className='mt-1 text-sm text-gray-500'>
-                        Get started by creating a new product.
-                    </p>
                 </div>
-            </div>
+
+                {/* Add Product Modal */}
+                <AddProductModal isOpen={isAddModalOpen} onOpenChange={handleCloseAdd} />
+            </>
         )
     }
 
@@ -254,6 +280,9 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
                 onClose={handleCloseDelete}
                 onSuccess={handleDeleteSuccess}
             />
+
+            {/* Add Product Modal */}
+            <AddProductModal isOpen={isAddModalOpen} onOpenChange={handleCloseAdd} />
         </>
     )
 }

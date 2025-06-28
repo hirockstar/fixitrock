@@ -1,25 +1,25 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Modal,
     ModalBody,
     ModalContent,
     ModalHeader,
+    ModalFooter,
     Input,
-    Button,
     Textarea,
-    Select,
-    SelectItem,
-    Chip,
+    Button,
+    Autocomplete,
+    AutocompleteItem,
     Form,
+    addToast,
 } from '@heroui/react'
-import { Plus, X } from 'lucide-react'
+import { Box, Tag, IndianRupee, X } from 'lucide-react'
 
 import { updateProduct } from '®actions/products'
 import { Product } from '®types/products'
 
-// Predefined categories for better UX
 const CATEGORIES = [
     'battery',
     'display',
@@ -32,7 +32,6 @@ const CATEGORIES = [
     'other',
 ]
 
-// Predefined brands for better UX
 const BRANDS = [
     'Apple',
     'Samsung',
@@ -53,59 +52,62 @@ interface EditProductModalProps {
     product: Product | null
 }
 
+const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
+    <div className='flex items-center gap-2 py-2 select-none'>
+        <div>{icon}</div>
+        <h3 className='text-foreground text-sm font-semibold tracking-wide uppercase'>{title}</h3>
+    </div>
+)
+
 export default function EditProductModal({
     isOpen,
     onClose,
     onSuccess,
     product,
 }: EditProductModalProps) {
-    const [isLoading, setIsLoading] = useState(false)
-    const [newImageUrl, setNewImageUrl] = useState('')
-    const [images, setImages] = useState<string[]>([])
+    const [formValues, setFormValues] = useState({
+        name: '',
+        purchase: '',
+        qty: '',
+    })
     const [errors, setErrors] = useState<Record<string, string>>({})
+    const [isLoading, setIsLoading] = useState(false)
 
     // Populate form when product changes
     useEffect(() => {
         if (product && isOpen) {
-            setImages(
-                Array.isArray(product.img)
-                    ? product.img.map((img) => (typeof img === 'string' ? img : img.url))
-                    : []
-            )
-            setNewImageUrl('')
+            setFormValues({
+                name: product.name || '',
+                purchase: product.purchase?.toString() || '',
+                qty: product.qty?.toString() || '',
+            })
             setErrors({})
         }
     }, [product, isOpen])
 
-    const addImage = () => {
-        if (newImageUrl.trim() && !images.includes(newImageUrl.trim())) {
-            setImages([...images, newImageUrl.trim()])
-            setNewImageUrl('')
-        }
+    // Check if all required fields are filled
+    const isFormValid = () => {
+        return (
+            formValues.name.trim() !== '' &&
+            formValues.purchase.trim() !== '' &&
+            parseFloat(formValues.purchase) > 0 &&
+            formValues.qty.trim() !== '' &&
+            parseInt(formValues.qty) >= 0
+        )
     }
 
-    const removeImage = (index: number) => {
-        setImages(images.filter((_, i) => i !== index))
+    const handleFieldChange = (field: string, value: string) => {
+        setFormValues((prev) => ({ ...prev, [field]: value }))
     }
 
     const validateForm = (formData: FormData) => {
         const newErrors: Record<string, string> = {}
 
-        const name = formData.get('name') as string
-        const purchase = formData.get('purchase') as string
-        const qty = formData.get('qty') as string
-
-        if (!name?.trim()) {
-            newErrors.name = 'Product name is required'
-        }
-
-        if (!purchase || parseFloat(purchase) <= 0) {
-            newErrors.purchase = 'Purchase price must be greater than 0'
-        }
-
-        if (!qty || parseInt(qty) < 0) {
-            newErrors.qty = 'Quantity must be 0 or greater'
-        }
+        if (!formData.get('name')?.toString().trim()) newErrors.name = 'Name is required'
+        if (!formData.get('purchase') || parseFloat(formData.get('purchase') as string) <= 0)
+            newErrors.purchase = 'Must be > 0'
+        if (!formData.get('qty') || parseInt(formData.get('qty') as string) < 0)
+            newErrors.qty = 'Must be ≥ 0'
 
         setErrors(newErrors)
 
@@ -119,6 +121,12 @@ export default function EditProductModal({
         const formData = new FormData(event.currentTarget)
 
         if (!validateForm(formData)) {
+            addToast({
+                title: 'Validation Error',
+                description: Object.values(errors).join(', ') || 'Please fill all required fields',
+                color: 'danger',
+            })
+
             return
         }
 
@@ -127,7 +135,7 @@ export default function EditProductModal({
             const result = await updateProduct({
                 id: product.id,
                 name: formData.get('name') as string,
-                description: (formData.get('description') as string) || undefined,
+                description: formData.get('description') as string,
                 purchase: parseFloat(formData.get('purchase') as string),
                 staff_price: formData.get('staff_price')
                     ? parseFloat(formData.get('staff_price') as string)
@@ -136,20 +144,25 @@ export default function EditProductModal({
                     ? parseFloat(formData.get('price') as string)
                     : undefined,
                 qty: parseInt(formData.get('qty') as string),
-                category: (formData.get('category') as string) || undefined,
-                brand: (formData.get('brand') as string) || undefined,
-                img: images.length > 0 ? images : undefined,
+                category: formData.get('category') as string,
+                brand: formData.get('brand') as string,
+                img: product.img,
                 other: product.other || {},
             })
 
             if (result.success) {
+                addToast({ title: 'Product Updated', description: 'Success!', color: 'success' })
                 onClose()
                 onSuccess?.()
             } else {
-                setErrors({ submit: result.error || 'Failed to update product' })
+                addToast({
+                    title: 'Failed',
+                    description: result.error || 'Try again.',
+                    color: 'danger',
+                })
             }
         } catch {
-            setErrors({ submit: 'An error occurred while updating the product' })
+            addToast({ title: 'Error', description: 'Something went wrong', color: 'danger' })
         } finally {
             setIsLoading(false)
         }
@@ -158,185 +171,198 @@ export default function EditProductModal({
     if (!product) return null
 
     return (
-        <Modal isOpen={isOpen} size='2xl' onClose={onClose}>
+        <Modal
+            hideCloseButton
+            className='border'
+            isOpen={isOpen}
+            placement='center'
+            scrollBehavior='inside'
+            size='2xl'
+            onClose={onClose}
+        >
             <ModalContent>
-                <ModalHeader>Edit Product</ModalHeader>
-                <ModalBody className='flex max-h-[70vh] flex-col gap-4 overflow-y-auto'>
-                    <Form className='space-y-6' validationErrors={errors} onSubmit={handleSubmit}>
-                        {/* Basic Information */}
-                        <div className='space-y-3'>
-                            <h3 className='text-sm font-semibold text-gray-600'>
-                                Basic Information
-                            </h3>
-                            <Input
-                                isClearable
-                                isRequired
-                                defaultValue={product.name}
-                                errorMessage={errors.name}
-                                isInvalid={!!errors.name}
-                                label='Product Name *'
-                                name='name'
-                                placeholder='e.g., iPhone 15 Battery'
-                                variant='bordered'
-                            />
-                            <Textarea
-                                defaultValue={product.description || ''}
-                                label='Description'
-                                minRows={2}
-                                name='description'
-                                placeholder='Product description...'
-                                variant='bordered'
-                            />
-                        </div>
+                <ModalHeader className='flex-1 items-center justify-between border-b select-none'>
+                    <p>Edit Product</p>
+                    <Button
+                        isIconOnly
+                        className='border'
+                        isDisabled={isLoading}
+                        radius='full'
+                        size='sm'
+                        startContent={<X size={18} />}
+                        variant='light'
+                        onPress={onClose}
+                    />
+                </ModalHeader>
+                <ModalBody className=''>
+                    <Form validationErrors={errors} onSubmit={handleSubmit}>
+                        {/* Product Details */}
+                        <SectionHeader icon={<Box size={16} />} title='Product Details' />
+                        <Input
+                            isRequired
+                            errorMessage={errors.name}
+                            isInvalid={!!errors.name}
+                            label='Product Name'
+                            name='name'
+                            placeholder='e.g., iPhone 15 Battery'
+                            size='sm'
+                            value={formValues.name}
+                            onChange={(e) => handleFieldChange('name', e.target.value)}
+                        />
+                        <Textarea
+                            defaultValue={product.description || ''}
+                            label='Description'
+                            minRows={2}
+                            name='description'
+                            placeholder='Features, specs, etc.'
+                            size='sm'
+                        />
 
-                        {/* Pricing */}
-                        <div className='space-y-3'>
-                            <h3 className='text-sm font-semibold text-gray-600'>Pricing</h3>
-                            <div className='grid grid-cols-1 gap-3 md:grid-cols-3'>
-                                <Input
-                                    isRequired
-                                    defaultValue={product.purchase.toString()}
-                                    errorMessage={errors.purchase}
-                                    isInvalid={!!errors.purchase}
-                                    label='Purchase Price *'
-                                    min='0'
-                                    name='purchase'
-                                    placeholder='0.00'
-                                    startContent={<span className='text-gray-500'>₹</span>}
-                                    step='0.01'
-                                    type='number'
-                                    variant='bordered'
-                                />
-                                <Input
-                                    defaultValue={product.staff_price?.toString() || ''}
-                                    label='Staff Price'
-                                    min='0'
-                                    name='staff_price'
-                                    placeholder='0.00'
-                                    startContent={<span className='text-gray-500'>₹</span>}
-                                    step='0.01'
-                                    type='number'
-                                    variant='bordered'
-                                />
-                                <Input
-                                    defaultValue={product.price?.toString() || ''}
-                                    label='Customer Price'
-                                    min='0'
-                                    name='price'
-                                    placeholder='0.00'
-                                    startContent={<span className='text-gray-500'>₹</span>}
-                                    step='0.01'
-                                    type='number'
-                                    variant='bordered'
-                                />
-                            </div>
-                        </div>
-
-                        {/* Inventory */}
-                        <div className='space-y-3'>
-                            <h3 className='text-sm font-semibold text-gray-600'>Inventory</h3>
-                            <div className='grid grid-cols-1 gap-3 md:grid-cols-3'>
-                                <Input
-                                    isRequired
-                                    defaultValue={product.qty.toString()}
-                                    errorMessage={errors.qty}
-                                    isInvalid={!!errors.qty}
-                                    label='Quantity *'
-                                    min='0'
-                                    name='qty'
-                                    placeholder='0'
-                                    type='number'
-                                    variant='bordered'
-                                />
-                                <Select
-                                    defaultSelectedKeys={product.category ? [product.category] : []}
-                                    label='Category'
-                                    name='category'
-                                    placeholder='Select category'
-                                    variant='bordered'
-                                >
-                                    {CATEGORIES.map((category) => (
-                                        <SelectItem key={category}>
-                                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                                        </SelectItem>
-                                    ))}
-                                </Select>
-                                <Select
-                                    defaultSelectedKeys={product.brand ? [product.brand] : []}
-                                    label='Brand'
-                                    name='brand'
-                                    placeholder='Select brand'
-                                    variant='bordered'
-                                >
-                                    {BRANDS.map((brand) => (
-                                        <SelectItem key={brand}>{brand}</SelectItem>
-                                    ))}
-                                </Select>
-                            </div>
-                        </div>
-
-                        {/* Images */}
-                        <div className='space-y-3'>
-                            <h3 className='text-sm font-semibold text-gray-600'>Product Images</h3>
-                            <div className='flex gap-2'>
-                                <Input
-                                    className='flex-1'
-                                    placeholder='Image URL'
-                                    value={newImageUrl}
-                                    variant='bordered'
-                                    onChange={(e) => setNewImageUrl(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && addImage()}
-                                />
-                                <Button
-                                    isIconOnly
-                                    color='primary'
-                                    isDisabled={!newImageUrl.trim()}
-                                    variant='flat'
-                                    onPress={addImage}
-                                >
-                                    <Plus size={16} />
-                                </Button>
-                            </div>
-
-                            {images.length > 0 && (
-                                <div className='flex flex-wrap gap-2'>
-                                    {images.map((url, index) => (
-                                        <Chip
-                                            key={index}
-                                            endContent={<X size={14} />}
-                                            variant='flat'
-                                            onClose={() => removeImage(index)}
-                                        >
-                                            {url.length > 30 ? `${url.substring(0, 30)}...` : url}
-                                        </Chip>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Error Message */}
-                        {errors.submit && (
-                            <div className='rounded-lg border border-red-200 bg-red-50 p-3'>
-                                <p className='text-sm text-red-700'>{errors.submit}</p>
-                            </div>
-                        )}
-
-                        {/* Form Actions */}
-                        <div className='flex justify-end gap-2'>
-                            <Button
-                                isDisabled={isLoading}
-                                type='button'
-                                variant='light'
-                                onPress={onClose}
+                        {/* Category & Brand */}
+                        <SectionHeader icon={<Tag size={16} />} title='Category & Brand' />
+                        <div className='grid w-full grid-cols-1 gap-4 sm:grid-cols-2'>
+                            <Autocomplete
+                                defaultSelectedKey={product.category || ''}
+                                label='Category'
+                                name='category'
+                                placeholder='Choose category'
+                                size='sm'
                             >
-                                Cancel
-                            </Button>
-                            <Button color='primary' isLoading={isLoading} type='submit'>
-                                Update Product
+                                {CATEGORIES.map((c) => (
+                                    <AutocompleteItem key={c}>{c}</AutocompleteItem>
+                                ))}
+                            </Autocomplete>
+                            <Autocomplete
+                                defaultSelectedKey={product.brand || ''}
+                                label='Brand'
+                                name='brand'
+                                placeholder='Choose brand'
+                                size='sm'
+                            >
+                                {BRANDS.map((b) => (
+                                    <AutocompleteItem key={b}>{b}</AutocompleteItem>
+                                ))}
+                            </Autocomplete>
+                        </div>
+
+                        {/* Pricing & Stock */}
+                        <SectionHeader icon={<IndianRupee size={16} />} title='Pricing & Stock' />
+                        <div className='grid grid-cols-2 gap-4 pb-2 sm:grid-cols-4'>
+                            <Input
+                                isRequired
+                                errorMessage={errors.purchase}
+                                isInvalid={!!errors.purchase}
+                                label='Purchase Price'
+                                min='0'
+                                name='purchase'
+                                placeholder='₹0'
+                                size='sm'
+                                type='number'
+                                value={formValues.purchase}
+                                onChange={(e) => handleFieldChange('purchase', e.target.value)}
+                            />
+                            <Input
+                                defaultValue={product.staff_price?.toString() || ''}
+                                label='Staff Price'
+                                min='0'
+                                name='staff_price'
+                                placeholder='₹0'
+                                size='sm'
+                                type='number'
+                            />
+                            <Input
+                                defaultValue={product.price?.toString() || ''}
+                                label='Customer Price'
+                                min='0'
+                                name='price'
+                                placeholder='₹0'
+                                size='sm'
+                                type='number'
+                            />
+                            <Input
+                                isRequired
+                                errorMessage={errors.qty}
+                                isInvalid={!!errors.qty}
+                                label='Quantity'
+                                min='0'
+                                name='qty'
+                                placeholder='0'
+                                size='sm'
+                                type='number'
+                                value={formValues.qty}
+                                onChange={(e) => handleFieldChange('qty', e.target.value)}
+                            />
+                        </div>
+
+                        {/* Images - Commented out for now */}
+                        {/* <SectionHeader icon={<ImagePlus size={16} />} title='Product Images' />
+                        <div className='flex w-full items-center gap-2'>
+                            <Input
+                                className='flex-1'
+                                placeholder='Paste image URL'
+                                size='sm'
+                                value={newImageUrl}
+                                onChange={(e) => setNewImageUrl(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && addImage()}
+                            />
+                            <Button
+                                isIconOnly
+                                color='secondary'
+                                isDisabled={!newImageUrl.trim()}
+                                size='sm'
+                                variant='flat'
+                                onPress={addImage}
+                            >
+                                <Plus size={16} />
                             </Button>
                         </div>
+
+                        {images.length > 0 && (
+                            <div className='mt-3 flex flex-wrap gap-3'>
+                                {images.map((url, idx) => (
+                                    <div
+                                        key={idx}
+                                        className='group relative h-[64px] w-[64px] overflow-hidden rounded border'
+                                    >
+                                        <img
+                                            alt='Product'
+                                            className='h-full w-full object-cover'
+                                            src={url}
+                                        />
+                                        <Button
+                                            className='bg-opacity-50 absolute top-0 right-0 rounded-bl bg-black p-0.5 text-white'
+                                            type='button'
+                                            onPress={() => removeImage(idx)}
+                                        >
+                                            <X size={12} />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )} */}
                     </Form>
                 </ModalBody>
+                <ModalFooter className='border-t'>
+                    <Button
+                        className='w-full border'
+                        isDisabled={isLoading}
+                        radius='full'
+                        variant='light'
+                        onPress={onClose}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        className='w-full'
+                        color='primary'
+                        isDisabled={isLoading || !isFormValid()}
+                        isLoading={isLoading}
+                        radius='full'
+                        type='submit'
+                    >
+                        Update Product
+                    </Button>
+                </ModalFooter>
             </ModalContent>
         </Modal>
     )
