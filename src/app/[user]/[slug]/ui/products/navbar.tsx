@@ -3,14 +3,14 @@
 import { Button, Input, Navbar, useDisclosure } from '@heroui/react'
 import { Plus, Search } from 'lucide-react'
 
-import AddProductModal from './add'
+import AddEdit from './add'
 
 interface NavBarProps {
     canManage: boolean
 }
 
 export default function NavBar({ canManage }: NavBarProps) {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure({ defaultOpen: false })
 
     return (
         <>
@@ -50,7 +50,7 @@ export default function NavBar({ canManage }: NavBarProps) {
             </Navbar>
 
             {/* Add Product Modal */}
-            <AddProductModal isOpen={isOpen} mode='add' onOpenChange={onOpenChange} />
+            <AddEdit isOpen={isOpen} mode='add' onClose={onClose} />
         </>
     )
 }

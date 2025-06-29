@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardBody, CardFooter, Button, Image, Chip } from '@heroui/react'
+import { Card, CardBody, CardFooter, Button, Image, Chip, useDisclosure } from '@heroui/react'
 import { Edit, Trash2, Eye, Plus } from 'lucide-react'
 
 import { Product } from '®types/products'
@@ -18,9 +18,23 @@ interface ProductsListProps {
 export default function ProductsList({ products, canManage }: ProductsListProps) {
     const [editingProduct, setEditingProduct] = useState<Product | null>(null)
     const [deletingProduct, setDeletingProduct] = useState<Product | null>(null)
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+
+    // Use useDisclosure for all modals
+    const {
+        isOpen: isEditOpen,
+        onOpen: onEditOpen,
+        onClose: onEditClose,
+    } = useDisclosure({ defaultOpen: false })
+    const {
+        isOpen: isDeleteOpen,
+        onOpen: onDeleteOpen,
+        onClose: onDeleteClose,
+    } = useDisclosure({ defaultOpen: false })
+    const {
+        isOpen: isAddOpen,
+        onOpen: onAddOpen,
+        onClose: onAddClose,
+    } = useDisclosure({ defaultOpen: false })
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-IN', {
@@ -38,12 +52,12 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
 
     const handleEdit = (product: Product) => {
         setEditingProduct(product)
-        setIsEditModalOpen(true)
+        onEditOpen()
     }
 
     const handleDelete = (product: Product) => {
         setDeletingProduct(product)
-        setIsDeleteModalOpen(true)
+        onDeleteOpen()
     }
 
     const handleView = (product: Product) => {
@@ -52,23 +66,19 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
     }
 
     const handleAddProduct = () => {
-        setIsAddModalOpen(true)
+        onAddOpen()
     }
 
     const handleDeleteSuccess = () => {
-        setIsDeleteModalOpen(false)
+        onDeleteClose()
         setDeletingProduct(null)
         // Refresh the page to show updated data
         window.location.reload()
     }
 
     const handleCloseDelete = () => {
-        setIsDeleteModalOpen(false)
+        onDeleteClose()
         setDeletingProduct(null)
-    }
-
-    const handleCloseAdd = () => {
-        setIsAddModalOpen(false)
     }
 
     if (products.length === 0) {
@@ -103,7 +113,7 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
                         )}
                     </div>
                 </div>
-                <AddEdit isOpen={isAddModalOpen} mode='add' onOpenChange={handleCloseAdd} />
+                <AddEdit isOpen={isAddOpen} mode='add' onClose={onAddClose} />
             </>
         )
     }
@@ -252,22 +262,22 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
 
             {/* Edit Modal */}
             <AddEdit
-                isOpen={isEditModalOpen}
+                isOpen={isEditOpen}
                 mode='edit'
                 product={editingProduct}
-                onOpenChange={handleCloseAdd}
+                onClose={onEditClose}
             />
 
             {/* Delete Modal */}
             <DeleteProductModal
-                isOpen={isDeleteModalOpen}
+                isOpen={isDeleteOpen}
                 product={deletingProduct}
                 onClose={handleCloseDelete}
                 onSuccess={handleDeleteSuccess}
             />
 
             {/* Add Product Modal */}
-            <AddEdit isOpen={isAddModalOpen} mode='add' onOpenChange={handleCloseAdd} />
+            <AddEdit isOpen={isAddOpen} mode='add' onClose={onAddClose} />
         </>
     )
 }

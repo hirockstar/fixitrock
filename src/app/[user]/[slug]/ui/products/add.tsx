@@ -47,7 +47,7 @@ const BRANDS = [
 
 interface AddEditProps {
     isOpen: boolean
-    onOpenChange: () => void
+    onClose: () => void
     mode: 'add' | 'edit'
     product?: Product | null
 }
@@ -59,7 +59,7 @@ const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }
     </div>
 )
 
-export default function AddEdit({ isOpen, onOpenChange, mode, product }: AddEditProps) {
+export default function AddEdit({ isOpen, onClose, mode, product }: AddEditProps) {
     // Choose action based on mode
     const action = mode === 'add' ? addProduct : updateProduct
     const [{ errors }, formAction, isLoading] = useActionState(action, {
@@ -78,9 +78,9 @@ export default function AddEdit({ isOpen, onOpenChange, mode, product }: AddEdit
             })
         } else if (errors && Object.keys(errors).length === 0 && !isLoading) {
             // Success - just close modal
-            onOpenChange()
+            onClose()
         }
-    }, [errors, isLoading, onOpenChange])
+    }, [errors, isLoading])
 
     // Dynamic content based on mode
     const Title = mode === 'add' ? 'Add New Product' : 'Edit Product'
@@ -95,7 +95,7 @@ export default function AddEdit({ isOpen, onOpenChange, mode, product }: AddEdit
             placement='center'
             scrollBehavior='inside'
             size='2xl'
-            onOpenChange={onOpenChange}
+            onClose={onClose}
         >
             <ModalContent>
                 <ModalHeader className='flex-1 items-center justify-between border-b select-none'>
@@ -107,7 +107,7 @@ export default function AddEdit({ isOpen, onOpenChange, mode, product }: AddEdit
                         size='sm'
                         startContent={<X size={18} />}
                         variant='light'
-                        onPress={onOpenChange}
+                        onPress={onClose}
                     />
                 </ModalHeader>
                 <ModalBody>
@@ -243,7 +243,7 @@ export default function AddEdit({ isOpen, onOpenChange, mode, product }: AddEdit
                         className='w-full border'
                         radius='full'
                         variant='light'
-                        onPress={onOpenChange}
+                        onPress={onClose}
                     >
                         Cancel
                     </Button>
