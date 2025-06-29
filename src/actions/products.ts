@@ -1,32 +1,10 @@
 'use server'
 
 import { cookies } from 'next/headers'
-import { z } from 'zod'
 
 import { adminAuth } from '®firebase/admin'
 import { createClient } from '®supabase/server'
 import { Product, ProductsResult } from '®types/products'
-
-// Validation schemas
-const ProductSchema = z.object({
-    name: z.string().min(1, 'Product name is required'),
-    compatible: z.string().optional(),
-    description: z.string().optional(),
-    purchase: z.number().positive('Purchase price must be positive'),
-    staff_price: z.number().positive().optional(),
-    price: z.number().positive().optional(),
-    qty: z.number().int().min(0, 'Quantity must be non-negative'),
-    category: z.string().optional(),
-    brand: z.string().optional(),
-    img: z
-        .array(z.union([z.string(), z.object({ url: z.string(), alt: z.string().optional() })]))
-        .optional(),
-    other: z.record(z.unknown()).optional(),
-})
-
-const UpdateProductSchema = ProductSchema.partial().extend({
-    id: z.number().positive('Product ID is required'),
-})
 
 // Helper function to get current authenticated user
 async function getCurrentUser() {
@@ -203,34 +181,98 @@ export async function addProduct(
 
 /**
  * Update an existing product (only if user owns it)
+ * Works with useActionState pattern
  */
-export async function updateProduct(productData: z.infer<typeof UpdateProductSchema>) {
+export async function updateProduct(
+    prevState: { errors: Record<string, string> },
+    formData: FormData
+) {
     try {
-        // Validate input
-        const validatedData = UpdateProductSchema.parse(productData)
-
         // Get current authenticated user
         const currentUser = await getCurrentUser()
 
+        // Extract and validate form data
+        const id = parseInt(formData.get('id') as string)
+        const name = formData.get('name') as string
+        const compatible = formData.get('compatible') as string
+        const description = formData.get('description') as string
+        const purchase = parseFloat(formData.get('purchase') as string)
+        const staff_price = parseFloat(formData.get('staff_price') as string) || null
+        const price = parseFloat(formData.get('price') as string) || null
+        const qty = parseInt(formData.get('qty') as string)
+        const category = formData.get('category') as string
+        const brand = formData.get('brand') as string
+
+        // Basic validation
+        const errors: Record<string, string> = {}
+
+        if (!id || isNaN(id)) {
+            errors.id = 'Product ID is required'
+        }
+
+        if (!name || name.trim().length === 0) {
+            errors.name = 'Product name is required'
+        }
+
+        if (isNaN(purchase) || purchase <= 0) {
+            errors.purchase = 'Purchase price must be positive'
+        }
+
+        if (isNaN(qty) || qty < 0) {
+            errors.qty = 'Quantity must be non-negative'
+        }
+
+        if (!category || category.trim().length === 0) {
+            errors.category = 'Category is required'
+        }
+
+        if (!brand || brand.trim().length === 0) {
+            errors.brand = 'Brand is required'
+        }
+
+        // If there are validation errors, return them
+        if (Object.keys(errors).length > 0) {
+            return { errors }
+        }
+
         // Validate product ownership
-        await validateProductOwnership(validatedData.id, currentUser.id)
+        await validateProductOwnership(id, currentUser.id)
 
         const supabase = await createClient()
 
         // If name or category changed, generate new slug
-        const updateData: z.infer<typeof UpdateProductSchema> & { slug?: string } = {
-            ...validatedData,
+        const updateData: {
+            name: string
+            compatible: string | null
+            description: string | null
+            purchase: number
+            staff_price: number | null
+            price: number | null
+            qty: number
+            category: string
+            brand: string
+            slug?: string
+        } = {
+            name: name.trim(),
+            compatible: compatible.trim() || null,
+            description: description.trim() || null,
+            purchase,
+            staff_price,
+            price,
+            qty,
+            category: category.trim(),
+            brand: brand.trim(),
         }
 
-        if (validatedData.name || validatedData.category) {
+        if (name || category) {
             const { data: existingProduct } = await supabase
                 .from('products')
                 .select('name, category')
-                .eq('id', validatedData.id)
+                .eq('id', id)
                 .single()
 
-            const newName = validatedData.name || existingProduct?.name || ''
-            const newCategory = validatedData.category || existingProduct?.category || ''
+            const newName = name || existingProduct?.name || ''
+            const newCategory = category || existingProduct?.category || ''
             const newSlug = generateSlug(newName, newCategory)
 
             // Check if new slug conflicts with existing product
@@ -239,34 +281,38 @@ export async function updateProduct(productData: z.infer<typeof UpdateProductSch
                 .select('id')
                 .eq('createdBy', currentUser.id)
                 .eq('slug', newSlug)
-                .neq('id', validatedData.id)
+                .neq('id', id)
                 .eq('deleted_at', null)
                 .single()
 
             if (slugConflict) {
-                throw new Error('A product with this name and category already exists')
+                return {
+                    errors: {
+                        name: 'A product with this name and category already exists',
+                    },
+                }
             }
 
             updateData.slug = newSlug
         }
 
         // Update product
-        const { data: updatedProduct, error } = await supabase
-            .from('products')
-            .update(updateData)
-            .eq('id', validatedData.id)
-            .select()
-            .single()
+        const { error } = await supabase.from('products').update(updateData).eq('id', id)
 
         if (error) {
-            throw new Error(`Failed to update product: ${error.message}`)
+            return {
+                errors: {
+                    general: `Failed to update product: ${error.message}`,
+                },
+            }
         }
 
-        return { success: true, product: updatedProduct }
+        return { errors: {} }
     } catch (error) {
         return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred',
+            errors: {
+                general: error instanceof Error ? error.message : 'Unknown error occurred',
+            },
         }
     }
 }
@@ -394,9 +440,7 @@ type ProductsWithActions = {
     error?: string
     // Actions
     add: typeof addProduct
-    edit: (
-        productData: z.infer<typeof UpdateProductSchema>
-    ) => Promise<{ success: boolean; product?: Product; error?: string }>
+    edit: typeof updateProduct
     checkCanManage: (targetUsername: string) => Promise<boolean>
     delete: (productId: number) => Promise<{ success: boolean; error?: string }>
     restore: (productId: number) => Promise<{ success: boolean; error?: string }>

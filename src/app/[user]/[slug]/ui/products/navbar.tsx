@@ -34,7 +34,7 @@ export default function NavBar({ canManage }: NavBarProps) {
                         startContent={<Search className='h-4 w-4 shrink-0' />}
                     />
 
-                    {/* Only show Add Product button if user can manage products on this profile */}
+                    {/* Only show Add Product button if user can manage products on his profile */}
                     {canManage && (
                         <Button
                             isIconOnly
@@ -46,20 +46,11 @@ export default function NavBar({ canManage }: NavBarProps) {
                             onPress={onOpen}
                         />
                     )}
-                    <Button
-                        isIconOnly
-                        className='h-10 w-10 min-w-10 border'
-                        radius='full'
-                        size='sm'
-                        startContent={<Plus size={24} />}
-                        variant='light'
-                        onPress={onOpen}
-                    />
                 </div>
             </Navbar>
 
             {/* Add Product Modal */}
-            <AddProductModal isOpen={isOpen} onOpenChange={onOpenChange} />
+            <AddProductModal isOpen={isOpen} mode='add' onOpenChange={onOpenChange} />
         </>
     )
 }

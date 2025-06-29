@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import {
     Modal,
     ModalBody,
@@ -18,7 +18,8 @@ import {
 import { Box, Tag, IndianRupee, X } from 'lucide-react'
 import { useActionState } from 'react'
 
-import { addProduct } from '®actions/products'
+import { addProduct, updateProduct } from '®actions/products'
+import { Product } from '®types/products'
 
 const CATEGORIES = [
     'battery',
@@ -44,9 +45,11 @@ const BRANDS = [
     'Other',
 ]
 
-interface AddProductProps {
+interface AddEditProps {
     isOpen: boolean
     onOpenChange: () => void
+    mode: 'add' | 'edit'
+    product?: Product | null
 }
 
 const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
@@ -56,32 +59,33 @@ const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }
     </div>
 )
 
-export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
-    const [{ errors }, formAction, isLoading] = useActionState(addProduct, {
+export default function AddEdit({ isOpen, onOpenChange, mode, product }: AddEditProps) {
+    // Choose action based on mode
+    const action = mode === 'add' ? addProduct : updateProduct
+    const [{ errors }, formAction, isLoading] = useActionState(action, {
         errors: {},
     })
 
-    const prevErrorsRef = useRef(errors)
-
-    // Show error toast only when errors occur
+    // Simple error handling
     useEffect(() => {
-        if (JSON.stringify(prevErrorsRef.current) !== JSON.stringify(errors)) {
-            prevErrorsRef.current = errors
+        if (errors && Object.keys(errors).length > 0) {
+            const errorMessage = errors.general || 'Please check the form fields'
 
-            if (errors && Object.keys(errors).length > 0) {
-                const errorMessage = errors.general || 'Please check the form fields'
-
-                addToast({
-                    title: 'Error',
-                    description: errorMessage,
-                    color: 'danger',
-                })
-            } else if (errors && Object.keys(errors).length === 0 && !isLoading) {
-                // Success - just close modal
-                onOpenChange()
-            }
+            addToast({
+                title: 'Error',
+                description: errorMessage,
+                color: 'danger',
+            })
+        } else if (errors && Object.keys(errors).length === 0 && !isLoading) {
+            // Success - just close modal
+            onOpenChange()
         }
     }, [errors, isLoading, onOpenChange])
+
+    // Dynamic content based on mode
+    const Title = mode === 'add' ? 'Add New Product' : 'Edit Product'
+    const Submit = mode === 'add' ? 'Add Product' : 'Update Product'
+    const id = mode === 'add' ? 'add-product' : 'edit-product'
 
     return (
         <Modal
@@ -95,7 +99,7 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
         >
             <ModalContent>
                 <ModalHeader className='flex-1 items-center justify-between border-b select-none'>
-                    <p>Add New Product</p>
+                    <p>{Title}</p>
                     <Button
                         isIconOnly
                         className='border'
@@ -107,11 +111,17 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                     />
                 </ModalHeader>
                 <ModalBody>
-                    <Form action={formAction} id='Add Product' validationErrors={errors}>
+                    <Form action={formAction} id={id} validationErrors={errors}>
+                        {/* Hidden product ID for edit mode */}
+                        {mode === 'edit' && product && (
+                            <input name='id' type='hidden' value={product.id} />
+                        )}
+
                         {/* Product Details */}
                         <SectionHeader icon={<Box size={16} />} title='Product Details' />
                         <Input
                             isRequired
+                            defaultValue={mode === 'edit' ? product?.name || '' : ''}
                             errorMessage={errors?.name}
                             isInvalid={!!errors?.name}
                             label='Product Name'
@@ -120,6 +130,7 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                             size='sm'
                         />
                         <Input
+                            defaultValue={mode === 'edit' ? product?.compatible || '' : ''}
                             errorMessage={errors?.compatible}
                             isInvalid={!!errors?.compatible}
                             label='Compatibility'
@@ -128,6 +139,7 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                             size='sm'
                         />
                         <Textarea
+                            defaultValue={mode === 'edit' ? product?.description || '' : ''}
                             label='Description'
                             minRows={2}
                             name='description'
@@ -140,6 +152,7 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                         <div className='grid w-full grid-cols-1 gap-4 sm:grid-cols-2'>
                             <Autocomplete
                                 isRequired
+                                defaultSelectedKey={mode === 'edit' ? product?.category || '' : ''}
                                 errorMessage={errors?.category}
                                 isInvalid={!!errors?.category}
                                 label='Category'
@@ -153,6 +166,7 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                             </Autocomplete>
                             <Autocomplete
                                 isRequired
+                                defaultSelectedKey={mode === 'edit' ? product?.brand || '' : ''}
                                 errorMessage={errors?.brand}
                                 isInvalid={!!errors?.brand}
                                 label='Brand'
@@ -171,6 +185,9 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                         <div className='grid grid-cols-2 gap-4 pb-2 sm:grid-cols-4'>
                             <Input
                                 isRequired
+                                defaultValue={
+                                    mode === 'edit' ? product?.purchase?.toString() || '' : ''
+                                }
                                 errorMessage={errors?.purchase}
                                 isInvalid={!!errors?.purchase}
                                 label='Purchase Price'
@@ -181,7 +198,9 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                                 type='number'
                             />
                             <Input
-                                isRequired
+                                defaultValue={
+                                    mode === 'edit' ? product?.staff_price?.toString() || '' : ''
+                                }
                                 errorMessage={errors?.staff_price}
                                 isInvalid={!!errors?.staff_price}
                                 label='Staff Price'
@@ -192,7 +211,9 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                                 type='number'
                             />
                             <Input
-                                isRequired
+                                defaultValue={
+                                    mode === 'edit' ? product?.price?.toString() || '' : ''
+                                }
                                 errorMessage={errors?.price}
                                 isInvalid={!!errors?.price}
                                 label='Customer Price'
@@ -204,6 +225,7 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                             />
                             <Input
                                 isRequired
+                                defaultValue={mode === 'edit' ? product?.qty?.toString() || '' : ''}
                                 errorMessage={errors?.qty}
                                 isInvalid={!!errors?.qty}
                                 label='Quantity'
@@ -216,17 +238,7 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                         </div>
                     </Form>
                 </ModalBody>
-                <ModalFooter className='flex-row-reverse border-t'>
-                    <Button
-                        className='w-full'
-                        color='primary'
-                        form='Add Product'
-                        isLoading={isLoading}
-                        radius='full'
-                        type='submit'
-                    >
-                        Add Product
-                    </Button>
+                <ModalFooter className='border-t'>
                     <Button
                         className='w-full border'
                         radius='full'
@@ -234,6 +246,16 @@ export default function AddProduct({ isOpen, onOpenChange }: AddProductProps) {
                         onPress={onOpenChange}
                     >
                         Cancel
+                    </Button>
+                    <Button
+                        className='w-full'
+                        color='primary'
+                        form={id}
+                        isLoading={isLoading}
+                        radius='full'
+                        type='submit'
+                    >
+                        {Submit}
                     </Button>
                 </ModalFooter>
             </ModalContent>

@@ -7,9 +7,8 @@ import { Edit, Trash2, Eye, Plus } from 'lucide-react'
 import { Product } from '®types/products'
 import { logWarning } from '®lib/utils'
 
-import EditProductModal from './edit'
 import DeleteProductModal from './delete'
-import AddProductModal from './add'
+import AddEdit from './add'
 
 interface ProductsListProps {
     products: Product[]
@@ -56,23 +55,11 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
         setIsAddModalOpen(true)
     }
 
-    const handleEditSuccess = () => {
-        setIsEditModalOpen(false)
-        setEditingProduct(null)
-        // Refresh the page to show updated data
-        window.location.reload()
-    }
-
     const handleDeleteSuccess = () => {
         setIsDeleteModalOpen(false)
         setDeletingProduct(null)
         // Refresh the page to show updated data
         window.location.reload()
-    }
-
-    const handleCloseEdit = () => {
-        setIsEditModalOpen(false)
-        setEditingProduct(null)
     }
 
     const handleCloseDelete = () => {
@@ -116,9 +103,7 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
                         )}
                     </div>
                 </div>
-
-                {/* Add Product Modal */}
-                <AddProductModal isOpen={isAddModalOpen} onOpenChange={handleCloseAdd} />
+                <AddEdit isOpen={isAddModalOpen} mode='add' onOpenChange={handleCloseAdd} />
             </>
         )
     }
@@ -266,11 +251,11 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
             </div>
 
             {/* Edit Modal */}
-            <EditProductModal
+            <AddEdit
                 isOpen={isEditModalOpen}
+                mode='edit'
                 product={editingProduct}
-                onClose={handleCloseEdit}
-                onSuccess={handleEditSuccess}
+                onOpenChange={handleCloseAdd}
             />
 
             {/* Delete Modal */}
@@ -282,7 +267,7 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
             />
 
             {/* Add Product Modal */}
-            <AddProductModal isOpen={isAddModalOpen} onOpenChange={handleCloseAdd} />
+            <AddEdit isOpen={isAddModalOpen} mode='add' onOpenChange={handleCloseAdd} />
         </>
     )
 }
