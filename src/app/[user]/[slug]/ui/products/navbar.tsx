@@ -22,7 +22,7 @@ export default function NavBar({ canManage }: NavBarProps) {
                 <div className='hidden h-10 w-full items-center gap-1.5 select-none sm:flex'>
                     <h1 className='text-base font-bold sm:text-lg'>Products</h1>
                 </div>
-                <div className='flex w-full items-center justify-end gap-2'>
+                <div className='flex w-full items-center justify-end gap-3'>
                     <Input
                         className='bg-transparent'
                         classNames={{
@@ -36,15 +36,23 @@ export default function NavBar({ canManage }: NavBarProps) {
 
                     {/* Only show Add Product button if user can manage products on his profile */}
                     {canManage && (
-                        <Button
-                            isIconOnly
-                            className='h-10 w-10 min-w-10 border'
-                            radius='full'
-                            size='sm'
-                            startContent={<Plus size={24} />}
-                            variant='light'
-                            onPress={onOpen}
-                        />
+                        <>
+                            <Button
+                                isIconOnly
+                                className='h-10 min-h-10 rounded-lg border md:hidden'
+                                startContent={<Plus size={20} />}
+                                variant='light'
+                                onPress={onOpen}
+                            />
+                            <Button
+                                className='hidden h-10 shrink-0 rounded-md border shadow-none md:flex'
+                                color='primary'
+                                startContent={<Plus size={20} />}
+                                onPress={onOpen}
+                            >
+                                Add Product
+                            </Button>
+                        </>
                     )}
                 </div>
             </Navbar>

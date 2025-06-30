@@ -1,53 +1,35 @@
 'use server'
 
-import { cookies } from 'next/headers'
+import { revalidatePath } from 'next/cache'
 
-import { adminAuth } from '®firebase/admin'
+import { logWarning } from '®lib/utils'
 import { createClient } from '®supabase/server'
 import { Product, ProductsResult } from '®types/products'
 
-// Helper function to get current authenticated user
-async function getCurrentUser() {
-    const cookieStore = await cookies()
-    const token = cookieStore.get('session')?.value
-
-    if (!token) {
-        throw new Error('Not authenticated')
-    }
-
-    try {
-        const decoded = await adminAuth.verifyIdToken(token)
-        const uid = decoded.uid
-
-        const supabase = await createClient()
-        const { data: user, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', uid)
-            .single()
-
-        if (error || !user) {
-            throw new Error('User not found')
-        }
-
-        return user
-    } catch {
-        throw new Error('Authentication failed')
-    }
-}
+import { getCurrentUser } from './supabase'
 
 // Helper function to validate user owns the product
 async function validateProductOwnership(productId: number, userId: string) {
     const supabase = await createClient()
     const { data: product, error } = await supabase
         .from('products')
-        .select('createdBy')
+        .select('createdBy, deleted_at')
         .eq('id', productId)
-        .eq('deleted_at', null) // Only active products
         .single()
 
-    if (error || !product) {
+    if (error) {
+        if (error.code === 'PGRST116') {
+            throw new Error('Product not found')
+        }
+        throw new Error(`Database error: ${error.message}`)
+    }
+
+    if (!product) {
         throw new Error('Product not found')
+    }
+
+    if (product.deleted_at) {
+        throw new Error('Product has been deleted')
     }
 
     if (product.createdBy !== userId) {
@@ -71,6 +53,63 @@ function generateSlug(name: string, category?: string): string {
     return categorySlug ? `${nameSlug}-${categorySlug}` : nameSlug
 }
 
+// Utility to upload up to 4 images to Supabase Storage and return public URLs
+async function uploadUserProductImages(
+    username: string,
+    productSlug: string,
+    files: File[]
+): Promise<string[]> {
+    const supabase = await createClient()
+    const urls: string[] = []
+
+    for (let i = 0; i < files.length && i < 4; i++) {
+        const file = files[i]
+        // Fix file extension extraction
+        let ext = 'jpg' // default fallback
+
+        if (file.name && file.name.includes('.')) {
+            const parts = file.name.split('.')
+
+            if (parts.length > 1) {
+                ext = parts[parts.length - 1].toLowerCase()
+            }
+        }
+        // Validate extension
+        if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+            ext = 'jpg' // fallback to jpg if invalid extension
+        }
+
+        const path = `user/@${username}/products/${productSlug}/${Date.now()}.${ext}`
+        const { error } = await supabase.storage.from('user').upload(path, file, {
+            cacheControl: '3600',
+            upsert: false,
+        })
+
+        if (error) throw error
+        const publicUrlData = supabase.storage.from('user').getPublicUrl(path)
+
+        urls.push(publicUrlData.data.publicUrl)
+    }
+
+    return urls
+}
+
+// Helper to delete all images in a product's storage folder
+async function deleteAllProductImages(username: string, productId: number) {
+    const supabase = await createClient()
+    // List all files in the product's folder
+    const folderPath = `user/@${username}/products/${productId}`
+    const { data, error } = await supabase.storage.from('user').list(folderPath, { limit: 100 })
+
+    if (error) return // Ignore errors for now
+    if (data && data.length > 0) {
+        // Delete all files in the folder
+        const paths = data.map((file) => `${folderPath}/${file.name}`)
+
+        await supabase.storage.from('user').remove(paths)
+    }
+}
+
 /**
  * Add a new product (only for authenticated user's own profile)
  * Works with useActionState pattern
@@ -80,96 +119,65 @@ export async function addProduct(
     formData: FormData
 ) {
     try {
-        // Get current authenticated user
         const currentUser = await getCurrentUser()
+        // Dynamically extract all fields from formData
+        const data: Record<string, unknown> = {}
 
-        // Extract and validate form data
-        const name = formData.get('name') as string
-        const compatible = formData.get('compatible') as string
-        const description = formData.get('description') as string
-        const purchase = parseFloat(formData.get('purchase') as string)
-        const staff_price = parseFloat(formData.get('staff_price') as string) || null
-        const price = parseFloat(formData.get('price') as string) || null
-        const qty = parseInt(formData.get('qty') as string)
-        const category = formData.get('category') as string
-        const brand = formData.get('brand') as string
-
-        // Basic validation
-        const errors: Record<string, string> = {}
-
-        if (!name || name.trim().length === 0) {
-            errors.name = 'Product name is required'
+        for (const [key, value] of formData.entries()) {
+            // Skip files and images for now, handle below
+            if (key === 'img' || key === 'existingImg[]') continue
+            data[key] = value
         }
-
-        if (isNaN(purchase) || purchase <= 0) {
-            errors.purchase = 'Purchase price must be positive'
+        // Add required fields
+        data.createdBy = currentUser.id
+        // Generate slug if name and category are present
+        if (data.name && data.category) {
+            data.slug = generateSlug(data.name as string, data.category as string)
         }
-
-        if (isNaN(qty) || qty < 0) {
-            errors.qty = 'Quantity must be non-negative'
-        }
-
-        if (!category || category.trim().length === 0) {
-            errors.category = 'Category is required'
-        }
-
-        if (!brand || brand.trim().length === 0) {
-            errors.brand = 'Brand is required'
-        }
-
-        // If there are validation errors, return them
-        if (Object.keys(errors).length > 0) {
-            return { errors }
-        }
-
-        // Generate slug
-        const slug = generateSlug(name, category)
-
+        // Insert new product (without images)
         const supabase = await createClient()
-
-        // Check if product with same slug already exists for this user
-        const { data: existingProduct } = await supabase
+        const { data: inserted, error: insertError } = await supabase
             .from('products')
-            .select('id')
-            .eq('createdBy', currentUser.id)
-            .eq('slug', slug)
-            .eq('deleted_at', null)
+            .insert({
+                ...data,
+                img: [],
+                other: {},
+            })
+            .select()
             .single()
 
-        if (existingProduct) {
+        if (insertError) {
             return {
                 errors: {
-                    name: 'This product already exists',
+                    general: `Failed to add product: ${insertError.message}`,
                 },
             }
         }
+        const productId = inserted.id
+        // Handle images
+        const existingImg = formData.getAll('existingImg[]').filter(Boolean) as string[]
+        const files = formData
+            .getAll('img')
+            .filter((f) => typeof File !== 'undefined' && f instanceof File) as File[]
+        let imgUrls: string[] = existingImg
 
-        // Insert new product
-        const { error } = await supabase.from('products').insert({
-            name: name.trim(),
-            compatible: compatible.trim() || null,
-            description: description.trim() || null,
-            purchase,
-            staff_price,
-            price,
-            qty,
-            category: category.trim(),
-            brand: brand.trim(),
-            createdBy: currentUser.id,
-            slug,
-            img: [],
-            other: {},
-        })
+        if (files.length > 0) {
+            const newUrls = await uploadUserProductImages(
+                currentUser.username,
+                inserted.slug,
+                files
+            )
 
-        if (error) {
-            return {
-                errors: {
-                    general: `Failed to add product: ${error.message}`,
-                },
-            }
+            imgUrls = [...existingImg, ...newUrls]
+            await supabase.from('products').update({ img: imgUrls }).eq('id', productId)
+        } else if (existingImg.length > 0) {
+            await supabase.from('products').update({ img: imgUrls }).eq('id', productId)
         }
 
-        return { errors: {} }
+        // Revalidate the page to refresh data
+        revalidatePath('/[user]/[slug]', 'page')
+
+        return { errors: {} as Record<string, string> }
     } catch (error) {
         return {
             errors: {
@@ -188,145 +196,147 @@ export async function updateProduct(
     formData: FormData
 ) {
     try {
-        // Get current authenticated user
         const currentUser = await getCurrentUser()
-
-        // Extract and validate form data
         const id = parseInt(formData.get('id') as string)
-        const name = formData.get('name') as string
-        const compatible = formData.get('compatible') as string
-        const description = formData.get('description') as string
-        const purchase = parseFloat(formData.get('purchase') as string)
-        const staff_price = parseFloat(formData.get('staff_price') as string) || null
-        const price = parseFloat(formData.get('price') as string) || null
-        const qty = parseInt(formData.get('qty') as string)
-        const category = formData.get('category') as string
-        const brand = formData.get('brand') as string
+        // Dynamically extract all fields from formData
+        const data: Record<string, unknown> = {}
 
-        // Basic validation
-        const errors: Record<string, string> = {}
-
-        if (!id || isNaN(id)) {
-            errors.id = 'Product ID is required'
+        for (const [key, value] of formData.entries()) {
+            // Skip files and images for now, handle below
+            if (key === 'img' || key === 'existingImg[]' || key === 'id') continue
+            data[key] = value
         }
-
-        if (!name || name.trim().length === 0) {
-            errors.name = 'Product name is required'
-        }
-
-        if (isNaN(purchase) || purchase <= 0) {
-            errors.purchase = 'Purchase price must be positive'
-        }
-
-        if (isNaN(qty) || qty < 0) {
-            errors.qty = 'Quantity must be non-negative'
-        }
-
-        if (!category || category.trim().length === 0) {
-            errors.category = 'Category is required'
-        }
-
-        if (!brand || brand.trim().length === 0) {
-            errors.brand = 'Brand is required'
-        }
-
-        // If there are validation errors, return them
-        if (Object.keys(errors).length > 0) {
-            return { errors }
-        }
-
-        // Validate product ownership
-        await validateProductOwnership(id, currentUser.id)
-
+        // Get existing product with current images
         const supabase = await createClient()
+        const { data: currentProduct, error: fetchError } = await supabase
+            .from('products')
+            .select('img, slug')
+            .eq('id', id)
+            .single()
 
-        // If name or category changed, generate new slug
-        const updateData: {
-            name: string
-            compatible: string | null
-            description: string | null
-            purchase: number
-            staff_price: number | null
-            price: number | null
-            qty: number
-            category: string
-            brand: string
-            slug?: string
-        } = {
-            name: name.trim(),
-            compatible: compatible.trim() || null,
-            description: description.trim() || null,
-            purchase,
-            staff_price,
-            price,
-            qty,
-            category: category.trim(),
-            brand: brand.trim(),
+        if (fetchError) {
+            return { errors: { general: fetchError.message || 'Fetch error' } }
         }
 
-        if (name || category) {
-            const { data: existingProduct } = await supabase
-                .from('products')
-                .select('name, category')
-                .eq('id', id)
-                .single()
+        // Handle images
+        const existingImg = formData.getAll('existingImg[]') as string[]
+        const newImages = formData.getAll('img') as File[]
+        let imgUrls: string[] = existingImg
 
-            const newName = name || existingProduct?.name || ''
-            const newCategory = category || existingProduct?.category || ''
-            const newSlug = generateSlug(newName, newCategory)
+        // Get current images from database
+        const currentImages = currentProduct.img || []
 
-            // Check if new slug conflicts with existing product
-            const { data: slugConflict } = await supabase
-                .from('products')
-                .select('id')
-                .eq('createdBy', currentUser.id)
-                .eq('slug', newSlug)
-                .neq('id', id)
-                .eq('deleted_at', null)
-                .single()
+        // Find images that were removed (in currentImages but not in existingImg)
+        const removedImages = currentImages.filter((url: string) => !existingImg.includes(url))
 
-            if (slugConflict) {
+        // Delete removed images from storage
+        if (removedImages.length > 0 && currentProduct.slug) {
+            try {
+                for (const imageUrl of removedImages) {
+                    // Extract path from URL - fix the regex to get correct path
+                    // URL format: https://.../storage/v1/object/public/user/@username/products/slug/filename
+                    const match = imageUrl.match(
+                        /\/storage\/v1\/object\/public\/user\/@([^\/]+)\/products\/([^\/]+)\/([^\/]+)$/
+                    )
+
+                    if (match && match[1] && match[2] && match[3]) {
+                        const username = match[1]
+                        const productSlug = match[2]
+                        const filename = match[3]
+                        const path = `user/@${username}/products/${productSlug}/${filename}`
+
+                        const { error: deleteError } = await supabase.storage
+                            .from('user')
+                            .remove([path])
+
+                        if (deleteError) {
+                            logWarning('updateProduct: failed to delete from storage:', deleteError)
+                        }
+                    }
+                }
+            } catch (e) {
+                logWarning('Failed to delete some images from storage:', e)
+            }
+        }
+
+        // Upload new images
+        if (newImages.length > 0 && currentProduct.slug) {
+            try {
+                const newUrls = await uploadUserProductImages(
+                    currentUser.username,
+                    currentProduct.slug,
+                    newImages
+                )
+
+                imgUrls = [...existingImg, ...newUrls]
+            } catch (e) {
                 return {
                     errors: {
-                        name: 'A product with this name and category already exists',
+                        general:
+                            'Image upload failed: ' + (e instanceof Error ? e.message : String(e)),
                     },
                 }
             }
-
-            updateData.slug = newSlug
         }
 
         // Update product
-        const { error } = await supabase.from('products').update(updateData).eq('id', id)
+        const { error } = await supabase
+            .from('products')
+            .update({
+                ...data,
+                img: imgUrls,
+            })
+            .eq('id', id)
 
         if (error) {
-            return {
-                errors: {
-                    general: `Failed to update product: ${error.message}`,
-                },
-            }
+            return { errors: { general: error.message || 'Update error' } }
         }
 
-        return { errors: {} }
+        // Revalidate the page to refresh data
+        revalidatePath('/[user]/[slug]', 'page')
+
+        return { errors: {} as Record<string, string> }
     } catch (error) {
         return {
-            errors: {
-                general: error instanceof Error ? error.message : 'Unknown error occurred',
-            },
+            errors: { general: error instanceof Error ? error.message : 'Unknown error occurred' },
         }
     }
 }
 
 /**
  * Soft delete a product (move to trash)
+ * Works with useActionState pattern
  */
-export async function deleteProduct(productId: number) {
+export async function deleteProduct(
+    prevState: { errors: Record<string, string> },
+    formData: FormData
+): Promise<{ errors: Record<string, string> }> {
     try {
         // Get current authenticated user
         const currentUser = await getCurrentUser()
 
-        // Validate product ownership
-        await validateProductOwnership(productId, currentUser.id)
+        // Extract product ID from form data
+        const id = parseInt(formData.get('id') as string)
+
+        // Basic validation
+        if (!id || isNaN(id)) {
+            return {
+                errors: {
+                    general: 'Product ID is required',
+                },
+            }
+        }
+
+        try {
+            // Validate product ownership
+            await validateProductOwnership(id, currentUser.id)
+        } catch (error) {
+            return {
+                errors: {
+                    general: error instanceof Error ? error.message : 'Product validation failed',
+                },
+            }
+        }
 
         const supabase = await createClient()
 
@@ -334,17 +344,25 @@ export async function deleteProduct(productId: number) {
         const { error } = await supabase
             .from('products')
             .update({ deleted_at: new Date().toISOString() })
-            .eq('id', productId)
+            .eq('id', id)
 
         if (error) {
-            throw new Error(`Failed to delete product: ${error.message}`)
+            return {
+                errors: {
+                    general: `Failed to delete product: ${error.message}`,
+                },
+            }
         }
 
-        return { success: true }
+        // Revalidate the page to refresh data
+        revalidatePath('/[user]/[slug]', 'page')
+
+        return { errors: {} as Record<string, string> }
     } catch (error) {
         return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred',
+            errors: {
+                general: error instanceof Error ? error.message : 'Unknown error occurred',
+            },
         }
     }
 }
@@ -361,7 +379,7 @@ export async function permanentlyDeleteProduct(productId: number) {
         const supabase = await createClient()
         const { data: product, error } = await supabase
             .from('products')
-            .select('createdBy')
+            .select('createdBy, img')
             .eq('id', productId)
             .single()
 
@@ -372,6 +390,9 @@ export async function permanentlyDeleteProduct(productId: number) {
         if (product.createdBy !== currentUser.id) {
             throw new Error('Unauthorized: You can only delete your own products')
         }
+
+        // Delete all product images from storage
+        await deleteAllProductImages(currentUser.username, productId)
 
         // Permanently delete
         const { error: deleteError } = await supabase.from('products').delete().eq('id', productId)
@@ -442,7 +463,7 @@ type ProductsWithActions = {
     add: typeof addProduct
     edit: typeof updateProduct
     checkCanManage: (targetUsername: string) => Promise<boolean>
-    delete: (productId: number) => Promise<{ success: boolean; error?: string }>
+    delete: typeof deleteProduct
     restore: (productId: number) => Promise<{ success: boolean; error?: string }>
     get: (targetUsername: string, includeTrashed?: boolean) => Promise<ProductsResult>
     permanentlyDelete: (productId: number) => Promise<{ success: boolean; error?: string }>

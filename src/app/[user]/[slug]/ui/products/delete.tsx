@@ -1,172 +1,151 @@
 'use client'
 
-import { useState } from 'react'
+import { useActionState } from 'react'
+import { useRef, useEffect } from 'react'
 import {
     Modal,
     ModalBody,
     ModalContent,
-    ModalFooter,
     ModalHeader,
     Button,
-    Card,
-    CardBody,
-    Chip,
+    Form,
+    ModalFooter,
+    Image,
 } from '@heroui/react'
-import { Trash2, AlertTriangle } from 'lucide-react'
+import { Trash2, X } from 'lucide-react'
+import { addToast } from '@heroui/react'
+import { MdProductionQuantityLimits } from 'react-icons/md'
 
 import { deleteProduct } from '®actions/products'
 import { Product } from '®types/products'
+import { formatPrice, getProductImage, getStockStatus } from '®lib/utils'
 
-interface DeleteProductModalProps {
+interface DeleteProductProps {
     isOpen: boolean
     onClose: () => void
-    onSuccess?: () => void
     product: Product | null
 }
 
-export default function DeleteProductModal({
-    isOpen,
-    onClose,
-    onSuccess,
-    product,
-}: DeleteProductModalProps) {
-    const [isLoading, setIsLoading] = useState(false)
+export default function DeleteProduct({ isOpen, onClose, product }: DeleteProductProps) {
+    const [{ errors }, formAction, isLoading] = useActionState(deleteProduct, { errors: {} })
+    const formRef = useRef<HTMLFormElement>(null)
 
-    const handleDelete = async () => {
-        if (!product) return
+    useEffect(() => {
+        if (errors && Object.keys(errors).length > 0) {
+            const errorMessage = errors.general || 'Please check the form fields'
 
-        setIsLoading(true)
-        try {
-            const result = await deleteProduct(product.id)
-
-            if (result.success) {
-                onClose()
-                onSuccess?.()
-            } else {
-                alert(result.error || 'Failed to delete product')
-            }
-        } catch {
-            alert('An error occurred while deleting the product')
-        } finally {
-            setIsLoading(false)
+            addToast({
+                title: errorMessage,
+                color: 'danger',
+            })
+        } else if (errors && Object.keys(errors).length === 0 && !isLoading) {
+            // Success - close modal
+            onClose()
         }
-    }
+    }, [errors, isLoading, onClose])
 
     if (!product) return null
 
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-        }).format(price)
+    const renderProductImage = () => {
+        const src = getProductImage(product)
+
+        if (src) {
+            return (
+                <Image
+                    alt={product.name}
+                    className='size-28 rounded-xl border object-cover transition-all duration-300 hover:scale-105'
+                    src={src}
+                />
+            )
+        }
+
+        return (
+            <div className='text-muted-foreground flex size-28 items-center justify-center rounded-xl border bg-gradient-to-br from-gray-50 to-gray-200 text-5xl shadow-inner dark:from-neutral-900 dark:to-neutral-800'>
+                <MdProductionQuantityLimits />
+            </div>
+        )
     }
 
-    const getStockStatus = (qty: number) => {
-        if (qty === 0) return { color: 'danger' as const, text: 'Out of Stock' }
-        if (qty <= 5) return { color: 'warning' as const, text: 'Low Stock' }
-
-        return { color: 'success' as const, text: 'In Stock' }
-    }
+    // Helper for product pop details
+    const popDetails = [
+        { label: 'Brand', value: product.brand },
+        { label: 'Category', value: product.category },
+        { label: 'Stock', value: `${product.qty} (${getStockStatus(product.qty).text})` },
+        { label: 'Price', value: product.price ? formatPrice(product.price) : undefined },
+    ].filter((d) => d.value)
 
     return (
-        <Modal isOpen={isOpen} size='md' onClose={onClose}>
-            <ModalContent>
-                <ModalHeader className='flex gap-1'>
-                    <Trash2 className='h-5 w-5 text-red-500' />
-                    Delete Product
-                </ModalHeader>
-                <ModalBody>
-                    <div className='space-y-4'>
-                        <div className='flex items-center gap-2 rounded-lg bg-red-50 p-3'>
-                            <AlertTriangle className='h-5 w-5 text-red-500' />
-                            <p className='text-sm text-red-700'>
-                                Are you sure you want to delete this product? This action cannot be
-                                undone.
-                            </p>
+        <Modal
+            hideCloseButton
+            className='rounded-2xl border shadow-2xl dark:bg-[#0a0a0a]'
+            isOpen={isOpen}
+            placement='center'
+            size='lg'
+            onClose={onClose}
+        >
+            <Form ref={formRef} action={formAction} id='delete-product' validationErrors={errors}>
+                <ModalContent>
+                    <ModalHeader className='flex-1 items-center justify-between rounded-t-2xl border-b bg-gradient-to-r from-red-50/80 to-transparent select-none dark:from-red-900/30 dark:to-transparent'>
+                        <div className='flex items-center gap-2'>
+                            <Trash2 className='animate-bounce text-red-600' />
+                            <span className='text-lg font-bold'>Delete Product</span>
                         </div>
-
-                        <Card>
-                            <CardBody className='p-4'>
-                                <div className='space-y-3'>
-                                    <div className='flex items-start justify-between'>
-                                        <h3 className='text-lg font-semibold'>{product.name}</h3>
-                                        <Chip
-                                            color={getStockStatus(product.qty).color}
-                                            size='sm'
-                                            variant='flat'
-                                        >
-                                            {getStockStatus(product.qty).text}
-                                        </Chip>
+                        <Button
+                            isIconOnly
+                            className='border'
+                            radius='full'
+                            size='sm'
+                            startContent={<X size={18} />}
+                            variant='light'
+                            onPress={onClose}
+                        />
+                    </ModalHeader>
+                    <ModalBody className='items-center py-6 md:flex-row'>
+                        <input name='id' type='hidden' value={product.id.toString()} />
+                        {renderProductImage()}
+                        <div className='flex w-full max-w-xs flex-col gap-2'>
+                            <h1 className='line-clamp-1 text-2xl font-bold text-red-600'>
+                                {product.name}
+                            </h1>
+                            {product.description && (
+                                <p className='text-muted-foreground line-clamp-2 text-sm'>
+                                    {product.description}
+                                </p>
+                            )}
+                            <div className='grid grid-cols-2 gap-x-2 gap-y-1'>
+                                {popDetails.map((d) => (
+                                    <div key={d.label} className='text-muted-foreground text-xs'>
+                                        <span className='font-semibold'>{d.label}:</span>{' '}
+                                        <span>{d.value}</span>
                                     </div>
-
-                                    {product.description && (
-                                        <p className='text-sm text-gray-600'>
-                                            {product.description}
-                                        </p>
-                                    )}
-
-                                    <div className='grid grid-cols-2 gap-4 text-sm'>
-                                        <div>
-                                            <span className='text-gray-500'>Purchase Price:</span>
-                                            <p className='font-medium'>
-                                                {formatPrice(product.purchase)}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <span className='text-gray-500'>Quantity:</span>
-                                            <p className='font-medium'>{product.qty}</p>
-                                        </div>
-                                        {product.staff_price && (
-                                            <div>
-                                                <span className='text-gray-500'>Staff Price:</span>
-                                                <p className='font-medium'>
-                                                    {formatPrice(product.staff_price)}
-                                                </p>
-                                            </div>
-                                        )}
-                                        {product.price && (
-                                            <div>
-                                                <span className='text-gray-500'>
-                                                    Customer Price:
-                                                </span>
-                                                <p className='font-medium'>
-                                                    {formatPrice(product.price)}
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className='flex gap-2'>
-                                        {product.category && (
-                                            <Chip color='primary' size='sm' variant='flat'>
-                                                {product.category}
-                                            </Chip>
-                                        )}
-                                        {product.brand && (
-                                            <Chip color='secondary' size='sm' variant='flat'>
-                                                {product.brand}
-                                            </Chip>
-                                        )}
-                                    </div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button isDisabled={isLoading} variant='light' onPress={onClose}>
-                        Cancel
-                    </Button>
-                    <Button
-                        color='danger'
-                        isLoading={isLoading}
-                        startContent={<Trash2 size={16} />}
-                        onPress={handleDelete}
-                    >
-                        Delete Product
-                    </Button>
-                </ModalFooter>
-            </ModalContent>
+                                ))}
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter className='flex-row-reverse gap-2 border-t bg-gradient-to-r from-red-50/60 to-transparent dark:from-red-900/20 dark:to-transparent'>
+                        <Button
+                            fullWidth
+                            className='font-semibold'
+                            color='danger'
+                            isLoading={isLoading}
+                            radius='full'
+                            startContent={<Trash2 size={20} />}
+                            type='submit'
+                        >
+                            {isLoading ? 'Deleting...' : 'Yes, Delete / हाँ, डिलीट करें'}
+                        </Button>
+                        <Button
+                            className='w-full border font-medium'
+                            radius='full'
+                            type='button'
+                            variant='light'
+                            onPress={onClose}
+                        >
+                            Cancel / रद्द करें
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Form>
         </Modal>
     )
 }

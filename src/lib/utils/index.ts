@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge'
 
 import { siteConfig } from '®config/site'
 import { DriveItem } from '®types/drive'
+import { Product } from '®types/products'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -89,6 +90,31 @@ export const formatBytes = (bytes: number, decimals = 2): string => {
     const i = Math.floor(Math.log(bytes) / Math.log(k))
 
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+}
+
+export const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+    }).format(price)
+}
+
+export const getStockStatus = (qty: number) => {
+    if (qty === 0) return { color: 'danger' as const, text: 'Out of Stock' }
+    if (qty <= 5) return { color: 'warning' as const, text: 'Low Stock' }
+
+    return { color: 'success' as const, text: 'In Stock' }
+}
+
+// Helper to get the first image URL from product.img
+export const getProductImage = (product: Product) => {
+    if (!product.img || product.img.length === 0) return null
+    const first = product.img[0]
+
+    if (typeof first === 'string') return first
+    if (typeof first === 'object' && first.url) return first.url
+
+    return null
 }
 
 export function formatDateTime(dateTimeString?: string | null | undefined): string {

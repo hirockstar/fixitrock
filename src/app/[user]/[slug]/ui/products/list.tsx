@@ -2,12 +2,11 @@
 
 import { useState } from 'react'
 import { Card, CardBody, CardFooter, Button, Image, Chip, useDisclosure } from '@heroui/react'
-import { Edit, Trash2, Eye, Plus } from 'lucide-react'
+import { Edit, Trash2, Plus } from 'lucide-react'
 
 import { Product } from '®types/products'
-import { logWarning } from '®lib/utils'
 
-import DeleteProductModal from './delete'
+import DeleteProduct from './delete'
 import AddEdit from './add'
 
 interface ProductsListProps {
@@ -60,25 +59,8 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
         onDeleteOpen()
     }
 
-    const handleView = (product: Product) => {
-        // TODO: Implement view functionality
-        logWarning('View product:', product)
-    }
-
     const handleAddProduct = () => {
         onAddOpen()
-    }
-
-    const handleDeleteSuccess = () => {
-        onDeleteClose()
-        setDeletingProduct(null)
-        // Refresh the page to show updated data
-        window.location.reload()
-    }
-
-    const handleCloseDelete = () => {
-        onDeleteClose()
-        setDeletingProduct(null)
     }
 
     if (products.length === 0) {
@@ -222,15 +204,6 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
                             {/* Action Buttons */}
                             <CardFooter className='p-4 pt-0'>
                                 <div className='flex w-full gap-2'>
-                                    <Button
-                                        className='flex-1'
-                                        size='sm'
-                                        variant='flat'
-                                        onPress={() => handleView(product)}
-                                    >
-                                        <Eye size={14} />
-                                        View
-                                    </Button>
                                     {canManage && (
                                         <>
                                             <Button
@@ -269,11 +242,10 @@ export default function ProductsList({ products, canManage }: ProductsListProps)
             />
 
             {/* Delete Modal */}
-            <DeleteProductModal
+            <DeleteProduct
                 isOpen={isDeleteOpen}
                 product={deletingProduct}
-                onClose={handleCloseDelete}
-                onSuccess={handleDeleteSuccess}
+                onClose={onDeleteClose}
             />
 
             {/* Add Product Modal */}
