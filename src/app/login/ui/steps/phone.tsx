@@ -54,7 +54,6 @@ export function StepPhone({
 
     return (
         <Form
-            className=''
             onSubmit={(e) => {
                 e.preventDefault()
                 if (isPhoneValid) handleSendOtp()
@@ -83,7 +82,7 @@ export function StepPhone({
             <DrawerFooter className='w-full'>
                 <Button
                     color={isPhoneValid ? 'primary' : 'default'}
-                    isDisabled={!isPhoneValid || loading}
+                    isDisabled={!isPhoneValid}
                     isLoading={loading}
                     type='submit'
                 >

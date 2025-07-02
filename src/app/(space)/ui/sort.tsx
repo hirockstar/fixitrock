@@ -27,7 +27,7 @@ import {
 import { ArrowSortDown, ArrowSortUp, SortAZ, SortDate, SortSize, SortType } from '®ui/icons'
 
 export function SortBy({ sort }: { sort: (sortField: SortField, sortOrder: SortOrder) => void }) {
-    const isDesktop = useMediaQuery('(min-width: 640px)')
+    const isDesktop = useMediaQuery('(min-width: 768px)')
     const [sortField, setSortField] = React.useState<SortField>('name')
     const [sortOrder, setSortOrder] = React.useState<SortOrder>('asc')
     const [isOpen, setOpen] = React.useState(false)

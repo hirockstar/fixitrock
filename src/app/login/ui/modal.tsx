@@ -17,7 +17,7 @@ export function LoginModal() {
     const router = useRouter()
     const pathname = usePathname()
 
-    const isDesktop = useMediaQuery('(min-width: 640px)')
+    const isDesktop = useMediaQuery('(min-width: 768px)')
     const isOpen = pathname === '/login'
     const setIsOpen = () => {
         router.push('/')
@@ -32,7 +32,6 @@ export function LoginModal() {
     ) : (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerContent
-                className=''
                 onInteractOutside={(e) => e.preventDefault()}
                 onPointerDownOutside={(e) => e.preventDefault()}
             >

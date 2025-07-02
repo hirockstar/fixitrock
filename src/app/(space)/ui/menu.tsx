@@ -31,7 +31,7 @@ export function Menu({
     onSelected: (c: DriveItem) => void
 }) {
     const path = usePathname()
-    const isDesktop = useMediaQuery('(min-width: 640px)')
+    const isDesktop = useMediaQuery('(min-width: 768px)')
     const url = `${siteConfig.domain}${c.folder ? `${c.href}` : `${path}#${c.name}`}`
 
     const handleCopy = () => {

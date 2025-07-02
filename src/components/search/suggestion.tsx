@@ -25,44 +25,50 @@ export function Suggestion({
 
     return (
         <Listbox autoFocus aria-label='Suggestion' classNames={{ base: 'p-0' }}>
-            <ListboxSection
-                classNames={{ base: 'mb-0 px-1.5', group: 'flex flex-col gap-1.5' }}
-                title='Account'
-            >
-                {navigation.map((n) => {
-                    const iconName = n.icon.charAt(0).toUpperCase() + n.icon.slice(1)
-                    const LucideIcon = Icons[iconName as keyof typeof Icons] as
-                        | React.ElementType
-                        | undefined
+            {navigation && navigation.length > 0 ? (
+                <ListboxSection
+                    classNames={{ base: 'mb-0 px-1.5', group: 'flex flex-col gap-1.5' }}
+                    items={navigation}
+                    title='Account'
+                >
+                    {navigation.map((n) => {
+                        const iconName = n.icon.charAt(0).toUpperCase() + n.icon.slice(1)
+                        const LucideIcon = Icons[iconName as keyof typeof Icons] as
+                            | React.ElementType
+                            | undefined
 
-                    return (
-                        <ListboxItem
-                            key={n.title}
-                            className='data-[hover=true]:bg-muted/50 rounded-md border'
-                            href={n.href}
-                            startContent={
-                                <div className='flex size-10 items-center rounded-lg border'>
-                                    {LucideIcon ? (
-                                        <LucideIcon
-                                            className='text-muted-foreground mx-auto'
-                                            size={18}
-                                        />
-                                    ) : null}
+                        return (
+                            <ListboxItem
+                                key={n.title}
+                                className='data-[hover=true]:bg-muted/50 rounded-md border'
+                                href={n.href}
+                                startContent={
+                                    <div className='flex size-10 items-center rounded-lg border'>
+                                        {LucideIcon ? (
+                                            <LucideIcon
+                                                className='text-muted-foreground mx-auto'
+                                                size={18}
+                                            />
+                                        ) : null}
+                                    </div>
+                                }
+                                textValue={n.href}
+                                onPress={() => handleRoute(() => router.push(n.href))}
+                            >
+                                <div className='flex flex-col'>
+                                    <h2 className='line-clamp-1 text-[15px] font-medium'>
+                                        {n.title}
+                                    </h2>
+                                    <p className='text-muted-foreground line-clamp-1 text-xs'>
+                                        {n.description}
+                                    </p>
                                 </div>
-                            }
-                            textValue={n.title}
-                            onPress={() => handleRoute(() => router.push(n.href))}
-                        >
-                            <div className='flex flex-col'>
-                                <h2 className='line-clamp-1 text-[15px] font-medium'>{n.title}</h2>
-                                <p className='text-muted-foreground line-clamp-1 text-xs'>
-                                    {n.description}
-                                </p>
-                            </div>
-                        </ListboxItem>
-                    )
-                })}
-            </ListboxSection>
+                            </ListboxItem>
+                        )
+                    })}
+                </ListboxSection>
+            ) : null}
+
             <ListboxSection
                 classNames={{ base: 'mb-0 px-1.5', group: 'flex flex-col gap-1.5' }}
                 title='Suggestion'

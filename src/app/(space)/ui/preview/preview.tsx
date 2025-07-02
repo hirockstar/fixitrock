@@ -15,7 +15,7 @@ type PreviewProps = {
 }
 
 export function Preview({ open, setOpen, data }: PreviewProps) {
-    const isDesktop = useMediaQuery('(min-width: 640px)')
+    const isDesktop = useMediaQuery('(min-width: 768px)')
 
     return (
         <>

@@ -5,8 +5,8 @@ import { useState } from 'react'
 
 import { useSearch } from '®tanstack/query'
 import AnimatedSearch, { useOpen } from '®ui/farmer/search'
-import { UserSheet } from '®app/[user]/ui'
 import { Navigation, User } from '®app/login/types'
+import { UserDrawer } from '®app/[user]/ui'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
@@ -20,7 +20,7 @@ export function SearchBar({ user, navigation }: { user: User | null; navigation:
     return (
         <AnimatedSearch open={open} setOpen={setOpen}>
             <div
-                className={`${open ? 'bg-background flex h-full flex-col rounded-xl sm:h-[60dvh] sm:border' : ''} overflow-hidden`}
+                className={`${open ? 'bg-background flex h-full max-h-[80dvh] flex-col rounded-lg sm:h-[60dvh] sm:border' : ''} overflow-hidden`}
             >
                 <Input
                     classNames={{
@@ -44,7 +44,7 @@ export function SearchBar({ user, navigation }: { user: User | null; navigation:
                                 <X size={18} />
                             </Button>
                         ) : (
-                            <UserSheet navigation={navigation} user={user} />
+                            <UserDrawer navigation={navigation} user={user} />
                         )
                     }
                     placeholder={user ? `Hi ${user.name}` : 'Work in progress . . . '}

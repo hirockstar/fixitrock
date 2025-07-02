@@ -56,7 +56,7 @@ export default function AnimatedSearch({ children, open, setOpen }: AnimatedSear
 }
 
 export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
-    const isDesktop = useMediaQuery('(min-width: 640px)')
+    const isDesktop = useMediaQuery('(min-width: 768px)')
 
     if (isDesktop) {
         return (

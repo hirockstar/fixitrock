@@ -26,7 +26,7 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } 
 export function Status() {
     const { data, isLoading } = useStorage()
     const [open, setOpen] = React.useState(false)
-    const isDesktop = useMediaQuery('(min-width: 640px)')
+    const isDesktop = useMediaQuery('(min-width: 768px)')
 
     const Content = React.memo(({ setOpen }: { setOpen: (open: boolean) => void }) => (
         <>

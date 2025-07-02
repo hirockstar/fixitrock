@@ -35,7 +35,7 @@ export function Navigation({ navigation, onClose }: NavLinksProps) {
                                 <LucideIcon className='text-muted-foreground mx-auto' size={18} />
                             ) : null
                         }
-                        textValue={n.href}
+                        // textValue={n.href}
                         onPress={handleClick}
                     >
                         {n.title}

@@ -37,7 +37,7 @@ export default function ProductModal({
     isDeleting = false,
 }: ProductModalProps) {
     const isEdit = !!initialData?.id
-    const isDesktop = useMediaQuery('(min-width: 640px)')
+    const isDesktop = useMediaQuery('(min-width: 768px)')
     const [isDeleteMode, setIsDeleteMode] = useState(isDeleting)
 
     const { addProduct, updateProduct, deleteProduct } = useInvoiceProduct(invoiceId)

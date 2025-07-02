@@ -1,6 +1,6 @@
 import { Actions } from './actions'
 import Profile from './profile'
 import Tabs from './tabs'
-import UserSheet from './user-sheet'
+import UserDrawer from './userdrawer'
 
-export { UserSheet, Actions, Profile, Tabs }
+export { UserDrawer, Actions, Profile, Tabs }

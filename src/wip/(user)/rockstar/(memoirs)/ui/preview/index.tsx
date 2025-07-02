@@ -48,7 +48,7 @@ function UserInfo({ data, isLoading }: { data?: DriveItem; isLoading: boolean })
     )
 }
 export function Preview({ open, setOpen, c }: PreviewProps) {
-    const isDesktop = useMediaQuery('(min-width: 640px)')
+    const isDesktop = useMediaQuery('(min-width: 768px)')
     const { data, isLoading } = useLocation(c.id)
 
     const handleDownload = () => {
