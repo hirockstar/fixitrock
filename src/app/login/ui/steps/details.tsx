@@ -124,7 +124,7 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
 
                 <Input
                     isRequired
-                    description={`Only lowercase letters, numbers, and underscores. ${username.length}/${MAX_LENGTH}`}
+                    description='Choose wisely - username is permanent!'
                     endContent={
                         checkingUsername ? (
                             <Loader className='text-muted-foreground h-4 w-4 shrink-0 animate-spin' />

@@ -1,5 +1,6 @@
 'use client'
-import { Link } from '@heroui/react'
+
+import Link from 'next/link'
 
 import { siteConfig } from '®config/site'
 import { Status } from '®ui/status'
@@ -11,6 +12,7 @@ export default function Footer() {
         <footer className='mt-4 w-full border-t dark:bg-[#0a0a0a]'>
             <div className='mx-auto flex w-full max-w-7xl items-center justify-between p-4'>
                 <Link
+                    passHref
                     className='font-mono font-bold tracking-tighter select-none'
                     color='foreground'
                     href='/'

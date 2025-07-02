@@ -1,12 +1,43 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 
+import { adminAuth } from '®firebase/admin'
 import { logWarning } from '®lib/utils'
 import { createClient } from '®supabase/server'
 import { Product, ProductsResult } from '®types/products'
 
-import { getCurrentUser } from './supabase'
+// Helper function to get current authenticated user
+
+async function userSession() {
+    const cookieStore = await cookies()
+    const token = cookieStore.get('session')?.value
+
+    if (!token) {
+        throw new Error('Not authenticated')
+    }
+
+    try {
+        const decoded = await adminAuth.verifyIdToken(token)
+        const uid = decoded.uid
+
+        const supabase = await createClient()
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', uid)
+            .single()
+
+        if (error || !user) {
+            throw new Error('User not found')
+        }
+
+        return user
+    } catch {
+        throw new Error('Authentication failed')
+    }
+}
 
 // Helper function to validate user owns the product
 async function validateProductOwnership(productId: number, userId: string) {
@@ -96,6 +127,7 @@ async function uploadUserProductImages(
 
 // Helper to delete all images in a product's storage folder
 async function deleteAllProductImages(username: string, productId: number) {
+    if (!username) return // Guard: do nothing if username is empty or undefined
     const supabase = await createClient()
     // List all files in the product's folder
     const folderPath = `user/@${username}/products/${productId}`
@@ -119,7 +151,7 @@ export async function addProduct(
     formData: FormData
 ) {
     try {
-        const currentUser = await getCurrentUser()
+        const { user } = await userSession()
         // Dynamically extract all fields from formData
         const data: Record<string, unknown> = {}
 
@@ -129,7 +161,7 @@ export async function addProduct(
             data[key] = value
         }
         // Add required fields
-        data.createdBy = currentUser.id
+        data.createdBy = user.id
         // Generate slug if name and category are present
         if (data.name && data.category) {
             data.slug = generateSlug(data.name as string, data.category as string)
@@ -162,11 +194,7 @@ export async function addProduct(
         let imgUrls: string[] = existingImg
 
         if (files.length > 0) {
-            const newUrls = await uploadUserProductImages(
-                currentUser.username,
-                inserted.slug,
-                files
-            )
+            const newUrls = await uploadUserProductImages(user.username, inserted.slug, files)
 
             imgUrls = [...existingImg, ...newUrls]
             await supabase.from('products').update({ img: imgUrls }).eq('id', productId)
@@ -196,7 +224,7 @@ export async function updateProduct(
     formData: FormData
 ) {
     try {
-        const currentUser = await getCurrentUser()
+        const { user } = await userSession()
         const id = parseInt(formData.get('id') as string)
         // Dynamically extract all fields from formData
         const data: Record<string, unknown> = {}
@@ -263,7 +291,7 @@ export async function updateProduct(
         if (newImages.length > 0 && currentProduct.slug) {
             try {
                 const newUrls = await uploadUserProductImages(
-                    currentUser.username,
+                    user.username,
                     currentProduct.slug,
                     newImages
                 )
@@ -313,7 +341,7 @@ export async function deleteProduct(
 ): Promise<{ errors: Record<string, string> }> {
     try {
         // Get current authenticated user
-        const currentUser = await getCurrentUser()
+        const { user } = await userSession()
 
         // Extract product ID from form data
         const id = parseInt(formData.get('id') as string)
@@ -329,7 +357,7 @@ export async function deleteProduct(
 
         try {
             // Validate product ownership
-            await validateProductOwnership(id, currentUser.id)
+            await validateProductOwnership(id, user.id)
         } catch (error) {
             return {
                 errors: {
@@ -357,6 +385,10 @@ export async function deleteProduct(
         // Revalidate the page to refresh data
         revalidatePath('/[user]/[slug]', 'page')
 
+        if (user.username) {
+            await deleteAllProductImages(user.username, id)
+        }
+
         return { errors: {} as Record<string, string> }
     } catch (error) {
         return {
@@ -373,7 +405,7 @@ export async function deleteProduct(
 export async function permanentlyDeleteProduct(productId: number) {
     try {
         // Get current authenticated user
-        const currentUser = await getCurrentUser()
+        const { user } = await userSession()
 
         // Validate product ownership (including trashed products)
         const supabase = await createClient()
@@ -387,12 +419,14 @@ export async function permanentlyDeleteProduct(productId: number) {
             throw new Error('Product not found')
         }
 
-        if (product.createdBy !== currentUser.id) {
+        if (product.createdBy !== user.id) {
             throw new Error('Unauthorized: You can only delete your own products')
         }
 
         // Delete all product images from storage
-        await deleteAllProductImages(currentUser.username, productId)
+        if (user.username) {
+            await deleteAllProductImages(user.username, productId)
+        }
 
         // Permanently delete
         const { error: deleteError } = await supabase.from('products').delete().eq('id', productId)
@@ -416,7 +450,7 @@ export async function permanentlyDeleteProduct(productId: number) {
 export async function restoreProduct(productId: number) {
     try {
         // Get current authenticated user
-        const currentUser = await getCurrentUser()
+        const { user } = await userSession()
 
         // Validate product ownership (including trashed products)
         const supabase = await createClient()
@@ -430,7 +464,7 @@ export async function restoreProduct(productId: number) {
             throw new Error('Product not found')
         }
 
-        if (product.createdBy !== currentUser.id) {
+        if (product.createdBy !== user.id) {
             throw new Error('Unauthorized: You can only restore your own products')
         }
 
@@ -503,7 +537,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
         let currentUser = null
 
         try {
-            currentUser = await getCurrentUser()
+            currentUser = await userSession()
         } catch {
             // User not authenticated - can only view, not manage
         }
@@ -512,7 +546,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
         let productsUsername = targetUsername
 
         if (!productsUsername && currentUser) {
-            productsUsername = currentUser.username
+            productsUsername = currentUser.user?.username
         }
 
         let products: Product[] = []
@@ -531,7 +565,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
             }
 
             // Check if current user can manage this profile
-            canManage = currentUser?.username === targetUser.username
+            canManage = currentUser?.user?.username === targetUser.username
 
             // Build query for products
             const query = supabase
@@ -559,9 +593,9 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
             edit: updateProduct,
             checkCanManage: async (targetUsername: string) => {
                 try {
-                    const currentUser = await getCurrentUser()
+                    const currentUser = await userSession()
 
-                    return currentUser.username === targetUsername
+                    return currentUser.user?.username === targetUsername
                 } catch {
                     return false
                 }
@@ -579,7 +613,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
                     let currentUser = null
 
                     try {
-                        currentUser = await getCurrentUser()
+                        currentUser = await userSession()
                     } catch {
                         // User not authenticated - can only view, not manage
                     }
@@ -596,7 +630,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
                     }
 
                     // Check if current user can manage this profile
-                    const canManage = currentUser?.username === targetUser.username
+                    const canManage = currentUser?.user?.username === targetUser.username
 
                     // Build query for products
                     let query = supabase
@@ -643,9 +677,9 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
             edit: updateProduct,
             checkCanManage: async (targetUsername: string) => {
                 try {
-                    const currentUser = await getCurrentUser()
+                    const currentUser = await userSession()
 
-                    return currentUser.username === targetUsername
+                    return currentUser.user?.username === targetUsername
                 } catch {
                     return false
                 }
@@ -663,7 +697,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
                     let currentUser = null
 
                     try {
-                        currentUser = await getCurrentUser()
+                        currentUser = await userSession()
                     } catch {
                         // User not authenticated - can only view, not manage
                     }
@@ -680,7 +714,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
                     }
 
                     // Check if current user can manage this profile
-                    const canManage = currentUser?.username === targetUser.username
+                    const canManage = currentUser?.user?.username === targetUser.username
 
                     // Build query for products
                     let query = supabase

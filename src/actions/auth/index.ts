@@ -1,5 +1,4 @@
-import { userSession, checkUsername, startSession, createUser, signOut } from './auth'
-import { getUser } from './getUser'
-import { navLinks } from './navLinks'
-
-export { userSession, checkUsername, getUser, startSession, createUser, signOut, navLinks }
+export { checkUsername, startSession, createUser } from './auth'
+export { signOut } from './singout'
+export { getUser } from './getUser'
+export { userSession } from './session'

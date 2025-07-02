@@ -28,22 +28,11 @@ export type SlugConfig = {
     component: string
 }
 
-export type Roles = {
-    id: number
-    role: string
-    tabs?: TabsConfig[]
-    slug?: SlugConfig[]
-}
-
-export type NavLink = {
-    id: number
-    title: string
-    icon?: string // Lucide icon name, e.g., 'settings'
+export type Navigation = {
     href: string
+    icon: string
+    title: string
     description?: string
-    sort_order?: number
-    active?: boolean
-    role?: number | null // bigint or null
 }
 
 export type Quotes = {

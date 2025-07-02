@@ -4,14 +4,9 @@ import { createContext, useContext, useEffect, useState, ReactNode, useCallback 
 import { useRouter } from 'next/navigation'
 import { addToast } from '@heroui/react'
 
-import {
-    userSession,
-    signOut as serverSignOut,
-    navLinks as fetchNavLinks,
-    startSession,
-} from '®actions/auth'
-import { User, NavLink } from '®app/login/types'
-import { createClient } from '®supabase/client'
+import { userSession, startSession } from '®actions/auth'
+import { signOut as serverSignOut } from '®actions/auth'
+import { User } from '®app/login/types'
 import { firebaseAuth } from '®firebase/client'
 import { logWarning } from '®lib/utils'
 
@@ -21,8 +16,6 @@ interface UserContextType {
     user: User | null
     loading: boolean
     signOut: () => Promise<void>
-    navLinks: NavLink[]
-    authUser: () => Promise<ReturnType<typeof createClient>>
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
@@ -40,7 +33,6 @@ function getTokenExpiry(idToken: string): number | null {
 export function UserProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
-    const [navLinks, setNavLinks] = useState<NavLink[]>([])
     const [idToken, setIdToken] = useState<string | null>(null)
     const [sessionExpired, setSessionExpired] = useState(false)
     const [wasLoggedIn, setWasLoggedIn] = useState(false)
@@ -79,12 +71,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         ;(async () => {
             try {
-                const sessionUser = await userSession()
+                const { user } = await userSession()
 
-                if (!sessionUser) {
+                if (!user) {
                     // Don't set sessionExpired if we're on a NotFound page
                     const isNotFoundPage =
-                        window.location.pathname.includes('/@') && !document.querySelector('main') // NotFound pages typically don't have main content
+                        window.location.pathname.includes('/@') && !document.querySelector('main')
 
                     if (!isNotFoundPage && wasLoggedIn) {
                         setSessionExpired(true)
@@ -93,7 +85,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
                     setLoading(false)
                     setIdToken(null)
                 } else {
-                    setUser(sessionUser)
+                    setUser(user)
                     setLoading(false)
                     setSessionExpired(false)
                     setWasLoggedIn(true)
@@ -116,13 +108,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
                     }
                 }
             } catch (err) {
-                // Don't set sessionExpired if we're on a NotFound page
-                const isNotFoundPage =
-                    window.location.pathname.includes('/@') && !document.querySelector('main') // NotFound pages typically don't have main content
-
-                if (!isNotFoundPage && wasLoggedIn) {
-                    setSessionExpired(true)
-                }
+                // Handle any other unexpected errors
                 setUser(null)
                 setLoading(false)
                 setIdToken(null)
@@ -146,11 +132,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
     // Automatically refresh token a few minutes before expiry (even if user never switches tabs)
     useEffect(() => {
         if (!idToken) return
-
         const expiry = getTokenExpiry(idToken)
 
         if (!expiry) return
-
         const now = Date.now()
         // Refresh 5 minutes before expiry
         const msUntilRefresh = expiry - now - 5 * 60 * 1000
@@ -164,68 +148,16 @@ export function UserProvider({ children }: { children: ReactNode }) {
         }
     }, [idToken, refreshSessionCookie])
 
-    // Fetch nav links when user or user.role changes
-    useEffect(() => {
-        if (!user) {
-            setNavLinks([])
-
-            return
-        }
-        const role = typeof user.role === 'number' ? user.role : 1
-
-        fetchNavLinks(role.toString()).then(setNavLinks)
-    }, [user, user?.role])
-
-    // Listen for sign-out events from other tabs
-    useEffect(() => {
-        const onStorage = (event: StorageEvent) => {
-            if (event.key === 'signout') {
-                setUser(null)
-                setNavLinks([])
-                setIdToken(null)
-                setSessionExpired(false)
-                router.push('/')
-            }
-        }
-
-        window.addEventListener('storage', onStorage)
-
-        return () => window.removeEventListener('storage', onStorage)
-    }, [router])
-
     const signOut = async () => {
         await serverSignOut()
-        window.localStorage.setItem('signout', Date.now().toString())
         setUser(null)
-        setNavLinks([])
         setIdToken(null)
         setSessionExpired(false)
         router.push('/')
     }
 
-    // Helper to get a Supabase client with the current user's Firebase ID token
-    const authUser = useCallback(async () => {
-        let token = idToken
-
-        try {
-            const fbUser = firebaseAuth.currentUser
-
-            if (fbUser) {
-                token = await fbUser.getIdToken()
-            }
-        } catch (err) {
-            if (process.env.NODE_ENV === 'development') {
-                logWarning('Error getting Firebase ID token (authUser):', err)
-            }
-        }
-
-        return createClient(token || undefined)
-    }, [idToken])
-
     return (
-        <UserContext.Provider value={{ user, loading, signOut, navLinks, authUser }}>
-            {children}
-        </UserContext.Provider>
+        <UserContext.Provider value={{ user, loading, signOut }}>{children}</UserContext.Provider>
     )
 }
 

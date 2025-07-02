@@ -6,26 +6,6 @@ import { adminAuth } from '®firebase/admin'
 import { createClient } from '®supabase/server'
 
 /**
- * Returns the current logged-in user from Supabase using Firebase session cookie.
- */
-export async function userSession() {
-    const cookieStore = await cookies()
-    const token = cookieStore.get('session')?.value
-
-    if (!token) return null
-    try {
-        const decoded = await adminAuth.verifyIdToken(token)
-        const uid = decoded.uid
-        const supabase = await createClient()
-        const { data, error } = await supabase.from('users').select('*').eq('id', uid).single()
-
-        return error ? null : data
-    } catch {
-        return null
-    }
-}
-
-/**
  * Checks if a username is available.
  */
 export async function checkUsername(username: string) {
@@ -55,7 +35,7 @@ export async function startSession(idToken: string) {
             httpOnly: true,
             secure: true,
             sameSite: 'strict',
-            maxAge: 60 * 60 * 24 * 7,
+            maxAge: 59 * 60,
         })
         const supabase = await createClient()
         const { data: existing } = await supabase.from('users').select('id').eq('id', uid).single()
@@ -109,13 +89,4 @@ export async function createUser(user: {
     } catch (err) {
         return { error: (err as Error).message }
     }
-}
-
-/**
- * Signs out the current user by clearing the session cookie.
- */
-export async function signOut() {
-    const cookieStore = await cookies()
-
-    cookieStore.set('session', '', { path: '/', maxAge: 0 })
 }

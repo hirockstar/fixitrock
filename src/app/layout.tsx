@@ -5,17 +5,20 @@ import { META_THEME_COLORS, siteConfig } from '®config/site'
 import { Providers } from '®provider'
 import '../styles/globals.css'
 import { cn } from '®lib/utils'
-import SearchBar from '®components/search/bar'
+import { SearchBar } from '®components/search/bar'
 import { fontVariables } from '®lib/fonts'
 import { UserProvider } from '®provider/user'
+import { userSession } from '®actions/auth'
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
     modal,
 }: Readonly<{
     children: React.ReactNode
     modal?: React.ReactNode
 }>) {
+    const { user, navigation } = await userSession()
+
     return (
         <html suppressHydrationWarning lang='en'>
             <head>
@@ -37,7 +40,7 @@ export default function RootLayout({
                         <div className='bg-background relative flex min-h-screen flex-col'>
                             <div className='flex-1 overflow-clip'>{children}</div>
                             {modal}
-                            <SearchBar />
+                            <SearchBar navigation={navigation} user={user} />
                             <Footer />
                         </div>
                     </Providers>

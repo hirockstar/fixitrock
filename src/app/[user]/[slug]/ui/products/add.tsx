@@ -108,6 +108,7 @@ export default function AddEdit({ isOpen, onClose, mode, product }: AddEditProps
         handleRemoveImage,
         handleRemoveExistingImage,
         prepareFormData,
+        fileSizeError,
     } = useImageManager({ mode, product, isOpen })
 
     // Simple error handling
@@ -230,6 +231,12 @@ export default function AddEdit({ isOpen, onClose, mode, product }: AddEditProps
                             type='file'
                             onChange={(e) => handleFileSelect(e.target.files)}
                         />
+
+                        {/* File size error message */}
+                        {fileSizeError && (
+                            <div className='text-danger mt-2 text-sm'>{fileSizeError}</div>
+                        )}
+
                         {/* Product Details */}
                         <SectionHeader icon={<Box size={20} />} title='Product Details' />
                         <div className='flex w-full flex-col gap-4'>

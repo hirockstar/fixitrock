@@ -1,7 +1,5 @@
-import { getCurrentUser } from './getCurrentUser'
-import { getData } from './getData'
-import { getQuotes } from './getQuotes'
-import { getSlug } from './getSlug'
-import { getTabs } from './getTabs'
-
-export { getData, getQuotes, getTabs, getSlug, getCurrentUser }
+export { getData } from './getData'
+export { getQuotes } from './getQuotes'
+export { getSlug } from './getSlug'
+export { getTabs } from './getTabs'
+export { getNavigation } from './navigation'

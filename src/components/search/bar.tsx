@@ -6,12 +6,13 @@ import { useState } from 'react'
 import { useSearch } from '®tanstack/query'
 import AnimatedSearch, { useOpen } from '®ui/farmer/search'
 import { UserSheet } from '®app/[user]/ui'
+import { Navigation, User } from '®app/login/types'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
 import { Suggestion } from './suggestion'
 
-const SearchBar = () => {
+export function SearchBar({ user, navigation }: { user: User | null; navigation: Navigation[] }) {
     const [query, setQuery] = useState('')
     const { data, isLoading } = useSearch(query)
     const { open, setOpen } = useOpen()
@@ -43,10 +44,10 @@ const SearchBar = () => {
                                 <X size={18} />
                             </Button>
                         ) : (
-                            <UserSheet />
+                            <UserSheet navigation={navigation} user={user} />
                         )
                     }
-                    placeholder='Work in progress . . . ' //What do you need?
+                    placeholder={user ? `Hi ${user.name}` : 'Work in progress . . . '}
                     size='lg'
                     startContent={<Search size={20} />}
                     type='text'
@@ -57,7 +58,7 @@ const SearchBar = () => {
 
                 {open && (
                     <div className='flex-1 overflow-y-auto'>
-                        {!query && <Suggestion setOpen={setOpen} />}
+                        {!query && <Suggestion navigation={navigation} setOpen={setOpen} />}
                         {query && (
                             <DriveItem
                                 data={data}
@@ -84,5 +85,3 @@ const SearchBar = () => {
         </AnimatedSearch>
     )
 }
-
-export default SearchBar

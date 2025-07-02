@@ -1,23 +1,29 @@
 'use client'
-import { Button, Image, ScrollShadow, User, Skeleton } from '@heroui/react'
+
+import { Button, Image, ScrollShadow, User as HeroUser } from '@heroui/react'
 import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { FaUserCircle } from 'react-icons/fa'
 
-import { useMediaQuery } from '®/hooks/useMediaQuery'
-import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®/ui/drawer'
-import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '®/ui/sheet'
-import NavLinks from '®app/login/ui/navlinks'
-import { useUser } from '®provider/user'
+import { useMediaQuery } from '®hooks/useMediaQuery'
+import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®ui/drawer'
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '®ui/sheet'
+import { Navigation as Type, User as UserType } from '®app/login/types'
+import { Navigation } from '®app/login/ui/navigation'
 
 type PreviewProps = {
     open: boolean
     setOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export default function UserSheet() {
+export default function UserSheet({
+    user,
+    navigation,
+}: {
+    user: UserType | null
+    navigation: Type[]
+}) {
     const [open, setOpen] = useState(false)
-    const { user, loading, signOut } = useUser()
     const router = useRouter()
 
     const handlePress = () => {
@@ -34,9 +40,7 @@ export default function UserSheet() {
                 variant={user ? 'flat' : 'light'}
                 onPress={handlePress}
             >
-                {loading ? (
-                    <Skeleton className='size-20 rounded-full' />
-                ) : user ? (
+                {user ? (
                     <Image
                         alt={user.name}
                         height={30}
@@ -50,18 +54,16 @@ export default function UserSheet() {
                     <FaUserCircle aria-label='Login to your account' size={22} />
                 )}
             </Button>
-            <SheetDrawer open={open} setOpen={setOpen} signOut={signOut} />
+            <SheetDrawer navigation={navigation} open={open} setOpen={setOpen} user={user} />
         </>
     )
 }
 
-const UserDetails = () => {
-    const { user } = useUser()
-
+const UserDetails = ({ user }: { user: UserType }) => {
     if (!user) return null
 
     return (
-        <User
+        <HeroUser
             avatarProps={{
                 src:
                     user.avatar ||
@@ -79,17 +81,26 @@ const UserDetails = () => {
     )
 }
 
-function SheetDrawer({ open, setOpen, signOut }: PreviewProps & { signOut: () => Promise<void> }) {
+function SheetDrawer({
+    open,
+    setOpen,
+    user,
+    navigation,
+}: PreviewProps & { user: UserType | null; navigation: Type[] }) {
     const isDesktop = useMediaQuery('(min-width: 640px)')
+    const router = useRouter()
 
     const handleSignOut = async () => {
         setOpen(false)
-        await signOut()
+        // You may want to call a server action for sign out here
+        router.push('/login')
     }
 
     const handleClose = () => {
         setOpen(false)
     }
+
+    if (!user) return null
 
     return (
         <>
@@ -98,11 +109,11 @@ function SheetDrawer({ open, setOpen, signOut }: PreviewProps & { signOut: () =>
                     <SheetContent className='flex flex-col gap-0 p-0 sm:max-w-[280px]'>
                         <SheetHeader aria-label='Profile' className='border-b p-2'>
                             <SheetTitle>
-                                <UserDetails />
+                                <UserDetails user={user} />
                             </SheetTitle>
                         </SheetHeader>
-                        <ScrollShadow hideScrollBar className='flex-1 lg:pr-3'>
-                            <NavLinks onClose={handleClose} />
+                        <ScrollShadow hideScrollBar className='flex-1'>
+                            <Navigation navigation={navigation} onClose={handleClose} />
                         </ScrollShadow>
                         <SheetFooter className='flex flex-col gap-2 border-t p-2'>
                             <Button fullWidth color='danger' onPress={handleSignOut}>
@@ -120,8 +131,8 @@ function SheetDrawer({ open, setOpen, signOut }: PreviewProps & { signOut: () =>
                         <DrawerTitle aria-hidden />
                         <DrawerDescription aria-hidden />
                         <div className='w-full space-y-4'>
-                            <UserDetails />
-                            <NavLinks onClose={handleClose} />
+                            <UserDetails user={user} />
+                            <Navigation navigation={navigation} onClose={handleClose} />
                             <Button fullWidth color='danger' onPress={handleSignOut}>
                                 Logout
                             </Button>
