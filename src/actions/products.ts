@@ -151,7 +151,7 @@ export async function addProduct(
     formData: FormData
 ) {
     try {
-        const { user } = await userSession()
+        const user = await userSession()
         // Dynamically extract all fields from formData
         const data: Record<string, unknown> = {}
 
@@ -224,7 +224,7 @@ export async function updateProduct(
     formData: FormData
 ) {
     try {
-        const { user } = await userSession()
+        const user = await userSession()
         const id = parseInt(formData.get('id') as string)
         // Dynamically extract all fields from formData
         const data: Record<string, unknown> = {}
@@ -341,7 +341,7 @@ export async function deleteProduct(
 ): Promise<{ errors: Record<string, string> }> {
     try {
         // Get current authenticated user
-        const { user } = await userSession()
+        const user = await userSession()
 
         // Extract product ID from form data
         const id = parseInt(formData.get('id') as string)
@@ -405,7 +405,7 @@ export async function deleteProduct(
 export async function permanentlyDeleteProduct(productId: number) {
     try {
         // Get current authenticated user
-        const { user } = await userSession()
+        const user = await userSession()
 
         // Validate product ownership (including trashed products)
         const supabase = await createClient()
@@ -450,7 +450,7 @@ export async function permanentlyDeleteProduct(productId: number) {
 export async function restoreProduct(productId: number) {
     try {
         // Get current authenticated user
-        const { user } = await userSession()
+        const user = await userSession()
 
         // Validate product ownership (including trashed products)
         const supabase = await createClient()
@@ -534,10 +534,10 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
         const supabase = await createClient()
 
         // Get current authenticated user (if any)
-        let currentUser = null
+        let user = null
 
         try {
-            currentUser = await userSession()
+            user = await userSession()
         } catch {
             // User not authenticated - can only view, not manage
         }
@@ -545,8 +545,8 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
         // Determine which user's products to fetch
         let productsUsername = targetUsername
 
-        if (!productsUsername && currentUser) {
-            productsUsername = currentUser.user?.username
+        if (!productsUsername && user) {
+            productsUsername = user?.username
         }
 
         let products: Product[] = []
@@ -565,7 +565,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
             }
 
             // Check if current user can manage this profile
-            canManage = currentUser?.user?.username === targetUser.username
+            canManage = user?.username === targetUser.username
 
             // Build query for products
             const query = supabase
@@ -610,10 +610,10 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
                     const supabase = await createClient()
 
                     // Get current authenticated user (if any)
-                    let currentUser = null
+                    let user = null
 
                     try {
-                        currentUser = await userSession()
+                        user = await userSession()
                     } catch {
                         // User not authenticated - can only view, not manage
                     }
@@ -630,7 +630,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
                     }
 
                     // Check if current user can manage this profile
-                    const canManage = currentUser?.user?.username === targetUser.username
+                    const canManage = user?.username === targetUser.username
 
                     // Build query for products
                     let query = supabase
@@ -694,10 +694,10 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
                     const supabase = await createClient()
 
                     // Get current authenticated user (if any)
-                    let currentUser = null
+                    let user = null
 
                     try {
-                        currentUser = await userSession()
+                        user = await userSession()
                     } catch {
                         // User not authenticated - can only view, not manage
                     }
@@ -714,7 +714,7 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
                     }
 
                     // Check if current user can manage this profile
-                    const canManage = currentUser?.user?.username === targetUser.username
+                    const canManage = user?.username === targetUser.username
 
                     // Build query for products
                     let query = supabase
