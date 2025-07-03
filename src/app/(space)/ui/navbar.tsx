@@ -94,7 +94,7 @@ export function Navbar({
                         <SortBy sort={handleSort} />
                     </div>
                 }
-                hotKey='/'
+                hotKey='F'
                 href={backHref}
                 placeholder={`Search in ${formatTitle(lastSegment)} . . .`}
                 value={query}

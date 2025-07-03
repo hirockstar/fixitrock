@@ -68,7 +68,10 @@ export default function UserDrawer({
                 )}
             </Button>
             <Drawer direction={isDesktop ? 'right' : 'bottom'} open={open} onOpenChange={setOpen}>
-                <DrawerContent className='' showbar={isDesktop ? false : true}>
+                <DrawerContent
+                    hideCloseButton={isDesktop ? true : false}
+                    showbar={isDesktop ? false : true}
+                >
                     <DrawerHeader className='p-2 md:border-b'>
                         <UserDetails user={user} />
                     </DrawerHeader>
