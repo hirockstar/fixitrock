@@ -161,6 +161,17 @@
         scrollbar-width: none;
         /* Firefox */
     }
+
+    /* Hide number input spinner buttons */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield; /* Firefox */
+    }
 }
 
 svg {
@@ -182,6 +193,7 @@ svg {
         ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
     --fgColor-accent: Highlight;
 }
+
 .dark,
 [data-theme='dark'] {
     .mdx,

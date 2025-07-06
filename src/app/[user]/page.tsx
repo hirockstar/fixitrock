@@ -3,6 +3,7 @@ import { Metadata } from 'next'
 
 import { getUser } from '®actions/auth'
 import { getTabs } from '®actions/supabase'
+import { userProducts } from '®actions/products'
 
 import { Profile, Tabs } from './ui'
 
@@ -36,12 +37,13 @@ export default async function Users({ params }: Props) {
 
     // Fetch tabs for the user's role
     const tabs = await getTabs(user.role || 0)
+    const { products, canManage } = await userProducts(cleanUsername)
 
     return (
         <div>
-            <Profile {...user} />
+            <Profile canManage={canManage} user={user} />
             <div className='mx-auto -mt-12 p-1 2xl:px-[10%]'>
-                <Tabs {...user} tabs={tabs} />
+                <Tabs canManage={canManage} products={products} tabs={tabs} user={user} />
             </div>
         </div>
     )

@@ -9,12 +9,21 @@ import { useHotkeys } from 'react-hotkeys-hook'
 type InputProps = {
     value?: string
     hotKey?: string
+    base?: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     end?: React.ReactNode
     href?: string
 } & Props
 
-export function Input({ value = '', hotKey, end, href, onChange, ...inputProps }: InputProps) {
+export function Input({
+    value = '',
+    hotKey,
+    end,
+    href,
+    base = 'sm:w-[40%] lg:w-[25%]',
+    onChange,
+    ...inputProps
+}: InputProps) {
     const inputRef = useRef<HTMLInputElement>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -49,7 +58,7 @@ export function Input({ value = '', hotKey, end, href, onChange, ...inputProps }
             classNames={{
                 inputWrapper:
                     'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none group-data-[focus=true]:bg-transparent data-[hover=true]:bg-transparent',
-                base: 'sm:w-[40%] lg:w-[25%]',
+                base: base,
                 input: 'truncate overflow-hidden',
             }}
             endContent={
@@ -75,17 +84,23 @@ export function Input({ value = '', hotKey, end, href, onChange, ...inputProps }
                         <Loader className='text-muted-foreground h-4 w-4 shrink-0 animate-spin' />
                     ) : (
                         <>
-                            <Button
-                                as={Link}
-                                className='h-8 w-12 min-w-0 p-0 sm:hidden'
-                                href={href}
-                                radius='full'
-                                size='sm'
-                                variant='light'
-                            >
-                                <Undo2 size={18} />
-                            </Button>
-                            <Search className='hidden h-4 w-4 shrink-0 sm:block' />
+                            {href ? (
+                                <>
+                                    <Button
+                                        as={Link}
+                                        className='h-8 w-12 min-w-0 p-0 sm:hidden'
+                                        href={href}
+                                        radius='full'
+                                        size='sm'
+                                        variant='light'
+                                    >
+                                        <Undo2 size={18} />
+                                    </Button>
+                                    <Search className='hidden h-4 w-4 shrink-0 sm:block' />
+                                </>
+                            ) : (
+                                <Search className='h-4 w-4 shrink-0' />
+                            )}
                         </>
                     )}
                 </>

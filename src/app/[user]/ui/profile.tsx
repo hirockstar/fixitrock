@@ -10,8 +10,11 @@ import { formatDateTime } from '®lib/utils'
 import { Verified } from '®ui/icons'
 
 import { Actions } from './actions'
-
-export default function Profile(user: User) {
+type ProfileProps = {
+    user: User
+    canManage: boolean
+}
+export default function Profile({ user, canManage }: ProfileProps) {
     const [isFollowing, setIsFollowing] = React.useState(false)
     const handleFollow = () => setIsFollowing(!isFollowing)
     const handleMessage = () =>
@@ -99,6 +102,7 @@ export default function Profile(user: User) {
                         </div>
                     </div>
                     <Actions
+                        canManage={canManage}
                         isFollowing={isFollowing}
                         onFollow={handleFollow}
                         onMessage={handleMessage}

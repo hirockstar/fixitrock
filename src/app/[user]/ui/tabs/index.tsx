@@ -4,15 +4,20 @@ import { Tab, Tabs as UiTabs } from '@heroui/react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { User, TabsConfig } from '®app/login/types'
+import { TabsConfig, User } from '®app/login/types'
 import { useTabs } from '®hooks/useTabs'
+import { Product } from '®types/products'
+import ProductsCard from '®app/[user]/[slug]/ui/products/card'
 
 import { Quotes } from './quotes'
-const COMPONENTS: Record<string, React.ComponentType<unknown>> = {
-    Quotes: Quotes,
-}
 
-export default function Tabs(user: User & { tabs: TabsConfig[] }) {
+type TabsProps = {
+    user: User
+    tabs: TabsConfig[]
+    products: Product[]
+    canManage: boolean
+}
+export default function Tabs({ user, tabs, products }: TabsProps) {
     const { tab } = useTabs()
 
     let selectedKey = 'activity'
@@ -23,7 +28,7 @@ export default function Tabs(user: User & { tabs: TabsConfig[] }) {
         if (match && match[1]) selectedKey = match[1]
     }
 
-    const validTabKeys = user.tabs.map((t) => t.title.toLowerCase())
+    const validTabKeys = tabs.map((t) => t.title.toLowerCase())
 
     if (selectedKey && !validTabKeys.includes(selectedKey)) {
         redirect(`/@${user.username}`)
@@ -37,9 +42,9 @@ export default function Tabs(user: User & { tabs: TabsConfig[] }) {
             selectedKey={selectedKey}
             variant='underlined'
         >
-            {user.tabs.map((tab) => {
+            {tabs.map((tab) => {
                 const tabKey = tab.title.toLowerCase()
-                const TabComponent = COMPONENTS[tab.component]
+
                 const href =
                     tabKey === 'activity'
                         ? `/@${user.username}`
@@ -47,8 +52,10 @@ export default function Tabs(user: User & { tabs: TabsConfig[] }) {
 
                 return (
                     <Tab key={tabKey} as={Link} href={href} title={tab.title}>
-                        {TabComponent ? (
-                            <TabComponent />
+                        {tab.component === 'ProductCard' ? (
+                            <ProductsCard products={products} />
+                        ) : tab.component === 'Quotes' ? (
+                            <Quotes />
                         ) : (
                             <div className='text-muted-foreground relative mx-auto flex h-80 w-full flex-col items-center justify-center gap-2 text-center select-none'>
                                 <div className='absolute -top-10 -left-10 h-32 w-32 rounded-full bg-pink-400/10 blur-2xl 2xl:bg-white dark:bg-pink-500/20' />

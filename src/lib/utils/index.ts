@@ -101,7 +101,7 @@ export const formatPrice = (price: number) => {
 
 export const getStockStatus = (qty: number) => {
     if (qty === 0) return { color: 'danger' as const, text: 'Out of Stock' }
-    if (qty <= 5) return { color: 'warning' as const, text: 'Low Stock' }
+    if (qty <= 1) return { color: 'warning' as const, text: 'Low Stock' }
 
     return { color: 'success' as const, text: 'In Stock' }
 }

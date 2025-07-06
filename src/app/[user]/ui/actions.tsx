@@ -8,9 +8,10 @@ interface ActionsProps {
     onFollow: () => void
     onMessage: () => void
     isFollowing: boolean
+    canManage: boolean
 }
 
-export function Actions({ onFollow, onMessage, isFollowing }: ActionsProps) {
+export function Actions({ onFollow, onMessage, isFollowing, canManage }: ActionsProps) {
     return (
         <div className='flex min-w-[300px] gap-4'>
             <Button
@@ -20,14 +21,25 @@ export function Actions({ onFollow, onMessage, isFollowing }: ActionsProps) {
             >
                 WhatsApp
             </Button>
-            <Button
-                className='h-[34px] w-full rounded-lg'
-                color='primary'
-                startContent={isFollowing ? <UserPlus size={20} /> : <Plus size={20} />}
-                onPress={onFollow}
-            >
-                {isFollowing ? 'Following' : 'Follow'}
-            </Button>
+            {canManage ? (
+                <Button
+                    className='h-[34px] w-full rounded-lg'
+                    color='primary'
+                    startContent={<UserPlus size={20} />}
+                    onPress={onFollow}
+                >
+                    Edit
+                </Button>
+            ) : (
+                <Button
+                    className='h-[34px] w-full rounded-lg'
+                    color='primary'
+                    startContent={isFollowing ? <UserPlus size={20} /> : <Plus size={20} />}
+                    onPress={onFollow}
+                >
+                    {isFollowing ? 'Following' : 'Follow'}
+                </Button>
+            )}
         </div>
     )
 }

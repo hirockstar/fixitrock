@@ -1,7 +1,7 @@
 import { userProducts } from '®actions/products'
 
-import NavBar from './navbar'
-import ProductsList from './list'
+import ProductsTable from './table'
+import ProductsCard from './card'
 
 interface ProductsProps {
     params: {
@@ -15,9 +15,13 @@ export default async function Products({ params }: ProductsProps) {
     const { products, canManage } = await userProducts(params.user)
 
     return (
-        <div className='flex w-full flex-col gap-4 p-2 md:mt-2 md:px-[5%] 2xl:px-[10%]'>
-            <NavBar canManage={canManage} />
-            <ProductsList canManage={canManage} products={products} />
+        <div className='mt-4 flex w-full flex-col gap-4 p-2 md:px-4 2xl:px-[10%]'>
+            {/* <NavBar canManage={canManage} /> */}
+            {canManage ? (
+                <ProductsTable canManage={canManage} products={products} />
+            ) : (
+                <ProductsCard products={products} />
+            )}
         </div>
     )
 }
