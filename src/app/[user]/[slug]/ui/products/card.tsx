@@ -7,7 +7,6 @@ import { Product } from '®types/products'
 
 export type ProductsListProps = {
     products: Product[]
-    canManage?: boolean
 }
 
 function ProductImage(product: Product) {
@@ -32,7 +31,7 @@ function ProductImage(product: Product) {
     )
 }
 
-export default function ProductsCard({ products, canManage }: ProductsListProps) {
+export default function ProductsCard({ products }: ProductsListProps) {
     return (
         <div className='grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2 md:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]'>
             {products.map((product) => (

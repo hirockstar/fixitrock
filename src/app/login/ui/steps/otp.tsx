@@ -11,6 +11,7 @@ import { Timer } from 'lucide-react'
 import { startSession } from '®actions/auth'
 import { LoginStep } from '®app/login/types'
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
+import { useUser } from '®provider/user'
 
 interface StepOtpProps {
     otp: string
@@ -39,6 +40,7 @@ export function StepOtp({
     phone,
 }: StepOtpProps) {
     const [secondsLeft, setSecondsLeft] = useState(RESEND_TIMEOUT)
+    const { user } = useUser()
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -68,7 +70,12 @@ export function StepOtp({
             if (res?.isNew) {
                 setStep('details')
             } else {
-                window.location.href = '/'
+                // Use user from context for redirect
+                if (user?.username) {
+                    window.location.href = `/@${user.username}`
+                } else {
+                    window.location.href = '/' // fallback
+                }
             }
         } catch {
             setError('Invalid OTP. Please try again.')

@@ -22,6 +22,7 @@ import { BiImageAdd } from 'react-icons/bi'
 
 import { addProduct, updateProduct } from '®actions/products'
 import { Product } from '®types/products'
+import { Brand } from '®types/brands'
 import { useImageManager } from '®hooks/useImageManager'
 
 const CATEGORIES = [
@@ -35,24 +36,28 @@ const CATEGORIES = [
     'screen protector',
     'other',
 ]
-const BRANDS = [
-    'Apple',
-    'Samsung',
-    'Xiaomi',
-    'OnePlus',
-    'Google',
-    'Huawei',
-    'Oppo',
-    'Vivo',
-    'Realme',
-    'Other',
-]
+
+// const BrandImage = ({ brand }: { brand: Brand }) => {
+//     const { src } = useBrandImg(brand)
+
+//     return (
+//         <Image
+//             alt={brand.name}
+//             className='rounded-lg border p-0.5'
+//             height={24}
+//             radius='none'
+//             src={src}
+//             width={24}
+//         />
+//     )
+// }
 
 interface AddEditProps {
     isOpen: boolean
     onClose: () => void
     mode: 'add' | 'edit'
     product?: Product | null
+    brands: Brand[]
 }
 
 const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
@@ -92,7 +97,7 @@ const ImagePreview = ({
     </div>
 )
 
-export default function AddEdit({ isOpen, onClose, mode, product }: AddEditProps) {
+export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddEditProps) {
     // Choose action based on mode
     const action = mode === 'add' ? addProduct : updateProduct
     const [{ errors }, formAction, isLoading] = useActionState(action, {
@@ -158,8 +163,8 @@ export default function AddEdit({ isOpen, onClose, mode, product }: AddEditProps
             size='2xl'
             onClose={onClose}
         >
-            <ModalContent>
-                <ModalHeader className='flex-1 items-center justify-between border-b select-none'>
+            <ModalContent className='overflow-hidden'>
+                <ModalHeader className='flex-1 items-center justify-between border-b bg-gray-50 select-none dark:bg-zinc-900'>
                     <p className='flex items-center gap-2'>
                         {icon} {Title}
                     </p>
@@ -300,8 +305,13 @@ export default function AddEdit({ isOpen, onClose, mode, product }: AddEditProps
                                 placeholder='Choose brand'
                                 radius='sm'
                             >
-                                {BRANDS.map((b) => (
-                                    <AutocompleteItem key={b}>{b}</AutocompleteItem>
+                                {brands.map((b: Brand) => (
+                                    <AutocompleteItem
+                                        key={b.name}
+                                        // startContent={<BrandImage brand={b} />}
+                                    >
+                                        {b.name}
+                                    </AutocompleteItem>
                                 ))}
                             </Autocomplete>
                         </div>
@@ -374,7 +384,7 @@ export default function AddEdit({ isOpen, onClose, mode, product }: AddEditProps
                         </div>
                     </Form>
                 </ModalBody>
-                <ModalFooter className='flex-row-reverse border-t'>
+                <ModalFooter className='flex-row-reverse border-t bg-gray-50 select-none dark:bg-zinc-900'>
                     <Button
                         className='w-full'
                         color='primary'

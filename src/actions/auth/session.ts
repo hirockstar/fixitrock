@@ -40,8 +40,8 @@ export const userSession = cache(async function userSession(): Promise<{
         const navigation: Navigation[] = [
             {
                 href: `/@${user.username}`,
-                icon: 'User',
-                title: 'My Profile',
+                icon: 'Activity',
+                title: 'Activity',
                 description: 'Go to your profile',
             },
             ...navFromDb.map((item) => ({

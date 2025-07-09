@@ -2,8 +2,8 @@
 
 import { cache } from 'react'
 
-import { SlugConfig } from '®app/login/types'
 import { createClient } from '®supabase/server'
+import { SlugConfig } from '®app/login/types'
 
 export const getSlug = cache(async (id: number): Promise<SlugConfig[]> => {
     const supabase = await createClient()

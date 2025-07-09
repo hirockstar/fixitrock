@@ -25,6 +25,7 @@ export type TabsConfig = {
 }
 export type SlugConfig = {
     slug: string
+    private?: boolean
     component: string
 }
 

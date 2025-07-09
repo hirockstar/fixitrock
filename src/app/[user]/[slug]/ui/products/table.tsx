@@ -18,6 +18,7 @@ import { Edit, Filter, Plus, CloudDownload } from 'lucide-react'
 
 import { Table, TableBody, TableCell, TableFooter, TableHeader, TableRow } from '®ui/table'
 import { Product } from '®types/products'
+import { Brand } from '®types/brands'
 import { formatPrice, getStockStatus } from '®lib/utils'
 import { Delete } from '®ui/icons'
 import { Input } from '®app/(space)/ui'
@@ -29,9 +30,12 @@ import Quantity from './quantity'
 interface ProductsTableProps {
     products: Product[]
     canManage: boolean
+    brand: Brand[]
 }
 
-export default function ProductsTable({ products, canManage }: ProductsTableProps) {
+export default function ProductsTable({ products, canManage, brand }: ProductsTableProps) {
+    const [addProduct, setAddProduct] = useState<Product | null>(null)
+
     const [editingProduct, setEditingProduct] = useState<Product | null>(null)
     const [deletingProduct, setDeletingProduct] = useState<Product | null>(null)
 
@@ -42,6 +46,11 @@ export default function ProductsTable({ products, canManage }: ProductsTableProp
     const [selectedStatus, setSelectedStatus] = useState<string>('all')
 
     // Use useDisclosure for all modals
+    const {
+        isOpen: isAddOpen,
+        onOpen: onAddOpen,
+        onClose: onAddClose,
+    } = useDisclosure({ defaultOpen: false })
     const {
         isOpen: isEditOpen,
         onOpen: onEditOpen,
@@ -122,22 +131,10 @@ export default function ProductsTable({ products, canManage }: ProductsTableProp
         'total',
         'actions',
     ])
-
-    // By default, 'purchase' and 'staff' are not visible
-    const handleColumnChange = (columns: string[]) => {
-        // Always keep required columns
-        setVisibleColumns([
-            'product',
-            'compatibility',
-            ...columns,
-            'price',
-            'qty',
-            'status',
-            'total',
-            'actions',
-        ])
+    const handleAdd = (product: Product) => {
+        setAddProduct(product)
+        onAddOpen()
     }
-
     const handleEdit = (product: Product) => {
         setEditingProduct(product)
         onEditOpen()
@@ -189,6 +186,7 @@ export default function ProductsTable({ products, canManage }: ProductsTableProp
                             ))}
                     </Autocomplete>
                     <Autocomplete
+                        items={brand}
                         name='brand'
                         placeholder='Choose brand'
                         radius='sm'
@@ -239,7 +237,6 @@ export default function ProductsTable({ products, canManage }: ProductsTableProp
                         className='h-10 rounded-md border shadow-none'
                         startContent={<CloudDownload size={20} />}
                         variant='light'
-                        // onPress={onOpen}
                     >
                         Export
                     </Button>
@@ -249,7 +246,10 @@ export default function ProductsTable({ products, canManage }: ProductsTableProp
                             className='h-10 rounded-md border-none shadow-none'
                             color='primary'
                             startContent={<Plus size={20} />}
-                            // onPress={onAddOpen}
+                            onPress={() => {
+                                setAddProduct(null)
+                                onAddOpen()
+                            }}
                         >
                             Add Product
                         </Button>
@@ -387,9 +387,16 @@ export default function ProductsTable({ products, canManage }: ProductsTableProp
                     </TableFooter>
                 </Table>
             </div>
-
+            <AddEdit
+                brands={brand}
+                isOpen={isAddOpen}
+                mode='add'
+                product={addProduct}
+                onClose={onAddClose}
+            />
             {/* Edit Modal */}
             <AddEdit
+                brands={brand}
                 isOpen={isEditOpen}
                 mode='edit'
                 product={editingProduct}
