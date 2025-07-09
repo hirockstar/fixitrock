@@ -4,18 +4,23 @@ import { Button } from '@heroui/react'
 import { Plus, UserPlus } from 'lucide-react'
 import { FaWhatsapp } from 'react-icons/fa'
 
+import { User } from '®app/login/types'
+import { PWAInstall } from '®components/PWAInstall'
+
 interface ActionsProps {
     onFollow: () => void
     onMessage: () => void
     isFollowing: boolean
     canManage: boolean
+    user: User
 }
 
-export function Actions({ onFollow, onMessage, isFollowing, canManage }: ActionsProps) {
+export function Actions({ onFollow, onMessage, isFollowing, canManage, user }: ActionsProps) {
     return (
-        <div className='flex min-w-[300px] gap-4'>
+        <div className='flex flex-col gap-4 md:flex-row'>
+            <PWAInstall user={user} />
             <Button
-                className='h-[34px] w-full rounded-lg bg-green-500 text-white'
+                className='h-[34px] rounded-lg bg-green-500 text-white'
                 startContent={<FaWhatsapp size={20} />}
                 onPress={onMessage}
             >
@@ -23,7 +28,7 @@ export function Actions({ onFollow, onMessage, isFollowing, canManage }: Actions
             </Button>
             {canManage ? (
                 <Button
-                    className='h-[34px] w-full rounded-lg'
+                    className='h-[34px] rounded-lg'
                     color='primary'
                     startContent={<UserPlus size={20} />}
                     onPress={onFollow}
@@ -32,7 +37,7 @@ export function Actions({ onFollow, onMessage, isFollowing, canManage }: Actions
                 </Button>
             ) : (
                 <Button
-                    className='h-[34px] w-full rounded-lg'
+                    className='h-[34px] rounded-lg'
                     color='primary'
                     startContent={isFollowing ? <UserPlus size={20} /> : <Plus size={20} />}
                     onPress={onFollow}

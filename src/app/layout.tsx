@@ -33,6 +33,23 @@ export default async function RootLayout({
             `,
                     }}
                 />
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(function(registration) {
+                            console.log('SW registered: ', registration);
+                        })
+                        .catch(function(registrationError) {
+                            console.log('SW registration failed: ', registrationError);
+                        });
+                });
+            }
+            `,
+                    }}
+                />
             </head>
             <body className={cn('bg-background min-h-svh font-sans antialiased', fontVariables)}>
                 <UserProvider>
@@ -42,6 +59,7 @@ export default async function RootLayout({
                             {modal}
                             <SearchBar navigation={navigation} user={user} />
                             <Footer />
+                            {/* <PWAStatus /> */}
                         </div>
                     </Providers>
                 </UserProvider>

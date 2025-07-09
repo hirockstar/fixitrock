@@ -64,7 +64,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         }
     }
 
-    return {
+    // Base metadata
+    const metadata: Metadata = {
         title: user.name,
         description: user.bio,
         // Additional metadata fields
@@ -81,4 +82,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         },
         creator: user.username,
     }
+
+    // Add PWA manifest for shopkeepers (role 2)
+    if (user.role === 2) {
+        metadata.manifest = `/manifest/${user.username}`
+        metadata.appleWebApp = {
+            capable: true,
+            statusBarStyle: 'black-translucent',
+            title: user.name,
+            startupImage: user.avatar || '/fallback/boy.png',
+        }
+    }
+
+    return metadata
 }

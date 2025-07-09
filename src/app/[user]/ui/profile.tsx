@@ -76,8 +76,8 @@ export default function Profile({ user, canManage }: ProfileProps) {
                         online icon
                     </div> */}
                 </div>
-                <div className='relative -top-16 flex w-full flex-col gap-4 md:-top-10 md:flex-row md:items-center'>
-                    <div className='flex flex-1 flex-col gap-1.5'>
+                <div className='relative -top-16 flex w-full flex-col gap-4 md:-top-10 md:flex-row md:items-center md:justify-between'>
+                    <div className='flex flex-col gap-1.5'>
                         <h1 className='flex items-center gap-2 text-3xl font-bold'>
                             {user.name} {user.verified && <Verified />}
                         </h1>
@@ -104,6 +104,7 @@ export default function Profile({ user, canManage }: ProfileProps) {
                     <Actions
                         canManage={canManage}
                         isFollowing={isFollowing}
+                        user={user}
                         onFollow={handleFollow}
                         onMessage={handleMessage}
                     />
