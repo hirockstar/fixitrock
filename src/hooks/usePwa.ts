@@ -11,7 +11,7 @@ interface BeforeInstallPromptEvent extends Event {
     prompt(): Promise<void>
 }
 
-export function usePWAInstall() {
+export function usePwa(role?: number) {
     const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
     const [isInstallable, setIsInstallable] = useState(false)
     const [isInstalled, setIsInstalled] = useState(false)
@@ -72,6 +72,13 @@ export function usePWAInstall() {
             // Clear the deferred prompt
             setDeferredPrompt(null)
         } catch {}
+    }
+
+    // If role is not 2, return only installPWA (no-op)
+    if (role !== 2) {
+        return {
+            installPWA: () => {},
+        }
     }
 
     return {

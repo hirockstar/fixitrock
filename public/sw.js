@@ -23,8 +23,19 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request).then((response) => {
-            // Return cached version or fetch from network
-            return response || fetch(event.request)
+            // Return cached version or fetch from network with error handling
+            return (
+                response ||
+                fetch(event.request).catch(() => {
+                    // Optionally, return a fallback image for failed image requests
+                    if (event.request.destination === 'image') {
+                        return caches.match('/icon.png')
+                    }
+
+                    // Or return a generic response
+                    return new Response('Network error occurred', { status: 408 })
+                })
+            )
         })
     )
 })
