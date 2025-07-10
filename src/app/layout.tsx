@@ -59,7 +59,6 @@ export default async function RootLayout({
                             {modal}
                             <SearchBar navigation={navigation} user={user} />
                             <Footer />
-                            {/* <PWAStatus /> */}
                         </div>
                     </Providers>
                 </UserProvider>
