@@ -6,11 +6,11 @@ import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { FaPlay } from 'react-icons/fa'
 
-import { Name } from '../../ui/utils'
-import { Preview } from '../../ui/preview'
-
 import { useMemoirs } from '®hooks/tanstack/query'
 import { formatDuration } from '®lib/utils'
+
+import { Name } from '../../ui/utils'
+import { Preview } from '../../ui/preview'
 
 export default function Page() {
     const { memoirs } = useParams<{ memoirs: string }>()

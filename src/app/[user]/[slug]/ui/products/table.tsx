@@ -122,7 +122,7 @@ export default function ProductsTable({ products, canManage, brand }: ProductsTa
     }, [filteredProducts])
 
     // Column visibility state
-    const [visibleColumns, setVisibleColumns] = useState<string[]>([
+    const [visibleColumns] = useState<string[]>([
         'product',
         'compatibility',
         'price',
@@ -131,10 +131,6 @@ export default function ProductsTable({ products, canManage, brand }: ProductsTa
         'total',
         'actions',
     ])
-    const handleAdd = (product: Product) => {
-        setAddProduct(product)
-        onAddOpen()
-    }
     const handleEdit = (product: Product) => {
         setEditingProduct(product)
         onEditOpen()

@@ -58,8 +58,13 @@ export default function UserDrawer({
                         alt={user.name}
                         height={30}
                         src={
-                            user.avatar ||
-                            'https://cdn3d.iconscout.com/3d/premium/thumb/boy-7215504-5873316.png'
+                            (user.avatar ||
+                                (user.gender === 'female'
+                                    ? '/fallback/girl.png'
+                                    : user.gender === 'other'
+                                      ? '/fallback/other.png'
+                                      : '/fallback/boy.png')) +
+                            (user.updated_at ? `?t=${user.updated_at}` : '')
                         }
                         width={30}
                     />
@@ -99,8 +104,9 @@ const UserDetails = ({ user }: { user: UserType | null }) => {
         <HeroUser
             avatarProps={{
                 src:
-                    user.avatar ||
-                    'https://cdn3d.iconscout.com/3d/premium/thumb/boy-7215504-5873316.png',
+                    (user.avatar ||
+                        'https://cdn3d.iconscout.com/3d/premium/thumb/boy-7215504-5873316.png') +
+                    (user.updated_at ? `?t=${user.updated_at}` : ''),
                 fallback: user.name,
                 className: 'w-12 h-12',
             }}

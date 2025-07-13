@@ -37,8 +37,9 @@ export default function Tabs({ user, tabs, products }: TabsProps) {
     return (
         <UiTabs
             classNames={{
-                base: 'bg-background sticky top-0 z-20 w-full border-b py-0.5',
+                base: 'bg-background sticky top-0 z-20 w-full border-b-1 py-0.5',
             }}
+            items={tabs}
             selectedKey={selectedKey}
             variant='underlined'
         >
@@ -62,7 +63,7 @@ export default function Tabs({ user, tabs, products }: TabsProps) {
                                 <span className='mb-1 text-2xl font-bold text-gray-700 dark:text-gray-200'>
                                     Something new is coming!
                                 </span>
-                                <span className='max-w-md text-base text-gray-600 dark:text-gray-400'>
+                                <span className='max-w-md text-base'>
                                     You found a new tab! We're working hard to make it amazing for
                                     you. Stay tuned! 💫
                                 </span>
