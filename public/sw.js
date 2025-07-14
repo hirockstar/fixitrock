@@ -1,4 +1,5 @@
-const CACHE_NAME = 'Fix iT Rock'
+const CACHE_VERSION = '0.1.1-1752486872827'
+const CACHE_NAME = `fir-cache-${CACHE_VERSION}`
 const urlsToCache = [
     '/',
     '/manifest.json',

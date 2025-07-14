@@ -1,10 +1,11 @@
 import { Moon, SunIcon } from 'lucide-react'
 import { BsUsbSymbol, BsApple } from 'react-icons/bs'
-import { FaRupeeSign } from 'react-icons/fa'
+import { FaRupeeSign, FaUnlock } from 'react-icons/fa'
 import { MdPhonelinkSetup } from 'react-icons/md'
 import { RiComputerLine } from 'react-icons/ri'
 import { TbApps, TbDeviceGamepad2 } from 'react-icons/tb'
 import { SiGhostery } from 'react-icons/si'
+import { GiAutoRepair } from 'react-icons/gi'
 
 export type SiteConfig = typeof siteConfig
 
@@ -25,6 +26,12 @@ export const siteConfig = {
             icon: SiGhostery,
         },
         {
+            href: '/space',
+            title: 'Firmware',
+            description: 'Find and download firmware files',
+            icon: GiAutoRepair,
+        },
+        {
             href: '/space/apps',
             title: 'Apps',
             description: 'Download apps for Android, MacOS, Windows, and Linux',
@@ -38,9 +45,9 @@ export const siteConfig = {
         },
         {
             href: '/frp',
-            title: 'FRP Bypass Tools',
+            title: 'FRP Bypass',
             description: 'Get FRP Bypass files and tools for your device',
-            icon: TbApps,
+            icon: FaUnlock,
         },
         {
             href: '/space/drivers',
@@ -56,7 +63,7 @@ export const siteConfig = {
         },
         {
             href: '/space/icloud',
-            title: 'iCloud Bypass Solutions',
+            title: 'iCloud Bypass',
             description: 'Say goodbye to iCloud locks: Unlock now.',
             icon: BsApple,
         },

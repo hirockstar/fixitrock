@@ -1,8 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Listbox, ListboxItem, ListboxSection } from '@heroui/react'
-import { toast } from 'sonner'
+import { Listbox, ListboxItem, ListboxSection, addToast } from '@heroui/react'
 import { FolderSymlink } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
@@ -35,13 +34,26 @@ export function Menu({
     const url = `${siteConfig.domain}${c.folder ? `${c.href}` : `${path}#${c.name}`}`
 
     const handleCopy = () => {
-        const promise = copy(url)
-
-        toast.promise(promise, {
-            loading: 'Hang tight... Grabbing your link!',
-            success: () => `Hooray! The link to ${c.name} is copied!`,
-            error: () => `Oops! Couldn't copy the link. Give it another try!`,
+        addToast({
+            title: 'Copying...',
+            description: 'Hang tight... Grabbing your link!',
+            color: 'warning',
         })
+        copy(url)
+            .then(() => {
+                addToast({
+                    title: 'Copied!',
+                    description: `Hooray! The link to ${c.name} is copied!`,
+                    color: 'success',
+                })
+            })
+            .catch(() => {
+                addToast({
+                    title: 'Copy failed',
+                    description: `Oops! Couldn't copy the link. Give it another try!`,
+                    color: 'danger',
+                })
+            })
     }
 
     const handleShare = () => share(url)

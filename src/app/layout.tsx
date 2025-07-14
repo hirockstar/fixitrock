@@ -36,7 +36,7 @@ export default async function RootLayout({
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `
-            if ('serviceWorker' in navigator) {
+            if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                     navigator.serviceWorker.register('/sw.js')
                         .then(function(registration) {
