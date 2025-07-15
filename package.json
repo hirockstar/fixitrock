@@ -73,6 +73,7 @@
         "react-day-picker": "^9",
         "react-device-detect": "^2.2.3",
         "react-dom": "^19.1.0",
+        "react-dropzone": "^14.3.8",
         "react-hotkeys-hook": "^5.1.0",
         "react-icons": "^5.5.0",
         "react-intersection-observer": "^9.16.0",

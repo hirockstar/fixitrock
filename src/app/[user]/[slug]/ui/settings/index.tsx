@@ -1,17 +1,10 @@
-import { getUser } from '®actions/auth'
+import { userSession } from '®actions/auth'
 import { User } from '®app/login/types'
 
 import { Setting } from './setting'
 
-interface SettingsProps {
-    params: {
-        user: string
-        slug: string
-    }
-}
-
-export async function Settings({ params }: SettingsProps) {
-    const user = await getUser(params.user)
+export async function Settings() {
+    const { user } = await userSession()
 
     return <Setting user={user as User} />
 }

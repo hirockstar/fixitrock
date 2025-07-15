@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { checkUsername, createUser } from '®actions/auth'
 import { useDebounce } from '®app/login/hooks/useDebounce'
 import { User } from '®app/login/types'
+import DateInput from '®components/date'
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
 
 interface StepDetailsProps {
@@ -33,6 +34,9 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
     const [checkingUsername, setCheckingUsername] = useState(false)
     const [usernameChecked, setUsernameChecked] = useState(false)
     const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(null)
+
+    const [dob, setDob] = useState('')
+    const [dobError, setDobError] = useState('')
 
     const isValidFormat = USERNAME_REGEX.test(username)
     const isValidLength = username.length >= MIN_LENGTH && username.length <= MAX_LENGTH
@@ -65,7 +69,12 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
         setHasSubmitted(true)
 
         const isFormValid =
-            name.trim() && isValidFormat && isValidLength && isUsernameUnique === true && gender
+            name.trim() &&
+            isValidFormat &&
+            isValidLength &&
+            isUsernameUnique === true &&
+            gender &&
+            !dobError
 
         if (!isFormValid) return
 
@@ -76,11 +85,13 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                 name: user.name as string,
                 username: user.username as string,
                 gender: user.gender as string,
-                dob: user.dob ?? null,
+                dob: dob || null,
             })
 
             if (res?.error) throw new Error(res.error)
 
+            setDob('')
+            setDobError('')
             window.location.href = `/@${username}`
         } catch (err) {
             setError((err as Error).message)
@@ -174,6 +185,16 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                 <Radio value='female'>Female</Radio>
                 <Radio value='other'>Other</Radio>
             </RadioGroup>
+
+            <DateInput
+                value={dob}
+                onChange={(val) => {
+                    setDob(val)
+                    setUser({ dob: val })
+                }}
+                onError={setDobError}
+            />
+
             <DrawerFooter className='w-full'>
                 <Button
                     color='primary'
@@ -183,7 +204,8 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                         !isValidFormat ||
                         !isValidLength ||
                         isUsernameUnique !== true ||
-                        !gender
+                        !gender ||
+                        !!dobError
                     }
                     isLoading={loading}
                     type='submit'

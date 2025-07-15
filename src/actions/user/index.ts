@@ -1,7 +1,4 @@
-import { getLink } from './link'
-import { getLocation } from './location'
-import { getMemoirs } from './memoirs'
-import {
+export {
     updateUser,
     uploadUserImage,
     deleteUserImage,
@@ -11,15 +8,6 @@ import {
     removeSelfCover,
 } from './settings'
 
-export {
-    getMemoirs,
-    getLocation,
-    getLink,
-    updateUser,
-    uploadUserImage,
-    deleteUserImage,
-    updateSelfAvatar,
-    updateSelfCover,
-    removeSelfAvatar,
-    removeSelfCover,
-}
+export { getGallery } from './gallery'
+export { getLocation } from './location'
+export { getMemoirs } from './memoirs'

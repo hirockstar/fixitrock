@@ -8,7 +8,6 @@ import ProductsCard from './card'
 interface ProductsProps {
     params: {
         user: string
-        slug: string
     }
 }
 

@@ -1,22 +1,51 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Form, Input, Textarea, Button, addToast, RadioGroup, Radio } from '@heroui/react'
-import { MapPin, Calendar, ArrowLeft } from 'lucide-react'
+import {
+    Form,
+    Input,
+    Textarea,
+    Button,
+    addToast,
+    Select,
+    SelectSection,
+    SelectItem,
+} from '@heroui/react'
+import { MapPin, ArrowLeft, UserRound } from 'lucide-react'
 import Link from 'next/link'
+import { BiMaleFemale } from 'react-icons/bi'
 
 import { User } from '®app/login/types'
 import { updateUser } from '®actions/user'
+import DateInput from '®components/date'
 
 export function Setting({ user }: { user: User }) {
     const [isLoading, setIsLoading] = useState(false)
 
+    const [name, setName] = useState(user.name || '')
     const [gender, setGender] = useState(user.gender || '')
     const [bio, setBio] = useState(user.bio || '')
+    const [location, setLocation] = useState(user.location || '')
+    const [dob, setDob] = useState(user.dob || '')
     const bioError = bio.length > 160 ? 'Bio must be 160 characters or less' : undefined
+    const [dobError, setDobError] = useState('')
 
     const handleFormSubmit = async (formData: FormData) => {
+        // Prevent submit if dob is invalid
+        if (dobError) {
+            addToast({
+                title: 'Please enter a valid date of birth.',
+                color: 'danger',
+            })
+
+            return
+        }
         setIsLoading(true)
+        formData.set('name', name)
+        formData.set('gender', gender)
+        formData.set('bio', bio)
+        formData.set('location', location)
+        formData.set('dob', dob || '')
 
         const updatePromise = updateUser(formData)
 
@@ -27,8 +56,15 @@ export function Setting({ user }: { user: User }) {
         })
 
         try {
-            await updatePromise
+            const result = await updatePromise
 
+            if (result && result.user) {
+                setName(result.user.name || '')
+                setGender(result.user.gender || '')
+                setBio(result.user.bio || '')
+                setLocation(result.user.location || '')
+                setDob(result.user.dob || '')
+            }
             addToast({
                 title: 'Profile settings saved successfully!',
                 color: 'success',
@@ -50,7 +86,7 @@ export function Setting({ user }: { user: User }) {
                     isIconOnly
                     passHref
                     as={Link}
-                    href='/'
+                    href={`/@${user.username}`}
                     radius='full'
                     size='sm'
                     startContent={<ArrowLeft size={20} />}
@@ -61,42 +97,45 @@ export function Setting({ user }: { user: User }) {
 
             {/* Name */}
             <Input
-                isRequired
-                defaultValue={user.name}
                 id='name'
                 label='Full Name'
                 labelPlacement='outside'
                 name='name'
                 placeholder='Enter your full name'
+                startContent={<UserRound className='text-muted-foreground' size={18} />}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
             />
-            {/* Gender */}
-            <RadioGroup
-                isRequired
+
+            <Select
                 label='Gender'
-                orientation='horizontal'
-                value={gender}
-                onValueChange={(val) => setGender(val as 'male' | 'female' | 'other')}
+                labelPlacement='outside'
+                name='gender'
+                placeholder='Select Gender'
+                selectedKeys={gender ? [gender] : []}
+                startContent={<BiMaleFemale className='text-muted-foreground' size={18} />}
+                onSelectionChange={(keys) => setGender(Array.from(keys)[0]?.toString() || '')}
             >
-                <Radio value='male'>Male</Radio>
-                <Radio value='female'>Female</Radio>
-                <Radio value='other'>Other</Radio>
-            </RadioGroup>
+                <SelectSection>
+                    <SelectItem key='male'>Male</SelectItem>
+                    <SelectItem key='female'>Female</SelectItem>
+                    <SelectItem key='other'>Other</SelectItem>
+                </SelectSection>
+            </Select>
+
             {/* Date of Birth */}
-            <div className='space-y-2'>
-                <label className='flex items-center gap-2' htmlFor='dob'>
-                    <Calendar className='h-4 w-4' /> Date of Birth
-                </label>
-                <Input defaultValue={user.dob || ''} id='dob' name='dob' type='date' />
-            </div>
+            <DateInput value={dob} onChange={setDob} onError={setDobError} />
+
             {/* Location */}
             <Input
-                defaultValue={user.location || ''}
                 id='location'
                 label='Location'
                 labelPlacement='outside'
                 name='location'
                 placeholder='Enter your location'
                 startContent={<MapPin className='h-4 w-4' />}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
             />
             {/* Bio */}
             <Textarea

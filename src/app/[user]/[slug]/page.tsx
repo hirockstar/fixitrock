@@ -7,10 +7,7 @@ import Products from './ui/products'
 import { Brands } from './ui/brands'
 import { Settings } from './ui/settings'
 
-const components: Record<
-    string,
-    React.ComponentType<{ params: { user: string; slug: string } }>
-> = {
+const components: Record<string, React.ComponentType<{ params: { user: string } }>> = {
     Products: Products,
     Brands: Brands,
     Settings: Settings,
@@ -47,7 +44,7 @@ export default async function SlugPage({ params }: Props) {
 
     return (
         <>
-            <SectionComponent params={{ user: cleanUsername, slug }} />
+            <SectionComponent params={{ user: cleanUsername }} />
         </>
     )
 }

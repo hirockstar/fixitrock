@@ -114,7 +114,7 @@ export function BrandCard({ brands }: { brands: Brand[] }) {
                         end={
                             <Button
                                 isIconOnly
-                                className='h-8 w-8 p-0 md:hidden'
+                                className='border-1.5 h-8 w-8 border-dashed p-0 md:hidden'
                                 color='primary'
                                 radius='full'
                                 size='sm'

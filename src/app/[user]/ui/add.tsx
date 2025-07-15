@@ -10,7 +10,7 @@ import {
     ModalHeader,
     addToast,
 } from '@heroui/react'
-import { Camera, Images, Trash2, X } from 'lucide-react'
+import { Camera, ImagePlus, Trash2, X } from 'lucide-react'
 
 import { Drawer, DrawerContent, DrawerHeader, DrawerFooter, DrawerTitle } from '®ui/drawer'
 import { useMediaQuery } from '®hooks/useMediaQuery'
@@ -181,7 +181,7 @@ export default function AvatarCover({ isOpen, onClose, onOpenChange, mode }: Add
                     <ModalBody className='flex-row py-4'>
                         <Button
                             isIconOnly
-                            className='size-20 rounded-full border'
+                            className='text-muted-foreground hover:text-foreground size-20 rounded-full border'
                             isDisabled={isLoading}
                             startContent={<Camera size={35} />}
                             variant='light'
@@ -189,9 +189,9 @@ export default function AvatarCover({ isOpen, onClose, onOpenChange, mode }: Add
                         />
                         <Button
                             isIconOnly
-                            className='size-20 rounded-full border'
+                            className='text-muted-foreground hover:text-foreground size-20 rounded-full border'
                             isDisabled={isLoading}
-                            startContent={<Images size={35} />}
+                            startContent={<ImagePlus size={35} />}
                             variant='light'
                             onPress={handleGallery}
                         />
@@ -260,7 +260,7 @@ export default function AvatarCover({ isOpen, onClose, onOpenChange, mode }: Add
                 <div className='flex flex-row gap-4 p-4'>
                     <Button
                         isIconOnly
-                        className='size-20 rounded-full border'
+                        className='text-muted-foreground hover:text-foreground size-20 rounded-full border'
                         isDisabled={isLoading}
                         startContent={<Camera size={35} />}
                         variant='light'
@@ -268,9 +268,9 @@ export default function AvatarCover({ isOpen, onClose, onOpenChange, mode }: Add
                     />
                     <Button
                         isIconOnly
-                        className='size-20 rounded-full border'
+                        className='text-muted-foreground hover:text-foreground size-20 rounded-full border'
                         isDisabled={isLoading}
-                        startContent={<Images size={35} />}
+                        startContent={<ImagePlus size={35} />}
                         variant='light'
                         onPress={handleGallery}
                     />

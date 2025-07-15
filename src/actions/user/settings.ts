@@ -15,7 +15,6 @@ const SettingsSchema = z.object({
     bio: z.string().max(160, 'Bio must be 160 characters or less').optional(),
 })
 
-// Only allows the authenticated user to update their own profile
 export async function updateUser(formData: FormData) {
     const session = await userSession()
     const user = session.user
@@ -41,12 +40,19 @@ export async function updateUser(formData: FormData) {
             .eq('id', user.id)
 
         if (error) throw error
-        revalidatePath('/[user]/[slug]')
+        revalidatePath('/[user]/[slug]/settings', 'layout')
 
-        return { success: true }
+        const { data: updatedUser, error: fetchError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', user.id)
+            .single()
+
+        if (fetchError) throw fetchError
+
+        return { success: true, user: updatedUser }
     } catch (error) {
         logWarning('Error updating user:', error)
-
         throw new Error('Failed to update user')
     }
 }
