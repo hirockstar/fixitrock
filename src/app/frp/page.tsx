@@ -1,56 +1,67 @@
-'use client'
+import { Suspense } from 'react'
+import { Metadata } from 'next'
 
-import { Card, CardFooter, CardHeader, Image } from '@heroui/react'
-import Link from 'next/link'
-import { SiSupabase } from 'react-icons/si'
-import { TbDatabaseStar, TbPlugConnectedX } from 'react-icons/tb'
-
-import { formatDateTime } from '®lib/utils'
-import { useSupabse } from '®tanstack/query'
-import { FRP } from '®types/invoice'
+import { getFrp } from '®actions/supabase'
 import { GridSkeleton } from '®ui/skeleton'
-import { ErrorState } from '®ui/state'
+import { siteConfig } from '®config/site'
+
+import FRPCard from './card'
 
 export default function Page() {
-    const { data, isLoading, error } = useSupabse<FRP>('frp')
-
     return (
-        <section className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-2'>
-            {isLoading ? (
-                <GridSkeleton />
-            ) : error ? (
-                <ErrorState
-                    icons={[TbDatabaseStar, SiSupabase, TbPlugConnectedX]}
-                    message={error.message}
-                    title='Yo, FRP Data is MIA'
-                />
-            ) : (
-                data?.map((f) => (
-                    <Card
-                        key={f.id}
-                        aria-label={f.title}
-                        className='w-full rounded-2xl border bg-transparent'
-                        shadow='none'
-                    >
-                        <Link passHref href={f.link} target='_blank'>
-                            <CardHeader className='mb-px p-2'>
-                                <h1 className='line-clamp-1 text-start text-[13px]'>{f.title}</h1>
-                            </CardHeader>
-                            <Image
-                                isBlurred
-                                alt={f.title}
-                                className='bg-default/5 dark:bg-default/10 aspect-video h-40 rounded-lg object-contain p-2'
-                                classNames={{ wrapper: 'mx-auto' }}
-                                loading='lazy'
-                                src={f.img}
-                            />
-                            <CardFooter className='text-muted-foreground justify-end p-2 text-xs'>
-                                <p>{formatDateTime(f.created_at)}</p>
-                            </CardFooter>
-                        </Link>
-                    </Card>
-                ))
-            )}
-        </section>
+        <main className='mx-auto w-full p-2 2xl:px-[2rem]'>
+            <Suspense
+                fallback={
+                    <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 px-2'>
+                        <GridSkeleton />
+                    </div>
+                }
+            >
+                <FRP />
+            </Suspense>
+        </main>
     )
+}
+
+async function FRP() {
+    const data = await getFrp()
+
+    return <FRPCard data={data} />
+}
+
+export const metadata: Metadata = {
+    title: 'FRP Bypass',
+    description:
+        'Unlock your device with FRP Bypass. Find the necessary tools and resources to bypass Google Factory Reset Protection (FRP).',
+    keywords: [
+        'FRP Bypass',
+        'Factory Reset Protection',
+        'bypass Google FRP',
+        'unlock Android',
+        'FRP unlock tools',
+        'remove Google account lock',
+        'Android FRP bypass',
+        'FRP removal tools',
+        'Samsung FRP bypass',
+        'Google lock removal',
+        'FRP bypass solutions',
+        'FRP unlock guide',
+        'Android bypass methods',
+        'FRP reset tools',
+        'bypass Google Factory Reset Protection',
+    ],
+    authors: [
+        {
+            name: 'Rock Star 💕',
+            url: 'https://rockstar.bio',
+        },
+    ],
+    publisher: 'Rock Star 💕',
+    openGraph: {
+        title: 'FRP Bypass',
+        url: new URL(siteConfig.domain),
+        type: 'website',
+        images: `/space/og?slug=/FRP-Files`,
+        siteName: siteConfig.title,
+    },
 }
