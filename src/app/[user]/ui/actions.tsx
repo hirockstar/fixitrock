@@ -2,8 +2,8 @@
 import React from 'react'
 import { Button, Tooltip } from '@heroui/react'
 import { Check, Plus, Settings } from 'lucide-react'
-import { FaWhatsapp } from 'react-icons/fa'
 import Link from 'next/link'
+import { FaWhatsapp } from 'react-icons/fa'
 
 import { User } from '®app/login/types'
 import { useDevice, usePwa } from '®hooks'
@@ -33,16 +33,7 @@ export function Actions({ onFollow, onMessage, isFollowing, canManage, user }: A
                     />
                 </Tooltip>
             )}
-            <Tooltip className='bg-green-500 text-white' content='Message on WhatsApp'>
-                <Button
-                    isIconOnly
-                    className='bg-green-500 text-white'
-                    radius='full'
-                    size='sm'
-                    startContent={<FaWhatsapp className='shrink-0' size={20} />}
-                    onPress={onMessage}
-                />
-            </Tooltip>
+
             {canManage ? (
                 <Button
                     passHref
@@ -63,6 +54,16 @@ export function Actions({ onFollow, onMessage, isFollowing, canManage, user }: A
                     {isFollowing ? 'Following' : 'Follow'}
                 </Button>
             )}
+            <Tooltip className='bg-green-500 text-white' content='Message on WhatsApp'>
+                <Button
+                    isIconOnly
+                    className='bg-green-500 text-white'
+                    radius='full'
+                    size='sm'
+                    startContent={<FaWhatsapp className='shrink-0' size={20} />}
+                    onPress={onMessage}
+                />
+            </Tooltip>
         </div>
     )
 }
