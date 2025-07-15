@@ -14,7 +14,12 @@ export default function Page() {
                     Welcome to Fix iT Rock
                 </h1>
                 <div>
-                    <Textarea placeholder='Work in progress . . .' type='text' />
+                    <Textarea
+                        maxRows={2}
+                        placeholder='Work in progress . . .'
+                        size='lg'
+                        type='text'
+                    />
                     <div className='mt-4 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-1.5'>
                         {suggestion.map((s) => (
                             <Button

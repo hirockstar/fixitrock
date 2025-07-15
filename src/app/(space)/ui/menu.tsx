@@ -34,11 +34,6 @@ export function Menu({
     const url = `${siteConfig.domain}${c.folder ? `${c.href}` : `${path}#${c.name}`}`
 
     const handleCopy = () => {
-        addToast({
-            title: 'Copying...',
-            description: 'Hang tight... Grabbing your link!',
-            color: 'warning',
-        })
         copy(url)
             .then(() => {
                 addToast({
