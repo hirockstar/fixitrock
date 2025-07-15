@@ -11,3 +11,4 @@ export {
 export { getGallery } from './gallery'
 export { getLocation } from './location'
 export { getMemoirs } from './memoirs'
+export { getLink } from './link'
