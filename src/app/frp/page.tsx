@@ -1,9 +1,10 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 
-import { getFrp } from '®actions/supabase'
+import { getData } from '®actions/supabase'
 import { GridSkeleton } from '®ui/skeleton'
 import { siteConfig } from '®config/site'
+import { FRP as Types } from '®types/frp'
 
 import FRPCard from './card'
 
@@ -24,7 +25,7 @@ export default function Page() {
 }
 
 async function FRP() {
-    const data = await getFrp()
+    const data = await getData<Types>('frp')
 
     return <FRPCard data={data} />
 }
