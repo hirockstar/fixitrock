@@ -12,8 +12,11 @@ const SettingsSchema = z.object({
     gender: z.string().optional(),
     dob: z.string().optional(),
     location: z.string().optional(),
+    location_url: z.string().optional(),
     bio: z.string().max(160, 'Bio must be 160 characters or less').optional(),
 })
+
+const LOCATION_EDIT_ROLES = [2, 3]
 
 export async function updateUser(formData: FormData) {
     const session = await userSession()
@@ -27,17 +30,22 @@ export async function updateUser(formData: FormData) {
     try {
         const data = Object.fromEntries(formData.entries())
         const validatedData = SettingsSchema.parse(data)
-        const { error } = await supabase
-            .from('users')
-            .update({
-                name: validatedData.name,
-                gender: validatedData.gender || null,
-                dob: validatedData.dob ? new Date(validatedData.dob) : null,
-                location: validatedData.location || null,
-                bio: validatedData.bio || null,
-                updated_at: new Date().toISOString(),
-            })
-            .eq('id', user.id)
+
+        // Only allow location/location_url update for allowed roles
+        const updateObj: Record<string, string | null | Date> = {
+            name: validatedData.name,
+            gender: validatedData.gender || null,
+            dob: validatedData.dob ? new Date(validatedData.dob) : null,
+            bio: validatedData.bio || null,
+            updated_at: new Date().toISOString(),
+        }
+
+        if (typeof user.role === 'number' && LOCATION_EDIT_ROLES.includes(user.role)) {
+            updateObj.location = validatedData.location || null
+            updateObj.location_url = validatedData.location_url || null
+        }
+
+        const { error } = await supabase.from('users').update(updateObj).eq('id', user.id)
 
         if (error) throw error
         revalidatePath('/[user]/[slug]/settings', 'layout')

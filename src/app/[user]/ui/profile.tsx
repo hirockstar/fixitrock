@@ -33,7 +33,7 @@ const UserInfo = ({ user }: { user: User }) => (
                 <Link
                     passHref
                     className='flex items-center gap-1'
-                    href={`https://www.google.com/maps/search/?api=1&query=${user.location}`}
+                    href={user.location_url || ''}
                     target='blank'
                 >
                     <MapPin className='h-4 w-4' />
@@ -131,14 +131,14 @@ export default function Profile({ user, canManage }: ProfileProps) {
             </div>
             <div className='relative z-10 flex w-full flex-col px-[5%] lg:px-[10%]'>
                 <div className='flex w-full justify-between gap-4'>
-                    <div className='relative -top-20 w-fit shrink-0 md:-top-16'>
+                    <div className='bg-background relative -top-20 w-fit shrink-0 rounded-full border p-1 md:-top-16'>
                         <Image
                             isBlurred
                             alt={`${user.name} avatar`}
                             className='size-32 object-cover md:size-36'
                             classNames={{
                                 wrapper:
-                                    'bg-default/20 dark:bg-default/40 border-1.5 size-32 overflow-hidden rounded-full text-2xl backdrop-blur md:size-36 md:rounded-lg',
+                                    'bg-default/20 dark:bg-default/40 size-32 overflow-hidden rounded-full backdrop-blur md:size-36',
                             }}
                             src={
                                 (user.avatar ||
@@ -153,7 +153,7 @@ export default function Profile({ user, canManage }: ProfileProps) {
                         {canManage && (
                             <Button
                                 isIconOnly
-                                className='absolute right-2 bottom-2 z-20 bg-black/20 text-white md:-right-2 md:-bottom-2'
+                                className='absolute right-2 bottom-2 z-20 bg-black/20 text-white'
                                 radius='full'
                                 size='sm'
                                 startContent={<Camera />}

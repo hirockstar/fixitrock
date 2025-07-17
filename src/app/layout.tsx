@@ -9,6 +9,7 @@ import { SearchBar } from '®components/search/bar'
 import { fontVariables } from '®lib/fonts'
 import { UserProvider } from '®provider/user'
 import { userSession } from '®actions/auth'
+import { ErrorBoundary } from '®components/error'
 
 export default async function RootLayout({
     children,
@@ -52,16 +53,18 @@ export default async function RootLayout({
                 />
             </head>
             <body className={cn('bg-background min-h-svh font-sans antialiased', fontVariables)}>
-                <UserProvider>
-                    <Providers>
-                        <div className='bg-background relative flex min-h-screen flex-col'>
-                            <div className='flex-1 overflow-clip'>{children}</div>
-                            {modal}
-                            <SearchBar navigation={navigation} user={user} />
-                            <Footer />
-                        </div>
-                    </Providers>
-                </UserProvider>
+                <ErrorBoundary>
+                    <UserProvider>
+                        <Providers>
+                            <div className='bg-background relative flex min-h-screen flex-col'>
+                                <div className='flex-1 overflow-clip'>{children}</div>
+                                {modal}
+                                <SearchBar navigation={navigation} user={user} />
+                                <Footer />
+                            </div>
+                        </Providers>
+                    </UserProvider>
+                </ErrorBoundary>
             </body>
         </html>
     )

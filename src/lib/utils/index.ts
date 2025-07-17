@@ -9,6 +9,19 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
+export function openCurrentLocationInMaps() {
+    if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser.')
+
+        return
+    }
+    navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords
+        const url = `https://www.google.com/maps?q=${latitude},${longitude}`
+
+        window.open(url, '_blank')
+    })
+}
 export const Counts = (num: number): string => {
     if (num < 1000) {
         return num.toString()

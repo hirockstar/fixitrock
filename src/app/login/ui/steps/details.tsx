@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { checkUsername, createUser } from '®actions/auth'
 import { useDebounce } from '®app/login/hooks/useDebounce'
 import { User } from '®app/login/types'
-import DateInput from '®components/date'
+import { Dob } from '®ui/dob'
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
 
 interface StepDetailsProps {
@@ -113,13 +113,13 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                 handleSave()
             }}
         >
-            <DrawerHeader className='w-full py-2'>
+            <DrawerHeader className='w-full px-0 py-2'>
                 <DrawerTitle className='text-xl font-semibold'>Interdouce Yourself</DrawerTitle>
                 <DrawerDescription className='text-muted-foreground text-sm'>
                     We need some more information to create your account.
                 </DrawerDescription>
             </DrawerHeader>
-            <div className='w-full space-y-10 px-4'>
+            <div className='w-full space-y-10'>
                 <Input
                     autoFocus
                     isRequired
@@ -172,29 +172,32 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                     onChange={(e) => handleUsernameChange(e.target.value)}
                 />
             </div>
+            <div className='space-y-4'>
+                <Dob
+                    isRequired
+                    description='Enter your birth date (must be 18+)'
+                    label='Date of Birth'
+                    value={dob}
+                    onChange={(val) => {
+                        setDob(val)
+                        setUser({ dob: val })
+                    }}
+                    onError={setDobError}
+                />
 
-            <RadioGroup
-                isRequired
-                className='px-4'
-                label='Gender'
-                orientation='horizontal'
-                value={gender}
-                onValueChange={(val) => setUser({ gender: val as 'male' | 'female' | 'other' })}
-            >
-                <Radio value='male'>Male</Radio>
-                <Radio value='female'>Female</Radio>
-                <Radio value='other'>Other</Radio>
-            </RadioGroup>
-
-            <DateInput
-                value={dob}
-                onChange={(val) => {
-                    setDob(val)
-                    setUser({ dob: val })
-                }}
-                onError={setDobError}
-            />
-
+                <RadioGroup
+                    isRequired
+                    classNames={{ label: 'text-muted-forground' }}
+                    label='Gender'
+                    orientation='horizontal'
+                    value={gender}
+                    onValueChange={(val) => setUser({ gender: val as 'male' | 'female' | 'other' })}
+                >
+                    <Radio value='male'>Male</Radio>
+                    <Radio value='female'>Female</Radio>
+                    <Radio value='other'>Other</Radio>
+                </RadioGroup>
+            </div>
             <DrawerFooter className='w-full'>
                 <Button
                     color='primary'

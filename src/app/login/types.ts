@@ -15,6 +15,7 @@ export type User = {
     updated_at: string
     bio?: string | null // max 160 chars
     location?: string | null
+    location_url?: string | null
     cover?: string | null
     verified: boolean
 }

@@ -10,14 +10,19 @@ import {
     Select,
     SelectSection,
     SelectItem,
+    Tooltip,
 } from '@heroui/react'
-import { MapPin, ArrowLeft, UserRound } from 'lucide-react'
+import { MapPin, ArrowLeft, UserRound, Link as LinkIcon } from 'lucide-react'
 import Link from 'next/link'
 import { BiMaleFemale } from 'react-icons/bi'
 
 import { User } from '®app/login/types'
 import { updateUser } from '®actions/user'
-import DateInput from '®components/date'
+import { openCurrentLocationInMaps } from '®lib/utils'
+import { GoogleMaps } from '®ui/icons'
+import { Dob } from '®ui/dob'
+
+const LOCATION_EDIT_ROLES = [2, 3] // Add more roles as needed
 
 export function Setting({ user }: { user: User }) {
     const [isLoading, setIsLoading] = useState(false)
@@ -26,9 +31,13 @@ export function Setting({ user }: { user: User }) {
     const [gender, setGender] = useState(user.gender || '')
     const [bio, setBio] = useState(user.bio || '')
     const [location, setLocation] = useState(user.location || '')
+    const [locationUrl, setLocationUrl] = useState(user.location_url || '')
     const [dob, setDob] = useState(user.dob || '')
     const bioError = bio.length > 160 ? 'Bio must be 160 characters or less' : undefined
     const [dobError, setDobError] = useState('')
+    const [locationUrlError, setLocationUrlError] = useState('')
+
+    const canEditLocation = typeof user.role === 'number' && LOCATION_EDIT_ROLES.includes(user.role)
 
     const handleFormSubmit = async (formData: FormData) => {
         // Prevent submit if dob is invalid
@@ -45,6 +54,7 @@ export function Setting({ user }: { user: User }) {
         formData.set('gender', gender)
         formData.set('bio', bio)
         formData.set('location', location)
+        formData.set('location_url', locationUrl)
         formData.set('dob', dob || '')
 
         const updatePromise = updateUser(formData)
@@ -64,6 +74,7 @@ export function Setting({ user }: { user: User }) {
                 setBio(result.user.bio || '')
                 setLocation(result.user.location || '')
                 setDob(result.user.dob || '')
+                setLocationUrl(result.user.location_url || '')
             }
             addToast({
                 title: 'Profile settings saved successfully!',
@@ -97,6 +108,7 @@ export function Setting({ user }: { user: User }) {
 
             {/* Name */}
             <Input
+                description='Your real or display name as you want it to appear on your profile.'
                 id='name'
                 label='Full Name'
                 labelPlacement='outside'
@@ -108,6 +120,7 @@ export function Setting({ user }: { user: User }) {
             />
 
             <Select
+                description='Choose your gender (optional).'
                 label='Gender'
                 labelPlacement='outside'
                 name='gender'
@@ -123,23 +136,75 @@ export function Setting({ user }: { user: User }) {
                 </SelectSection>
             </Select>
 
-            {/* Date of Birth */}
-            <DateInput value={dob} onChange={setDob} onError={setDobError} />
-
-            {/* Location */}
-            <Input
-                id='location'
-                label='Location'
-                labelPlacement='outside'
-                name='location'
-                placeholder='Enter your location'
-                startContent={<MapPin className='h-4 w-4' />}
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+            <Dob
+                description='Enter your birth date (must be 18+)'
+                label='Date of Birth'
+                value={dob}
+                onChange={setDob}
+                onError={setDobError}
             />
+
+            {canEditLocation && (
+                <>
+                    <Input
+                        description='Enter your shop or business address (as users will see it)'
+                        id='location'
+                        label='Store/Shop Address'
+                        labelPlacement='outside'
+                        name='location'
+                        placeholder='e.g. Fix iT Rock, Sikandrabad, India'
+                        startContent={<MapPin className='h-4 w-4' />}
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                    />
+                    <Input
+                        description='Paste the Google Maps URL for your shop location (users can click to open in Maps)'
+                        endContent={
+                            <Tooltip content='Open current location in Maps'>
+                                <Button
+                                    isIconOnly
+                                    radius='full'
+                                    size='sm'
+                                    startContent={<GoogleMaps />}
+                                    variant='light'
+                                    onPress={openCurrentLocationInMaps}
+                                />
+                            </Tooltip>
+                        }
+                        errorMessage={locationUrlError}
+                        id='location_url'
+                        isInvalid={!!locationUrlError}
+                        label='Store/Shop Location URL'
+                        labelPlacement='outside'
+                        name='location_url'
+                        placeholder='Paste your Google Maps link here'
+                        startContent={<LinkIcon className='h-4 w-4' />}
+                        type='url'
+                        value={locationUrl}
+                        onChange={(e) => {
+                            setLocationUrl(e.target.value)
+                            // Validate URL
+                            try {
+                                if (e.target.value && !/^https?:\/\//.test(e.target.value)) {
+                                    setLocationUrlError(
+                                        'Please enter a valid URL starting with http:// or https://'
+                                    )
+                                } else if (e.target.value && !new URL(e.target.value)) {
+                                    setLocationUrlError('Please enter a valid URL')
+                                } else {
+                                    setLocationUrlError('')
+                                }
+                            } catch {
+                                setLocationUrlError('Please enter a valid URL')
+                            }
+                        }}
+                    />
+                </>
+            )}
+
             {/* Bio */}
             <Textarea
-                description={`${bio.length}/160 characters`}
+                description={`Tell us about yourself, your shop, or your interests. (${bio.length}/160 characters)`}
                 errorMessage={bioError}
                 id='bio'
                 isInvalid={!!bioError}
@@ -154,7 +219,7 @@ export function Setting({ user }: { user: User }) {
             />
             {/* Submit Button */}
             <div className='flex justify-end'>
-                <Button isLoading={isLoading} type='submit'>
+                <Button color='primary' isLoading={isLoading} type='submit'>
                     {isLoading ? 'Saving . . .' : ' Save'}
                 </Button>
             </div>

@@ -31,7 +31,7 @@ export const userSession = cache(async function userSession(): Promise<{
             .single()
 
         if (error || !user) {
-            throw new Error('User not found')
+            return { user: null, navigation: [] }
         }
 
         const navFromDb = user.role ? await getNavigation(user.role) : []

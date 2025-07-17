@@ -17,6 +17,7 @@ import {
 import { Navigation as Type, User as UserType } from '®app/login/types'
 import { Navigation } from '®app/login/ui/navigation'
 import { useUser } from '®provider/user'
+import { Verified } from '®ui/icons'
 
 export default function UserDrawer({
     user,
@@ -88,7 +89,7 @@ export default function UserDrawer({
                             Logout
                         </Button>
                         <p className='text-muted-foreground hidden text-start text-xs md:flex'>
-                            Fix it Rock © 2025
+                            © 2025, Fix it Rock.
                         </p>
                     </DrawerFooter>
                 </DrawerContent>
@@ -105,17 +106,26 @@ const UserDetails = ({ user }: { user: UserType | null }) => {
             avatarProps={{
                 src:
                     (user.avatar ||
-                        'https://cdn3d.iconscout.com/3d/premium/thumb/boy-7215504-5873316.png') +
+                        (user.gender === 'female'
+                            ? '/fallback/girl.png'
+                            : user.gender === 'other'
+                              ? '/fallback/other.png'
+                              : '/fallback/boy.png')) +
                     (user.updated_at ? `?t=${user.updated_at}` : ''),
                 fallback: user.name,
                 className: 'w-12 h-12',
             }}
             classNames={{
                 base: 'flex justify-start px-2 sm:px-0',
-                name: 'text-md',
+                name: 'text-md flex items-center gap-1',
             }}
-            description={user.username ? `@${user.username}` : ''}
-            name={user.name || 'User'}
+            description={`@${user.username}`}
+            name={
+                <>
+                    {user.name}
+                    {user.verified && <Verified className='size-5' />}
+                </>
+            }
         />
     )
 }
