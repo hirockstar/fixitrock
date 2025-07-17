@@ -114,11 +114,11 @@ export function BrandCard({ brands }: { brands: Brand[] }) {
                         end={
                             <Button
                                 isIconOnly
-                                className='border-1.5 h-8 w-8 border-dashed p-0 md:hidden'
-                                color='primary'
+                                className='border-1.5 bg-default/20 dark:bg-default/40 h-8 w-8 border-dashed p-0 md:hidden'
                                 radius='full'
                                 size='sm'
                                 startContent={<Plus size={20} />}
+                                variant='light'
                                 onPress={addModal.onOpen}
                             />
                         }
