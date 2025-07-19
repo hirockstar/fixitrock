@@ -6,13 +6,20 @@ import { useState } from 'react'
 import { useSearch } from '®tanstack/query'
 import AnimatedSearch, { useOpen } from '®ui/farmer/search'
 import { Navigation, User } from '®app/login/types'
-import { UserDrawer } from '®app/[user]/ui'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
 import { Suggestion } from './suggestion'
 
-export function SearchBar({ user, navigation }: { user: User | null; navigation: Navigation[] }) {
+export function SearchBar({
+    user,
+    navigation,
+    children,
+}: {
+    user: User | null
+    navigation: Navigation[]
+    children: React.ReactNode
+}) {
     const [query, setQuery] = useState('')
     const { data, isLoading } = useSearch(query)
     const { open, setOpen } = useOpen()
@@ -44,7 +51,7 @@ export function SearchBar({ user, navigation }: { user: User | null; navigation:
                                 <X size={18} />
                             </Button>
                         ) : (
-                            <UserDrawer navigation={navigation} user={user} />
+                            <> {children}</>
                         )
                     }
                     placeholder={user ? `Hi ${user.name}` : 'Work in progress . . . '}

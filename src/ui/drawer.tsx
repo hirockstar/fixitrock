@@ -61,7 +61,8 @@ function DrawerContent({
                     // Right Drawer
                     'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-[280px]',
                     // Left Drawer
-                    'data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:sm:max-w-sm'
+                    'data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:sm:max-w-sm',
+                    className
                 )}
                 data-slot='drawer-content'
                 {...props}
@@ -79,7 +80,7 @@ function DrawerContent({
                     </DrawerPrimitive.Close>
                 )}
 
-                <div className={cn('flex flex-1 flex-col', className)}>{children}</div>
+                <div className={cn('flex flex-1 flex-col')}>{children}</div>
             </DrawerPrimitive.Content>
         </DrawerPortal>
     )

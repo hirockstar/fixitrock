@@ -6,11 +6,13 @@ import { getSlug } from '®actions/supabase/getSlug'
 import Products from './ui/products'
 import { Brands } from './ui/brands'
 import { Settings } from './ui/settings'
+import { Teams } from './ui/teams'
 
 const components: Record<string, React.ComponentType<{ params: { user: string } }>> = {
     Products: Products,
     Brands: Brands,
     Settings: Settings,
+    Teams: Teams,
 }
 
 type Props = {
