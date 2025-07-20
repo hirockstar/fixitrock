@@ -4,7 +4,7 @@ import { Button, Form, Input, Radio, RadioGroup } from '@heroui/react'
 import { AtSign, Loader, UserRound } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import { checkUsername, createUser } from '®actions/auth'
+import { checkUsername, createUser } from '®actions/user'
 import { useDebounce } from '®app/login/hooks/useDebounce'
 import { User } from '®app/login/types'
 import { Dob } from '®ui/dob'
@@ -24,23 +24,17 @@ const MAX_LENGTH = 15
 
 export function StepDetails({ user, setUser, loading, setLoading, setError }: StepDetailsProps) {
     const [hasSubmitted, setHasSubmitted] = useState(false)
-
     const username = user.username ?? ''
     const name = user.name ?? ''
     const gender = user.gender
-
-    const debouncedUsername = useDebounce(username, 400)
-
+    const debouncedUsername = useDebounce(username ?? '', 400)
     const [checkingUsername, setCheckingUsername] = useState(false)
     const [usernameChecked, setUsernameChecked] = useState(false)
     const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(null)
-
     const [dob, setDob] = useState('')
     const [dobError, setDobError] = useState('')
-
     const isValidFormat = USERNAME_REGEX.test(username)
     const isValidLength = username.length >= MIN_LENGTH && username.length <= MAX_LENGTH
-
     const showUsernameError = hasSubmitted || username.length > 0
     const showNameError = hasSubmitted || name.length > 0
 
@@ -51,23 +45,22 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
 
             return
         }
-
-        const check = async () => {
-            setCheckingUsername(true)
-            const available = await checkUsername(debouncedUsername)
-
-            setIsUsernameUnique(available)
+        setCheckingUsername(true)
+        checkUsername(debouncedUsername).then((res) => {
+            setIsUsernameUnique(res.available)
             setUsernameChecked(true)
             setCheckingUsername(false)
-        }
-
-        check()
-    }, [debouncedUsername])
+        })
+    }, [debouncedUsername, isValidFormat, isValidLength])
 
     const handleSave = async () => {
         setError('')
         setHasSubmitted(true)
+        if (isUsernameUnique === false) {
+            setError('This username is already taken.')
 
+            return
+        }
         const isFormValid =
             name.trim() &&
             isValidFormat &&
@@ -77,19 +70,16 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
             !dobError
 
         if (!isFormValid) return
-
         setLoading(true)
-
         try {
             const res = await createUser({
                 name: user.name as string,
                 username: user.username as string,
-                gender: user.gender as string,
+                gender: user.gender as 'male' | 'female' | 'other',
                 dob: dob || null,
             })
 
             if (res?.error) throw new Error(res.error)
-
             setDob('')
             setDobError('')
             window.location.href = `/@${username}`
@@ -108,9 +98,9 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
 
     return (
         <Form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
                 e.preventDefault()
-                handleSave()
+                await handleSave()
             }}
         >
             <DrawerHeader className='w-full px-0 py-2'>
@@ -132,7 +122,6 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                     value={name}
                     onChange={(e) => setUser({ name: e.target.value })}
                 />
-
                 <Input
                     isRequired
                     description='Choose wisely - username is permanent!'
@@ -156,7 +145,7 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                                 ? 'Only lowercase letters, numbers, and underscores allowed'
                                 : !isValidLength
                                   ? `Must be at least ${MIN_LENGTH} characters`
-                                  : usernameChecked && isUsernameUnique === false
+                                  : isUsernameUnique === false
                                     ? 'This username is already taken'
                                     : undefined
                     }
@@ -184,7 +173,6 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
                     }}
                     onError={setDobError}
                 />
-
                 <RadioGroup
                     isRequired
                     classNames={{ label: 'text-muted-forground' }}

@@ -2,18 +2,15 @@ import type { Metadata, Viewport } from 'next'
 
 import Footer from '®components/footer'
 import { META_THEME_COLORS, siteConfig } from '®config/site'
-import { Providers } from '®provider'
+import { AuthProvider, Providers } from '®provider'
 import '../styles/globals.css'
 import { cn } from '®lib/utils'
 import { SearchBar } from '®components/search/bar'
 import { fontVariables } from '®lib/fonts'
-import { UserProvider } from '®provider/user'
-import { userSession } from '®actions/auth'
 import { ErrorBoundary } from '®components/error'
-import { getUserNotifications, getPendingInvitesCount } from '®actions/teams'
-import { NotificationProvider } from '®provider/notification'
+import { userSession } from '®actions/user'
 
-import { UserDrawer, Notification } from './[user]/ui'
+import { UserDrawer } from './[user]/ui'
 
 export default async function RootLayout({
     children,
@@ -23,16 +20,6 @@ export default async function RootLayout({
     modal?: React.ReactNode
 }>) {
     const { user, navigation } = await userSession()
-
-    let notifications = []
-    let pendingCount = 0
-
-    if (user) {
-        ;[notifications, pendingCount] = await Promise.all([
-            getUserNotifications(user.id),
-            getPendingInvitesCount(user.id),
-        ])
-    }
 
     return (
         <html suppressHydrationWarning lang='en'>
@@ -67,28 +54,20 @@ export default async function RootLayout({
                 />
             </head>
             <body className={cn('bg-background min-h-svh font-sans antialiased', fontVariables)}>
-                <ErrorBoundary>
-                    <UserProvider>
-                        <NotificationProvider
-                            initialNotifications={notifications}
-                            initialPendingCount={pendingCount}
-                        >
-                            <Providers>
-                                <div className='bg-background relative flex min-h-screen flex-col'>
-                                    <div className='flex-1 overflow-clip'>{children}</div>
-                                    {modal}
-                                    <SearchBar navigation={navigation} user={user}>
-                                        <div className='flex items-center gap-3'>
-                                            {user && <Notification />}
-                                            <UserDrawer navigation={navigation} user={user} />
-                                        </div>
-                                    </SearchBar>
-                                    <Footer />
-                                </div>
-                            </Providers>
-                        </NotificationProvider>
-                    </UserProvider>
-                </ErrorBoundary>
+                <AuthProvider>
+                    <ErrorBoundary>
+                        <Providers>
+                            <div className='bg-background relative flex min-h-screen flex-col'>
+                                <div className='flex-1 overflow-clip'>{children}</div>
+                                {modal}
+                                <SearchBar navigation={navigation} user={user}>
+                                    <UserDrawer navigation={navigation} user={user} />
+                                </SearchBar>
+                                <Footer />
+                            </div>
+                        </Providers>
+                    </ErrorBoundary>
+                </AuthProvider>
             </body>
         </html>
     )

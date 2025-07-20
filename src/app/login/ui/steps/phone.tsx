@@ -1,12 +1,10 @@
 'use client'
 
 import { Button, Form, Input } from '@heroui/react'
-import { ConfirmationResult, signInWithPhoneNumber } from 'firebase/auth'
 import Link from 'next/link'
 
+import { sendOtp } from '®actions/user'
 import { LoginStep } from '®app/login/types'
-import { firebaseAuth } from '®firebase/client'
-import { useRecaptcha } from '®app/login/hooks/useRecaptcha'
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
 
 interface StepPhoneProps {
@@ -15,7 +13,6 @@ interface StepPhoneProps {
     setStep: (val: LoginStep) => void
     setLoading: (val: boolean) => void
     setError: (val: string) => void
-    setConfirmationResult: (val: ConfirmationResult | null) => void
     loading: boolean
 }
 
@@ -25,38 +22,26 @@ export function StepPhone({
     setStep,
     setLoading,
     setError,
-    setConfirmationResult,
     loading,
 }: StepPhoneProps) {
-    const recaptchaRef = useRecaptcha()
+    const isPhoneValid = /^\d{10}$/.test(phone)
 
     const handleSendOtp = async () => {
         setError('')
         setLoading(true)
+        const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`
+        const res = await sendOtp(formattedPhone)
 
-        try {
-            const appVerifier = recaptchaRef.current
-
-            if (!appVerifier) throw new Error('Recaptcha not ready')
-
-            const result = await signInWithPhoneNumber(firebaseAuth, `+91${phone}`, appVerifier)
-
-            setConfirmationResult(result)
-            setStep('otp')
-        } catch (err) {
-            setError((err as Error).message)
-        } finally {
-            setLoading(false)
-        }
+        setLoading(false)
+        if (res.error) setError(res.error)
+        else setStep('otp')
     }
-
-    const isPhoneValid = /^\d{10}$/.test(phone)
 
     return (
         <Form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
                 e.preventDefault()
-                if (isPhoneValid) handleSendOtp()
+                if (isPhoneValid) await handleSendOtp()
             }}
         >
             <DrawerHeader className='w-full py-2 text-balance'>

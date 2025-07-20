@@ -19,7 +19,7 @@ import {
     updateSelfCover,
     removeSelfAvatar,
     removeSelfCover,
-} from '®actions/user'
+} from '®actions/users'
 
 interface AddProps {
     isOpen: boolean

@@ -25,7 +25,7 @@ export function Suggestion({
 
     return (
         <Listbox autoFocus aria-label='Suggestion' classNames={{ base: 'p-0' }}>
-            {navigation && navigation.length > 0 ? (
+            {navigation !== null && navigation.length > 0 ? (
                 <ListboxSection
                     classNames={{ base: 'mb-0 px-1.5', group: 'flex flex-col gap-1.5' }}
                     items={navigation}

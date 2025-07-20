@@ -1,4 +1,4 @@
-import { userSession } from '®actions/auth'
+import { userSession } from '®actions/user'
 
 import { Tags } from './tags'
 

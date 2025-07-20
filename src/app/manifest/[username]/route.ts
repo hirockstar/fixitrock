@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 
-import { getUser } from '®actions/auth'
+import { getUser } from '®actions/user'
 
 export async function GET(
     request: NextRequest,

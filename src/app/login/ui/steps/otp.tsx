@@ -1,26 +1,22 @@
 'use client'
 
-import type { ConfirmationResult } from 'firebase/auth'
-
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Form } from '@heroui/react'
 import { InputOtp } from '@heroui/input-otp'
-import { Dispatch, SetStateAction } from 'react'
 import { Timer } from 'lucide-react'
+import { useEffect } from 'react'
 
-import { startSession } from '®actions/auth'
 import { LoginStep } from '®app/login/types'
 import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
-import { useUser } from '®provider/user'
+import { verifyOtp } from '®actions/user'
 
 interface StepOtpProps {
     otp: string
     setOtp: (val: string) => void
-    setStep: Dispatch<SetStateAction<LoginStep>>
+    setStep: (val: LoginStep) => void
     loading: boolean
     setLoading: (val: boolean) => void
     setError: (val: string) => void
-    confirmationResult: ConfirmationResult
     resendOtp: () => void
     phone: string
 }
@@ -35,59 +31,46 @@ export function StepOtp({
     loading,
     setLoading,
     setError,
-    confirmationResult,
     resendOtp,
     phone,
 }: StepOtpProps) {
     const [secondsLeft, setSecondsLeft] = useState(RESEND_TIMEOUT)
-    const { user } = useUser()
 
-    useEffect(() => {
+    // Timer logic
+    useState(() => {
         const interval = setInterval(() => {
             setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0))
         }, 1000)
 
         return () => clearInterval(interval)
-    }, [])
+    })
 
+    // Auto-verify OTP when full OTP is entered
     useEffect(() => {
         if (otp.length === OTP_LENGTH && !loading) {
             handleVerifyOtp()
         }
     }, [otp])
 
-    const handleVerifyOtp = async () => {
-        setError('')
-        setLoading(true)
-        try {
-            const result = await confirmationResult.confirm(otp)
-            const token = await result.user.getIdToken(true)
-
-            const res = await startSession(token)
-
-            if (res?.error) throw new Error(res.error)
-
-            if (res?.isNew) {
-                setStep('details')
-            } else {
-                // Use user from context for redirect
-                if (user?.username) {
-                    window.location.href = `/@${user.username}`
-                } else {
-                    window.location.href = '/' // fallback
-                }
-            }
-        } catch {
-            setError('Invalid OTP. Please try again.')
-        } finally {
-            setLoading(false)
-        }
-    }
     const formatTime = (secs: number) => {
         const m = String(Math.floor(secs / 60)).padStart(2, '0')
         const s = String(secs % 60).padStart(2, '0')
 
         return `${m}:${s}`
+    }
+
+    const handleVerifyOtp = async () => {
+        setError('')
+        setLoading(true)
+        const res = await verifyOtp('+91' + phone, otp)
+
+        setLoading(false)
+        if (res.error) setError(res.error)
+        else if (res.user) {
+            window.location.href = `/@${res.user.username}`
+        } else {
+            setStep('details')
+        }
     }
 
     const handleResend = () => {
@@ -99,9 +82,9 @@ export function StepOtp({
 
     return (
         <Form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
                 e.preventDefault()
-                handleVerifyOtp()
+                await handleVerifyOtp()
             }}
         >
             <DrawerHeader className='w-full py-2'>
@@ -118,19 +101,15 @@ export function StepOtp({
                     </button>
                 </DrawerDescription>
             </DrawerHeader>
-
             <InputOtp
                 autoFocus
                 autoSave=''
                 className='mx-auto flex w-full items-center justify-center'
-                classNames={{
-                    segmentWrapper: 'gap-x-5',
-                }}
+                classNames={{ segmentWrapper: 'gap-x-5' }}
                 length={OTP_LENGTH}
                 value={otp}
                 onValueChange={setOtp}
             />
-
             <DrawerFooter className='flex w-full flex-col items-center space-y-2'>
                 <Button
                     fullWidth
@@ -141,22 +120,16 @@ export function StepOtp({
                 >
                     {loading ? 'Verifying...' : 'Verify OTP'}
                 </Button>
-
                 {secondsLeft > 0 && (
                     <p className='text-muted-foreground flex items-center gap-1 text-sm'>
                         <Timer size={18} />
                         <span className='tabular-nums'>{formatTime(secondsLeft)}</span>
                     </p>
                 )}
-
                 <div className='text-muted-foreground flex items-center gap-1 text-center text-xs'>
                     <p>Didn't receive the OTP?</p>
                     <button
-                        className={`font-medium ${
-                            secondsLeft > 0
-                                ? 'text-muted-foreground cursor-not-allowed'
-                                : 'text-primary hover:underline'
-                        }`}
+                        className={`font-medium ${secondsLeft > 0 ? 'text-muted-foreground cursor-not-allowed' : 'text-primary hover:underline'}`}
                         disabled={secondsLeft > 0}
                         type='button'
                         onClick={handleResend}

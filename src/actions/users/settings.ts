@@ -3,9 +3,9 @@
 import { z } from 'zod'
 import { revalidatePath, revalidateTag } from 'next/cache'
 
-import { userSession } from '®actions/auth'
 import { createClient } from '®supabase/server'
 import { logWarning } from '®lib/utils'
+import { userSession } from '®actions/user'
 
 const SettingsSchema = z.object({
     name: z.string().min(1, 'Name is required'),

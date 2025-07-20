@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { ConfirmationResult } from 'firebase/auth'
 import { usePathname, useRouter } from 'next/navigation'
 
 import { User } from '®app/login/types'
 import { useMediaQuery } from '®hooks/useMediaQuery'
 import { Drawer, DrawerContent } from '®ui/drawer'
 import { Dialog, DialogContent } from '®ui/dialog'
+import { sendOtp } from '®actions/user'
 
 import { LoginStep } from '../types'
 
@@ -43,13 +43,10 @@ export function LoginModal() {
 
 function Steps() {
     const [step, setStep] = useState<LoginStep>('phone')
-
     const [phone, setPhone] = useState('')
     const [otp, setOtp] = useState('')
-    const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-
     const [user, setUserState] = useState<Partial<User>>({})
 
     const setUser = (val: Partial<User>) => {
@@ -60,15 +57,10 @@ function Steps() {
         setError('')
         setLoading(true)
         try {
-            const { signInWithPhoneNumber } = await import('firebase/auth')
-            const { firebaseAuth } = await import('®firebase/client')
-            const result = await signInWithPhoneNumber(
-                firebaseAuth,
-                '+91' + phone,
-                window.recaptchaVerifier
-            )
+            // Always format as +91XXXXXXXXXX
+            const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`
 
-            setConfirmationResult(result)
+            await sendOtp(formattedPhone)
         } catch {
             setError('Failed to resend OTP. Please try again.')
         } finally {
@@ -82,7 +74,6 @@ function Steps() {
                 <StepPhone
                     loading={loading}
                     phone={phone}
-                    setConfirmationResult={setConfirmationResult}
                     setError={setError}
                     setLoading={setLoading}
                     setPhone={setPhone}
@@ -90,9 +81,8 @@ function Steps() {
                 />
             )}
 
-            {step === 'otp' && confirmationResult && (
+            {step === 'otp' && (
                 <StepOtp
-                    confirmationResult={confirmationResult}
                     loading={loading}
                     otp={otp}
                     phone={phone}

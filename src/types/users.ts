@@ -1,3 +1,23 @@
+export type LoginStep = 'phone' | 'otp' | 'details'
+
+export type User = {
+    id: string
+    phone: string
+    name: string | null
+    username: string | null
+    gender: string | null
+    dob: string | null
+    active: boolean
+    avatar?: string | null
+    bio?: string | null // max 160 chars
+    location?: string | null
+    location_url?: string | null
+    cover?: string | null
+    verified: boolean
+    created_at: string
+    updated_at: string
+}
+
 export type NotificationType = 'team_request' | 'follow' | 'comment' | 'like' | 'other'
 
 export type Notification = {

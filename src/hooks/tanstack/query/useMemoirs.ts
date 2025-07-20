@@ -7,7 +7,7 @@ import React from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
-import { getMemoirs } from '®actions/user'
+import { getMemoirs } from '®actions/users'
 import { useSearchParams } from '®hooks/useSearchParams'
 import { getDownloadUrl, isFolder, isPreviewable } from '®lib/utils'
 import { DriveItem } from '®types/drive'

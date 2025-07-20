@@ -1,5 +1,5 @@
-import { userSession } from '®actions/auth'
 import { User } from '®app/login/types'
+import { userSession } from '®actions/user'
 
 import Members from './members'
 

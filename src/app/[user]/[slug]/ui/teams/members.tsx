@@ -5,8 +5,6 @@ import { getMembers, deleteMember } from '®actions/teams'
 import { TeamMembers } from '®types/teams'
 import { User } from '®app/login/types'
 
-import AddEditMember from './add'
-
 export default function Members({ user }: { user: User }) {
     const [members, setMembers] = useState<TeamMembers>([])
     const [loading, setLoading] = useState(true)
@@ -35,7 +33,7 @@ export default function Members({ user }: { user: User }) {
     return (
         <div className='space-y-4'>
             <h2 className='text-xl font-bold'>Team Members</h2>
-            <AddEditMember mode='add' onSuccess={refresh} />
+            {/* <AddEditMember mode='add' onSuccess={refresh} /> */}
             {loading ? (
                 <div>Loading...</div>
             ) : (
@@ -50,7 +48,7 @@ export default function Members({ user }: { user: User }) {
                                 <div className='text-xs text-gray-400'>Status: {member.status}</div>
                             </div>
                             <div className='flex gap-2'>
-                                <AddEditMember member={member} mode='edit' onSuccess={refresh} />
+                                {/* <AddEditMember member={member} mode='edit' onSuccess={refresh} /> */}
                                 <button
                                     className='text-red-500 hover:underline'
                                     onClick={() => handleDelete(member.id)}

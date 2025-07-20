@@ -17,7 +17,7 @@ import Link from 'next/link'
 import { BiMaleFemale } from 'react-icons/bi'
 
 import { User } from '®app/login/types'
-import { updateUser } from '®actions/user'
+import { updateUser } from '®actions/users'
 import { openCurrentLocationInMaps } from '®lib/utils'
 import { GoogleMaps } from '®ui/icons'
 import { Dob } from '®ui/dob'

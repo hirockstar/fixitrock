@@ -1,14 +1,7 @@
-export {
-    updateUser,
-    uploadUserImage,
-    deleteUserImage,
-    updateSelfAvatar,
-    updateSelfCover,
-    removeSelfAvatar,
-    removeSelfCover,
-} from './settings'
-
-export { getGallery } from './gallery'
-export { getLocation } from './location'
-export { getMemoirs } from './memoirs'
-export { getLink } from './link'
+export { createUser } from './create'
+export { checkUsername } from './username'
+export { logout } from './logout'
+export { sendOtp } from './otp'
+export { verifyOtp } from './verify'
+export { userSession } from './session'
+export { getUser } from './user'

@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getGallery } from '®actions/user/gallery'
+import { getGallery } from '®actions/users/gallery'
 
 export function useGallery(username: string) {
     const query = useQuery({

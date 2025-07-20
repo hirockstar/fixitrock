@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getTour } from '®actions/user/tour'
+import { getTour } from '®actions/users/tour'
 
 export function useTour(tour: string) {
     const query = useQuery({

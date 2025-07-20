@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 
-import { userSession } from '®actions/auth'
+import { userSession } from '®actions/user'
 import { LoginModal } from '®app/login/ui/modal'
 
 export default async function LoginPage() {

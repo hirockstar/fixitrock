@@ -1,9 +1,9 @@
 import { notFound, redirect } from 'next/navigation'
 import { Metadata } from 'next'
 
-import { getUser } from '®actions/auth'
 import { getTabs } from '®actions/supabase'
 import { userProducts } from '®actions/products'
+import { getUser } from '®actions/user'
 
 import { Profile, Tabs } from './ui'
 

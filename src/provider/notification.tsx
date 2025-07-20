@@ -1,70 +1,71 @@
-'use client'
+// 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+// import React, { createContext, useContext, useEffect, useState } from 'react'
 
-import { createClient } from '®supabase/client'
-import { useUser } from '®provider/user'
-import { Notification as NotificationType } from '®types/users'
+// import { createClient } from '®supabase/client'
+// import { Notification as NotificationType } from '®types/users'
 
-// Context type
-type NotificationContextType = {
-    notifications: NotificationType[]
-    pendingCount: number
-    loading: boolean
-}
+// import { useAuth } from './auth'
 
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined)
+// // Context type
+// type NotificationContextType = {
+//     notifications: NotificationType[]
+//     pendingCount: number
+//     loading: boolean
+// }
 
-export function NotificationProvider({
-    children,
-    initialNotifications,
-    initialPendingCount,
-}: {
-    children: React.ReactNode
-    initialNotifications: NotificationType[]
-    initialPendingCount: number
-}) {
-    const { user } = useUser()
-    const [notifications, setNotifications] = useState<NotificationType[]>(initialNotifications)
-    const [pendingCount, setPendingCount] = useState(initialPendingCount)
-    const [loading] = useState(false) // SSR provides initial data, so no loading flicker
+// const NotificationContext = createContext<NotificationContextType | undefined>(undefined)
 
-    useEffect(() => {
-        if (!user) return
-        const supabase = createClient()
-        const channel = supabase
-            .channel('notifications')
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'notifications',
-                    filter: `user_id=eq.${user.id}`,
-                },
-                (payload) => {
-                    setNotifications((prev) => [payload.new as NotificationType, ...prev])
-                    setPendingCount((prev) => prev + 1)
-                }
-            )
-            .subscribe()
+// export function NotificationProvider({
+//     children,
+//     initialNotifications,
+//     initialPendingCount,
+// }: {
+//     children: React.ReactNode
+//     initialNotifications: NotificationType[]
+//     initialPendingCount: number
+// }) {
+//     const { user } = useAuth()
+//     const [notifications, setNotifications] = useState<NotificationType[]>(initialNotifications)
+//     const [pendingCount, setPendingCount] = useState(initialPendingCount)
+//     const [loading] = useState(false) // SSR provides initial data, so no loading flicker
 
-        return () => {
-            supabase.removeChannel(channel)
-        }
-    }, [user])
+//     useEffect(() => {
+//         if (!user) return
+//         const supabase = createClient()
+//         const channel = supabase
+//             .channel('notifications')
+//             .on(
+//                 'postgres_changes',
+//                 {
+//                     event: 'INSERT',
+//                     schema: 'public',
+//                     table: 'notifications',
+//                     filter: `user_id=eq.${user.id}`,
+//                 },
+//                 (payload) => {
+//                     setNotifications((prev) => [payload.new as NotificationType, ...prev])
+//                     setPendingCount((prev) => prev + 1)
+//                 }
+//             )
+//             .subscribe()
 
-    return (
-        <NotificationContext.Provider value={{ notifications, pendingCount, loading }}>
-            {children}
-        </NotificationContext.Provider>
-    )
-}
+//         return () => {
+//             supabase.removeChannel(channel)
+//         }
+//     }, [user])
 
-export function useNotifications() {
-    const ctx = useContext(NotificationContext)
+//     return (
+//         <NotificationContext.Provider value={{ notifications, pendingCount, loading }}>
+//             {children}
+//         </NotificationContext.Provider>
+//     )
+// }
 
-    if (!ctx) throw new Error('useNotifications must be used within NotificationProvider')
+// export function useNotifications() {
+//     const ctx = useContext(NotificationContext)
 
-    return ctx
-}
+//     if (!ctx) throw new Error('useNotifications must be used within NotificationProvider')
+
+//     return ctx
+// }

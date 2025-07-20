@@ -16,8 +16,8 @@ import {
 } from '®ui/drawer'
 import { Navigation as Type, User as UserType } from '®app/login/types'
 import { Navigation } from '®app/login/ui/navigation'
-import { useUser } from '®provider/user'
 import { Verified } from '®ui/icons'
+import { useAuth } from '®provider'
 
 export default function UserDrawer({
     user,
@@ -26,14 +26,15 @@ export default function UserDrawer({
     user: UserType | null
     navigation: Type[]
 }) {
-    const { signOut } = useUser()
+    const { logout } = useAuth()
+
     const [open, setOpen] = useState(false)
     const router = useRouter()
     const isDesktop = useMediaQuery('(min-width: 786px)')
 
-    const handleSignOut = async () => {
+    const handleSignOut = () => {
         setOpen(false)
-        await signOut()
+        logout()
     }
 
     const onClose = () => {
@@ -73,21 +74,23 @@ export default function UserDrawer({
                     <FaUserCircle aria-label='Login to your account' size={22} />
                 )}
             </Button>
+
             <Drawer direction={isDesktop ? 'right' : 'bottom'} open={open} onOpenChange={setOpen}>
                 <DrawerContent
                     hideCloseButton={isDesktop ? true : false}
                     showbar={isDesktop ? false : true}
                 >
                     <DrawerHeader className='p-2 md:border-b'>
-                        <UserDetails user={user} />
+                        <UserDetails user={user as UserType} />
                     </DrawerHeader>
                     <DrawerTitle aria-hidden />
                     <DrawerDescription aria-hidden />
                     <Navigation navigation={navigation} onClose={onClose} />
                     <DrawerFooter className='flex flex-col gap-2 p-2 md:border-t'>
-                        <Button fullWidth color='danger' onPress={handleSignOut}>
+                        <Button fullWidth color='danger' type='submit' onPress={handleSignOut}>
                             Logout
                         </Button>
+
                         <p className='text-muted-foreground hidden text-start text-xs md:flex'>
                             © 2025, Fix it Rock.
                         </p>
@@ -98,7 +101,7 @@ export default function UserDrawer({
     )
 }
 
-const UserDetails = ({ user }: { user: UserType | null }) => {
+const UserDetails = ({ user }: { user: UserType }) => {
     if (!user) return null
 
     return (

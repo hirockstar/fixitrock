@@ -1,14 +1,13 @@
 export type LoginStep = 'phone' | 'otp' | 'details'
 
 export type User = {
-    id: string // uuid
+    id: string
     name: string
     username: string
     phone: string
-    gender?: string | null
+    gender?: 'male' | 'female' | 'other'
     dob?: string | null
-    role?: number // bigint, now optional for login flow
-    team_id?: number | null
+    role?: number
     avatar?: string | null
     active: boolean
     created_at: string

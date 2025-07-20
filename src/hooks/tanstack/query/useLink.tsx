@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-import { getLink } from '®actions/user'
+import { getLink } from '®actions/users'
 import { DriveLink } from '®types/drive'
 
 export function useLink(id: string) {

@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 import { siteConfig } from '®config/site'
-import { userSession } from '®actions/auth'
+import { userSession } from '®actions/user'
 
 import { LoginModal } from './ui/modal'
 
