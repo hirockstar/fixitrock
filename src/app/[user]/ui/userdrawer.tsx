@@ -17,7 +17,7 @@ import {
 import { Navigation as Type, User as UserType } from '®app/login/types'
 import { Navigation } from '®app/login/ui/navigation'
 import { Verified } from '®ui/icons'
-import { useAuth } from '®provider'
+import { useAuth } from '®zustand/store'
 
 export default function UserDrawer({
     user,

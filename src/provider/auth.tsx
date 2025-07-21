@@ -1,16 +1,35 @@
 'use client'
-import React, { createContext, useContext, useCallback, useEffect, ReactNode } from 'react'
 
+import { useEffect, ReactNode } from 'react'
+
+import { createClient } from '®supabase/client'
 import { logout as serverLogout } from '®actions/user'
-interface AuthContextType {
-    logout: () => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+import { useAuth, useEvent } from '®zustand/store'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+    const setLogout = useAuth((s) => s.setLogout)
+
+    const { trigger } = useEvent()
+
     useEffect(() => {
-        if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        const logout = async () => {
+            await serverLogout()
+
+            if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+                const channel = new BroadcastChannel('auth')
+
+                channel.postMessage({ type: 'logout' })
+                channel.close()
+            }
+
+            window.location.reload()
+        }
+
+        // ✅ Directly assign logout
+        setLogout(logout)
+
+        // Handle cross-tab logout sync
+        if ('BroadcastChannel' in window) {
             const channel = new BroadcastChannel('auth')
 
             channel.onmessage = (event) => {
@@ -21,26 +40,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             return () => channel.close()
         }
-    }, [])
+    }, [setLogout])
 
-    const logout = useCallback(async () => {
-        await serverLogout()
-        if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-            const channel = new BroadcastChannel('auth')
+    useEffect(() => {
+        const supabase = createClient()
 
-            channel.postMessage({ type: 'logout' })
-            channel.close()
+        const channel = supabase
+            .channel('realtime:all')
+            // On any DB change, trigger the global refresh
+            .on('postgres_changes', { event: '*', schema: 'public', table: '*' }, (_payload) => {
+                trigger()
+            })
+            .subscribe()
+
+        return () => {
+            supabase.removeChannel(channel)
         }
-        window.location.reload()
-    }, [])
+    }, [trigger])
 
-    return <AuthContext.Provider value={{ logout }}>{children}</AuthContext.Provider>
-}
-
-export function useAuth() {
-    const ctx = useContext(AuthContext)
-
-    if (!ctx) throw new Error('useAuth must be used within AuthProvider')
-
-    return ctx
+    return children
 }

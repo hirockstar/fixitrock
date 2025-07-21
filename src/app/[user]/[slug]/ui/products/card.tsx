@@ -3,10 +3,10 @@ import { Card, CardBody, CardFooter, Chip, Image, Tooltip } from '@heroui/react'
 import { MdProductionQuantityLimits } from 'react-icons/md'
 
 import { formatPrice, getProductImage, getStockStatus } from '®lib/utils'
-import { Product } from '®types/products'
+import { Product, Products } from '®types/products'
 
 export type ProductsListProps = {
-    products: Product[]
+    products: Products
 }
 
 function ProductImage(product: Product) {

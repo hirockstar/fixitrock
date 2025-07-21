@@ -1,6 +1,6 @@
 export type Product = {
     id: number
-    createdBy: string
+    user_id: string // uuid, references auth.users(id)
     slug: string
     name: string
     compatible: string
@@ -17,6 +17,8 @@ export type Product = {
     created_at?: string
     updated_at?: string
 }
+
+export type Products = Product[]
 
 export type ProductsResult = {
     success: boolean

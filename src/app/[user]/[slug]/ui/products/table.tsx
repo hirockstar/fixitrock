@@ -17,7 +17,7 @@ import React from 'react'
 import { Edit, Filter, Plus, CloudDownload } from 'lucide-react'
 
 import { Table, TableBody, TableCell, TableFooter, TableHeader, TableRow } from '®ui/table'
-import { Product } from '®types/products'
+import { Product, Products } from '®types/products'
 import { Brand } from '®types/brands'
 import { formatPrice, getStockStatus } from '®lib/utils'
 import { Delete } from '®ui/icons'
@@ -28,7 +28,7 @@ import AddEdit from './add'
 import Quantity from './quantity'
 
 interface ProductsTableProps {
-    products: Product[]
+    products: Products
     canManage: boolean
     brand: Brand[]
 }

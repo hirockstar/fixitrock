@@ -16,7 +16,7 @@ import { Trash2, X } from 'lucide-react'
 import { addToast } from '@heroui/react'
 import { MdProductionQuantityLimits } from 'react-icons/md'
 
-import { deleteProduct } from '®actions/products'
+import { softDeleteProduct } from '®actions/user/products'
 import { Product } from '®types/products'
 import { formatPrice, getProductImage, getStockStatus } from '®lib/utils'
 
@@ -27,7 +27,7 @@ interface DeleteProductProps {
 }
 
 export default function DeleteProduct({ isOpen, onClose, product }: DeleteProductProps) {
-    const [{ errors }, formAction, isLoading] = useActionState(deleteProduct, { errors: {} })
+    const [{ errors }, formAction, isLoading] = useActionState(softDeleteProduct, { errors: {} })
     const formRef = useRef<HTMLFormElement>(null)
 
     useEffect(() => {

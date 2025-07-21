@@ -5,7 +5,8 @@ import { Button, Input, addToast } from '@heroui/react'
 import { Minus, Plus } from 'lucide-react'
 
 import { Product } from '®types/products'
-import { updateProductQuantity } from '®actions/products'
+import { setProductQty } from '®actions/user/products'
+import { useEvent } from '®zustand/store'
 
 interface QuantityProps {
     product: Product
@@ -13,6 +14,7 @@ interface QuantityProps {
 }
 
 export default function Quantity({ product, canManage }: QuantityProps) {
+    const { refreshVersion } = useEvent()
     const [localQty, setLocalQty] = useState(product.qty)
     const [inputValue, setInputValue] = useState(String(product.qty))
     const [isPending, startTransition] = useTransition()
@@ -21,11 +23,11 @@ export default function Quantity({ product, canManage }: QuantityProps) {
     useEffect(() => {
         setLocalQty(product.qty)
         setInputValue(String(product.qty))
-    }, [product.qty])
+    }, [product.qty, refreshVersion])
 
     const handleUpdateQuantity = async (newQty: number) => {
         try {
-            await updateProductQuantity(String(product.id), newQty)
+            await setProductQty(product.id, newQty)
         } catch (error) {
             const errorMessage =
                 error instanceof Error ? error.message : 'Failed to update quantity'
