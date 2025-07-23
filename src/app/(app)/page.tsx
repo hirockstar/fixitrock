@@ -8,7 +8,7 @@ export default async function Page() {
     return (
         <main className='flex min-h-[70vh] w-full items-center justify-center'>
             <div className='flex w-full max-w-xl flex-col items-center gap-4 px-3 sm:px-2 md:gap-6'>
-                <h1 className='title-heading text-foreground mt-10 text-center text-3xl font-extrabold md:text-5xl'>
+                <h1 className='text-foreground mt-10 text-center text-2xl font-extrabold sm:text-3xl sm:text-nowrap md:text-5xl'>
                     {user ? (
                         <>
                             {getGreeting()}&nbsp;

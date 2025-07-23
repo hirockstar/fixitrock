@@ -6,23 +6,19 @@ import { getNavigation } from '®actions/supabase'
 import { Navigation, User } from '®app/login/types'
 import { createClient } from '®supabase/server'
 
-// Helper function to get current authenticated user
 export const userSession = cache(async function userSession(): Promise<{
     user: User | null
     navigation: Navigation[]
 }> {
     const supabase = await createClient()
-    const {
-        data: { user: authUser },
-    } = await supabase.auth.getUser()
+    const { data, error: claimsError } = await supabase.auth.getClaims()
+    const claims = data?.claims
 
-    if (!authUser) return { user: null, navigation: [] }
+    if (claimsError || !claims?.sub) return { user: null, navigation: [] }
 
-    const { data: user, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', authUser.id)
-        .single()
+    const id = claims.sub
+
+    const { data: user, error } = await supabase.from('users').select('*').eq('id', id).single()
 
     if (error || !user) {
         return { user: null, navigation: [] }
@@ -30,7 +26,6 @@ export const userSession = cache(async function userSession(): Promise<{
 
     const navFromDb = user.role ? await getNavigation(user.role) : []
 
-    // Always include profile as the first navigation item
     const navigation: Navigation[] = [
         {
             href: `/@${user.username}`,

@@ -1,22 +1,37 @@
-export type Product = {
-    id: number
-    user_id: string // uuid, references auth.users(id)
-    slug: string
-    name: string
-    compatible: string
-    description?: string
-    img?: Array<string> | Array<{ url: string; alt?: string }>
-    purchase: number
-    staff_price?: number
-    price?: number
-    qty: number
-    category?: string
-    brand?: string
-    other?: Record<string, unknown>
-    deleted_at?: string
-    created_at?: string
-    updated_at?: string
-}
+import { z } from 'zod'
+
+export const ProductSchema = z.object({
+    id: z.number(),
+    user_id: z.string().uuid(),
+    slug: z.string(),
+    name: z.string(),
+    compatible: z.string(),
+    description: z.string().optional(),
+    img: z
+        .array(z.string())
+        .or(z.array(z.object({ url: z.string(), alt: z.string().optional() })))
+        .optional(),
+    purchase: z.number(),
+    staff_price: z.number().optional(),
+    price: z.number().optional(),
+    qty: z.number(),
+    category: z.string().optional(),
+    brand: z.string().optional(),
+    other: z.record(z.string(), z.unknown()).optional(),
+    deleted_at: z.string().optional(),
+    created_at: z.string().optional(),
+    updated_at: z.string().optional(),
+})
+
+export type Product = z.infer<typeof ProductSchema>
+
+export const ProductInsertSchema = ProductSchema.omit({
+    id: true,
+    created_at: true,
+    updated_at: true,
+    deleted_at: true,
+})
+export type ProductInsert = z.infer<typeof ProductInsertSchema>
 
 export type Products = Product[]
 

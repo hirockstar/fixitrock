@@ -1,31 +1,66 @@
 'use server'
 
-import type { Product, Products } from '®types/products'
-
 import { revalidatePath } from 'next/cache'
 
+import { logWarning, slugify } from '®lib/utils'
 import { createClient } from '®supabase/server'
-import { slugify } from '®lib/utils'
+import { Product, ProductsResult } from '®types/products'
 
-// Input type for creating a product (all fields except those auto-generated or managed by backend)
-export type ProductInsert = Omit<
-    Product,
-    'id' | 'user_id' | 'deleted_at' | 'created_at' | 'updated_at'
->
-async function getUsername(userId: string): Promise<string> {
+async function userSession() {
     const supabase = await createClient()
-    const { data: userRow } = await supabase
-        .from('users')
-        .select('username')
-        .eq('id', userId)
+    const { data } = await supabase.auth.getClaims()
+
+    if (!data) {
+        throw new Error('Not authenticated')
+    }
+
+    try {
+        const id = data.claims?.sub
+        const { data: user, error } = await supabase.from('users').select('*').eq('id', id).single()
+
+        if (error || !user) {
+            throw new Error('User not found')
+        }
+
+        return user
+    } catch {
+        throw new Error('Authentication failed')
+    }
+}
+
+async function validateProductOwnership(productId: number, userId: string) {
+    const supabase = await createClient()
+    const { data: product, error } = await supabase
+        .from('products')
+        .select('user_id, deleted_at')
+        .eq('id', productId)
         .single()
 
-    return userRow?.username || userId
+    if (error) {
+        if (error.code === 'PGRST116') {
+            throw new Error('Product not found')
+        }
+        throw new Error(`Database error: ${error.message}`)
+    }
+
+    if (!product) {
+        throw new Error('Product not found')
+    }
+
+    if (product.deleted_at) {
+        throw new Error('Product has been deleted')
+    }
+
+    if (product.user_id !== userId) {
+        throw new Error('Unauthorized: You can only modify your own products')
+    }
+
+    return product
 }
-// Upload up to 4 images for a product, return public URLs
-async function uploadProductImages(
+
+async function uploadUserProductImages(
     username: string,
-    slug: string,
+    productSlug: string,
     files: File[]
 ): Promise<string[]> {
     const supabase = await createClient()
@@ -33,251 +68,683 @@ async function uploadProductImages(
 
     for (let i = 0; i < files.length && i < 4; i++) {
         const file = files[i]
-        let ext = 'jpg'
+        // Fix file extension extraction
+        let ext = 'jpg' // default fallback
 
         if (file.name && file.name.includes('.')) {
             const parts = file.name.split('.')
 
-            if (parts.length > 1) ext = parts[parts.length - 1].toLowerCase()
+            if (parts.length > 1) {
+                ext = parts[parts.length - 1].toLowerCase()
+            }
         }
-        if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) ext = 'jpg'
-        const path = `@${username}/products/${slug}/${Date.now()}.${ext}`
-        const arrayBuffer = await file.arrayBuffer()
-        const bytes = new Uint8Array(arrayBuffer)
-        const { error } = await supabase.storage.from('user').upload(path, bytes, {
+        // Validate extension
+        if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+            ext = 'jpg' // fallback to jpg if invalid extension
+        }
+
+        const path = `@${username}/products/${productSlug}/${Date.now()}.${ext}`
+        const { error } = await supabase.storage.from('user').upload(path, file, {
             cacheControl: '3600',
             upsert: false,
         })
 
         if (error) throw error
-        const { data } = supabase.storage.from('user').getPublicUrl(path)
+        const publicUrlData = supabase.storage.from('user').getPublicUrl(path)
 
-        urls.push(data.publicUrl)
+        urls.push(publicUrlData.data.publicUrl)
     }
 
     return urls
 }
 
-// Delete all images for a product
-async function removeProductImages(username: string, slug: string) {
+// Helper to delete all images in a product's storage folder
+async function deleteAllProductImages(username: string, productId: number) {
+    if (!username) return // Guard: do nothing if username is empty or undefined
     const supabase = await createClient()
-    const folderPath = `user/@${username}/products/${slug}`
+    // List all files in the product's folder
+    const folderPath = `@${username}/products/${productId}`
     const { data, error } = await supabase.storage.from('user').list(folderPath, { limit: 100 })
 
-    if (error) return
+    if (error) return // Ignore errors for now
     if (data && data.length > 0) {
+        // Delete all files in the folder
         const paths = data.map((file) => `${folderPath}/${file.name}`)
 
         await supabase.storage.from('user').remove(paths)
     }
 }
 
-// --- Product Actions ---
+/**
+ * Add a new product (only for authenticated user's own profile)
+ * Works with useActionState pattern
+ */
+export async function addProduct(
+    prevState: { errors: Record<string, string> },
+    formData: FormData
+) {
+    try {
+        const user = await userSession()
+        const data: Record<string, unknown> = {}
 
-export async function addProduct(form: ProductInsert, images: File[] = []): Promise<void> {
-    const supabase = await createClient()
-    const {
-        data: { user },
-        error: userError,
-    } = await supabase.auth.getUser()
+        for (const [key, value] of formData.entries()) {
+            if (key === 'img' || key === 'existingImg[]') continue
+            data[key] = value
+        }
 
-    if (userError || !user) throw new Error('Unauthorized')
-    const slug = slugify(form.name + '-' + (form.category || ''))
-    let img: string[] = []
-    const username = await getUsername(user.id)
+        data.user_id = user.id
 
-    if (images.length > 0) {
-        img = await uploadProductImages(username, slug, images)
-    }
-    const { error } = await supabase.from('products').insert({
-        ...form,
-        user_id: user.id,
-        slug,
-        img,
-    })
+        if (data.name && data.category) {
+            data.slug = slugify(data.name + '-' + (data.category || ''))
+        }
+        // Insert new product (without images)
+        const supabase = await createClient()
+        const { data: inserted, error: insertError } = await supabase
+            .from('products')
+            .insert({
+                ...data,
+                img: [],
+                other: {},
+            })
+            .select()
+            .single()
 
-    if (error) throw new Error(error.message)
-    revalidatePath('/[user]/[slug]', 'page')
-    revalidatePath('/[user]', 'page')
-}
-
-export async function editProduct(
-    id: number,
-    values: Partial<ProductInsert>,
-    images: File[] = [],
-    keepImages: string[] = []
-): Promise<void> {
-    const supabase = await createClient()
-    const {
-        data: { user },
-        error: userError,
-    } = await supabase.auth.getUser()
-
-    if (userError || !user) throw new Error('Unauthorized')
-    const username = await getUsername(user.id)
-    // Get current product for slug and images
-    const { data: product, error: fetchError } = await supabase
-        .from('products')
-        .select('slug,img')
-        .eq('id', id)
-        .eq('user_id', user.id)
-        .single()
-
-    if (fetchError || !product) throw new Error('Product not found')
-    // Remove images not in keepImages
-    const removed = (product.img || []).filter((url: string) => !keepImages.includes(url))
-
-    if (removed.length > 0) {
-        for (const imageUrl of removed) {
-            const match = imageUrl.match(
-                /\/storage\/v1\/object\/public\/user\/@([^\/]+)\/products\/([^\/]+)\/(.+)$/
-            )
-
-            if (match && match[1] && match[2] && match[3]) {
-                const path = `@${match[1]}/products/${match[2]}/${match[3]}`
-
-                await supabase.storage.from('user').remove([path])
+        if (insertError) {
+            return {
+                errors: {
+                    general: `Failed to add product: ${insertError.message}`,
+                },
             }
         }
+        const productId = inserted.id
+        // Handle images
+        const existingImg = formData.getAll('existingImg[]').filter(Boolean) as string[]
+        const files = formData
+            .getAll('img')
+            .filter((f) => typeof File !== 'undefined' && f instanceof File) as File[]
+        let imgUrls: string[] = existingImg
+
+        if (files.length > 0) {
+            const newUrls = await uploadUserProductImages(user.username, inserted.slug, files)
+
+            imgUrls = [...existingImg, ...newUrls]
+            await supabase.from('products').update({ img: imgUrls }).eq('id', productId)
+        } else if (existingImg.length > 0) {
+            await supabase.from('products').update({ img: imgUrls }).eq('id', productId)
+        }
+
+        // Revalidate the page to refresh data
+        revalidatePath('/[user]/[slug]', 'page')
+
+        return { errors: {} as Record<string, string> }
+    } catch (error) {
+        return {
+            errors: {
+                general: error instanceof Error ? error.message : 'Unknown error occurred',
+            },
+        }
     }
-    // Upload new images
-    let imgUrls = [...keepImages]
-
-    if (images.length > 0) {
-        const newUrls = await uploadProductImages(username, product.slug, images)
-
-        imgUrls = [...imgUrls, ...newUrls]
-    }
-    const { error } = await supabase
-        .from('products')
-        .update({ ...values, img: imgUrls, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .eq('user_id', user.id)
-
-    if (error) throw new Error(error.message)
-    revalidatePath('/[user]/[slug]', 'page')
-    revalidatePath('/[user]', 'page')
 }
 
+/**
+ * Update an existing product (only if user owns it)
+ * Works with useActionState pattern
+ */
+export async function updateProduct(
+    prevState: { errors: Record<string, string> },
+    formData: FormData
+) {
+    try {
+        const user = await userSession()
+        const id = parseInt(formData.get('id') as string)
+        // Dynamically extract all fields from formData
+        const data: Record<string, unknown> = {}
+
+        for (const [key, value] of formData.entries()) {
+            // Skip files and images for now, handle below
+            if (key === 'img' || key === 'existingImg[]' || key === 'id') continue
+            data[key] = value
+        }
+        // Get existing product with current images
+        const supabase = await createClient()
+        const { data: currentProduct, error: fetchError } = await supabase
+            .from('products')
+            .select('img, slug')
+            .eq('id', id)
+            .single()
+
+        if (fetchError) {
+            return { errors: { general: fetchError.message || 'Fetch error' } }
+        }
+
+        // Handle images
+        const existingImg = formData.getAll('existingImg[]') as string[]
+        const newImages = formData.getAll('img') as File[]
+        let imgUrls: string[] = existingImg
+
+        // Get current images from database
+        const currentImages = currentProduct.img || []
+
+        // Find images that were removed (in currentImages but not in existingImg)
+        const removedImages = currentImages.filter((url: string) => !existingImg.includes(url))
+
+        // Delete removed images from storage
+        if (removedImages.length > 0 && currentProduct.slug) {
+            try {
+                for (const imageUrl of removedImages) {
+                    // Extract path from URL - fix the regex to get correct path
+                    // URL format: https://.../storage/v1/object/public/@username/products/slug/filename
+                    const match = imageUrl.match(
+                        /\/storage\/v1\/object\/public\/user\/@([^\/]+)\/products\/([^\/]+)\/([^\/]+)$/
+                    )
+
+                    if (match && match[1] && match[2] && match[3]) {
+                        const username = match[1]
+                        const productSlug = match[2]
+                        const filename = match[3]
+                        const path = `@${username}/products/${productSlug}/${filename}`
+
+                        const { error: deleteError } = await supabase.storage
+                            .from('user')
+                            .remove([path])
+
+                        if (deleteError) {
+                            logWarning('updateProduct: failed to delete from storage:', deleteError)
+                        }
+                    }
+                }
+            } catch (e) {
+                logWarning('Failed to delete some images from storage:', e)
+            }
+        }
+
+        // Upload new images
+        if (newImages.length > 0 && currentProduct.slug) {
+            try {
+                const newUrls = await uploadUserProductImages(
+                    user.username,
+                    currentProduct.slug,
+                    newImages
+                )
+
+                imgUrls = [...existingImg, ...newUrls]
+            } catch (e) {
+                return {
+                    errors: {
+                        general:
+                            'Image upload failed: ' + (e instanceof Error ? e.message : String(e)),
+                    },
+                }
+            }
+        }
+
+        // Update product
+        const { error } = await supabase
+            .from('products')
+            .update({
+                ...data,
+                img: imgUrls,
+            })
+            .eq('id', id)
+
+        if (error) {
+            return { errors: { general: error.message || 'Update error' } }
+        }
+
+        // Revalidate the page to refresh data
+        revalidatePath('/[user]/[slug]', 'page')
+
+        return { errors: {} as Record<string, string> }
+    } catch (error) {
+        return {
+            errors: { general: error instanceof Error ? error.message : 'Unknown error occurred' },
+        }
+    }
+}
+
+/**
+ * Soft delete a product (move to trash)
+ * Works with useActionState pattern
+ */
 export async function softDeleteProduct(
-    state: { errors: Record<string, string> },
+    prevState: { errors: Record<string, string> },
     formData: FormData
 ): Promise<{ errors: Record<string, string> }> {
-    const id = Number(formData.get('id'))
+    try {
+        // Get current authenticated user
+        const user = await userSession()
 
-    if (!id) return { errors: { general: 'Invalid product id' } }
-    const supabase = await createClient()
-    const {
-        data: { user },
-        error: userError,
-    } = await supabase.auth.getUser()
+        // Extract product ID from form data
+        const id = parseInt(formData.get('id') as string)
 
-    if (userError || !user) return { errors: { general: 'Unauthorized' } }
-    const { error } = await supabase
-        .from('products')
-        .update({ deleted_at: new Date().toISOString() })
-        .eq('id', id)
-        .eq('user_id', user.id)
+        // Basic validation
+        if (!id || isNaN(id)) {
+            return {
+                errors: {
+                    general: 'Product ID is required',
+                },
+            }
+        }
 
-    if (error) return { errors: { general: error.message } }
-    revalidatePath('/[user]/[slug]', 'page')
-    revalidatePath('/[user]', 'page')
+        try {
+            // Validate product ownership
+            await validateProductOwnership(id, user.id)
+        } catch (error) {
+            return {
+                errors: {
+                    general: error instanceof Error ? error.message : 'Product validation failed',
+                },
+            }
+        }
 
-    return { errors: {} }
+        const supabase = await createClient()
+
+        // Soft delete (move to trash)
+        const { error } = await supabase
+            .from('products')
+            .update({ deleted_at: new Date().toISOString() })
+            .eq('id', id)
+
+        if (error) {
+            return {
+                errors: {
+                    general: `Failed to delete product: ${error.message}`,
+                },
+            }
+        }
+
+        // Revalidate the page to refresh data
+        revalidatePath('/[user]/[slug]', 'page')
+
+        if (user.username) {
+            await deleteAllProductImages(user.username, id)
+        }
+
+        return { errors: {} as Record<string, string> }
+    } catch (error) {
+        return {
+            errors: {
+                general: error instanceof Error ? error.message : 'Unknown error occurred',
+            },
+        }
+    }
 }
 
-export async function restoreProduct(id: number): Promise<void> {
-    const supabase = await createClient()
-    const {
-        data: { user },
-        error: userError,
-    } = await supabase.auth.getUser()
+/**
+ * Permanently delete a product from trash
+ */
+export async function permanentlyDeleteProduct(productId: number) {
+    try {
+        // Get current authenticated user
+        const user = await userSession()
 
-    if (userError || !user) throw new Error('Unauthorized')
-    const { error } = await supabase
-        .from('products')
-        .update({ deleted_at: null })
-        .eq('id', id)
-        .eq('user_id', user.id)
+        // Validate product ownership (including trashed products)
+        const supabase = await createClient()
+        const { data: product, error } = await supabase
+            .from('products')
+            .select('user_id, img')
+            .eq('id', productId)
+            .single()
 
-    if (error) throw new Error(error.message)
-    revalidatePath('/[user]/[slug]', 'page')
-    revalidatePath('/[user]', 'page')
+        if (error || !product) {
+            throw new Error('Product not found')
+        }
+
+        if (product.user_id !== user.id) {
+            throw new Error('Unauthorized: You can only delete your own products')
+        }
+
+        // Delete all product images from storage
+        if (user.username) {
+            await deleteAllProductImages(user.username, productId)
+        }
+
+        // Permanently delete
+        const { error: deleteError } = await supabase.from('products').delete().eq('id', productId)
+
+        if (deleteError) {
+            throw new Error(`Failed to permanently delete product: ${deleteError.message}`)
+        }
+
+        return { success: true }
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error occurred',
+        }
+    }
 }
 
-export async function deleteProductPermanently(id: number): Promise<void> {
-    const supabase = await createClient()
-    const {
-        data: { user },
-        error: userError,
-    } = await supabase.auth.getUser()
+/**
+ * Restore a product from trash
+ */
+export async function restoreProduct(productId: number) {
+    try {
+        // Get current authenticated user
+        const user = await userSession()
 
-    if (userError || !user) throw new Error('Unauthorized')
-    const username = await getUsername(user.id)
-    // Get product for slug
-    const { data: product, error: fetchError } = await supabase
-        .from('products')
-        .select('slug')
-        .eq('id', id)
-        .eq('user_id', user.id)
-        .single()
+        // Validate product ownership (including trashed products)
+        const supabase = await createClient()
+        const { data: product, error } = await supabase
+            .from('products')
+            .select('user_id')
+            .eq('id', productId)
+            .single()
 
-    if (fetchError || !product) throw new Error('Product not found')
-    // Remove all images
-    await removeProductImages(username, product.slug)
-    // Delete product
-    const { error } = await supabase.from('products').delete().eq('id', id).eq('user_id', user.id)
+        if (error || !product) {
+            throw new Error('Product not found')
+        }
 
-    if (error) throw new Error(error.message)
-    revalidatePath('/[user]/[slug]', 'page')
-    revalidatePath('/[user]', 'page')
+        if (product.user_id !== user.id) {
+            throw new Error('Unauthorized: You can only restore your own products')
+        }
+
+        // Restore product
+        const { error: restoreError } = await supabase
+            .from('products')
+            .update({ deleted_at: null })
+            .eq('id', productId)
+
+        if (restoreError) {
+            throw new Error(`Failed to restore product: ${restoreError.message}`)
+        }
+
+        return { success: true }
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error occurred',
+        }
+    }
 }
 
-export async function setProductQty(id: number, qty: number): Promise<void> {
-    const supabase = await createClient()
-    const {
-        data: { user },
-        error: userError,
-    } = await supabase.auth.getUser()
-
-    if (userError || !user) throw new Error('Unauthorized')
-    const { error } = await supabase
-        .from('products')
-        .update({ qty, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .eq('user_id', user.id)
-
-    if (error) throw new Error(error.message)
-    revalidatePath('/[user]/[slug]', 'page')
-    revalidatePath('/[user]', 'page')
+// Type for the complete products object with data and actions
+type ProductsWithActions = {
+    products: Product[]
+    canManage: boolean
+    success: boolean
+    error?: string
+    // Actions
+    add: typeof addProduct
+    edit: typeof updateProduct
+    checkCanManage: (targetUsername: string) => Promise<boolean>
+    delete: typeof softDeleteProduct
+    restore: (productId: number) => Promise<{ success: boolean; error?: string }>
+    get: (targetUsername: string, includeTrashed?: boolean) => Promise<ProductsResult>
+    permanentlyDelete: (productId: number) => Promise<{ success: boolean; error?: string }>
 }
 
-export async function getProducts(
-    username: string
-): Promise<{ products: Products; canManage: boolean }> {
-    const supabase = await createClient()
-    const { data: sessionUser } = await supabase.auth.getUser()
-    const { data: targetUser } = await supabase
-        .from('users')
-        .select('id')
-        .eq('username', username)
-        .single()
+export async function getProducts(targetUsername?: string): Promise<ProductsWithActions> {
+    try {
+        const supabase = await createClient()
 
-    if (!targetUser) throw new Error('User not found')
+        // Get current authenticated user (if any)
+        let user = null
 
-    const { data: products, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('user_id', targetUser.id)
-        .is('deleted_at', null)
-        .order('created_at', { ascending: false })
+        try {
+            user = await userSession()
+        } catch {
+            // User not authenticated - can only view, not manage
+        }
 
-    if (error) throw new Error(error.message)
+        // Determine which user's products to fetch
+        let productsUsername = targetUsername
 
-    const canManage = sessionUser?.user?.id === targetUser.id
+        if (!productsUsername && user) {
+            productsUsername = user?.username
+        }
 
-    return {
-        products: (products ?? []) as Products,
-        canManage,
+        let products: Product[] = []
+        let canManage = false
+
+        if (productsUsername) {
+            // Get target user by username
+            const { data: targetUser, error: userError } = await supabase
+                .from('users')
+                .select('id, username')
+                .eq('username', productsUsername)
+                .single()
+
+            if (userError || !targetUser) {
+                throw new Error('User not found')
+            }
+
+            // Check if current user can manage this profile
+            canManage = user?.username === targetUser.username
+
+            // Build query for products
+            const query = supabase
+                .from('products')
+                .select('*')
+                .eq('user_id', targetUser.id)
+                .order('created_at', { ascending: false })
+                .is('deleted_at', null) // Only active products
+
+            const { data: productsData, error } = await query
+
+            if (error) {
+                throw new Error(`Failed to fetch products: ${error.message}`)
+            }
+
+            products = productsData as Product[]
+        }
+
+        return {
+            success: true,
+            products,
+            canManage,
+            // Actions
+            add: addProduct,
+            edit: updateProduct,
+            checkCanManage: async (targetUsername: string) => {
+                try {
+                    const currentUser = await userSession()
+
+                    return currentUser.username === targetUsername
+                } catch {
+                    return false
+                }
+            },
+            delete: softDeleteProduct,
+            restore: restoreProduct,
+            get: async (
+                targetUsername: string,
+                includeTrashed: boolean = false
+            ): Promise<ProductsResult> => {
+                try {
+                    const supabase = await createClient()
+
+                    // Get current authenticated user (if any)
+                    let user = null
+
+                    try {
+                        user = await userSession()
+                    } catch {
+                        // User not authenticated - can only view, not manage
+                    }
+
+                    // Get target user by username
+                    const { data: targetUser, error: userError } = await supabase
+                        .from('users')
+                        .select('id, username')
+                        .eq('username', targetUsername)
+                        .single()
+
+                    if (userError || !targetUser) {
+                        throw new Error('User not found')
+                    }
+
+                    // Check if current user can manage this profile
+                    const canManage = user?.username === targetUser.username
+
+                    // Build query for products
+                    let query = supabase
+                        .from('products')
+                        .select('*')
+                        .eq('user_id', targetUser.id)
+                        .order('created_at', { ascending: false })
+
+                    // Filter by deleted status
+                    if (!includeTrashed) {
+                        query = query.is('deleted_at', null)
+                    }
+
+                    const { data: products, error } = await query
+
+                    if (error) {
+                        throw new Error(`Failed to fetch products: ${error.message}`)
+                    }
+
+                    return {
+                        success: true,
+                        products: products as Product[],
+                        canManage,
+                    }
+                } catch (error) {
+                    return {
+                        success: false,
+                        error: error instanceof Error ? error.message : 'Unknown error occurred',
+                        products: [],
+                        canManage: false,
+                    }
+                }
+            },
+            permanentlyDelete: permanentlyDeleteProduct,
+        }
+    } catch (error) {
+        return {
+            success: false,
+            products: [],
+            canManage: false,
+            error: error instanceof Error ? error.message : 'Unknown error occurred',
+            // Actions (still available even if data fetch failed)
+            add: addProduct,
+            edit: updateProduct,
+            checkCanManage: async (targetUsername: string) => {
+                try {
+                    const currentUser = await userSession()
+
+                    return currentUser.username === targetUsername
+                } catch {
+                    return false
+                }
+            },
+            delete: softDeleteProduct,
+            restore: restoreProduct,
+            get: async (
+                targetUsername: string,
+                includeTrashed: boolean = false
+            ): Promise<ProductsResult> => {
+                try {
+                    const supabase = await createClient()
+
+                    // Get current authenticated user (if any)
+                    let user = null
+
+                    try {
+                        user = await userSession()
+                    } catch {
+                        // User not authenticated - can only view, not manage
+                    }
+
+                    // Get target user by username
+                    const { data: targetUser, error: userError } = await supabase
+                        .from('users')
+                        .select('id, username')
+                        .eq('username', targetUsername)
+                        .single()
+
+                    if (userError || !targetUser) {
+                        throw new Error('User not found')
+                    }
+
+                    // Check if current user can manage this profile
+                    const canManage = user?.username === targetUser.username
+
+                    // Build query for products
+                    let query = supabase
+                        .from('products')
+                        .select('*')
+                        .eq('user_id', targetUser.id)
+                        .order('created_at', { ascending: false })
+
+                    // Filter by deleted status
+                    if (!includeTrashed) {
+                        query = query.is('deleted_at', null)
+                    }
+
+                    const { data: products, error } = await query
+
+                    if (error) {
+                        throw new Error(`Failed to fetch products: ${error.message}`)
+                    }
+
+                    return {
+                        success: true,
+                        products: products as Product[],
+                        canManage,
+                    }
+                } catch (error) {
+                    return {
+                        success: false,
+                        error: error instanceof Error ? error.message : 'Unknown error occurred',
+                        products: [],
+                        canManage: false,
+                    }
+                }
+            },
+            permanentlyDelete: permanentlyDeleteProduct,
+        }
+    }
+}
+
+/**
+ * Alternative name for getProducts - same functionality
+ * Usage: const { add, edit, canManage, delete: remove, restore } = userProducts()
+ */
+export const userProducts = getProducts
+
+export async function setProductQty(productId: string, newQty: number) {
+    try {
+        // Get current authenticated user
+        const user = await userSession()
+
+        // Validate product ownership
+        await validateProductOwnership(parseInt(productId), user.id)
+
+        // Update the product quantity in database
+        const supabase = await createClient()
+        const { data, error } = await supabase
+            .from('products')
+            .update({ qty: newQty })
+            .eq('id', parseInt(productId))
+            .select('*')
+            .single()
+
+        if (error) {
+            throw new Error(`Failed to update quantity: ${error.message}`)
+        }
+
+        // Broadcast the update to all connected clients via Supabase real-time
+        await supabase.channel('products-updates').send({
+            type: 'broadcast',
+            event: 'product-quantity-updated',
+            payload: {
+                productId: parseInt(productId),
+                newQty,
+                updatedProduct: data,
+            },
+        })
+
+        // Revalidate all related paths to ensure all tabs update
+        revalidatePath('/[user]/[slug]', 'page')
+        revalidatePath('/[user]', 'page')
+
+        return { success: true, qty: data.qty, product: data }
+    } catch (error) {
+        logWarning('Error updating product quantity:', error)
+        throw new Error(
+            error instanceof Error ? error.message : 'Failed to update product quantity'
+        )
     }
 }

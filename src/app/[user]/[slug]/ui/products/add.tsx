@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useActionState } from 'react'
 import {
     Modal,
     ModalBody,
@@ -20,10 +20,10 @@ import { Box, Tag, IndianRupee, X, GalleryHorizontalEnd, Settings2, CirclePlus }
 import { MdAddShoppingCart } from 'react-icons/md'
 import { BiImageAdd } from 'react-icons/bi'
 
-import { addProduct, editProduct, type ProductInsert } from '®actions/user/products'
 import { Product } from '®types/products'
 import { Brand } from '®types/brands'
 import { useImageManager } from '®hooks/useImageManager'
+import { addProduct, updateProduct } from '®actions/user/products'
 
 const CATEGORIES = [
     'battery',
@@ -36,6 +36,21 @@ const CATEGORIES = [
     'screen protector',
     'other',
 ]
+
+// const BrandImage = ({ brand }: { brand: Brand }) => {
+//     const { src } = useBrandImg(brand)
+
+//     return (
+//         <Image
+//             alt={brand.name}
+//             className='rounded-lg border p-0.5'
+//             height={24}
+//             radius='none'
+//             src={src}
+//             width={24}
+//         />
+//     )
+// }
 
 interface AddEditProps {
     isOpen: boolean
@@ -83,6 +98,12 @@ const ImagePreview = ({
 )
 
 export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddEditProps) {
+    // Choose action based on mode
+    const action = mode === 'add' ? addProduct : updateProduct
+    const [{ errors }, formAction, isLoading] = useActionState(action, {
+        errors: {},
+    })
+
     // Use image manager hook
     const {
         images,
@@ -91,12 +112,9 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
         handleFileSelect,
         handleRemoveImage,
         handleRemoveExistingImage,
+        prepareFormData,
         fileSizeError,
     } = useImageManager({ mode, product, isOpen })
-
-    // Local state for errors and loading
-    const [errors, setErrors] = useState<Record<string, string>>({})
-    const [isLoading, setIsLoading] = useState(false)
 
     // Simple error handling
     useEffect(() => {
@@ -116,7 +134,7 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
                     color: 'danger',
                 })
             }
-        } else if (Object.keys(errors).length === 0 && !isLoading) {
+        } else if (errors && Object.keys(errors).length === 0 && !isLoading) {
             // Success - call onSuccess callback and close modal
             onClose()
         }
@@ -124,52 +142,9 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
 
     // Handle form submission
     const handleFormSubmit = async (formData: FormData) => {
-        setIsLoading(true)
-        setErrors({})
-        try {
-            if (mode === 'edit' && product?.id) {
-                const valuesObj: Record<string, unknown> = {}
+        const preparedFormData = prepareFormData(formData)
 
-                formData.forEach((value, key) => {
-                    if (key !== 'id' && key !== 'img' && key !== 'existingImg[]') {
-                        if (['purchase', 'staff_price', 'price', 'qty'].includes(key)) {
-                            valuesObj[key] = Number(value)
-                        } else {
-                            valuesObj[key] = value.toString()
-                        }
-                    }
-                })
-                await editProduct(
-                    product.id,
-                    valuesObj as Partial<ProductInsert>,
-                    images,
-                    existingImages
-                )
-            } else {
-                const valuesObj: Record<string, unknown> = {
-                    name: '',
-                    compatible: '',
-                    purchase: 0,
-                    qty: 0,
-                }
-
-                formData.forEach((value, key) => {
-                    if (key !== 'img' && key !== 'existingImg[]') {
-                        if (['purchase', 'staff_price', 'price', 'qty'].includes(key)) {
-                            valuesObj[key] = Number(value)
-                        } else {
-                            valuesObj[key] = value.toString()
-                        }
-                    }
-                })
-                await addProduct(valuesObj as ProductInsert, images)
-            }
-            setErrors({})
-        } catch (err: unknown) {
-            setErrors({ general: err instanceof Error ? err.message : 'Unknown error' })
-        } finally {
-            setIsLoading(false)
-        }
+        await formAction(preparedFormData)
     }
 
     // Dynamic content based on mode
