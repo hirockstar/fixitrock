@@ -133,6 +133,10 @@ export function Dob({
         }
     }
 
+    const handleFocus = () => {
+        setTouched(true)
+    }
+
     const handleBlur = () => {
         setTouched(true)
         const err = validate(day, month, year)
@@ -143,13 +147,13 @@ export function Dob({
 
     const otpValue = `${day.padEnd(2, '')}${month.padEnd(2, '')}${year.padEnd(4, '')}`
     const placeholders = ['D', 'D', 'M', 'M', 'Y', 'Y', 'Y', 'Y']
-    const showError = touched && (error || errorMessage)
+    const showError = (touched || error || errorMessage) && (error || errorMessage)
 
     return (
         <div className={`${className}`}>
             {label && (
                 <Label
-                    className={`${isRequired && 'gap-0.5 after:text-red-500 after:content-["*"]'} mb-2`}
+                    className={`${isRequired && 'gap-0.5 after:text-red-500 after:content-["*"]'} pb-2`}
                 >
                     {label}
                 </Label>
@@ -159,7 +163,7 @@ export function Dob({
                 aria-label={label}
                 aria-required={isRequired}
                 autoFocus={autoFocus}
-                containerClassName='flex items-center'
+                containerClassName={`flex items-center ${showError ? 'border-red-200' : ''}`}
                 disabled={disabled}
                 inputMode='numeric'
                 maxLength={8}
@@ -167,6 +171,7 @@ export function Dob({
                 value={otpValue}
                 onBlur={handleBlur}
                 onChange={handleOtpChange}
+                onFocus={handleFocus}
             >
                 <InputOTPGroup>
                     <InputOTPSlot index={0} placeholder={placeholders[0]} />
@@ -186,9 +191,11 @@ export function Dob({
                 </InputOTPGroup>
             </InputOTP>
             {!showError && description && (
-                <div className='text-muted-foreground p-1 text-xs'>{description}</div>
+                <div className='text-foreground-400 p-1 text-xs'>{description}</div>
             )}
-            {showError && <div className='p-1 text-xs text-red-500'>{errorMessage || error}</div>}
+            {showError && (
+                <div className='p-1 text-xs font-medium text-red-500'>{errorMessage || error}</div>
+            )}
         </div>
     )
 }
