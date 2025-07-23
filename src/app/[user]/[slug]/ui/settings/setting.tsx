@@ -15,6 +15,7 @@ import {
 import { MapPin, ArrowLeft, UserRound, Link as LinkIcon } from 'lucide-react'
 import Link from 'next/link'
 import { BiMaleFemale } from 'react-icons/bi'
+import { useActionState } from 'react'
 
 import { User } from '®app/login/types'
 import { updateUser } from '®actions/users'
@@ -22,76 +23,62 @@ import { openCurrentLocationInMaps } from '®lib/utils'
 import { GoogleMaps } from '®ui/icons'
 import { Dob } from '®ui/dob'
 
-const LOCATION_EDIT_ROLES = [2, 3] // Add more roles as needed
+const LOCATION_EDIT_ROLES = [2, 3]
 
 export function Setting({ user }: { user: User }) {
-    const [isLoading, setIsLoading] = useState(false)
-
-    const [name, setName] = useState(user.name || '')
-    const [gender, setGender] = useState(user.gender || '')
-    const [bio, setBio] = useState(user.bio || '')
-    const [location, setLocation] = useState(user.location || '')
-    const [locationUrl, setLocationUrl] = useState(user.location_url || '')
-    const [dob, setDob] = useState(user.dob || '')
-    const bioError = bio.length > 160 ? 'Bio must be 160 characters or less' : undefined
+    const [form, setForm] = useState(() => ({ ...user }))
+    const bioError =
+        form.bio && form.bio.length > 160 ? 'Bio must be 160 characters or less' : undefined
     const [dobError, setDobError] = useState('')
     const [locationUrlError, setLocationUrlError] = useState('')
 
     const canEditLocation = typeof user.role === 'number' && LOCATION_EDIT_ROLES.includes(user.role)
 
-    const handleFormSubmit = async (formData: FormData) => {
-        // Prevent submit if dob is invalid
-        if (dobError) {
-            addToast({
-                title: 'Please enter a valid date of birth.',
-                color: 'danger',
-            })
-
-            return
-        }
-        setIsLoading(true)
-        formData.set('name', name)
-        formData.set('gender', gender)
-        formData.set('bio', bio)
-        formData.set('location', location)
-        formData.set('location_url', locationUrl)
-        formData.set('dob', dob || '')
-
-        const updatePromise = updateUser(formData)
-
-        addToast({
-            title: 'Saving your changes...',
-            color: 'primary',
-            promise: updatePromise,
-        })
-
-        try {
-            const result = await updatePromise
-
-            if (result && result.user) {
-                setName(result.user.name || '')
-                setGender(result.user.gender || '')
-                setBio(result.user.bio || '')
-                setLocation(result.user.location || '')
-                setDob(result.user.dob || '')
-                setLocationUrl(result.user.location_url || '')
-            }
-            addToast({
-                title: 'Profile settings saved successfully!',
-                color: 'success',
-            })
-        } catch {
-            addToast({
-                title: 'Failed to save profile settings',
-                color: 'danger',
-            })
-        } finally {
-            setIsLoading(false)
-        }
+    const handleChange = (field: string, value: string) => {
+        setForm((prev) => ({ ...prev, [field]: value }))
     }
 
+    const [, formAction, isLoading] = useActionState(
+        async (prevState: Record<string, unknown>, formData: FormData) => {
+            if (dobError) {
+                addToast({
+                    title: 'Please enter a valid date of birth.',
+                    color: 'danger',
+                })
+
+                return prevState
+            }
+            // Set all form fields dynamically, converting values to string
+            Object.entries(form).forEach(([key, value]) => {
+                formData.set(key, value == null ? '' : String(value))
+            })
+
+            try {
+                const result = await updateUser(formData)
+
+                if (result && result.user) {
+                    setForm({ ...result.user })
+                    addToast({
+                        title: 'Profile settings saved successfully!',
+                        color: 'success',
+                    })
+                }
+
+                return result
+            } catch {
+                addToast({
+                    title: 'Failed to save profile settings',
+                    color: 'danger',
+                })
+
+                return prevState
+            }
+        },
+        {}
+    )
+
     return (
-        <Form action={handleFormSubmit} className='mx-auto mt-2 grid max-w-4xl gap-4 px-2'>
+        <Form action={formAction} className='mx-auto mt-2 grid max-w-4xl gap-4 px-2'>
             <div className='flex items-center gap-3'>
                 <Button
                     isIconOnly
@@ -105,8 +92,6 @@ export function Setting({ user }: { user: User }) {
                 />
                 <h1 className='text-2xl font-bold'>Account Settings</h1>
             </div>
-
-            {/* Name */}
             <Input
                 description='Your real or display name as you want it to appear on your profile.'
                 id='name'
@@ -115,19 +100,20 @@ export function Setting({ user }: { user: User }) {
                 name='name'
                 placeholder='Enter your full name'
                 startContent={<UserRound className='text-muted-foreground' size={18} />}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={form.name || ''}
+                onChange={(e) => handleChange('name', e.target.value)}
             />
-
             <Select
                 description='Choose your gender (optional).'
                 label='Gender'
                 labelPlacement='outside'
                 name='gender'
                 placeholder='Select Gender'
-                selectedKeys={gender ? [gender] : []}
+                selectedKeys={form.gender ? [form.gender] : []}
                 startContent={<BiMaleFemale className='text-muted-foreground' size={18} />}
-                onSelectionChange={(keys) => setGender(Array.from(keys)[0]?.toString() || '')}
+                onSelectionChange={(keys) =>
+                    handleChange('gender', Array.from(keys)[0]?.toString() || '')
+                }
             >
                 <SelectSection>
                     <SelectItem key='male'>Male</SelectItem>
@@ -135,15 +121,13 @@ export function Setting({ user }: { user: User }) {
                     <SelectItem key='other'>Other</SelectItem>
                 </SelectSection>
             </Select>
-
             <Dob
                 description='Enter your birth date (must be 18+)'
                 label='Date of Birth'
-                value={dob}
-                onChange={setDob}
+                value={form.dob || ''}
+                onChange={(val) => handleChange('dob', val)}
                 onError={setDobError}
             />
-
             {canEditLocation && (
                 <>
                     <Input
@@ -154,8 +138,8 @@ export function Setting({ user }: { user: User }) {
                         name='location'
                         placeholder='e.g. Fix iT Rock, Sikandrabad, India'
                         startContent={<MapPin className='h-4 w-4' />}
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
+                        value={form.location || ''}
+                        onChange={(e) => handleChange('location', e.target.value)}
                     />
                     <Input
                         description='Paste the Google Maps URL for your shop location (users can click to open in Maps)'
@@ -180,9 +164,9 @@ export function Setting({ user }: { user: User }) {
                         placeholder='Paste your Google Maps link here'
                         startContent={<LinkIcon className='h-4 w-4' />}
                         type='url'
-                        value={locationUrl}
+                        value={form.location_url || ''}
                         onChange={(e) => {
-                            setLocationUrl(e.target.value)
+                            handleChange('location_url', e.target.value)
                             // Validate URL
                             try {
                                 if (e.target.value && !/^https?:\/\//.test(e.target.value)) {
@@ -201,10 +185,8 @@ export function Setting({ user }: { user: User }) {
                     />
                 </>
             )}
-
-            {/* Bio */}
             <Textarea
-                description={`Tell us about yourself, your shop, or your interests. (${bio.length}/160 characters)`}
+                description={`Tell us about yourself, your shop, or your interests. (${form.bio?.length || 0}/160 characters)`}
                 errorMessage={bioError}
                 id='bio'
                 isInvalid={!!bioError}
@@ -214,12 +196,11 @@ export function Setting({ user }: { user: User }) {
                 name='bio'
                 placeholder='Tell us about yourself...'
                 rows={3}
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
+                value={form.bio || ''}
+                onChange={(e) => handleChange('bio', e.target.value)}
             />
-            {/* Submit Button */}
             <div className='flex justify-end'>
-                <Button color='primary' isLoading={isLoading} type='submit'>
+                <Button color='primary' isLoading={isLoading} size='sm' type='submit'>
                     {isLoading ? 'Saving . . .' : ' Save'}
                 </Button>
             </div>
