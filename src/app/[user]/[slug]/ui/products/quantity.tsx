@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { Button, Input, addToast } from '@heroui/react'
 import { Minus, Plus } from 'lucide-react'
 
@@ -17,87 +17,96 @@ export default function Quantity({ product, canManage }: QuantityProps) {
     const { refreshVersion } = useEvent()
     const [localQty, setLocalQty] = useState(product.qty)
     const [inputValue, setInputValue] = useState(String(product.qty))
-    const [isPending, startTransition] = useTransition()
+    const [isUpdating, setIsUpdating] = useState(false)
 
-    // Sync with real-time updates from parent
-    useEffect(() => {
-        setLocalQty(product.qty)
-        setInputValue(String(product.qty))
-    }, [product.qty, refreshVersion])
-
-    const handleUpdateQuantity = async (newQty: number) => {
-        try {
-            await setProductQty(product.id, newQty)
-        } catch (error) {
-            const errorMessage =
-                error instanceof Error ? error.message : 'Failed to update quantity'
-
-            addToast({
-                title: 'Error',
-                description: errorMessage,
-                color: 'danger',
-            })
-
-            // Revert local state on error
-            setLocalQty(product.qty)
-            setInputValue(String(product.qty))
-        }
-    }
-
-    const handleIncrement = () => {
-        if (!canManage) return
-
+    const handleIncrement = useCallback(() => {
+        if (!canManage || isUpdating) return
         const newQty = localQty + 1
 
         setLocalQty(newQty)
         setInputValue(String(newQty))
+        setIsUpdating(true)
+        setProductQty(product.id, newQty)
+            .catch((error) => {
+                const errorMessage =
+                    error instanceof Error ? error.message : 'Failed to update quantity'
 
-        startTransition(async () => {
-            await handleUpdateQuantity(newQty)
-        })
-    }
+                addToast({
+                    title: 'Error',
+                    description: errorMessage,
+                    color: 'danger',
+                })
+            })
+            .finally(() => setIsUpdating(false))
+    }, [canManage, isUpdating, localQty, product.id, refreshVersion])
 
-    const handleDecrement = () => {
-        if (!canManage || localQty <= 0) return
-
+    const handleDecrement = useCallback(() => {
+        if (!canManage || localQty <= 0 || isUpdating) return
         const newQty = localQty - 1
 
         setLocalQty(newQty)
         setInputValue(String(newQty))
+        setIsUpdating(true)
+        setProductQty(product.id, newQty)
+            .catch((error) => {
+                const errorMessage =
+                    error instanceof Error ? error.message : 'Failed to update quantity'
 
-        startTransition(async () => {
-            await handleUpdateQuantity(newQty)
-        })
-    }
+                addToast({
+                    title: 'Error',
+                    description: errorMessage,
+                    color: 'danger',
+                })
+            })
+            .finally(() => setIsUpdating(false))
+    }, [canManage, isUpdating, localQty, product.id])
 
-    const handleInputChange = (value: string) => {
-        setInputValue(value)
-        const numValue = parseInt(value) || 0
+    const handleInputChange = useCallback(
+        (value: string) => {
+            if (isUpdating) return
+            setInputValue(value)
+            const numValue = parseInt(value) || 0
 
-        if (numValue >= 0) {
-            setLocalQty(numValue)
-        }
-    }
+            if (numValue >= 0) {
+                setLocalQty(numValue)
+            }
+        },
+        [isUpdating]
+    )
 
-    const handleInputBlur = () => {
+    const handleInputBlur = useCallback(() => {
+        if (isUpdating) return
         const numValue = parseInt(inputValue) || 0
         const finalValue = numValue < 0 ? 0 : numValue
 
         setInputValue(String(finalValue))
         setLocalQty(finalValue)
-
         if (finalValue !== product.qty) {
-            startTransition(async () => {
-                await handleUpdateQuantity(finalValue)
-            })
-        }
-    }
+            setIsUpdating(true)
+            setProductQty(product.id, finalValue)
+                .catch((error) => {
+                    const errorMessage =
+                        error instanceof Error ? error.message : 'Failed to update quantity'
 
-    const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            e.currentTarget.blur()
+                    addToast({
+                        title: 'Error',
+                        description: errorMessage,
+                        color: 'danger',
+                    })
+                })
+                .finally(() => setIsUpdating(false))
         }
-    }
+    }, [isUpdating, inputValue, product.id, product.qty])
+
+    const handleInputKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (isUpdating) return
+            if (e.key === 'Enter') {
+                e.currentTarget.blur()
+            }
+        },
+        [isUpdating]
+    )
 
     if (!canManage) {
         return <>{product.qty}</>
@@ -108,7 +117,7 @@ export default function Quantity({ product, canManage }: QuantityProps) {
             <Button
                 isIconOnly
                 className='h-6 w-6 min-w-6 sm:h-7 sm:w-7'
-                isDisabled={localQty <= 0 || isPending}
+                isDisabled={localQty <= 0}
                 radius='full'
                 size='sm'
                 variant='light'
@@ -123,7 +132,6 @@ export default function Quantity({ product, canManage }: QuantityProps) {
                     input: 'text-center text-xs sm:text-sm',
                     inputWrapper: 'h-6 min-h-6 sm:h-7 sm:min-h-7',
                 }}
-                isDisabled={isPending}
                 min={0}
                 size='sm'
                 type='number'
@@ -136,7 +144,6 @@ export default function Quantity({ product, canManage }: QuantityProps) {
             <Button
                 isIconOnly
                 className='h-6 w-6 min-w-6 sm:h-7 sm:w-7'
-                isDisabled={isPending}
                 radius='full'
                 size='sm'
                 variant='light'

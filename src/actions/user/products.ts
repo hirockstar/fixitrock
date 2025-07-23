@@ -698,26 +698,17 @@ export async function getProducts(targetUsername?: string): Promise<ProductsWith
     }
 }
 
-/**
- * Alternative name for getProducts - same functionality
- * Usage: const { add, edit, canManage, delete: remove, restore } = userProducts()
- */
-export const userProducts = getProducts
-
-export async function setProductQty(productId: string, newQty: number) {
+export async function setProductQty(id: number, newQty: number) {
     try {
-        // Get current authenticated user
         const user = await userSession()
 
-        // Validate product ownership
-        await validateProductOwnership(parseInt(productId), user.id)
+        await validateProductOwnership(id, user.id)
 
-        // Update the product quantity in database
         const supabase = await createClient()
         const { data, error } = await supabase
             .from('products')
             .update({ qty: newQty })
-            .eq('id', parseInt(productId))
+            .eq('id', id)
             .select('*')
             .single()
 
@@ -725,18 +716,6 @@ export async function setProductQty(productId: string, newQty: number) {
             throw new Error(`Failed to update quantity: ${error.message}`)
         }
 
-        // Broadcast the update to all connected clients via Supabase real-time
-        await supabase.channel('products-updates').send({
-            type: 'broadcast',
-            event: 'product-quantity-updated',
-            payload: {
-                productId: parseInt(productId),
-                newQty,
-                updatedProduct: data,
-            },
-        })
-
-        // Revalidate all related paths to ensure all tabs update
         revalidatePath('/[user]/[slug]', 'page')
         revalidatePath('/[user]', 'page')
 

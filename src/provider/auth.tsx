@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const channel = supabase
             .channel('realtime:all')
-            // On any DB change, trigger the global refresh
+
             .on('postgres_changes', { event: '*', schema: 'public', table: '*' }, (_payload) => {
                 trigger()
             })
