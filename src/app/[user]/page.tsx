@@ -2,8 +2,8 @@ import { notFound, redirect } from 'next/navigation'
 import { Metadata } from 'next'
 
 import { getTabs } from '®actions/supabase'
-import { userProducts } from '®actions/products'
 import { getUser } from '®actions/user'
+import { getProducts } from '®actions/user/products'
 
 import { Profile, Tabs } from './ui'
 
@@ -12,32 +12,24 @@ type Props = {
 }
 
 export default async function Users({ params }: Props) {
-    const { user: rawUsername } = await params
-    // Get everything before any slash
-    const username = rawUsername.split('/')[0]
-    const decoded = username ? decodeURIComponent(username) : ''
+    const rawUsername = (await params).user as string
+    const username = decodeURIComponent(rawUsername.split('/')[0] || '')
 
-    // If username does not start with '@', redirect to '@username'
-    if (!decoded.startsWith('@')) {
-        redirect(`/@${decoded}`)
+    if (!username.startsWith('@')) {
+        redirect(`/@${username}`)
     }
 
-    const cleanUsername = decoded.slice(1) // Remove '@'
+    const cleanUsername = username.slice(1)
 
-    // If username is empty after removing '@', show 404
-    if (!cleanUsername) {
-        return notFound()
-    }
+    if (!cleanUsername) return notFound()
 
     const user = await getUser(cleanUsername)
 
-    if (!user) {
-        return notFound()
-    }
+    if (!user) return notFound()
 
     // Fetch tabs for the user's role
     const tabs = await getTabs(user.role || 0)
-    const { products, canManage } = await userProducts(cleanUsername)
+    const { products, canManage } = await getProducts(cleanUsername)
 
     return (
         <div>
