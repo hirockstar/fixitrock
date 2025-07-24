@@ -40,6 +40,8 @@ import { formatDateTime, openCurrentLocationInMaps } from '®lib/utils'
 import { Badge } from '®ui/badge'
 import { Dob } from '®ui/dob'
 
+import { LastLogin } from './last'
+
 const LOCATION_EDIT_ROLES = [2, 3]
 
 export function Setting({ user }: { user: User }) {
@@ -402,7 +404,7 @@ export function Setting({ user }: { user: User }) {
                             className='bg-orange-100 font-medium text-orange-700 dark:bg-orange-900/40 dark:text-orange-300'
                             variant='secondary'
                         >
-                            {user.updated_at ? formatDateTime(user.updated_at) : 'Never'}
+                            {user.last_login_at ? formatDateTime(user.last_login_at) : 'Never'}
                         </Badge>
                     </CardBody>
                 </Card>
@@ -435,6 +437,9 @@ export function Setting({ user }: { user: User }) {
                     {isLoading ? 'Saving . . .' : ' Save Changes'}
                 </Button>
             </div>
+
+            {/* Login Sessions */}
+            <LastLogin userId={user.id} />
         </Form>
     )
 }

@@ -27,3 +27,51 @@ export type Quote = {
     username: string
     lastModifiedDateTime: string
 }
+
+export interface UserLoginSession {
+    id: string
+    user_id: string // This will be UUID from auth.users
+    session_id: string
+    device_type?: string
+    device_name?: string
+    browser?: string
+    browser_version?: string
+    os?: string
+    os_version?: string
+    user_agent?: string
+    ip_address?: string
+    location_country?: string
+    location_city?: string
+    location_region?: string
+    location_lat?: number
+    location_lng?: number
+    isp?: string
+    timezone?: string
+    login_method: string
+    login_status: 'success' | 'failed' | 'blocked'
+    created_at: string
+    expires_at?: string
+    last_activity: string
+    is_active: boolean
+}
+
+export interface DeviceInfo {
+    deviceType: string
+    deviceName: string
+    browser: string
+    browserVersion: string
+    os: string
+    osVersion: string
+    userAgent: string
+}
+
+export interface LocationInfo {
+    ip: string
+    country?: string
+    city?: string
+    region?: string
+    lat?: number
+    lng?: number
+    isp?: string
+    timezone?: string
+}
