@@ -48,3 +48,7 @@ src/app/token
 /src/app/token
 bun.lock
 src/app/test/page.tsx
+migrations/
+migrations/
+src/app/(app)/test/page.tsx
+docs/

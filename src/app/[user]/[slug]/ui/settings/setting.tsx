@@ -40,8 +40,6 @@ import { formatDateTime, openCurrentLocationInMaps } from '®lib/utils'
 import { Badge } from '®ui/badge'
 import { Dob } from '®ui/dob'
 
-import { LastLogin } from './last'
-
 const LOCATION_EDIT_ROLES = [2, 3]
 
 export function Setting({ user }: { user: User }) {
@@ -437,9 +435,6 @@ export function Setting({ user }: { user: User }) {
                     {isLoading ? 'Saving . . .' : ' Save Changes'}
                 </Button>
             </div>
-
-            {/* Login Sessions */}
-            <LastLogin userId={user.id} />
         </Form>
     )
 }

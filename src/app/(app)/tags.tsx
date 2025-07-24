@@ -2,11 +2,12 @@
 import type { Navigation } from '../login/types'
 import type { SVGProps } from 'react'
 
-import { Button, Textarea } from '@heroui/react'
+import { Button } from '@heroui/react'
 import Link from 'next/link'
 import * as Icons from 'lucide-react'
 
 import { siteConfig } from '®config/site'
+import { Eva } from '®ui/eva'
 
 export function Tags({ navigation = [] }: { navigation?: Navigation[] }) {
     const suggestion = siteConfig.suggestion.filter((s) => s.title !== 'Home')
@@ -28,7 +29,8 @@ export function Tags({ navigation = [] }: { navigation?: Navigation[] }) {
 
     return (
         <div>
-            <Textarea maxRows={2} placeholder='Work in progress . . .' size='lg' type='text' />
+            <Eva placeholder='Work in progress . . .' />
+
             <div className='mt-4 flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2'>
                 {allTags.map((s) => {
                     const Icon = s.icon as React.ElementType<SVGProps<SVGSVGElement>> | undefined

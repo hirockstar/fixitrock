@@ -116,7 +116,7 @@ export default function Quantity({ product, canManage }: QuantityProps) {
         <div className='flex items-center justify-center gap-1 sm:gap-2'>
             <Button
                 isIconOnly
-                className='h-6 w-6 min-w-6 sm:h-7 sm:w-7'
+                className='bg-background h-6 w-6 min-w-6 sm:h-7 sm:w-7'
                 isDisabled={localQty <= 0}
                 radius='full'
                 size='sm'
@@ -143,7 +143,7 @@ export default function Quantity({ product, canManage }: QuantityProps) {
 
             <Button
                 isIconOnly
-                className='h-6 w-6 min-w-6 sm:h-7 sm:w-7'
+                className='bg-background h-6 w-6 min-w-6 sm:h-7 sm:w-7'
                 radius='full'
                 size='sm'
                 variant='light'
