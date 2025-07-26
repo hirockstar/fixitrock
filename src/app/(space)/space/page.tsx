@@ -9,7 +9,7 @@ import { Grid } from '../ui'
 
 export default function SpacePage() {
     return (
-        <main className='mt-6'>
+        <main className='flex w-full flex-col gap-4 p-2 md:px-4 2xl:px-[10%]'>
             <Suspense
                 fallback={
                     <div className='grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 px-2'>

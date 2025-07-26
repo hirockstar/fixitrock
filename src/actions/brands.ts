@@ -1,31 +1,44 @@
 'use server'
 
-import type { Brand } from '®types/brands'
+import type { Brands } from '®types/brands'
 
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { cache } from 'react'
-import { cookies } from 'next/headers'
 
-import { adminAuth } from '®firebase/admin'
 import { logWarning } from '®lib/utils'
 import { createClient } from '®supabase/server'
 
-// Helper function to check if user is authenticated
-async function checkAuth() {
-    const cookieStore = await cookies()
-    const token = cookieStore.get('session')?.value
+async function userSession() {
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getClaims()
 
-    if (!token) {
+    if (!data) {
         throw new Error('Not authenticated')
     }
 
     try {
-        await adminAuth.verifyIdToken(token)
+        const id = data.claims?.sub
+        const { data: user, error } = await supabase.from('users').select('*').eq('id', id).single()
 
-        return true
+        if (error || !user) {
+            throw new Error('User not found')
+        }
+
+        return user
     } catch {
         throw new Error('Authentication failed')
     }
+}
+
+async function checkAuth() {
+    const user = await userSession()
+
+    // Check if user has admin role (role = 3)
+    if (user.role !== 3) {
+        throw new Error('Access denied: Admin role required')
+    }
+
+    return user
 }
 
 // Helper function to upload brand logos to Supabase Storage
@@ -260,7 +273,7 @@ export type BrandActionState = {
 
 // Get all brands (cached, tag: 'brands')
 export const getAllBrands = cache(async function getAllBrands(): Promise<{
-    data: Brand[] | null
+    data: Brands | null
     error: string | null
 }> {
     try {
@@ -274,7 +287,7 @@ export const getAllBrands = cache(async function getAllBrands(): Promise<{
             throw new Error(error.message)
         }
 
-        return { data: data as Brand[], error: null }
+        return { data: data as Brands, error: null }
     } catch (error) {
         return {
             data: null,

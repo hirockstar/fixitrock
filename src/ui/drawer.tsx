@@ -80,7 +80,7 @@ function DrawerContent({
                     </DrawerPrimitive.Close>
                 )}
 
-                <div className={cn('flex flex-1 flex-col')}>{children}</div>
+                <div className={cn('flex flex-1 flex-col overflow-hidden')}>{children}</div>
             </DrawerPrimitive.Content>
         </DrawerPortal>
     )

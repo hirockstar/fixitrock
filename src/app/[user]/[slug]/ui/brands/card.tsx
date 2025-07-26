@@ -4,6 +4,7 @@ import { Button, Card, CardBody, CardHeader, Image, Navbar, useDisclosure } from
 import { Building2, Edit, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { FaAward } from 'react-icons/fa6'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Delete } from '®ui/icons'
 import { Brand } from '®types/brands'
@@ -53,7 +54,7 @@ function BrandItemCard({
                 <div className='flex gap-2'>
                     <Button
                         isIconOnly
-                        className='border'
+                        className='bg-background border'
                         radius='full'
                         size='sm'
                         startContent={<Edit size={18} />}
@@ -62,7 +63,7 @@ function BrandItemCard({
                     />
                     <Button
                         isIconOnly
-                        className='border'
+                        className='bg-background border'
                         color='danger'
                         radius='full'
                         size='sm'
@@ -94,6 +95,11 @@ export function BrandCard({ brands }: { brands: Brand[] }) {
     const filteredBrands = brands.filter((brand: Brand) =>
         brand.name.toLowerCase().includes(search.toLowerCase())
     )
+
+    useHotkeys('ctrl+a, meta+a', (event) => {
+        event.preventDefault()
+        addModal.onOpen()
+    })
 
     return (
         <>
@@ -128,11 +134,11 @@ export function BrandCard({ brands }: { brands: Brand[] }) {
                         onInput={(e) => setSearch(e.currentTarget.value)}
                     />
                     <Button
-                        className='hidden min-w-fit rounded-lg md:flex'
-                        color='primary'
+                        className='bg-default/20 dark:bg-default/40 hidden h-10 min-h-10 min-w-fit rounded-sm border border-dashed md:flex'
+                        variant='light'
                         onPress={addModal.onOpen}
                     >
-                        <Plus className='h-4 w-4' /> Add Brand
+                        <Plus size={18} /> Add Brand
                     </Button>
                 </div>
             </Navbar>
