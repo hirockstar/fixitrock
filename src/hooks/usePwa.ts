@@ -74,8 +74,8 @@ export function usePwa(role?: number) {
         } catch {}
     }
 
-    // If role is not 2, return only installPWA (no-op)
-    if (role !== 2) {
+    // If role is not 2 or 3, return only installPWA (no-op)
+    if (role !== 2 && role !== 3) {
         return {
             installPWA: () => {},
         }

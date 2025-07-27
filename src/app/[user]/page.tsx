@@ -9,6 +9,7 @@ import { Profile, Tabs } from './ui'
 
 type Props = {
     params: Promise<{ user: string }>
+    searchParams: Promise<{ tab?: string }>
 }
 
 export default async function Users({ params }: Props) {
@@ -41,8 +42,9 @@ export default async function Users({ params }: Props) {
     )
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const { user: rawUsername } = await params
+    const { tab } = await searchParams
     const username = rawUsername.split('/')[0]
     const decoded = username ? decodeURIComponent(username) : ''
     const cleanUsername = decoded.startsWith('@') ? decoded.slice(1) : decoded
@@ -56,27 +58,35 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         }
     }
 
-    // Base metadata
+    const tabs = await getTabs(user.role || 0)
+    const currentTab = tabs.find((t) => t.title.toLowerCase() === tab?.toLowerCase())
+
+    const title = currentTab ? `${currentTab.title} - ${user.name}` : user.name
+
+    const description = currentTab?.description
+        ? currentTab.description.replace('the user', user.name).replace('this user', user.name)
+        : user.bio
+
     const metadata: Metadata = {
-        title: user.name,
-        description: user.bio,
-        // Additional metadata fields
+        title: currentTab ? { absolute: title } : title,
+        description: description,
+
         openGraph: {
-            title: user.name,
-            description: user.bio || '',
+            title: title,
+            description: description || '',
             images: user.avatar ? [user.avatar as string] : undefined,
         },
         twitter: {
             card: 'summary_large_image',
-            title: user.name,
-            description: user.bio || '',
+            title: title,
+            description: description || '',
             images: user.avatar ? [user.avatar as string] : undefined,
         },
-        creator: user.username,
+        creator: `@${user.username}`,
     }
 
-    // Add PWA manifest for shopkeepers (role 2)
-    if (user.role === 2) {
+    // Add PWA manifest for shopkeepers and admins (role 2 & 3)
+    if (user.role === 2 || user.role === 3) {
         metadata.manifest = `/manifest/${user.username}`
         metadata.appleWebApp = {
             capable: true,

@@ -35,7 +35,7 @@ import { BiMaleFemale } from 'react-icons/bi'
 
 import { User } from '®app/login/types'
 import { updateUser } from '®actions/users'
-import { GoogleMaps } from '®ui/icons'
+import { GoogleMaps, Verified } from '®ui/icons'
 import { formatDateTime, openCurrentLocationInMaps } from '®lib/utils'
 import { Badge } from '®ui/badge'
 import { Dob } from '®ui/dob'
@@ -97,7 +97,7 @@ export function Setting({ user }: { user: User }) {
             action={formAction}
             className='mx-auto flex max-w-7xl flex-col gap-4 rounded-xl p-2 md:p-4'
         >
-            <div className='flex items-center gap-4'>
+            <div className='mb-2 flex w-full items-center gap-4'>
                 <Button
                     isIconOnly
                     passHref
@@ -144,10 +144,10 @@ export function Setting({ user }: { user: User }) {
                         <Input
                             isDisabled
                             description='Cannot be changed'
+                            endContent={form.verified && <Verified className='size-6' />}
                             label='Username'
                             labelPlacement='outside-top'
                             name='username'
-                            placeholder='Enter your username'
                             startContent={<UserRound className='text-muted-foreground' size={18} />}
                             value={`fixitrock.com/@${form.username || ''}`}
                             onChange={(e) => handleChange('username', e.target.value)}
@@ -158,7 +158,6 @@ export function Setting({ user }: { user: User }) {
                             label='Phone Number'
                             labelPlacement='outside-top'
                             name='phone'
-                            placeholder='Enter your phone number'
                             startContent={
                                 <span className='text-muted-foreground text-sm'>+91</span>
                             }

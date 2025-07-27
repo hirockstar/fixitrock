@@ -26,8 +26,11 @@ export type User = {
 export type TabsConfig = {
     title: string
     component: string
+    description?: string
 }
 export type SlugConfig = {
+    title?: string
+    description?: string
     slug: string
     private?: boolean
     component: string

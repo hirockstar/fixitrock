@@ -29,15 +29,27 @@ export function useDevice(): DeviceInfo {
     const { title, icon } = useMemo(() => {
         switch (device) {
             case 'mobile':
-                return { title: 'Install on Phone', icon: <Smartphone size={20} /> }
+                return {
+                    title: 'Install on Phone',
+                    icon: <Smartphone className='shrink-0' size={18} />,
+                }
             case 'tablet':
-                return { title: 'Install on Tablet', icon: <Tablet size={20} /> }
+                return {
+                    title: 'Install on Tablet',
+                    icon: <Tablet className='shrink-0' size={18} />,
+                }
             case 'laptop':
-                return { title: 'Install on Laptop', icon: <Laptop size={20} /> }
+                return {
+                    title: 'Install on Laptop',
+                    icon: <Laptop className='shrink-0' size={18} />,
+                }
             case 'desktop':
-                return { title: 'Install on Desktop', icon: <Monitor size={20} /> }
+                return {
+                    title: 'Install on Desktop',
+                    icon: <Monitor className='shrink-0' size={18} />,
+                }
             default:
-                return { title: 'Install App', icon: <Download size={20} /> }
+                return { title: 'Install App', icon: <Download className='shrink-0' size={18} /> }
         }
     }, [device])
 

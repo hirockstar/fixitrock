@@ -21,7 +21,7 @@ type ProfileProps = {
 const UserInfo = ({ user }: { user: User }) => (
     <div className='flex flex-col gap-1.5'>
         <h1 className='flex flex-col text-3xl font-bold'>
-            <span className='flex gap-2'>
+            <span className='flex items-center gap-2'>
                 {user.name} {user.verified && <Verified />}
             </span>
             <p className='text-muted-foreground text-xs'>@{user.username}</p>

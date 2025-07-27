@@ -17,8 +17,8 @@ export async function GET(
             })
         }
 
-        // Only generate manifest for shopkeepers (role 2)
-        if (user.role !== 2) {
+        // Only generate manifest for shopkeepers and admins (role 2 & 3)
+        if (user.role !== 2 && user.role !== 3) {
             return new Response(JSON.stringify({ error: 'Not a shopkeeper' }), {
                 status: 403,
                 headers: { 'Content-Type': 'application/json' },

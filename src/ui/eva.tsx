@@ -38,11 +38,15 @@ const styles = `
   }
 `
 
-// Inject styles into document
-const styleSheet = document.createElement('style')
+// Inject styles into document (client-side only)
+const injectStyles = () => {
+    if (typeof document !== 'undefined') {
+        const styleSheet = document.createElement('style')
 
-styleSheet.innerText = styles
-document.head.appendChild(styleSheet)
+        styleSheet.innerText = styles
+        document.head.appendChild(styleSheet)
+    }
+}
 
 // Textarea Component
 interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -477,6 +481,11 @@ export const Eva = React.forwardRef((props: EvaProps, ref: React.Ref<HTMLDivElem
         placeholder = 'Type your message here...',
         className,
     } = props
+
+    // Inject styles on client-side only
+    React.useEffect(() => {
+        injectStyles()
+    }, [])
     const [input, setInput] = React.useState('')
     const [files, setFiles] = React.useState<File[]>([])
     const [filePreviews, setFilePreviews] = React.useState<{ [key: string]: string }>({})

@@ -26,9 +26,11 @@ export function Actions({ onFollow, onMessage, isFollowing, canManage, user }: A
                 <Tooltip isOpen content='Tap to Install Our App'>
                     <Button
                         isIconOnly
+                        className='border'
                         radius='full'
                         size='sm'
                         startContent={icon}
+                        variant='light'
                         onPress={installPWA}
                     />
                 </Tooltip>

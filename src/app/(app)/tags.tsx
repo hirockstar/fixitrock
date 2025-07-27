@@ -41,7 +41,7 @@ export function Tags({ navigation = [] }: { navigation?: Navigation[] }) {
                             passHref
                             aria-label={s.title}
                             as={Link}
-                            className='border-1'
+                            className='h-8 border-1'
                             href={s.href}
                             radius='full'
                             startContent={
