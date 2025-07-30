@@ -22,12 +22,12 @@ const UserInfo = ({ user }: { user: User }) => (
     <div className='flex flex-col gap-1.5'>
         <h1 className='flex flex-col text-3xl font-bold'>
             <span className='flex items-center gap-2'>
-                {user.name} {user.verified && <Verified />}
+                {user.name} {user.verified && <Verified className='size-6' />}
             </span>
             <p className='text-muted-foreground text-xs'>@{user.username}</p>
         </h1>
 
-        <p className='text-muted-foreground max-w-2xl'>{user.bio}</p>
+        <p className='text-muted-foreground max-w-xl text-balance'>{user.bio}</p>
         <div className='text-muted-foreground flex flex-wrap items-center gap-4 text-sm'>
             {user.location && (
                 <Link
@@ -95,7 +95,7 @@ export default function Profile({ user, canManage }: ProfileProps) {
                 {canManage && (
                     <Button
                         isIconOnly
-                        className='absolute right-3 bottom-3 z-20 border bg-black/30 text-white'
+                        className='absolute right-3 bottom-3 z-20 bg-black/30 text-white'
                         radius='full'
                         size='sm'
                         startContent={<FaCamera size={18} />}
@@ -113,7 +113,7 @@ export default function Profile({ user, canManage }: ProfileProps) {
                         isIconOnly
                         passHref
                         as={Link}
-                        className='border bg-black/20 text-white'
+                        className='bg-black/20 text-white'
                         href='/'
                         radius='full'
                         size='sm'
@@ -121,7 +121,7 @@ export default function Profile({ user, canManage }: ProfileProps) {
                     />
                     <Button
                         isIconOnly
-                        className='border bg-black/20 text-white'
+                        className='bg-black/20 text-white'
                         radius='full'
                         size='sm'
                         startContent={<Share size={20} />}
@@ -131,7 +131,7 @@ export default function Profile({ user, canManage }: ProfileProps) {
             </div>
             <div className='relative z-10 flex w-full flex-col px-[5%] lg:px-[10%]'>
                 <div className='flex w-full justify-between gap-4'>
-                    <div className='bg-background relative -top-20 w-fit shrink-0 rounded-full border p-1 md:-top-16'>
+                    <div className='bg-background relative -top-20 h-fit w-fit shrink-0 rounded-full border p-1 md:-top-16'>
                         <Image
                             isBlurred
                             alt={`${user.name} avatar`}
@@ -161,8 +161,8 @@ export default function Profile({ user, canManage }: ProfileProps) {
                             />
                         )}
                     </div>
-                    <div className='mt-2 flex justify-between md:w-full'>
-                        <div className='hidden md:flex'>
+                    <div className='mt-2 flex flex-1 justify-end'>
+                        <div className='hidden w-full md:flex'>
                             <UserInfo user={user} />
                         </div>
                         <Actions

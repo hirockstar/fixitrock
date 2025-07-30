@@ -31,7 +31,7 @@ export function Tags({ navigation = [] }: { navigation?: Navigation[] }) {
         <div>
             <Eva placeholder='Work in progress . . .' />
 
-            <div className='mt-4 flex flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2'>
+            <div className='mt-4 flex w-full flex-row flex-wrap items-center justify-center gap-x-3 gap-y-2'>
                 {allTags.map((s) => {
                     const Icon = s.icon as React.ElementType<SVGProps<SVGSVGElement>> | undefined
 
@@ -46,7 +46,7 @@ export function Tags({ navigation = [] }: { navigation?: Navigation[] }) {
                             radius='full'
                             startContent={
                                 Icon ? (
-                                    <Icon className='text-muted-foreground mx-auto size-5' />
+                                    <Icon className='text-muted-foreground mx-auto size-4' />
                                 ) : null
                             }
                             variant='light'

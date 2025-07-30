@@ -52,7 +52,7 @@ export default async function Page({ params, searchParams }: PageProps) {
     }
 
     return (
-        <main className='flex flex-col gap-2'>
+        <main className='flex flex-col gap-2 p-2 md:px-4 2xl:px-[10%]'>
             <Navbar
                 initialQuery={query}
                 initialSortField={sortField}

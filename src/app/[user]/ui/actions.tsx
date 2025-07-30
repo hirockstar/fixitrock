@@ -23,7 +23,7 @@ export function Actions({ onFollow, onMessage, isFollowing, canManage, user }: A
     return (
         <div className='flex items-start gap-3'>
             {isInstallable && (
-                <Tooltip isOpen content='Tap to Install Our App'>
+                <Tooltip content='Tap to Install Our App'>
                     <Button
                         isIconOnly
                         className='border'
@@ -40,7 +40,7 @@ export function Actions({ onFollow, onMessage, isFollowing, canManage, user }: A
                 <Button
                     passHref
                     as={Link}
-                    className={`h-[32px] w-full rounded-full`}
+                    className={`h-8 w-full rounded-full`}
                     color='primary'
                     href={`@${user.username}/settings`}
                     startContent={<Settings size={20} />}
