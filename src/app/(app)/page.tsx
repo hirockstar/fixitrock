@@ -1,4 +1,5 @@
 import { userSession } from '®actions/user'
+import Text from '®ui/text'
 
 import { Tags } from './tags'
 
@@ -17,7 +18,9 @@ export default async function Page() {
                             </span>
                         </>
                     ) : (
-                        'Welcome to Fix iT Rock'
+                        <>
+                            Welcome to <Text />
+                        </>
                     )}
                 </h1>
                 <Tags navigation={navigation} />

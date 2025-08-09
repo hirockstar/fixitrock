@@ -50,20 +50,57 @@ export const QuoteSkeleton = ({
             {Array.from({ length }).map((_, index) => (
                 <Card
                     key={index}
-                    className={cn('rounded-2xl border bg-transparent', className)}
+                    className={cn(
+                        'rounded-none border-b bg-transparent p-0 md:rounded-xl md:border',
+                        className
+                    )}
                     shadow='none'
                 >
-                    <CardBody className='flex flex-1 flex-col'>
-                        <span className='flex h-[180px] flex-col items-center justify-center gap-4'>
-                            <Skeleton className='h-4 w-52 rounded' />
-                            <Skeleton className='h-4 w-56 rounded' />
-                            <Skeleton className='h-4 w-48 rounded' />
-                        </span>
-                        <div className='text-muted-foreground flex items-center justify-between text-xs'>
-                            <Skeleton className='h-4 w-20 rounded-lg' />
-                            <Skeleton className='h-4 w-20 rounded-lg' />
+                    <CardHeader className='flex w-full justify-between'>
+                        <div className='flex items-center gap-2'>
+                            <Skeleton className='size-10 rounded-full' />
+                            <div className='flex flex-col gap-1'>
+                                <Skeleton className='h-4 w-20 rounded' />
+                                <div className='flex items-center gap-1'>
+                                    <Skeleton className='h-3 w-16 rounded' />
+                                    <Skeleton className='h-3 w-16 rounded' />
+                                </div>
+                            </div>
+                        </div>
+                        <Skeleton className='size-8 rounded-full' />
+                    </CardHeader>
+
+                    <CardBody className='relative h-52'>
+                        <div className='border-default-200/50 from-default-50/60 to-default-100/40 relative flex h-full items-center justify-center overflow-hidden rounded-2xl border bg-gradient-to-br'>
+                            <div className='text-primary/25 absolute top-3 left-4 -rotate-12 transform font-serif text-5xl leading-none transition-all duration-300 select-none'>
+                                "
+                            </div>
+                            <div className='text-primary/25 absolute right-4 bottom-1 rotate-12 transform font-serif text-5xl leading-none transition-all duration-300 select-none'>
+                                "
+                            </div>
+
+                            <div className='flex h-full w-full items-center justify-center px-6 py-4'>
+                                <div className='flex w-full max-w-full flex-col gap-3 text-center'>
+                                    <Skeleton className='h-5 w-full rounded' />
+                                    <Skeleton className='mx-auto h-5 w-4/5 rounded' />
+                                    <Skeleton className='mx-auto h-5 w-3/5 rounded' />
+                                </div>
+                            </div>
+
+                            <div className='pointer-events-none absolute inset-0 overflow-hidden'>
+                                <Skeleton className='absolute top-4 left-6 h-1 w-1 animate-pulse rounded-full' />
+                                <Skeleton className='absolute top-8 right-8 h-0.5 w-0.5 animate-pulse rounded-full' />
+                                <Skeleton className='absolute bottom-6 left-8 h-1.5 w-1.5 animate-pulse rounded-full' />
+                            </div>
                         </div>
                     </CardBody>
+
+                    <CardFooter className='flex w-full items-center justify-between space-x-2'>
+                        <Skeleton className='h-8 w-18 rounded-full' />
+                        <Skeleton className='h-8 w-18 rounded-full' />
+                        <Skeleton className='h-8 w-18 rounded-full' />
+                        <Skeleton className='h-8 w-18 rounded-full' />
+                    </CardFooter>
                 </Card>
             ))}
         </>

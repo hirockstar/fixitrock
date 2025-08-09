@@ -2,6 +2,8 @@ import type { SVGProps } from 'react'
 
 import React from 'react'
 
+import { cn } from '®lib/utils'
+
 export const NotificationIcon = (props: SVGProps<SVGSVGElement>) => {
     return (
         <svg height={16} strokeLinejoin='round' viewBox='0 0 16 16' width={16} {...props}>
@@ -880,25 +882,14 @@ export function Link(props: SVGProps<SVGSVGElement>) {
     )
 }
 
-export function Verified(props: SVGProps<SVGSVGElement>) {
+export function Verified({ className = 'size-6' }: { className?: string }) {
     return (
         <svg
-            height='28'
-            viewBox='0 0 48 48'
-            width='28'
-            x='0px'
-            xmlns='http://www.w3.org/2000/svg'
-            y='0px'
-            {...props}
+            className={cn(`flex-shrink-0 text-blue-500 ${className}`)}
+            fill='currentColor'
+            viewBox='0 0 24 24'
         >
-            <polygon
-                fill='#42a5f5'
-                points='29.62,3 33.053,8.308 39.367,8.624 39.686,14.937 44.997,18.367 42.116,23.995 45,29.62 39.692,33.053 39.376,39.367 33.063,39.686 29.633,44.997 24.005,42.116 18.38,45 14.947,39.692 8.633,39.376 8.314,33.063 3.003,29.633 5.884,24.005 3,18.38 8.308,14.947 8.624,8.633 14.937,8.314 18.367,3.003 23.995,5.884'
-            />
-            <polygon
-                fill='#fff'
-                points='21.396,31.255 14.899,24.76 17.021,22.639 21.428,27.046 30.996,17.772 33.084,19.926'
-            />
+            <path d='M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.27 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.46 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z' />
         </svg>
     )
 }

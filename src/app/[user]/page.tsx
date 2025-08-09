@@ -4,6 +4,7 @@ import { Metadata } from 'next'
 import { getTabs } from '®actions/supabase'
 import { getUser } from '®actions/user'
 import { getProducts } from '®actions/user/products'
+import { userAvatar } from '®lib/utils'
 
 import { Profile, Tabs } from './ui'
 
@@ -35,7 +36,7 @@ export default async function Users({ params }: Props) {
     return (
         <div>
             <Profile canManage={canManage} user={user} />
-            <div className='mx-auto -mt-14 p-1 md:-mt-0 2xl:px-[10%]'>
+            <div className='mx-auto -mt-14 md:-mt-0 2xl:px-[10%]'>
                 <Tabs canManage={canManage} products={products} tabs={tabs} user={user} />
             </div>
         </div>
@@ -92,7 +93,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
             capable: true,
             statusBarStyle: 'black-translucent',
             title: user.name,
-            startupImage: user.avatar || '/fallback/boy.png',
+            startupImage: userAvatar(user),
         }
     }
 

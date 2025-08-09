@@ -21,7 +21,7 @@ export function Actions({ onFollow, onMessage, isFollowing, canManage, user }: A
     const { icon } = useDevice()
 
     return (
-        <div className='flex items-start gap-3'>
+        <div className='flex w-full flex-1 gap-2'>
             {isInstallable && (
                 <Tooltip content='Tap to Install Our App'>
                     <Button
@@ -40,17 +40,20 @@ export function Actions({ onFollow, onMessage, isFollowing, canManage, user }: A
                 <Button
                     passHref
                     as={Link}
-                    className={`h-8 w-full rounded-full`}
+                    className={`w-full rounded-full`}
                     color='primary'
                     href={`@${user.username}/settings`}
-                    startContent={<Settings size={20} />}
+                    size='sm'
+                    startContent={<Settings size={16} />}
                 >
                     Edit
                 </Button>
             ) : (
                 <Button
-                    className={`h-[34px] w-full rounded-full ${isFollowing ? 'bg-muted/50 border-1' : 'bg-blue-500 text-white'}`}
-                    startContent={isFollowing ? <Check size={20} /> : <Plus size={20} />}
+                    fullWidth
+                    className={`rounded-full ${isFollowing ? 'bg-muted/50 border-1' : 'bg-blue-500 text-white'}`}
+                    size='sm'
+                    startContent={isFollowing ? <Check size={18} /> : <Plus size={18} />}
                     onPress={onFollow}
                 >
                     {isFollowing ? 'Following' : 'Follow'}

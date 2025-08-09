@@ -8,7 +8,7 @@ import { FaCamera } from 'react-icons/fa'
 
 import { User } from '®app/login/types'
 import { Verified } from '®ui/icons'
-import { formatDateTime } from '®lib/utils'
+import { formatDateTime, userAvatar } from '®lib/utils'
 
 import { Actions } from './actions'
 import AvatarCover from './add'
@@ -22,12 +22,12 @@ const UserInfo = ({ user }: { user: User }) => (
     <div className='flex flex-col gap-1.5'>
         <h1 className='flex flex-col text-3xl font-bold'>
             <span className='flex items-center gap-2'>
-                {user.name} {user.verified && <Verified className='size-6' />}
+                {user.name} {user.verified && <Verified />}
             </span>
             <p className='text-muted-foreground text-xs'>@{user.username}</p>
         </h1>
 
-        <p className='text-muted-foreground max-w-xl text-balance'>{user.bio}</p>
+        <p className='text-muted-foreground max-w-xl'>{user.bio}</p>
         <div className='text-muted-foreground flex flex-wrap items-center gap-4 text-sm'>
             {user.location && (
                 <Link
@@ -140,15 +140,7 @@ export default function Profile({ user, canManage }: ProfileProps) {
                                 wrapper:
                                     'bg-default/20 dark:bg-default/40 size-32 overflow-hidden rounded-full backdrop-blur md:size-36',
                             }}
-                            src={
-                                (user.avatar ||
-                                    (user.gender === 'female'
-                                        ? '/fallback/girl.png'
-                                        : user.gender === 'other'
-                                          ? '/fallback/other.png'
-                                          : '/fallback/boy.png')) +
-                                (user.updated_at ? `?t=${user.updated_at}` : '')
-                            }
+                            src={userAvatar(user)}
                         />
                         {canManage && (
                             <Button
@@ -161,7 +153,7 @@ export default function Profile({ user, canManage }: ProfileProps) {
                             />
                         )}
                     </div>
-                    <div className='mt-2 flex flex-1 justify-end'>
+                    <div className='mt-2 flex w-full flex-1 justify-end'>
                         <div className='hidden w-full md:flex'>
                             <UserInfo user={user} />
                         </div>

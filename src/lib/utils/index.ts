@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
+import { User } from '®app/login/types'
 import { siteConfig } from '®config/site'
 import { DriveItem } from '®types/drive'
 import { Product } from '®types/products'
@@ -220,4 +221,23 @@ export const formatDuration = (milliseconds: number): string => {
     const seconds = totalSeconds % 60
 
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+}
+
+/**
+ * Get user avatar URL with fallback based on gender and cache busting
+ * @param user - User object with avatar, gender, and updated_at
+ * @returns Avatar URL string
+ */
+export function userAvatar(user: User): string {
+    const fallbackAvatar =
+        user?.gender === 'female'
+            ? '/fallback/girl.png'
+            : user?.gender === 'other'
+              ? '/fallback/other.png'
+              : '/fallback/boy.png'
+
+    const avatarUrl = user?.avatar || fallbackAvatar || ''
+
+    // Add cache busting parameter if user has been updated
+    return user?.updated_at ? `${avatarUrl}?t=${user.updated_at}` : avatarUrl
 }

@@ -56,7 +56,7 @@ export default function Tabs({ user, tabs, products }: TabsProps) {
                         {tab.component === 'ProductCard' ? (
                             <ProductsCard products={products} />
                         ) : tab.component === 'Quotes' ? (
-                            <Quotes />
+                            <Quotes user={user} />
                         ) : (
                             <div className='text-muted-foreground flex h-80 w-full flex-col items-center justify-center text-center select-none'>
                                 <span className='mb-2 animate-bounce text-6xl'>✨</span>

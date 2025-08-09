@@ -18,6 +18,7 @@ import { Navigation as Type, User as UserType } from '®app/login/types'
 import { Navigation } from '®app/login/ui/navigation'
 import { Verified } from '®ui/icons'
 import { useAuth } from '®zustand/store'
+import { userAvatar } from '®lib/utils'
 
 export default function UserDrawer({
     user,
@@ -56,20 +57,7 @@ export default function UserDrawer({
                 onPress={handlePress}
             >
                 {user ? (
-                    <Image
-                        alt={user.name}
-                        height={30}
-                        src={
-                            (user.avatar ||
-                                (user.gender === 'female'
-                                    ? '/fallback/girl.png'
-                                    : user.gender === 'other'
-                                      ? '/fallback/other.png'
-                                      : '/fallback/boy.png')) +
-                            (user.updated_at ? `?t=${user.updated_at}` : '')
-                        }
-                        width={30}
-                    />
+                    <Image alt={user.name} height={30} src={userAvatar(user)} width={30} />
                 ) : (
                     <FaUserCircle aria-label='Login to your account' size={22} />
                 )}
@@ -107,14 +95,7 @@ const UserDetails = ({ user }: { user: UserType }) => {
     return (
         <HeroUser
             avatarProps={{
-                src:
-                    (user.avatar ||
-                        (user.gender === 'female'
-                            ? '/fallback/girl.png'
-                            : user.gender === 'other'
-                              ? '/fallback/other.png'
-                              : '/fallback/boy.png')) +
-                    (user.updated_at ? `?t=${user.updated_at}` : ''),
+                src: userAvatar(user),
                 fallback: user.name,
                 className: 'w-12 h-12',
             }}
