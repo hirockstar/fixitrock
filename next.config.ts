@@ -7,22 +7,6 @@ const nextConfig: NextConfig = {
             bodySizeLimit: '3mb',
         },
     },
-    // Browser compatibility settings
-    compiler: {
-        removeConsole: process.env.NODE_ENV === 'production',
-    },
-    // Add polyfills for older browsers
-    webpack: (config, { isServer }) => {
-        if (!isServer) {
-            config.resolve.fallback = {
-                ...config.resolve.fallback,
-                fs: false,
-                net: false,
-                tls: false,
-            };
-        }
-        return config;
-    },
     async redirects() {
         return [
             {
