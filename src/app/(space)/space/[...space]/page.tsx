@@ -2,6 +2,8 @@ import { cookies } from 'next/headers'
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 
+import { Data } from './data'
+
 import { Navbar } from '@/app/(space)/ui/navbar'
 import { SortField, SortOrder } from '@/types/drive'
 import { GridSkeleton, ListSkeleton } from '@/ui/skeleton'
@@ -9,8 +11,6 @@ import { siteConfig } from '@/config/site'
 import { getChildren, getReadme } from '@/actions/drive'
 import { Readme } from '@/app/(space)/ui/preview'
 import { formatTitle } from '@/app/(space)/utils'
-
-import { Data } from './data'
 
 type PageProps = {
     params: Promise<{ space?: string[] }>

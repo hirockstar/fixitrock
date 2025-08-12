@@ -150,7 +150,7 @@ export function Dob({
     const showError = (touched || error || errorMessage) && (error || errorMessage)
 
     return (
-        <div className={`${className}`}>
+        <div className={`${className} flex w-full flex-1 flex-col justify-end`}>
             {label && (
                 <Label
                     className={`${isRequired && 'gap-0.5 after:text-red-500 after:content-["*"]'} pb-2`}
@@ -163,7 +163,8 @@ export function Dob({
                 aria-label={label}
                 aria-required={isRequired}
                 autoFocus={autoFocus}
-                containerClassName={`flex items-center ${showError ? 'border-red-200' : ''}`}
+                className=''
+                containerClassName={`w-full flex items-start ${showError ? 'border-red-200' : ''}`}
                 disabled={disabled}
                 inputMode='numeric'
                 maxLength={8}
@@ -177,12 +178,12 @@ export function Dob({
                     <InputOTPSlot index={0} placeholder={placeholders[0]} />
                     <InputOTPSlot index={1} placeholder={placeholders[1]} />
                 </InputOTPGroup>
-                <div className='mx-1' />
+
                 <InputOTPGroup>
                     <InputOTPSlot index={2} placeholder={placeholders[2]} />
                     <InputOTPSlot index={3} placeholder={placeholders[3]} />
                 </InputOTPGroup>
-                <div className='mx-1' />
+
                 <InputOTPGroup>
                     <InputOTPSlot index={4} placeholder={placeholders[4]} />
                     <InputOTPSlot index={5} placeholder={placeholders[5]} />

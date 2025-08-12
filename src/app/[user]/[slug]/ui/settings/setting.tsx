@@ -6,15 +6,15 @@ import {
     Button,
     addToast,
     Card,
-    CardHeader,
-    CardBody,
     Input,
     Select,
     SelectItem,
     SelectSection,
     Textarea,
     Tooltip,
-    CardFooter,
+    Accordion,
+    AccordionItem,
+    Navbar,
 } from '@heroui/react'
 import {
     ArrowLeft,
@@ -37,7 +37,6 @@ import { User } from '@/app/login/types'
 import { updateUser } from '@/actions/users'
 import { GoogleMaps, Verified } from '@/ui/icons'
 import { formatDateTime, openCurrentLocationInMaps } from '@/lib/utils'
-import { Badge } from '@/ui/badge'
 import { Dob } from '@/ui/dob'
 
 const LOCATION_EDIT_ROLES = [2, 3]
@@ -97,40 +96,52 @@ export function Setting({ user }: { user: User }) {
             action={formAction}
             className='mx-auto flex max-w-7xl flex-col gap-4 rounded-xl p-2 md:p-4'
         >
-            <div className='mb-2 flex w-full items-center gap-4'>
-                <Button
-                    isIconOnly
-                    passHref
-                    as={Link}
-                    className='bg-muted/40'
-                    href={`/@${user.username}`}
-                    radius='full'
-                    size='sm'
-                    startContent={<ArrowLeft size={20} />}
-                    variant='light'
-                />
-                <div>
-                    <h1 className='text-xl leading-6 font-bold'>Account Settings</h1>
-                    <p className='text-muted-foreground text-sm'>
-                        Manage your profile and preferences
-                    </p>
+            <Navbar
+                shouldHideOnScroll
+                classNames={{
+                    wrapper: 'h-auto p-0 py-2',
+                }}
+                maxWidth='full'
+            >
+                <div className='mb-2 flex w-full items-center gap-4'>
+                    <Button
+                        isIconOnly
+                        passHref
+                        as={Link}
+                        className='bg-muted/40'
+                        href={`/@${user.username}`}
+                        radius='full'
+                        size='sm'
+                        startContent={<ArrowLeft size={20} />}
+                        variant='light'
+                    />
+                    <h1 className='text-3xl font-bold'>Settings</h1>
                 </div>
-            </div>
-
-            <div className='grid w-full grid-cols-1 gap-4 md:grid-cols-2'>
-                <Card fullWidth className='border bg-transparent md:p-4' shadow='none'>
-                    <CardHeader className='items-start gap-2'>
-                        <UserRound className='bg-muted/20 size-8 rounded-full p-1 text-indigo-500 dark:text-indigo-400' />
-                        <div className='flex flex-col'>
-                            <h1 className='text-lg leading-5 font-semibold'>
-                                Personal Information
-                            </h1>
-                            <p className='text-muted-foreground text-sm'>
-                                Your basic profile details
-                            </p>
+            </Navbar>
+            <Accordion
+                className='space-y-3 p-0'
+                defaultExpandedKeys={['personal-information']}
+                itemClasses={{
+                    base: 'border rounded-xl',
+                    title: 'font-semibold text-lg',
+                    subtitle: 'text-muted-foreground text-sm',
+                    heading: 'px-4 py-2',
+                    content: 'border-t p-4 md:p-6',
+                }}
+                selectionMode='multiple'
+                showDivider={false}
+            >
+                <AccordionItem
+                    key='personal-information'
+                    startContent={
+                        <div className='rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 p-2 shadow-lg'>
+                            <UserRound className='h-5 w-5 text-white' />
                         </div>
-                    </CardHeader>
-                    <CardBody className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                    }
+                    subtitle='Your basic profile details and identity'
+                    title='Personal Information'
+                >
+                    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                         <Input
                             description='Your display name'
                             label='Name'
@@ -184,8 +195,6 @@ export function Setting({ user }: { user: User }) {
                                 <SelectItem key='other'>Other</SelectItem>
                             </SelectSection>
                         </Select>
-                    </CardBody>
-                    <CardFooter>
                         <Dob
                             description='Must be 18 or older'
                             label='Date of Birth'
@@ -193,219 +202,269 @@ export function Setting({ user }: { user: User }) {
                             onChange={(val) => handleChange('dob', val)}
                             onError={setDobError}
                         />
-                    </CardFooter>
-                </Card>
-                <Card fullWidth className='border bg-transparent md:p-4' shadow='none'>
-                    <CardHeader className='items-start gap-2'>
-                        <Sparkles className='bg-muted/20 size-8 rounded-full p-1 text-amber-500 dark:text-amber-400' />
-                        <div className='flex flex-col'>
-                            <h1 className='text-lg leading-5 font-semibold'>About You</h1>
-                            <p className='text-muted-foreground text-sm'>
-                                Tell the world about yourself and your expertise
-                            </p>
+                    </div>
+                </AccordionItem>
+                <AccordionItem
+                    key='about-you'
+                    startContent={
+                        <div className='rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 p-2 shadow-lg'>
+                            <Sparkles className='h-5 w-5 text-white' />
                         </div>
-                    </CardHeader>
-                    <CardBody>
-                        <Textarea
-                            classNames={{
-                                description: 'flex justify-between',
-                                base: 'gap-2',
-                            }}
-                            description={
-                                <>
-                                    <p>About yourself or business</p>
-                                    <p>{form.bio?.length || 0}/160</p>
-                                </>
-                            }
-                            errorMessage={bioError}
-                            id='bio'
-                            isInvalid={!!bioError}
-                            label='Bio'
-                            labelPlacement='outside'
-                            maxLength={160}
-                            name='bio'
-                            placeholder='Tell us about yourself...'
-                            rows={3}
-                            value={form.bio || ''}
-                            onChange={(e) => handleChange('bio', e.target.value)}
-                        />
-                    </CardBody>
-                </Card>
-            </div>
-
-            {canEditLocation && (
-                <Card fullWidth className='border bg-transparent md:p-4' shadow='none'>
-                    <CardHeader className='items-start gap-2'>
-                        <Store className='bg-muted/20 size-8 rounded-full p-1 text-blue-500 dark:text-blue-400' />
-                        <div className='flex flex-col'>
-                            <h1 className='text-lg leading-5 font-semibold'>Business Location</h1>
-                            <p className='text-muted-foreground text-sm'>
-                                Your shop or service location details
-                            </p>
-                        </div>
-                    </CardHeader>
-                    <CardBody className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                        <Input
-                            description='Your shop address'
-                            id='location'
-                            label='Store/Shop Address'
-                            labelPlacement='outside'
-                            name='location'
-                            placeholder='e.g. Fix iT Rock, Sikandrabad, India'
-                            startContent={<MapPin className='h-4 w-4' />}
-                            value={form.location || ''}
-                            onChange={(e) => handleChange('location', e.target.value)}
-                        />
-                        <Input
-                            description='Google Maps link'
-                            endContent={
-                                <Tooltip content='Get your Google Maps URL'>
-                                    <Button
-                                        isIconOnly
-                                        radius='full'
-                                        size='sm'
-                                        startContent={<GoogleMaps className='size-6' />}
-                                        variant='light'
-                                        onPress={openCurrentLocationInMaps}
-                                    />
-                                </Tooltip>
-                            }
-                            errorMessage={locationUrlError}
-                            id='location_url'
-                            isInvalid={!!locationUrlError}
-                            label='Google Maps URL'
-                            labelPlacement='outside'
-                            name='location_url'
-                            placeholder='Paste your Google Maps link here'
-                            startContent={<LinkIcon className='h-4 w-4' />}
-                            type='url'
-                            value={form.location_url || ''}
-                            onChange={(e) => {
-                                handleChange('location_url', e.target.value)
-                                // Validate URL
-                                try {
-                                    if (e.target.value && !/^https?:\/\//.test(e.target.value)) {
-                                        setLocationUrlError(
-                                            'Please enter a valid URL starting with http:// or https://'
-                                        )
-                                    } else if (e.target.value && !new URL(e.target.value)) {
-                                        setLocationUrlError('Please enter a valid URL')
-                                    } else {
-                                        setLocationUrlError('')
-                                    }
-                                } catch {
-                                    setLocationUrlError('Please enter a valid URL')
+                    }
+                    subtitle='Tell the world about yourself and your expertise'
+                    title='About You'
+                >
+                    <Textarea
+                        classNames={{
+                            description: 'flex justify-between',
+                            base: 'gap-2',
+                            label: 'flex justify-between',
+                        }}
+                        description={
+                            <>
+                                <p>
+                                    A compelling bio helps others understand your expertise and
+                                    personality
+                                </p>
+                            </>
+                        }
+                        errorMessage={bioError}
+                        id='bio'
+                        isInvalid={!!bioError}
+                        label={
+                            <>
+                                <p>Bio</p>
+                                <span className='text-muted-foreground text-xs'>
+                                    {form.bio?.length || 0}/160
+                                </span>
+                            </>
+                        }
+                        labelPlacement='outside'
+                        maxLength={160}
+                        name='bio'
+                        placeholder='Tell us about yourself...'
+                        rows={3}
+                        value={form.bio || ''}
+                        onChange={(e) => handleChange('bio', e.target.value)}
+                    />
+                </AccordionItem>
+                {canEditLocation ? (
+                    <AccordionItem
+                        key='business'
+                        startContent={
+                            <div className='rounded-xl bg-gradient-to-r from-green-500 to-teal-500 p-2 shadow-lg'>
+                                <Store className='h-5 w-5 text-white' />
+                            </div>
+                        }
+                        subtitle='Your shop or service location details'
+                        title='Business'
+                    >
+                        <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                            <Input
+                                description='Your shop address'
+                                id='location'
+                                label='Store/Shop Address'
+                                labelPlacement='outside'
+                                name='location'
+                                placeholder='e.g. Fix iT Rock, Sikandrabad, India'
+                                startContent={<MapPin className='h-4 w-4' />}
+                                value={form.location || ''}
+                                onChange={(e) => handleChange('location', e.target.value)}
+                            />
+                            <Input
+                                description='Google Maps link'
+                                endContent={
+                                    <Tooltip content='Get your Google Maps URL'>
+                                        <Button
+                                            isIconOnly
+                                            radius='full'
+                                            size='sm'
+                                            startContent={<GoogleMaps className='size-6' />}
+                                            variant='light'
+                                            onPress={openCurrentLocationInMaps}
+                                        />
+                                    </Tooltip>
                                 }
-                            }}
-                        />
-                    </CardBody>
-                </Card>
-            )}
-            <div className='grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
-                <Card
-                    className='bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100/30 p-4 dark:from-slate-800/50 dark:via-gray-800/30 dark:to-slate-700/20'
-                    shadow='sm'
-                >
-                    <CardHeader className='flex flex-row items-center justify-between gap-2 pb-2'>
-                        <div className='flex items-center gap-2'>
-                            <div className='flex h-8 w-8 items-center justify-center rounded-full bg-green-100/80 dark:bg-green-900/30'>
-                                <CheckCircle className='h-4 w-4 text-green-600 dark:text-green-400' />
-                            </div>
-                            <h3 className='text-sm font-semibold text-slate-700 dark:text-slate-200'>
-                                Account Status
-                            </h3>
+                                errorMessage={locationUrlError}
+                                id='location_url'
+                                isInvalid={!!locationUrlError}
+                                label='Google Maps URL'
+                                labelPlacement='outside'
+                                name='location_url'
+                                placeholder='Paste your Google Maps link here'
+                                startContent={<LinkIcon className='h-4 w-4' />}
+                                type='url'
+                                value={form.location_url || ''}
+                                onChange={(e) => {
+                                    handleChange('location_url', e.target.value)
+                                    // Validate URL
+                                    try {
+                                        if (
+                                            e.target.value &&
+                                            !/^https?:\/\//.test(e.target.value)
+                                        ) {
+                                            setLocationUrlError(
+                                                'Please enter a valid URL starting with http:// or https://'
+                                            )
+                                        } else if (e.target.value && !new URL(e.target.value)) {
+                                            setLocationUrlError('Please enter a valid URL')
+                                        } else {
+                                            setLocationUrlError('')
+                                        }
+                                    } catch {
+                                        setLocationUrlError('Please enter a valid URL')
+                                    }
+                                }}
+                            />
                         </div>
-                    </CardHeader>
-                    <CardBody className='pt-0'>
-                        <Badge
-                            className={`font-medium ${
-                                form.active
-                                    ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
-                                    : 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
-                            }`}
-                            variant='secondary'
-                        >
-                            {form.active ? 'Active' : 'Inactive'}
-                        </Badge>
-                    </CardBody>
-                </Card>
+                    </AccordionItem>
+                ) : null}
 
-                <Card
-                    className='bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100/30 p-4 dark:from-slate-800/50 dark:via-gray-800/30 dark:to-slate-700/20'
-                    shadow='sm'
-                >
-                    <CardHeader className='flex flex-row items-center justify-between gap-2 pb-2'>
-                        <div className='flex items-center gap-2'>
-                            <div className='flex h-8 w-8 items-center justify-center rounded-full bg-blue-100/80 dark:bg-blue-900/30'>
-                                <Shield className='h-4 w-4 text-blue-600 dark:text-blue-400' />
-                            </div>
-                            <h3 className='text-sm font-semibold text-slate-700 dark:text-slate-200'>
-                                Verification
-                            </h3>
+                <AccordionItem
+                    key='account-status'
+                    startContent={
+                        <div className='rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 p-2 shadow-lg'>
+                            <Shield className='h-5 w-5 text-white' />
                         </div>
-                    </CardHeader>
-                    <CardBody className='pt-0'>
-                        <Badge
-                            className={`font-medium ${
-                                form.verified
-                                    ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
-                                    : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
-                            }`}
-                            variant='secondary'
+                    }
+                    subtitle='Your account information and activity'
+                    title='Account Status'
+                >
+                    <div className='grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
+                        <Card
+                            isPressable
+                            className='border border-green-200/50 bg-gradient-to-br from-green-50 to-emerald-50 dark:border-green-700/30 dark:from-green-900/20 dark:to-emerald-900/20'
+                            shadow='none'
                         >
-                            {form.verified ? 'Verified' : 'Pending'}
-                        </Badge>
-                    </CardBody>
-                </Card>
+                            <div className='p-4'>
+                                <div className='flex items-start justify-between'>
+                                    <div className='flex items-center gap-3'>
+                                        <div
+                                            className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                                                form.active
+                                                    ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
+                                                    : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                                            }`}
+                                        >
+                                            <CheckCircle className='h-5 w-5' />
+                                        </div>
+                                        <div className='text-start text-nowrap'>
+                                            <h3 className='font-semibold text-gray-900 dark:text-gray-100'>
+                                                Status
+                                            </h3>
+                                            <p className='text-sm text-gray-600 dark:text-gray-400'>
+                                                Current state
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+                                            form.active
+                                                ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200'
+                                                : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200'
+                                        }`}
+                                    >
+                                        {form.active ? '🟢 Active' : '🔴 Inactive'}
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
 
-                <Card
-                    className='bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100/30 p-4 dark:from-slate-800/50 dark:via-gray-800/30 dark:to-slate-700/20'
-                    shadow='sm'
-                >
-                    <CardHeader className='flex flex-row items-center justify-between gap-2 pb-2'>
-                        <div className='flex items-center gap-2'>
-                            <div className='flex h-8 w-8 items-center justify-center rounded-full bg-purple-100/80 dark:bg-purple-900/30'>
-                                <Calendar className='h-4 w-4 text-purple-600 dark:text-purple-400' />
-                            </div>
-                            <h3 className='text-sm font-semibold text-slate-700 dark:text-slate-200'>
-                                Member Since
-                            </h3>
-                        </div>
-                    </CardHeader>
-                    <CardBody className='pt-0'>
-                        <Badge
-                            className='bg-purple-100 font-medium text-purple-700 dark:bg-purple-900/40 dark:text-purple-300'
-                            variant='secondary'
+                        <Card
+                            isPressable
+                            className='border border-blue-200/50 bg-gradient-to-br from-blue-50 to-cyan-50 dark:border-blue-700/30 dark:from-blue-900/20 dark:to-cyan-900/20'
+                            shadow='none'
                         >
-                            {formatDateTime(form.created_at)}
-                        </Badge>
-                    </CardBody>
-                </Card>
+                            <div className='p-4'>
+                                <div className='flex items-start justify-between'>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'>
+                                            <Shield className='h-5 w-5' />
+                                        </div>
+                                        <div className='text-start text-nowrap'>
+                                            <h3 className='font-semibold text-gray-900 dark:text-gray-100'>
+                                                Verification
+                                            </h3>
+                                            <p className='text-sm text-gray-600 dark:text-gray-400'>
+                                                Account security
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+                                            form.verified
+                                                ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200'
+                                                : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200'
+                                        }`}
+                                    >
+                                        {form.verified ? '✅ Verified' : '⏳ Pending'}
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
 
-                <Card
-                    className='bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100/30 p-4 dark:from-slate-800/50 dark:via-gray-800/30 dark:to-slate-700/20'
-                    shadow='sm'
-                >
-                    <CardHeader className='flex flex-row items-center justify-between gap-2 pb-2'>
-                        <div className='flex items-center gap-2'>
-                            <div className='flex h-8 w-8 items-center justify-center rounded-full bg-orange-100/80 dark:bg-orange-900/30'>
-                                <Clock className='h-4 w-4 text-orange-600 dark:text-orange-400' />
-                            </div>
-                            <h3 className='text-sm font-semibold text-slate-700 dark:text-slate-200'>
-                                Last Login
-                            </h3>
-                        </div>
-                    </CardHeader>
-                    <CardBody className='pt-0'>
-                        <Badge
-                            className='bg-orange-100 font-medium text-orange-700 dark:bg-orange-900/40 dark:text-orange-300'
-                            variant='secondary'
+                        <Card
+                            isPressable
+                            className='border border-violet-200/50 bg-gradient-to-br from-violet-50 to-purple-50 dark:border-violet-700/30 dark:from-violet-900/20 dark:to-purple-900/20'
+                            shadow='none'
                         >
-                            {user.last_login_at ? formatDateTime(user.last_login_at) : 'Never'}
-                        </Badge>
-                    </CardBody>
-                </Card>
-            </div>
+                            <div className='p-4'>
+                                <div className='flex items-start justify-between'>
+                                    <div className='flex items-center gap-2'>
+                                        <div className='flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'>
+                                            <Calendar className='h-5 w-5' />
+                                        </div>
+                                        <div className='text-start text-nowrap'>
+                                            <h3 className='font-semibold text-nowrap text-gray-900 dark:text-gray-100'>
+                                                Joined On
+                                            </h3>
+                                            <p className='text-sm text-gray-600 dark:text-gray-400'>
+                                                Member since
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className='rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-nowrap text-purple-800 dark:bg-purple-900/50 dark:text-purple-200'>
+                                        📅 {formatDateTime(form.created_at)}
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
+
+                        <Card
+                            isPressable
+                            className='border border-orange-200/50 bg-gradient-to-br from-orange-50 to-amber-50 dark:border-orange-700/30 dark:from-orange-900/20 dark:to-amber-900/20'
+                            shadow='none'
+                        >
+                            <div className='p-4'>
+                                <div className='flex items-start justify-between'>
+                                    <div className='flex items-center gap-3'>
+                                        <div className='flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'>
+                                            <Clock className='h-5 w-5' />
+                                        </div>
+                                        <div className='text-start text-nowrap'>
+                                            <h3 className='font-semibold text-gray-900 dark:text-gray-100'>
+                                                Last Login
+                                            </h3>
+                                            <p className='text-sm text-gray-600 dark:text-gray-400'>
+                                                Recent activity
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className='rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-800 dark:bg-orange-900/50 dark:text-orange-200'>
+                                        🕐{' '}
+                                        {user.last_login_at
+                                            ? formatDateTime(user.last_login_at)
+                                            : 'Never'}
+                                    </div>
+                                    {user.last_login_at && (
+                                        <div className='absolute top-2 right-2 h-2 w-2 animate-pulse rounded-full bg-green-500' />
+                                    )}
+                                </div>
+                            </div>
+                        </Card>
+                    </div>
+                </AccordionItem>
+            </Accordion>
 
             {/* Action Buttons - Save & Delete */}
             <div className='flex w-full items-center justify-between border-t pt-4'>
