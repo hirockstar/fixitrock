@@ -1,4 +1,4 @@
-import { DeviceInfo } from '®types/user'
+import { DeviceInfo } from '@/types/user'
 
 export function detectDevice(userAgent: string): DeviceInfo {
     const ua = userAgent.toLowerCase()

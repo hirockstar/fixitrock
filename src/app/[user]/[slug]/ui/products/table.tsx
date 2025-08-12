@@ -16,12 +16,12 @@ import {
 import React from 'react'
 import { Edit, Filter, Plus, CloudDownload } from 'lucide-react'
 
-import { Table, TableBody, TableCell, TableFooter, TableHeader, TableRow } from '®ui/table'
-import { Product, Products } from '®types/products'
-import { Brand } from '®types/brands'
-import { formatPrice, getStockStatus } from '®lib/utils'
-import { Delete } from '®ui/icons'
-import { Input } from '®app/(space)/ui'
+import { Table, TableBody, TableCell, TableFooter, TableHeader, TableRow } from '@/ui/table'
+import { Product, Products } from '@/types/products'
+import { Brand } from '@/types/brands'
+import { formatPrice, getStockStatus } from '@/lib/utils'
+import { Delete } from '@/ui/icons'
+import { Input } from '@/app/(space)/ui'
 
 import DeleteProduct from './delete'
 import AddEdit from './add'

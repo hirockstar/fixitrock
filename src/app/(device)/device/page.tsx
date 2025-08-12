@@ -4,13 +4,13 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { Alert, Button, Card, CardBody } from '@heroui/react'
 import { Monitor, AlertCircle, Usb, AlertTriangle, Cable, RefreshCw } from 'lucide-react'
 
-import { USBDeviceInfo, useUSBDevices } from '®lib/usb/useUSB'
-import { DeviceDetails, DeviceDetector } from '®lib/usb/device-detector'
-import { SerialDeviceDetails, EnhancedSerialDetector } from '®lib/usb/enhanced-serial-detector'
-import { AlertDescription } from '®ui/alert'
-import { logWarning } from '®lib/utils'
-
 import { DeviceCard } from '../ui/card'
+
+import { USBDeviceInfo, useUSBDevices } from '@/lib/usb/useUSB'
+import { DeviceDetails, DeviceDetector } from '@/lib/usb/device-detector'
+import { SerialDeviceDetails, EnhancedSerialDetector } from '@/lib/usb/enhanced-serial-detector'
+import { AlertDescription } from '@/ui/alert'
+import { logWarning } from '@/lib/utils'
 
 // Web USB API types
 interface USBDevice {

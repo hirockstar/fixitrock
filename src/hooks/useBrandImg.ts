@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 
-import { Brand } from '®types/brands'
+import { Brand } from '@/types/brands'
 
 const fallback =
     'https://cdn3d.iconscout.com/3d/premium/thumb/astronaut-riding-rocket-while-waiving-hand-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--hello-logo-gesture-pack-aerospace-illustrations-4431886.png'

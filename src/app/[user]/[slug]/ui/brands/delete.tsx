@@ -15,9 +15,9 @@ import {
 import { Trash2, X, Building2 } from 'lucide-react'
 import { addToast } from '@heroui/react'
 
-import { deleteBrand } from '®actions/brands'
-import { Brand } from '®types/brands'
-import { useBrandImg } from '®hooks'
+import { deleteBrand } from '@/actions/brands'
+import { Brand } from '@/types/brands'
+import { useBrandImg } from '@/hooks'
 
 interface DeleteBrandProps {
     isOpen: boolean

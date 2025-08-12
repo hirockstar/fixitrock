@@ -1,16 +1,15 @@
 import type { Metadata, Viewport } from 'next'
 
-import Footer from '®components/footer'
-import { META_THEME_COLORS, siteConfig } from '®config/site'
-import { AuthProvider, Providers } from '®provider'
+import { UserDrawer } from '@/app/[user]/ui'
+import Footer from '@/components/footer'
+import { META_THEME_COLORS, siteConfig } from '@/config/site'
+import { AuthProvider, Providers } from '@/provider'
 import '../styles/globals.css'
-import { cn } from '®lib/utils'
-import { SearchBar } from '®components/search/bar'
-import { fontVariables } from '®lib/fonts'
-import { ErrorBoundary } from '®components/error'
-import { userSession } from '®actions/user'
-
-import { UserDrawer } from './[user]/ui'
+import { cn } from '@/lib/utils'
+import { SearchBar } from '@/components/search/bar'
+import { fontVariables } from '@/lib/fonts'
+import { ErrorBoundary } from '@/components/error'
+import { userSession } from '@/actions/user'
 
 export default async function RootLayout({
     children,
@@ -24,14 +23,26 @@ export default async function RootLayout({
     return (
         <html suppressHydrationWarning lang='en'>
             <head>
+                {/* Browser compatibility meta tags */}
+                <meta content='IE=edge' httpEquiv='X-UA-Compatible' />
+                <meta
+                    content='width=device-width, initial-scale=1, maximum-scale=5'
+                    name='viewport'
+                />
+
                 <script
                     dangerouslySetInnerHTML={{
                         __html: `
             try {
-                if (localStorage.theme === 'dark' || ((!('theme' in localStorage) || localStorage.theme === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.querySelector('meta[name="theme-color"]').setAttribute('content', '${META_THEME_COLORS.dark}')
+                if (typeof localStorage !== 'undefined' && localStorage.theme === 'dark' || 
+                    ((!('theme' in localStorage) || localStorage.theme === 'system') && 
+                     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    const meta = document.querySelector('meta[name="theme-color"]');
+                    if (meta) meta.setAttribute('content', '${META_THEME_COLORS.dark}');
                 }
-            } catch (_) {}
+            } catch (e) {
+                console.warn('Theme detection failed:', e);
+            }
             `,
                     }}
                 />

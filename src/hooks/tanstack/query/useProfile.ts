@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getProfile } from '®actions/users/profile'
+import { getProfile } from '@/actions/users/profile'
 
 export function useProfile(username: string) {
     const query = useQuery({

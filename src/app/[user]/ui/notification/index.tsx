@@ -4,7 +4,7 @@
 // import { Button, Image } from '@heroui/react'
 // import { Settings } from 'lucide-react'
 
-// import { useMediaQuery } from '®hooks'
+// import { useMediaQuery } from '@/hooks'
 // import {
 //     Drawer,
 //     DrawerContent,
@@ -12,13 +12,13 @@
 //     DrawerHeader,
 //     DrawerTitle,
 //     DrawerTrigger,
-// } from '®ui/drawer'
-// import { NotificationIcon } from '®ui/icons'
-// import { Popover, PopoverContent, PopoverTrigger } from '®ui/popover'
-// import { respondToTeamRequest } from '®actions/teams'
-// import { Notification as NotificationType } from '®types/users'
-// import { formatDateTime } from '®lib/utils'
-// import { useNotifications } from '®provider/notification'
+// } from '@/ui/drawer'
+// import { NotificationIcon } from '@/ui/icons'
+// import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
+// import { respondToTeamRequest } from '@/actions/teams'
+// import { Notification as NotificationType } from '@/types/users'
+// import { formatDateTime } from '@/lib/utils'
+// import { useNotifications } from '@/provider/notification'
 
 // // Define the expected shape for team_request data
 // interface TeamRequestData {

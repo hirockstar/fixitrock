@@ -4,7 +4,7 @@ import { Button } from '@heroui/react'
 import Link from 'next/link'
 import { useRouter } from 'nextjs-toploader/app'
 
-import { cn } from '®lib/utils'
+import { cn } from '@/lib/utils'
 
 type TitleActionProps = {
     title: string

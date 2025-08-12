@@ -1,6 +1,6 @@
-import { getChildren, getReadme } from '®actions/drive'
-import { SortField, SortOrder } from '®types/drive'
-import { Readme } from '®app/(space)/ui/preview/readme'
+import { getChildren, getReadme } from '@/actions/drive'
+import { SortField, SortOrder } from '@/types/drive'
+import { Readme } from '@/app/(space)/ui/preview/readme'
 
 import { Data } from './data'
 interface Props {
@@ -17,7 +17,7 @@ export async function DriveGrid({ space, ...props }: Props) {
     return (
         <>
             <Data
-                initial={{ ...initial, nextPage: initial['@odata.nextLink'] }}
+                initial={{ ...initial, nextPage: initial['@/odata.nextLink'] }}
                 space={space}
                 {...props}
             />

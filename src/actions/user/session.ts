@@ -2,9 +2,9 @@
 
 import { cache } from 'react'
 
-import { getNavigation } from '®actions/supabase'
-import { Navigation, User } from '®app/login/types'
-import { createClient } from '®supabase/server'
+import { getNavigation } from '@/actions/supabase'
+import { Navigation, User } from '@/app/login/types'
+import { createClient } from '@/supabase/server'
 
 export const userSession = cache(async function userSession(): Promise<{
     user: User | null

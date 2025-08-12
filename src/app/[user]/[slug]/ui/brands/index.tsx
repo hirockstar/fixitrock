@@ -1,5 +1,5 @@
-import { getAllBrands } from '®actions/brands'
-import { Brand } from '®types/brands'
+import { getAllBrands } from '@/actions/brands'
+import { Brand } from '@/types/brands'
 
 import { BrandCard } from './card'
 

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { getReadme } from '®actions/drive'
+import { getReadme } from '@/actions/drive'
 
 export function useReadme(slug: string) {
     return useQuery({

@@ -1,9 +1,9 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 
-import { GridSkeleton } from '®ui/skeleton'
-import { siteConfig } from '®config/site'
-import { getChildren } from '®actions/drive'
+import { GridSkeleton } from '@/ui/skeleton'
+import { siteConfig } from '@/config/site'
+import { getChildren } from '@/actions/drive'
 
 import { Grid } from '../ui'
 

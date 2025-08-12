@@ -2,8 +2,8 @@
 
 import { Skeleton } from '@heroui/react'
 
-import { DriveItem } from '®/types/drive'
-import { useLink } from '®hooks/tanstack/query/useLink'
+import { DriveItem } from '@/types/drive'
+import { useLink } from '@/hooks/tanstack/query/useLink'
 
 function extractUniqueId(url: string) {
     const regex = /UniqueId=([a-f0-9\-]+)/i

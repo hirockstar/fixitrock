@@ -2,8 +2,8 @@
 
 import { cache } from 'react'
 
-import { createClient } from '®supabase/server'
-import { User } from '®app/login/types'
+import { createClient } from '@/supabase/server'
+import { User } from '@/app/login/types'
 
 export const getUser = cache(async (username: string): Promise<User | null> => {
     try {

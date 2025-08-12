@@ -12,14 +12,14 @@ import {
 } from '@heroui/react'
 import { Camera, ImagePlus, Trash2, X } from 'lucide-react'
 
-import { Drawer, DrawerContent, DrawerHeader, DrawerFooter, DrawerTitle } from '®ui/drawer'
-import { useMediaQuery } from '®hooks/useMediaQuery'
+import { Drawer, DrawerContent, DrawerHeader, DrawerFooter, DrawerTitle } from '@/ui/drawer'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import {
     updateSelfAvatar,
     updateSelfCover,
     removeSelfAvatar,
     removeSelfCover,
-} from '®actions/users'
+} from '@/actions/users'
 
 interface AddProps {
     isOpen: boolean

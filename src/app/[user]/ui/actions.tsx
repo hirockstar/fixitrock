@@ -5,8 +5,8 @@ import { Check, Plus, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { FaWhatsapp } from 'react-icons/fa'
 
-import { User } from '®app/login/types'
-import { useDevice, usePwa } from '®hooks'
+import { User } from '@/app/login/types'
+import { useDevice, usePwa } from '@/hooks'
 
 interface ActionsProps {
     onFollow: () => void

@@ -2,8 +2,8 @@
 
 import { motion } from 'motion/react'
 
-import { siteConfig } from '®config/site'
-import { cn } from '®lib/utils'
+import { siteConfig } from '@/config/site'
+import { cn } from '@/lib/utils'
 
 type TextProps = {
     title?: string

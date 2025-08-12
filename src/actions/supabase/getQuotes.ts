@@ -2,8 +2,8 @@
 
 import { cache } from 'react'
 
-import { Quotes } from '®app/login/types'
-import { createClient } from '®supabase/server'
+import { Quotes } from '@/app/login/types'
+import { createClient } from '@/supabase/server'
 
 export const getQuotes = cache(async (username: string): Promise<Quotes[]> => {
     const supabase = await createClient()

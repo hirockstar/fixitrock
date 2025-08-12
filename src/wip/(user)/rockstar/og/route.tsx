@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-import { getProfile } from '®actions/users/profile'
+import { getProfile } from '@/actions/users/profile'
 
 export async function GET(_request: Request) {
     const profile = getProfile('rockstar')

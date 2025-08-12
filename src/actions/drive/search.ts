@@ -1,10 +1,10 @@
 'use server'
 
-import { siteConfig } from '®config/site'
-import useHidden from '®hooks/useHidden'
-import { logWarning } from '®lib/utils'
-import { DriveClient } from '®lib/utils/DriveClient'
-import { Search, SearchItem } from '®types/drive'
+import { siteConfig } from '@/config/site'
+import useHidden from '@/hooks/useHidden'
+import { logWarning } from '@/lib/utils'
+import { DriveClient } from '@/lib/utils/DriveClient'
+import { Search, SearchItem } from '@/types/drive'
 
 export async function getSearch(query: string): Promise<Search> {
     const client = await DriveClient()

@@ -2,7 +2,7 @@
 
 import { cache } from 'react'
 
-import { createClient } from '®supabase/server'
+import { createClient } from '@/supabase/server'
 
 export type NavigationItem = {
     href: string

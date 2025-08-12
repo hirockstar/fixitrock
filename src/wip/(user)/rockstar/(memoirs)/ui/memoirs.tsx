@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import { Image } from '@heroui/react'
 
-import { useMemoirs } from '®hooks/tanstack/query'
-import { formatDateTime } from '®lib/utils'
-import AnimatedDiv from '®ui/farmer/div'
-import { BlogCardAnimation, fromLeftVariant } from '®lib/FramerMotionVariants'
+import { useMemoirs } from '@/hooks/tanstack/query'
+import { formatDateTime } from '@/lib/utils'
+import AnimatedDiv from '@/ui/farmer/div'
+import { BlogCardAnimation, fromLeftVariant } from '@/lib/FramerMotionVariants'
 
 import { Name, Date } from './utils'
 

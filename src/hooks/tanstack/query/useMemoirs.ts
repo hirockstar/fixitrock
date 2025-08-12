@@ -7,10 +7,10 @@ import React from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
-import { getMemoirs } from '®actions/users'
-import { useSearchParams } from '®hooks/useSearchParams'
-import { getDownloadUrl, isFolder, isPreviewable } from '®lib/utils'
-import { DriveItem } from '®types/drive'
+import { getMemoirs } from '@/actions/users'
+import { useSearchParams } from '@/hooks/useSearchParams'
+import { getDownloadUrl, isFolder, isPreviewable } from '@/lib/utils'
+import { DriveItem } from '@/types/drive'
 
 export function useMemoirs(slug: string) {
     const { ref, inView } = useInView()
@@ -30,7 +30,7 @@ export function useMemoirs(slug: string) {
         },
         initialPageParam: '',
         refetchOnWindowFocus: false,
-        getNextPageParam: (lastPage) => lastPage['@odata.nextLink'] || undefined,
+        getNextPageParam: (lastPage) => lastPage['@/odata.nextLink'] || undefined,
     })
     const data = useMemo(() => query.data?.pages.flatMap((page) => page.value) || [], [query.data])
 

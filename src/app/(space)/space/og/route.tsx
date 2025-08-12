@@ -1,8 +1,8 @@
 import { ImageResponse } from 'next/og'
 
-import { getMeta } from '®actions/drive'
-import { siteConfig } from '®config/site'
-import { formatBytes, formatCount, formatDateTime } from '®lib/utils'
+import { getMeta } from '@/actions/drive'
+import { siteConfig } from '@/config/site'
+import { formatBytes, formatCount, formatDateTime } from '@/lib/utils'
 
 type FontOptions = {
     name: string

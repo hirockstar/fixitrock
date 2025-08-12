@@ -2,10 +2,10 @@
 
 import { headers } from 'next/headers'
 
-import { createClient } from '®supabase/server'
-import { UserLoginSession } from '®types/user'
-import { detectDevice } from '®lib/utils/deviceDetection'
-import { getLocationFromIP, getIPFromRequest } from '®lib/utils/geoLocation'
+import { createClient } from '@/supabase/server'
+import { UserLoginSession } from '@/types/user'
+import { detectDevice } from '@/lib/utils/deviceDetection'
+import { getLocationFromIP, getIPFromRequest } from '@/lib/utils/geoLocation'
 
 export async function createLoginSession(
     userId: string,

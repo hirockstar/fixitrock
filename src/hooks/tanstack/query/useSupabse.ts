@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getData } from '®actions/supabase/getData'
+import { getData } from '@/actions/supabase/getData'
 
 export function useSupabse<T>(
     table: string,

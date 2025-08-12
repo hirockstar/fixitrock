@@ -1,4 +1,4 @@
-import { LocationInfo } from '®types/user'
+import { LocationInfo } from '@/types/user'
 
 export async function getLocationFromIP(ip: string): Promise<LocationInfo> {
     try {

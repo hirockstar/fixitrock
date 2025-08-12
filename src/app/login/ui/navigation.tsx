@@ -1,5 +1,5 @@
 'use client'
-import type { Navigation } from '®app/login/types'
+import type { Navigation } from '@/app/login/types'
 
 import { Listbox, ListboxItem } from '@heroui/react'
 import React from 'react'

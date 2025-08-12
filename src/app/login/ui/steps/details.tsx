@@ -4,11 +4,11 @@ import { Button, Form, Input, Radio, RadioGroup } from '@heroui/react'
 import { AtSign, Loader, UserRound } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import { checkUsername, createUser } from '®actions/user'
-import { useDebounce } from '®app/login/hooks/useDebounce'
-import { User } from '®app/login/types'
-import { Dob } from '®ui/dob'
-import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
+import { checkUsername, createUser } from '@/actions/user'
+import { useDebounce } from '@/app/login/hooks/useDebounce'
+import { User } from '@/app/login/types'
+import { Dob } from '@/ui/dob'
+import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/ui/drawer'
 
 interface StepDetailsProps {
     user: Partial<User>

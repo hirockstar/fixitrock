@@ -2,9 +2,9 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { logWarning, slugify } from '®lib/utils'
-import { createClient } from '®supabase/server'
-import { Product, ProductsResult } from '®types/products'
+import { logWarning, slugify } from '@/lib/utils'
+import { createClient } from '@/supabase/server'
+import { Product, ProductsResult } from '@/types/products'
 
 async function userSession() {
     const supabase = await createClient()

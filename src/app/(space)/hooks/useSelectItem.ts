@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation'
 
-import { getDownloadUrl, isFolder, isPreviewable } from '®lib/utils'
-import { DriveItem } from '®types/drive'
+import { getDownloadUrl, isFolder, isPreviewable } from '@/lib/utils'
+import { DriveItem } from '@/types/drive'
 
 import { getHref } from '../utils'
 

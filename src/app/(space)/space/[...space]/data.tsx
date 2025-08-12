@@ -1,15 +1,15 @@
 'use client'
 
-import type { DriveItem, SortField, SortOrder } from '®types/drive'
-import type { Drive } from '®types/drive'
+import type { DriveItem, SortField, SortOrder } from '@/types/drive'
+import type { Drive } from '@/types/drive'
 
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 
-import { getChildren } from '®actions/drive'
-import { getDriveItems } from '®app/(space)/utils'
-import { Grid } from '®app/(space)/ui/grid'
-import { List } from '®app/(space)/ui/list'
+import { getChildren } from '@/actions/drive'
+import { getDriveItems } from '@/app/(space)/utils'
+import { Grid } from '@/app/(space)/ui/grid'
+import { List } from '@/app/(space)/ui/list'
 
 interface Props {
     space: string
@@ -34,7 +34,7 @@ export function Data({ space, layout, query, sortField, sortOrder, initial }: Pr
             getChildren(`/${space}`, nextPage, 50)
                 .then((res) => {
                     setItems((prev) => [...prev, ...res.value])
-                    setNextPage(res['@odata.nextLink']) // nextPage for further pagination
+                    setNextPage(res['@/odata.nextLink']) // nextPage for further pagination
                 })
                 .finally(() => setLoading(false))
         }

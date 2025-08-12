@@ -2,8 +2,8 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getData } from '®actions/supabase/getData'
-import { Quote } from '®types/user'
+import { getData } from '@/actions/supabase/getData'
+import { Quote } from '@/types/user'
 
 export function useQuote() {
     const query = useQuery<Quote[], Error>({

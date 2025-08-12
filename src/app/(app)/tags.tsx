@@ -6,8 +6,8 @@ import { Button } from '@heroui/react'
 import Link from 'next/link'
 import * as Icons from 'lucide-react'
 
-import { siteConfig } from '®config/site'
-import { Eva } from '®ui/eva'
+import { siteConfig } from '@/config/site'
+import { Eva } from '@/ui/eva'
 
 export function Tags({ navigation = [] }: { navigation?: Navigation[] }) {
     const suggestion = siteConfig.suggestion.filter((s) => s.title !== 'Home')

@@ -2,8 +2,8 @@
 import { Card, CardFooter, CardHeader, Image } from '@heroui/react'
 import Link from 'next/link'
 
-import { formatDateTime } from '®lib/utils'
-import { FRP } from '®types/frp'
+import { formatDateTime } from '@/lib/utils'
+import { FRP } from '@/types/frp'
 
 interface FRPCardProps {
     data: FRP[]

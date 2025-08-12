@@ -16,9 +16,9 @@ import { Trash2, X } from 'lucide-react'
 import { addToast } from '@heroui/react'
 import { MdProductionQuantityLimits } from 'react-icons/md'
 
-import { softDeleteProduct } from '®actions/user/products'
-import { Product } from '®types/products'
-import { formatPrice, getProductImage, getStockStatus } from '®lib/utils'
+import { softDeleteProduct } from '@/actions/user/products'
+import { Product } from '@/types/products'
+import { formatPrice, getProductImage, getStockStatus } from '@/lib/utils'
 
 interface DeleteProductProps {
     isOpen: boolean

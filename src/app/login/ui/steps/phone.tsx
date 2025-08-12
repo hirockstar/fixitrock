@@ -3,9 +3,9 @@
 import { Button, Form, Input } from '@heroui/react'
 import Link from 'next/link'
 
-import { sendOtp } from '®actions/user'
-import { LoginStep } from '®app/login/types'
-import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
+import { sendOtp } from '@/actions/user'
+import { LoginStep } from '@/app/login/types'
+import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/ui/drawer'
 
 interface StepPhoneProps {
     phone: string

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { createClient } from '®supabase/client'
-import { Invoice } from '®types/invoice'
+import { createClient } from '@/supabase/client'
+import { Invoice } from '@/types/invoice'
 
 const supabase = createClient()
 

@@ -6,8 +6,8 @@ import { useRouter } from 'nextjs-toploader/app'
 import React from 'react'
 import * as Icons from 'lucide-react'
 
-import { Navigation } from '®app/login/types'
-import { siteConfig } from '®config/site'
+import { Navigation } from '@/app/login/types'
+import { siteConfig } from '@/config/site'
 
 export function Suggestion({
     navigation,

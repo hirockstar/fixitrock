@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '®ui/input-otp'
-import { Label } from '®ui/label'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/ui/input-otp'
+import { Label } from '@/ui/label'
 
 interface DobInputProps {
     label?: string

@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getLocation } from '®actions/users'
+import { getLocation } from '@/actions/users'
 
 export function useLocation(id: string) {
     const query = useQuery({

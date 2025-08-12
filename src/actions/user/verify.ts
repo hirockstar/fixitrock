@@ -1,10 +1,10 @@
 'use server'
 
-import type { User } from '®app/login/types'
+import type { User } from '@/app/login/types'
 
 import { headers } from 'next/headers'
 
-import { createClient } from '®supabase/server'
+import { createClient } from '@/supabase/server'
 
 import { createLoginSession } from './login'
 

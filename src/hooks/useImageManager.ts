@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { addToast } from '@heroui/react'
 
-import { Product } from '®types/products'
+import { Product } from '@/types/products'
 
 interface UseImageManagerProps {
     mode: 'add' | 'edit'

@@ -2,9 +2,9 @@
 
 import { cache } from 'react'
 
-import { siteConfig } from '®config/site'
-import { logWarning } from '®lib/utils'
-import { DriveClient } from '®lib/utils/DriveClient'
+import { siteConfig } from '@/config/site'
+import { logWarning } from '@/lib/utils'
+import { DriveClient } from '@/lib/utils/DriveClient'
 
 export const getReadme = cache(async function getReadme(slug: string): Promise<string | null> {
     const client = await DriveClient()

@@ -1,8 +1,8 @@
 'use server'
 
-import { logWarning } from '®lib/utils'
-import { DriveClient } from '®lib/utils/DriveClient'
-import { DriveItem } from '®types/drive'
+import { logWarning } from '@/lib/utils'
+import { DriveClient } from '@/lib/utils/DriveClient'
+import { DriveItem } from '@/types/drive'
 
 export async function getID(id: string): Promise<DriveItem> {
     const client = await DriveClient()

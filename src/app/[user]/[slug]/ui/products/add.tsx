@@ -20,10 +20,10 @@ import { Box, Tag, IndianRupee, X, GalleryHorizontalEnd, Settings2, CirclePlus }
 import { MdAddShoppingCart } from 'react-icons/md'
 import { BiImageAdd } from 'react-icons/bi'
 
-import { Product } from '®types/products'
-import { Brand } from '®types/brands'
-import { useImageManager } from '®hooks/useImageManager'
-import { addProduct, updateProduct } from '®actions/user/products'
+import { Product } from '@/types/products'
+import { Brand } from '@/types/brands'
+import { useImageManager } from '@/hooks/useImageManager'
+import { addProduct, updateProduct } from '@/actions/user/products'
 
 const CATEGORIES = [
     'battery',

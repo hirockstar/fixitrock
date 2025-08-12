@@ -3,12 +3,12 @@
 import { Card, CardBody, CardHeader, Button, CardFooter, User as HeroUser } from '@heroui/react'
 import { Bookmark, Heart, MessageCircle, MoreHorizontal, Quote, Share } from 'lucide-react'
 import { useState } from 'react'
+import { useQuote } from '@tanstack/query'
 
-import { useQuote } from '®tanstack/query'
-import { cn, formatDateTime, userAvatar } from '®lib/utils'
-import { User } from '®app/login/types'
-import { Verified } from '®ui/icons'
-import { QuoteSkeleton } from '®/ui/skeleton'
+import { cn, formatDateTime, userAvatar } from '@/lib/utils'
+import { User } from '@/app/login/types'
+import { Verified } from '@/ui/icons'
+import { QuoteSkeleton } from '@/ui/skeleton'
 
 interface QuoteCardProps {
     quote: {

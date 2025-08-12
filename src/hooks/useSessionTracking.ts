@@ -2,8 +2,8 @@
 
 import { useEffect, useCallback } from 'react'
 
-import { updateSessionActivity, deactivateSession } from '®actions/user/login'
-import { getClientDeviceInfo } from '®lib/utils/deviceDetection'
+import { updateSessionActivity, deactivateSession } from '@/actions/user/login'
+import { getClientDeviceInfo } from '@/lib/utils/deviceDetection'
 
 export function useSessionTracking(sessionId?: string) {
     const updateActivity = useCallback(async () => {

@@ -2,9 +2,9 @@
 
 import { useEffect, ReactNode } from 'react'
 
-import { createClient } from '®supabase/client'
-import { logout as serverLogout } from '®actions/user'
-import { useAuth, useEvent } from '®zustand/store'
+import { createClient } from '@/supabase/client'
+import { logout as serverLogout } from '@/actions/user'
+import { useAuth, useEvent } from '@/zustand/store'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const setLogout = useAuth((s) => s.setLogout)

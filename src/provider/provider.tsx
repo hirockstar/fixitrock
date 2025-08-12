@@ -7,7 +7,7 @@ import NextTopLoader from 'nextjs-toploader'
 import { useRouter } from 'nextjs-toploader/app'
 import { useState } from 'react'
 
-import { siteConfig } from '®config/site'
+import { siteConfig } from '@/config/site'
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const [queryClient] = useState(() => new QueryClient())

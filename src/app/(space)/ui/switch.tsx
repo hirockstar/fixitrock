@@ -3,8 +3,8 @@
 import { Tab, Tabs } from '@heroui/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-import { Grid, List } from '®ui/icons'
-import useLayout, { type Layout } from '®hooks/useLayout'
+import { Grid, List } from '@/ui/icons'
+import useLayout, { type Layout } from '@/hooks/useLayout'
 
 export function SwitchLayout() {
     const { layout, setLayout } = useLayout()

@@ -3,11 +3,11 @@
 import { Usb, Cable, Link, Unlink, Smartphone, Zap, HardDrive } from 'lucide-react'
 import { Button, Card, CardHeader } from '@heroui/react'
 
-import { USBDeviceInfo } from '®lib/usb/useUSB'
-import { ADBDevice, FastbootDevice, SerialDeviceDetails } from '®lib/usb/enhanced-serial-detector'
-import { DeviceDetails } from '®lib/usb/device-detector'
-import { Badge } from '®ui/badge'
-import { CardContent, CardTitle } from '®ui/card'
+import { USBDeviceInfo } from '@/lib/usb/useUSB'
+import { ADBDevice, FastbootDevice, SerialDeviceDetails } from '@/lib/usb/enhanced-serial-detector'
+import { DeviceDetails } from '@/lib/usb/device-detector'
+import { Badge } from '@/ui/badge'
+import { CardContent, CardTitle } from '@/ui/card'
 
 interface UnifiedDeviceCardProps {
     device: USBDeviceInfo | SerialDeviceDetails

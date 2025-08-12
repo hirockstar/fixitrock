@@ -22,14 +22,14 @@
         "name": "next"
       }
     ],
-    "paths": {
-      "®*": [
-        "./src/*"
-      ],
-      "®tanstack/*": [
-        "./src/hooks/tanstack/*"
-      ]
-    },
+          "paths": {
+        "@/*": [
+          "./src/*"
+        ],
+        "@tanstack/*": [
+          "./src/hooks/tanstack/*"
+        ]
+      },
     "baseUrl": "."
   },
   "include": [

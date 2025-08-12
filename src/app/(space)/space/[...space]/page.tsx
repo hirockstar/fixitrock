@@ -2,13 +2,13 @@ import { cookies } from 'next/headers'
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 
-import { Navbar } from '®app/(space)/ui/navbar'
-import { SortField, SortOrder } from '®types/drive'
-import { GridSkeleton, ListSkeleton } from '®ui/skeleton'
-import { siteConfig } from '®config/site'
-import { getChildren, getReadme } from '®actions/drive'
-import { Readme } from '®app/(space)/ui/preview'
-import { formatTitle } from '®app/(space)/utils'
+import { Navbar } from '@/app/(space)/ui/navbar'
+import { SortField, SortOrder } from '@/types/drive'
+import { GridSkeleton, ListSkeleton } from '@/ui/skeleton'
+import { siteConfig } from '@/config/site'
+import { getChildren, getReadme } from '@/actions/drive'
+import { Readme } from '@/app/(space)/ui/preview'
+import { formatTitle } from '@/app/(space)/utils'
 
 import { Data } from './data'
 
@@ -101,7 +101,7 @@ async function Space({ space, ...props }: Props) {
         return (
             <>
                 <Data
-                    initial={{ ...initial, nextPage: initial['@odata.nextLink'] }}
+                    initial={{ ...initial, nextPage: initial['@/odata.nextLink'] }}
                     space={space}
                     {...props}
                 />

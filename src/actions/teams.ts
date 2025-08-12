@@ -2,11 +2,11 @@
 
 import { cookies } from 'next/headers'
 
-import { User } from '®app/login/types'
-import { adminAuth } from '®firebase/admin'
-import { createClient } from '®supabase/server'
-import { TeamMember } from '®types/teams'
-import { Notification } from '®types/users'
+import { User } from '@/app/login/types'
+import { adminAuth } from '@/firebase/admin'
+import { createClient } from '@/supabase/server'
+import { TeamMember } from '@/types/teams'
+import { Notification } from '@/types/users'
 
 async function userSession() {
     const cookieStore = await cookies()

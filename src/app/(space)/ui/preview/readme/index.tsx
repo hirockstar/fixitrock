@@ -5,7 +5,7 @@ import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import matter from 'gray-matter'
 
-import { cn, logWarning } from '®lib/utils'
+import { cn, logWarning } from '@/lib/utils'
 
 import { IMG, Title, YouTube } from './components'
 

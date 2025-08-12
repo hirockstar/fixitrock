@@ -15,9 +15,9 @@
 //     SelectItem,
 // } from '@heroui/react'
 
-// import { User } from '®app/login/types'
-// import { inviteUserToTeam, updateMember, searchUsers } from '®actions/teams'
-// import { TeamMember } from '®types/teams'
+// import { User } from '@/app/login/types'
+// import { inviteUserToTeam, updateMember, searchUsers } from '@/actions/teams'
+// import { TeamMember } from '@/types/teams'
 
 // interface AddEditMemberProps {
 //     mode: 'add' | 'edit'

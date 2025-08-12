@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 
-import { User } from '®app/login/types'
-import { useMediaQuery } from '®hooks/useMediaQuery'
-import { Drawer, DrawerContent } from '®ui/drawer'
-import { Dialog, DialogContent } from '®ui/dialog'
-import { sendOtp } from '®actions/user'
+import { User } from '@/app/login/types'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { Drawer, DrawerContent } from '@/ui/drawer'
+import { Dialog, DialogContent } from '@/ui/dialog'
+import { sendOtp } from '@/actions/user'
 
 import { LoginStep } from '../types'
 

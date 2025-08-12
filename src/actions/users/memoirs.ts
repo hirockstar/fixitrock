@@ -1,9 +1,9 @@
 'use server'
 
-import useHidden from '®hooks/useHidden'
-import { logWarning } from '®lib/utils'
-import { DriveClient } from '®lib/utils/DriveClient'
-import { Drive, DriveItem } from '®types/drive'
+import useHidden from '@/hooks/useHidden'
+import { logWarning } from '@/lib/utils'
+import { DriveClient } from '@/lib/utils/DriveClient'
+import { Drive, DriveItem } from '@/types/drive'
 
 async function getThumbnails(id: string): Promise<DriveItem['thumbnails'] | null> {
     const client = await DriveClient()

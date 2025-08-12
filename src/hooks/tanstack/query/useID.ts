@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getID } from '®actions/drive'
+import { getID } from '@/actions/drive'
 
 export function useID(id: string) {
     const query = useQuery({

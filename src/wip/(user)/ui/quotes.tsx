@@ -2,11 +2,11 @@
 
 import { Card, CardBody } from '@heroui/react'
 
-import AnimatedDiv from '®/ui/farmer/div'
-import { BlogCardAnimation, fromLeftVariant } from '®/lib/FramerMotionVariants'
-import { QuoteSkeleton } from '®/ui/skeleton'
-import { useQuote } from '®tanstack/query'
-import { formatDateTime } from '®lib/utils'
+import AnimatedDiv from '@/ui/farmer/div'
+import { BlogCardAnimation, fromLeftVariant } from '@/lib/FramerMotionVariants'
+import { QuoteSkeleton } from '@/ui/skeleton'
+import { useQuote } from '@tanstack/query'
+import { formatDateTime } from '@/lib/utils'
 
 export function Quotes() {
     const { data, isLoading } = useQuote()

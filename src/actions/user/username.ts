@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '®supabase/server'
+import { createClient } from '@/supabase/server'
 
 export async function checkUsername(username: string): Promise<{ available: boolean }> {
     const supabase = await createClient()

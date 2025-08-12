@@ -1,10 +1,10 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 
-import { getData } from '®actions/supabase'
-import { GridSkeleton } from '®ui/skeleton'
-import { siteConfig } from '®config/site'
-import { FRP as Types } from '®types/frp'
+import { getData } from '@/actions/supabase'
+import { GridSkeleton } from '@/ui/skeleton'
+import { siteConfig } from '@/config/site'
+import { FRP as Types } from '@/types/frp'
 
 import FRPCard from './card'
 

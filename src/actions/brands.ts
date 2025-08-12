@@ -1,12 +1,12 @@
 'use server'
 
-import type { Brands } from '®types/brands'
+import type { Brands } from '@/types/brands'
 
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { cache } from 'react'
 
-import { logWarning } from '®lib/utils'
-import { createClient } from '®supabase/server'
+import { logWarning } from '@/lib/utils'
+import { createClient } from '@/supabase/server'
 
 async function userSession() {
     const supabase = await createClient()

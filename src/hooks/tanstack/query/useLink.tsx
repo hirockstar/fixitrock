@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 
-import { getLink } from '®actions/users'
-import { DriveLink } from '®types/drive'
+import { getLink } from '@/actions/users'
+import { DriveLink } from '@/types/drive'
 
 export function useLink(id: string) {
     const [data, setData] = useState<DriveLink | null>(null)

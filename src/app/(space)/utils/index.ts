@@ -1,6 +1,6 @@
-import { DriveItem, SortField, SortOrder } from '®types/drive'
-import { siteConfig } from '®config/site'
-import { getDownloadUrl, isFolder, isPreviewable, sanitizeQuery } from '®lib/utils'
+import { DriveItem, SortField, SortOrder } from '@/types/drive'
+import { siteConfig } from '@/config/site'
+import { getDownloadUrl, isFolder, isPreviewable, sanitizeQuery } from '@/lib/utils'
 
 export function getHref(item: DriveItem): string {
     const path =

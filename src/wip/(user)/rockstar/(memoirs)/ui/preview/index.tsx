@@ -5,10 +5,10 @@ import { Download } from 'lucide-react'
 import Link from 'next/link'
 import { FaLocationDot } from 'react-icons/fa6'
 
-import { useMediaQuery } from '®/hooks/useMediaQuery'
-import { DriveItem } from '®/types/drive'
-import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®/ui/drawer'
-import { useLocation } from '®hooks/tanstack/query'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { DriveItem } from '@/types/drive'
+import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '@/ui/drawer'
+import { useLocation } from '@/hooks/tanstack/query'
 
 import { randomSlang } from '../utils'
 

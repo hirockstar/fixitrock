@@ -6,8 +6,8 @@ import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { FaPlay } from 'react-icons/fa'
 
-import { useMemoirs } from '®hooks/tanstack/query'
-import { formatDuration } from '®lib/utils'
+import { useMemoirs } from '@/hooks/tanstack/query'
+import { formatDuration } from '@/lib/utils'
 
 import { Name } from '../../ui/utils'
 import { Preview } from '../../ui/preview'

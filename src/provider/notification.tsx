@@ -2,8 +2,8 @@
 
 // import React, { createContext, useContext, useEffect, useState } from 'react'
 
-// import { createClient } from '®supabase/client'
-// import { Notification as NotificationType } from '®types/users'
+// import { createClient } from '@/supabase/client'
+// import { Notification as NotificationType } from '@/types/users'
 
 // import { useAuth } from './auth'
 

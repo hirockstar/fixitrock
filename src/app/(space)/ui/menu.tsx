@@ -5,18 +5,18 @@ import { Listbox, ListboxItem, ListboxSection, addToast } from '@heroui/react'
 import { FolderSymlink } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
-import { siteConfig } from '®config/site'
-import { useMediaQuery } from '®hooks/useMediaQuery'
-import { logWarning } from '®lib/utils'
-import { DriveItem } from '®types/drive'
+import { siteConfig } from '@/config/site'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { logWarning } from '@/lib/utils'
+import { DriveItem } from '@/types/drive'
 import {
     ContextMenuContent,
     ContextMenuItem,
     ContextMenuSeparator,
     ContextMenuShortcut,
-} from '®ui/context-menu'
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '®ui/drawer'
-import { Delete, Link, NewTab, NewWindow, Rename, Share } from '®ui/icons'
+} from '@/ui/context-menu'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/ui/drawer'
+import { Delete, Link, NewTab, NewWindow, Rename, Share } from '@/ui/icons'
 
 export function Menu({
     c,

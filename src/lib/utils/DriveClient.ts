@@ -1,6 +1,6 @@
 import { Client } from '@microsoft/microsoft-graph-client'
 
-import { getToken } from '®actions/drive'
+import { getToken } from '@/actions/drive'
 
 export const DriveClient = async () => {
     const accessToken = await getToken()

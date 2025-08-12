@@ -2,7 +2,7 @@
 import { motion } from 'motion/react'
 import React from 'react'
 
-import { AnimatedTAGProps } from '®types/drive'
+import { AnimatedTAGProps } from '@/types/drive'
 
 const AnimatedDiv = React.forwardRef<HTMLDivElement, AnimatedTAGProps>(
     ({ variants, mobileVariants, className, children, infinity, ...motionProps }, ref) => {

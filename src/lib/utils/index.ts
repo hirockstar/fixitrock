@@ -1,10 +1,10 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
-import { User } from '®app/login/types'
-import { siteConfig } from '®config/site'
-import { DriveItem } from '®types/drive'
-import { Product } from '®types/products'
+import { User } from '@/app/login/types'
+import { siteConfig } from '@/config/site'
+import { DriveItem } from '@/types/drive'
+import { Product } from '@/types/products'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))

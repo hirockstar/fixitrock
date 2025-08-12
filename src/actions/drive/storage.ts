@@ -2,9 +2,9 @@
 
 import { z } from 'zod'
 
-import { siteConfig } from '®config/site'
-import { logWarning } from '®lib/utils'
-import { DriveClient } from '®lib/utils/DriveClient'
+import { siteConfig } from '@/config/site'
+import { logWarning } from '@/lib/utils'
+import { DriveClient } from '@/lib/utils/DriveClient'
 
 const StorageSchema = z.object({
     remaining: z.number(),

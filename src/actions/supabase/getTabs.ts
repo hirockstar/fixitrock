@@ -2,8 +2,8 @@
 
 import { cache } from 'react'
 
-import { TabsConfig } from '®app/login/types'
-import { createClient } from '®supabase/server'
+import { TabsConfig } from '@/app/login/types'
+import { createClient } from '@/supabase/server'
 
 export const getTabs = cache(async (id: number): Promise<TabsConfig[]> => {
     const supabase = await createClient()

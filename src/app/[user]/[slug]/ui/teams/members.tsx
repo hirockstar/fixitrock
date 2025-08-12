@@ -1,9 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-import { getMembers, deleteMember } from '®actions/teams'
-import { TeamMembers } from '®types/teams'
-import { User } from '®app/login/types'
+import { getMembers, deleteMember } from '@/actions/teams'
+import { TeamMembers } from '@/types/teams'
+import { User } from '@/app/login/types'
 
 export default function Members({ user }: { user: User }) {
     const [members, setMembers] = useState<TeamMembers>([])

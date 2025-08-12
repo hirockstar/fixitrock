@@ -1,8 +1,8 @@
 'use server'
 
-import { logWarning } from '®lib/utils'
-import { DriveClient } from '®lib/utils/DriveClient'
-import { DriveLink } from '®types/drive'
+import { logWarning } from '@/lib/utils'
+import { DriveClient } from '@/lib/utils/DriveClient'
+import { DriveLink } from '@/types/drive'
 
 export async function getLink(id: string): Promise<DriveLink> {
     const client = await DriveClient()

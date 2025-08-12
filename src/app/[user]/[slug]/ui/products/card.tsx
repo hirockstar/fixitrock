@@ -2,8 +2,8 @@
 import { Card, CardBody, CardFooter, Chip, Image, Tooltip } from '@heroui/react'
 import { MdProductionQuantityLimits } from 'react-icons/md'
 
-import { formatPrice, getProductImage, getStockStatus } from '®lib/utils'
-import { Product, Products } from '®types/products'
+import { formatPrice, getProductImage, getStockStatus } from '@/lib/utils'
+import { Product, Products } from '@/types/products'
 
 export type ProductsListProps = {
     products: Products

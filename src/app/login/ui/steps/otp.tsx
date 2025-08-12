@@ -1,14 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Button, Form } from '@heroui/react'
-import { InputOtp } from '@heroui/input-otp'
+import { Button, Form, InputOtp } from '@heroui/react'
 import { Timer } from 'lucide-react'
 import { useEffect } from 'react'
 
-import { LoginStep } from '®app/login/types'
-import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '®ui/drawer'
-import { verifyOtp } from '®actions/user'
+import { LoginStep } from '@/app/login/types'
+import { DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/ui/drawer'
+import { verifyOtp } from '@/actions/user'
 
 interface StepOtpProps {
     otp: string

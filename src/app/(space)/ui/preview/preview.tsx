@@ -2,9 +2,9 @@
 import { Modal, ModalContent, ModalHeader } from '@heroui/react'
 import { Dispatch, SetStateAction } from 'react'
 
-import { useMediaQuery } from '®/hooks/useMediaQuery'
-import { DriveItem } from '®/types/drive'
-import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '®/ui/drawer'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { DriveItem } from '@/types/drive'
+import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '@/ui/drawer'
 
 import Switch from './switch'
 

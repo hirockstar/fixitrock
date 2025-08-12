@@ -33,9 +33,9 @@ import {
 } from 'lucide-react'
 import { addToast } from '@heroui/react'
 
-import { formatDateTime } from '®lib/utils'
-import { UserLoginSession } from '®types/user'
-import { getUserLoginSessions, revokeAllSessions, deactivateSession } from '®actions/user/login'
+import { formatDateTime } from '@/lib/utils'
+import { UserLoginSession } from '@/types/user'
+import { getUserLoginSessions, revokeAllSessions, deactivateSession } from '@/actions/user/login'
 
 interface LoginSessionsProps {
     userId: string

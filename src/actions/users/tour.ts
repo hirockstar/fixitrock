@@ -1,8 +1,8 @@
 'use server'
 
-import { logWarning } from '®lib/utils'
-import { DriveClient } from '®lib/utils/DriveClient'
-import { Drive, DriveItem } from '®types/drive'
+import { logWarning } from '@/lib/utils'
+import { DriveClient } from '@/lib/utils/DriveClient'
+import { Drive, DriveItem } from '@/types/drive'
 
 export async function getTour(tour: string): Promise<Drive> {
     const client = await DriveClient()
@@ -15,8 +15,8 @@ export async function getTour(tour: string): Promise<Drive> {
 
             items.push(...response.value)
 
-            if (response['@odata.nextLink']) {
-                return fetchAllChildren(response['@odata.nextLink'], items)
+            if (response['@/odata.nextLink']) {
+                return fetchAllChildren(response['@/odata.nextLink'], items)
             }
 
             return items

@@ -1,8 +1,8 @@
 'use server'
 
-import type { User } from '®app/login/types'
+import type { User } from '@/app/login/types'
 
-import { createClient } from '®supabase/server'
+import { createClient } from '@/supabase/server'
 
 export async function createUser(profile: Partial<User>): Promise<{ user?: User; error?: string }> {
     const supabase = await createClient()

@@ -4,12 +4,12 @@ import { Tab, Tabs as UiTabs } from '@heroui/react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { TabsConfig, User } from '®app/login/types'
-import { useTabs } from '®hooks/useTabs'
-import { Product } from '®types/products'
-import ProductsCard from '®app/[user]/[slug]/ui/products/card'
-
 import { Quotes } from './quotes'
+
+import { TabsConfig, User } from '@/app/login/types'
+import { useTabs } from '@/hooks/useTabs'
+import { Product } from '@/types/products'
+import ProductsCard from '@/app/[user]/[slug]/ui/products/card'
 
 type TabsProps = {
     user: User

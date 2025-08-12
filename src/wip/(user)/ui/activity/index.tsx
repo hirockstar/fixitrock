@@ -1,5 +1,5 @@
 'use client'
-import { Quotes } from '®app/(app)/showcase'
+import { Quotes } from '@/app/(app)/showcase'
 
 export function Activity() {
     return (

@@ -18,8 +18,8 @@ import { X, CirclePlus, Settings2 } from 'lucide-react'
 import { FaAward } from 'react-icons/fa6'
 import { FaLink } from 'react-icons/fa'
 
-import { addBrand, editBrand } from '®actions/brands'
-import { Brand } from '®types/brands'
+import { addBrand, editBrand } from '@/actions/brands'
+import { Brand } from '@/types/brands'
 
 interface AddEditProps {
     isOpen: boolean

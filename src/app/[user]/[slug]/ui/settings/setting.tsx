@@ -33,12 +33,12 @@ import Link from 'next/link'
 import { useActionState } from 'react'
 import { BiMaleFemale } from 'react-icons/bi'
 
-import { User } from '®app/login/types'
-import { updateUser } from '®actions/users'
-import { GoogleMaps, Verified } from '®ui/icons'
-import { formatDateTime, openCurrentLocationInMaps } from '®lib/utils'
-import { Badge } from '®ui/badge'
-import { Dob } from '®ui/dob'
+import { User } from '@/app/login/types'
+import { updateUser } from '@/actions/users'
+import { GoogleMaps, Verified } from '@/ui/icons'
+import { formatDateTime, openCurrentLocationInMaps } from '@/lib/utils'
+import { Badge } from '@/ui/badge'
+import { Dob } from '@/ui/dob'
 
 const LOCATION_EDIT_ROLES = [2, 3]
 

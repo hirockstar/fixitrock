@@ -2,7 +2,7 @@
 
 import { FC } from 'react'
 
-import { DriveItem } from '®/types/drive'
+import { DriveItem } from '@/types/drive'
 
 import { VideoPlayer } from './player'
 

@@ -2,7 +2,7 @@
 
 import { Image } from '@heroui/react'
 
-import { DriveItem } from '®/types/drive'
+import { DriveItem } from '@/types/drive'
 
 export function ImagePreview({ file }: { file: DriveItem }) {
     const src =

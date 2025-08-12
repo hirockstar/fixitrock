@@ -1,5 +1,5 @@
-import { userSession } from '®actions/user'
-import Text from '®ui/text'
+import { userSession } from '@/actions/user'
+import Text from '@/ui/text'
 
 import { Tags } from './tags'
 

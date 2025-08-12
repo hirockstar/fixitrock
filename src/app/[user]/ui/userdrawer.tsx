@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { FaUserCircle } from 'react-icons/fa'
 
-import { useMediaQuery } from '®hooks/useMediaQuery'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import {
     Drawer,
     DrawerContent,
@@ -13,12 +13,12 @@ import {
     DrawerHeader,
     DrawerTitle,
     DrawerFooter,
-} from '®ui/drawer'
-import { Navigation as Type, User as UserType } from '®app/login/types'
-import { Navigation } from '®app/login/ui/navigation'
-import { Verified } from '®ui/icons'
-import { useAuth } from '®zustand/store'
-import { userAvatar } from '®lib/utils'
+} from '@/ui/drawer'
+import { Navigation as Type, User as UserType } from '@/app/login/types'
+import { Navigation } from '@/app/login/ui/navigation'
+import { Verified } from '@/ui/icons'
+import { useAuth } from '@/zustand/store'
+import { userAvatar } from '@/lib/utils'
 
 export default function UserDrawer({
     user,

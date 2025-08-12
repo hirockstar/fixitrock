@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '®supabase/server'
+import { createClient } from '@/supabase/server'
 
 export async function sendOtp(phone: string): Promise<{ error?: string }> {
     const supabase = await createClient()

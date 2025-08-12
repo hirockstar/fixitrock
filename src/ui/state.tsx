@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 import React from 'react'
 import { IconType } from 'react-icons/lib'
 
-import { cn } from '®lib/utils'
+import { cn } from '@/lib/utils'
 
 export const NotFound = () => {
     return (

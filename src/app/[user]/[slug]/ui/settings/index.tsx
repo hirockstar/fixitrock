@@ -1,5 +1,5 @@
-import { User } from '®app/login/types'
-import { userSession } from '®actions/user'
+import { User } from '@/app/login/types'
+import { userSession } from '@/actions/user'
 
 import { Setting } from './setting'
 

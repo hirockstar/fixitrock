@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 
-import { DriveItem } from '®types/drive'
+import { DriveItem } from '@/types/drive'
 
 import { ImagePreview } from './image'
 import { VideoPreview } from './video'

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { RecaptchaVerifier } from 'firebase/auth'
 
-import { firebaseAuth } from '®firebase/client'
+import { firebaseAuth } from '@/firebase/client'
 
 // Ensure global typing
 declare global {
