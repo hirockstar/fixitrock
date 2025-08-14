@@ -2,14 +2,14 @@
 import { Button, Image, Input } from '@heroui/react'
 import { Search, X } from 'lucide-react'
 import { useState } from 'react'
+import { useSearch } from '@tanstack/query'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
 import { Suggestion } from './suggestion'
 
-import { useSearch } from '@tanstack/query'
-import AnimatedSearch, { useOpen } from '@/ui/farmer/search'
 import { Navigation, User } from '@/app/login/types'
+import AnimatedSearch, { useOpen } from '@/ui/farmer/search'
 
 export function SearchBar({
     user,

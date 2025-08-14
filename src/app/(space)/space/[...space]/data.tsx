@@ -1,15 +1,14 @@
 'use client'
 
-import type { DriveItem, SortField, SortOrder } from '@/types/drive'
-import type { Drive } from '@/types/drive'
+import type { SortField, SortOrder, Drive } from '@/types/drive'
 
-import { useEffect, useState } from 'react'
-import { useInView } from 'react-intersection-observer'
+import { useEffect } from 'react'
+import { CheckCircle } from 'lucide-react'
 
-import { getChildren } from '@/actions/drive'
 import { getDriveItems } from '@/app/(space)/utils'
-import { Grid } from '@/app/(space)/ui/grid'
-import { List } from '@/app/(space)/ui/list'
+import { List, Grid, EmptyState, ErrorState } from '@/app/(space)/ui'
+import { useDriveStore, useLayout } from '@/zustand/store'
+import { useDriveData } from '@/hooks/useDriveData'
 
 interface Props {
     space: string
@@ -20,43 +19,99 @@ interface Props {
     initial: Drive & { nextPage?: string }
 }
 
-export function Data({ space, layout, query, sortField, sortOrder, initial }: Props) {
-    const [items, setItems] = useState<DriveItem[]>(initial.value)
-    const [nextPage, setNextPage] = useState<string | undefined>(initial.nextPage)
-    const [loading, setLoading] = useState(false)
-
-    const { ref, inView } = useInView()
+export function Data({ space, layout: view, query, sortField, sortOrder, initial }: Props) {
+    const { initialize } = useDriveStore()
+    const {
+        setLayout,
+        layout,
+        initializeFromCookie,
+        initializeGlobalSync,
+        syncFromURL,
+        syncFromLocalStorage,
+        subscribeToLocalStorage,
+    } = useLayout()
+    const {
+        children,
+        loadingMore,
+        error,
+        hasMore,
+        totalLoaded,
+        ref,
+        isEmpty,
+        isNotFound,
+        isError,
+        loadMore,
+    } = useDriveData({ space })
 
     useEffect(() => {
-        if (inView && nextPage && !loading) {
-            setLoading(true)
+        initializeFromCookie()
+        initializeGlobalSync()
+        subscribeToLocalStorage()
+        syncFromURL()
+        syncFromLocalStorage()
+        initialize(initial, space)
+    }, [
+        initial,
+        space,
+        initialize,
+        initializeFromCookie,
+        initializeGlobalSync,
+        subscribeToLocalStorage,
+        syncFromURL,
+        syncFromLocalStorage,
+    ])
 
-            getChildren(`/${space}`, nextPage, 50)
-                .then((res) => {
-                    setItems((prev) => [...prev, ...res.value])
-                    setNextPage(res['@odata.nextLink']) // nextPage for further pagination
-                })
-                .finally(() => setLoading(false))
+    useEffect(() => {
+        setLayout(view, false)
+    }, [view, setLayout])
+
+    useEffect(() => {
+        const handlers = {
+            popstate: () => syncFromURL(),
+            layoutChanged: () => syncFromURL(),
+            localStorageChanged: () => syncFromLocalStorage(),
         }
-    }, [inView, nextPage, space, loading])
 
-    const filteredData = getDriveItems({
-        data: items,
-        query,
-        sortField,
-        sortOrder,
-    })
+        Object.entries(handlers).forEach(([event, handler]) =>
+            window.addEventListener(event, handler)
+        )
 
-    const props = {
-        data: { value: filteredData },
-        loadMore: loading,
-        ref,
-    }
+        const intervalId = setInterval(syncFromLocalStorage, 1000)
+
+        return () => {
+            Object.entries(handlers).forEach(([event, handler]) =>
+                window.removeEventListener(event, handler)
+            )
+            clearInterval(intervalId)
+        }
+    }, [syncFromURL, syncFromLocalStorage])
+
+    const filteredData = getDriveItems({ data: children, query, sortField, sortOrder })
+    const props = { data: { value: filteredData }, loadMore: loadingMore, ref }
+
+    if (isError)
+        return (
+            <ErrorState
+                message={error || 'Failed to load items'}
+                title='Error'
+                onRetry={loadMore}
+            />
+        )
+    if (isEmpty)
+        return <EmptyState description='This folder is empty.' title='Empty Folder' type='empty' />
+    if (isNotFound)
+        return <EmptyState description='Folder not found.' title='Not Found' type='notFound' />
 
     return (
         <>
             {layout === 'list' ? <List {...props} /> : <Grid {...props} />}
             <div ref={ref} />
+            {!hasMore && totalLoaded > 50 && (
+                <div className='text-muted-foreground flex items-center justify-center gap-2 py-6 text-center text-sm'>
+                    <CheckCircle className='h-4 w-4' />
+                    <span>That's all! You've reached the end of the list</span>
+                </div>
+            )}
         </>
     )
 }

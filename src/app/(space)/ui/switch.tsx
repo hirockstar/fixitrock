@@ -3,8 +3,8 @@
 import { Tab, Tabs } from '@heroui/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
+import { useLayout, type Layout } from '@/zustand/store'
 import { Grid, List } from '@/ui/icons'
-import useLayout, { type Layout } from '@/hooks/useLayout'
 
 export function SwitchLayout() {
     const { layout, setLayout } = useLayout()
@@ -12,16 +12,12 @@ export function SwitchLayout() {
     const searchParams = useSearchParams()
 
     const handleChange = (nextLayout: Layout) => {
-        setLayout(nextLayout)
-        const urlLayout = searchParams.get('layout')
+        setLayout(nextLayout, true)
 
-        // Only update the URL if the layout is different from the current param
-        if (urlLayout !== nextLayout) {
-            const params = new URLSearchParams(searchParams.toString())
+        const params = new URLSearchParams(searchParams.toString())
 
-            params.set('layout', nextLayout)
-            router.replace(`?${params.toString()}`)
-        }
+        params.set('layout', nextLayout)
+        router.replace(`?${params.toString()}`)
     }
 
     const tabs = [
@@ -42,9 +38,7 @@ export function SwitchLayout() {
             selectedKey={layout}
             size='sm'
             variant='light'
-            onSelectionChange={(key) => {
-                handleChange(key as Layout)
-            }}
+            onSelectionChange={(key) => handleChange(key as Layout)}
         >
             {tabs.map((item) => (
                 <Tab key={item.layout} aria-label={item.layout} title={item.icon} />

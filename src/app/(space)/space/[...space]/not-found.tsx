@@ -35,7 +35,7 @@ export default function NotFound() {
                 </Button>
             </div>
             <div className='text-muted-foreground mt-2 text-center text-sm'>
-                <Link className='text-teal-500 hover:underline' href='/support'>
+                <Link className='text-teal-500 hover:underline' href='https://wa.me/919927241144'>
                     Need this file? Let us know!
                 </Link>
             </div>

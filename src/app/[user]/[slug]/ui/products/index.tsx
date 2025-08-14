@@ -1,5 +1,5 @@
-import ProductsTable from './table'
 import ProductsCard from './card'
+import ProductsTable from './table'
 
 import { getAllBrands } from '@/actions/brands'
 import { Brand } from '@/types/brands'
