@@ -36,7 +36,7 @@ export function useDrive(slug: string, top?: number) {
             },
             initialPageParam: '',
             refetchOnWindowFocus: false,
-            getNextPageParam: (lastPage) => lastPage['@/odata.nextLink'] || undefined,
+            getNextPageParam: (lastPage) => lastPage['@odata.nextLink'] || undefined,
         })
 
     const combinedData = useMemo(() => data?.pages.flatMap((page) => page.value) || [], [data])
@@ -90,7 +90,7 @@ export function useDrive(slug: string, top?: number) {
     const driveData: Drive | undefined = combinedData.length
         ? {
               value: itemsWithHref,
-              '@/odata.nextLink': data?.pages[data.pages.length - 1]['@/odata.nextLink'],
+              '@odata.nextLink': data?.pages[data.pages.length - 1]['@odata.nextLink'],
           }
         : undefined
 

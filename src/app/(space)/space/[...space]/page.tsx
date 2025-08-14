@@ -101,7 +101,7 @@ async function Space({ space, ...props }: Props) {
         return (
             <>
                 <Data
-                    initial={{ ...initial, nextPage: initial['@/odata.nextLink'] }}
+                    initial={{ ...initial, nextPage: initial['@odata.nextLink'] }}
                     space={space}
                     {...props}
                 />

@@ -34,7 +34,7 @@ export function Data({ space, layout, query, sortField, sortOrder, initial }: Pr
             getChildren(`/${space}`, nextPage, 50)
                 .then((res) => {
                     setItems((prev) => [...prev, ...res.value])
-                    setNextPage(res['@/odata.nextLink']) // nextPage for further pagination
+                    setNextPage(res['@odata.nextLink']) // nextPage for further pagination
                 })
                 .finally(() => setLoading(false))
         }

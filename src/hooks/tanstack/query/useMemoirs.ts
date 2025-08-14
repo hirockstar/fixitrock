@@ -30,7 +30,7 @@ export function useMemoirs(slug: string) {
         },
         initialPageParam: '',
         refetchOnWindowFocus: false,
-        getNextPageParam: (lastPage) => lastPage['@/odata.nextLink'] || undefined,
+        getNextPageParam: (lastPage) => lastPage['@odata.nextLink'] || undefined,
     })
     const data = useMemo(() => query.data?.pages.flatMap((page) => page.value) || [], [query.data])
 

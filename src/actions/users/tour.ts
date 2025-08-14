@@ -15,8 +15,8 @@ export async function getTour(tour: string): Promise<Drive> {
 
             items.push(...response.value)
 
-            if (response['@/odata.nextLink']) {
-                return fetchAllChildren(response['@/odata.nextLink'], items)
+            if (response['@odata.nextLink']) {
+                return fetchAllChildren(response['@odata.nextLink'], items)
             }
 
             return items

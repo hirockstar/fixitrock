@@ -10,7 +10,7 @@ export type Thumbnail = {
 }
 
 export type DriveLink = {
-    '@/odata.context': string
+    '@odata.context': string
     id: string
     link: {
         webUrl: string
@@ -76,7 +76,7 @@ export type DriveItem = {
 
 export type Drive = {
     value: DriveItem[]
-    '@/odata.nextLink'?: string
+    '@odata.nextLink'?: string
     status?: 'success' | 'empty' | 'notFound'
 }
 
