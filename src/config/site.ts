@@ -15,8 +15,9 @@ export const siteConfig = {
     description:
         'We Provide Mobile Firmwares Drivers Flash Tool FRP Dump FIle EMMC ISP PinOut Samsung MDM File Windows Files.',
     domain: process.env.NEXT_PUBLIC_SITE_URL || 'https://fixitrock.com',
-    baseDirectory: 'Drive',
+    baseDirectory: 'Space',
     directoryUrl: '/space',
+    redirectUri: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://fixitrock.com'}/oauth`,
     cacheControlHeader: 'max-age=0, s-maxage=60, stale-while-revalidate',
     suggestion: [
         {
@@ -95,6 +96,7 @@ export const siteConfig = {
         },
     ],
 }
+
 export type TabsConfig = typeof tabsConfig
 
 export const tabsConfig = {
