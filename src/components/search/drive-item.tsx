@@ -44,13 +44,14 @@ export function DriveItem({
     return (
         <Listbox
             autoFocus
-            aria-label='Drive Search Result'
+            aria-label='Space Search Result'
             classNames={{ list: 'gap-1.5 px-0.5 py-1' }}
         >
             {data.value.map((c) => (
                 <ListboxItem
                     key={c.id}
                     className='data-[hover=true]:bg-muted/50 overflow-hidden border'
+                    href={path(c.webUrl, !!c.file)}
                     startContent={''}
                     textValue={c.name}
                     onPress={() => handleRoute(() => router.push(path(c.webUrl, !!c.file)))}
