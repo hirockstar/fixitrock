@@ -1,11 +1,178 @@
 import { Metadata } from 'next'
-import { Github } from 'lucide-react'
+import { CalendarDays, GitBranch, Zap, Bug, Star, ExternalLink, Github } from 'lucide-react'
 
+import { Badge } from '@/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
 
 export const metadata: Metadata = {
     title: 'Changelog - Fix iT Rock',
     description: 'Track all changes, new features, and improvements made to Fix iT Rock',
+}
+
+// Auto-generated changelog data based on current changes
+const changelogData = {
+    versions: [
+        {
+            version: '0.1.3',
+            date: '2025-08-21',
+            summary: 'Package version update and changelog enhancements',
+            entries: [
+                {
+                    id: 'package-version-update',
+                    version: '0.1.3',
+                    date: '2025-08-21',
+                    title: 'Package Version Update & Changelog Enhancements',
+                    description:
+                        'Updated package version to 0.1.3 and enhanced changelog page with detailed version history and UI improvements',
+                    type: 'improvement',
+                    author: {
+                        name: 'Rock ❤️ Star',
+                        avatar: '/icons/fixitrock.png',
+                        role: 'Lead Developer',
+                    },
+                    changes: [
+                        'Updated package version to 0.1.3',
+                        'Enhanced changelog page with detailed version history',
+                        'Improved UI design and user experience',
+                        'Added comprehensive version tracking',
+                        'Enhanced changelog data structure',
+                        'Improved timeline visualization',
+                        'Added better change categorization',
+                    ],
+                    tags: ['Version Update', 'UI Improvements', 'Changelog', 'Enhancement'],
+                    pullRequest: '#4',
+                },
+            ],
+        },
+        {
+            version: '0.1.2',
+            date: '2025-08-21',
+            summary: 'Changelog system implementation and UI improvements',
+            entries: [
+                {
+                    id: 'changelog-system',
+                    version: '0.1.2',
+                    date: '2025-08-21',
+                    title: 'Changelog System',
+                    description:
+                        'Complete changelog system implementation with beautiful timeline design',
+                    type: 'feature',
+                    author: {
+                        name: 'Rock ❤️ Star',
+                        avatar: '/icons/fixitrock.png',
+                        role: 'Lead Developer',
+                    },
+                    changes: [
+                        'Created beautiful changelog page with timeline design',
+                        'Added TypeScript interfaces and data structure',
+                        'Implemented utility functions for changelog management',
+                        'Integrated with site navigation and footer',
+                        'Added GitHub repository and WhatsApp contact links',
+                        'Created comprehensive documentation',
+                        'Implemented relaxed and modern UI design',
+                    ],
+                    tags: ['Changelog', 'Documentation', 'UI', 'Timeline'],
+                    pullRequest: '#1',
+                },
+            ],
+        },
+        {
+            version: '0.1.1',
+            date: '2025-08-21',
+            summary: 'Core platform features and project foundation',
+            entries: [
+                {
+                    id: 'space-management',
+                    version: '0.1.1',
+                    date: '2025-08-21',
+                    title: 'Space Management System',
+                    description:
+                        'Advanced file and content management system with cloud integration and download capabilities',
+                    type: 'feature',
+                    author: {
+                        name: 'Rock ❤️ Star',
+                        avatar: '/icons/fixitrock.png',
+                        role: 'Lead Developer',
+                    },
+                    changes: [
+                        'OneDrive integration for cloud storage',
+                        'Advanced file organization and categorization',
+                        'Real-time file synchronization',
+                        'Enhanced security and access controls',
+                        'Improved file preview and management',
+                        'Download management system with progress tracking',
+                        'File sharing and collaboration features',
+                    ],
+                    tags: ['Storage', 'Cloud', 'Security', 'File Management', 'Downloads'],
+                    pullRequest: '#2',
+                },
+                {
+                    id: 'mobile-content',
+                    version: '0.1.1',
+                    date: '2025-08-21',
+                    title: 'Mobile Content & Downloads',
+                    description: 'Comprehensive mobile repair tools and content management system',
+                    type: 'feature',
+                    author: {
+                        name: 'Rock ❤️ Star',
+                        avatar: '/icons/fixitrock.png',
+                        role: 'Lead Developer',
+                    },
+                    changes: [
+                        'Mobile firmware downloads and management',
+                        'USB drivers and flash tools repository',
+                        'FRP bypass solutions and dump files',
+                        'EMMC ISP pinout documentation',
+                        'Samsung MDM file repository',
+                        'Windows files and utilities',
+                        'Mobile apps and gaming content section',
+                        'Advanced search and filtering system',
+                    ],
+                    tags: ['Mobile Repair', 'Firmware', 'Drivers', 'Tools', 'Downloads'],
+                    pullRequest: '#3',
+                },
+            ],
+        },
+    ],
+}
+
+const getTypeIcon = (type: string) => {
+    switch (type) {
+        case 'feature':
+            return <Star className='h-4 w-4' />
+        case 'bugfix':
+            return <Bug className='h-4 w-4' />
+        case 'improvement':
+            return <Zap className='h-4 w-4' />
+        case 'breaking':
+            return <GitBranch className='h-4 w-4' />
+        default:
+            return <CalendarDays className='h-4 w-4' />
+    }
+}
+
+const getTypeColor = (type: string) => {
+    switch (type) {
+        case 'feature':
+            return 'bg-blue-500/10 text-blue-600 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-800'
+        case 'bugfix':
+            return 'bg-red-500/10 text-red-600 border-red-200 dark:bg-red-500/20 dark:text-red-400 dark:border-red-800'
+        case 'improvement':
+            return 'bg-green-500/10 text-green-600 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-800'
+        case 'breaking':
+            return 'bg-orange-500/10 text-orange-600 border-orange-200 dark:bg-orange-500/20 dark:text-orange-400 dark:border-orange-800'
+        default:
+            return 'bg-gray-500/10 text-gray-600 border-gray-200 dark:bg-gray-500/20 dark:text-gray-400 dark:border-gray-800'
+    }
+}
+
+const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    })
 }
 
 export default function ChangelogPage() {
@@ -19,15 +186,124 @@ export default function ChangelogPage() {
                 </p>
             </div>
 
-            {/* Current Status */}
-            <div className='mx-auto max-w-4xl text-center'>
-                <div className='bg-muted/50 rounded-lg border p-8'>
-                    <h3 className='mb-4 text-xl font-semibold'>🚀 Project Status</h3>
-                    <p className='text-muted-foreground mb-6'>
-                        Fix iT Rock is actively being developed with new features and improvements.
-                        Check back soon for detailed changelog updates!
-                    </p>
-                    <div className='flex flex-col gap-3 sm:flex-row sm:justify-center'>
+            {/* Roadmap Timeline */}
+            <div className='relative'>
+                {/* Vertical connecting line */}
+                <div className='from-accent via-primary to-accent absolute top-0 bottom-0 left-4 w-0.5 bg-gradient-to-b opacity-30 sm:left-8' />
+
+                {changelogData.versions.map((version, versionIndex) =>
+                    version.entries.map((entry, entryIndex) => (
+                        <div
+                            key={`${version.version}-${entry.id}`}
+                            className='relative mb-8 last:mb-0 sm:mb-12'
+                        >
+                            {/* Timeline dot */}
+                            <div className='bg-background border-accent absolute left-2 z-10 h-4 w-4 rounded-full border-2 shadow-lg sm:left-6'>
+                                <div className='bg-accent absolute inset-1 animate-pulse rounded-full' />
+                            </div>
+
+                            {/* Connecting line to card */}
+                            <div className='bg-border absolute top-2 left-6 h-0.5 w-4 sm:left-10 sm:w-8' />
+
+                            <div className='ml-12 sm:ml-20'>
+                                <Card className='border-l-accent group border-l-4 transition-all duration-300 hover:shadow-xl'>
+                                    <CardHeader className='pb-4'>
+                                        <div className='flex flex-col justify-between gap-3 sm:flex-row sm:items-center sm:gap-2'>
+                                            <div className='flex flex-wrap items-center gap-3'>
+                                                <Badge
+                                                    className={`${getTypeColor(entry.type)} font-medium`}
+                                                    variant='outline'
+                                                >
+                                                    {getTypeIcon(entry.type)}
+                                                    <span className='ml-1 capitalize'>
+                                                        {entry.type}
+                                                    </span>
+                                                </Badge>
+                                                <Badge
+                                                    className='font-mono text-xs'
+                                                    variant='secondary'
+                                                >
+                                                    {entry.version}
+                                                </Badge>
+                                                {entry.pullRequest && (
+                                                    <Badge className='text-xs' variant='outline'>
+                                                        <Github className='mr-1 h-3 w-3' />
+                                                        {entry.pullRequest}
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                            <div className='text-muted-foreground flex items-center text-sm'>
+                                                <CalendarDays className='mr-1 h-4 w-4' />
+                                                {formatDate(entry.date)}
+                                            </div>
+                                        </div>
+
+                                        <CardTitle className='group-hover:text-accent text-xl transition-colors sm:text-2xl'>
+                                            {entry.title}
+                                        </CardTitle>
+                                        <CardDescription className='text-base leading-relaxed'>
+                                            {entry.description}
+                                        </CardDescription>
+
+                                        <div className='border-border/50 flex items-center gap-3 border-t pt-3'>
+                                            <Avatar className='h-10 w-10'>
+                                                <AvatarImage
+                                                    alt={entry.author.name}
+                                                    src={entry.author.avatar}
+                                                />
+                                                <AvatarFallback className='bg-accent text-accent-foreground'>
+                                                    RS
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div className='min-w-0 flex-1'>
+                                                <p className='truncate text-sm font-medium'>
+                                                    {entry.author.name}
+                                                </p>
+                                                <p className='text-muted-foreground text-xs'>
+                                                    {entry.author.role}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </CardHeader>
+
+                                    <CardContent>
+                                        <div className='space-y-3'>
+                                            <h4 className='text-muted-foreground flex items-center gap-2 text-sm font-semibold tracking-wide uppercase'>
+                                                <ExternalLink className='h-3 w-3' />
+                                                What's New
+                                            </h4>
+                                            <ul className='space-y-3'>
+                                                {entry.changes.map((change, changeIndex) => (
+                                                    <li
+                                                        key={changeIndex}
+                                                        className='flex items-start gap-3 text-sm'
+                                                    >
+                                                        <div className='bg-accent mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full' />
+                                                        <span className='leading-relaxed'>
+                                                            {change}
+                                                        </span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            {/* Connection indicator for next item */}
+                            {versionIndex < changelogData.versions.length - 1 && (
+                                <div className='bg-accent/50 absolute -bottom-4 left-3 h-2 w-2 animate-bounce rounded-full sm:-bottom-6 sm:left-7' />
+                            )}
+                        </div>
+                    ))
+                )}
+            </div>
+
+            {/* Footer */}
+            <div className='mt-16 text-center'>
+                <div className='bg-muted/50 rounded-lg border p-6'>
+                    <h3 className='mb-3 text-lg font-semibold'>Want to contribute?</h3>
+                    <div className='flex flex-col items-center justify-center gap-4 sm:flex-row'>
                         <a
                             className='bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 transition-colors'
                             href='https://github.com/fixitrock/web'
@@ -50,51 +326,6 @@ export default function ChangelogPage() {
                         </a>
                     </div>
                 </div>
-            </div>
-
-            {/* Project Info */}
-            <div className='mx-auto mt-12 max-w-4xl'>
-                <Card className='border-l-4 border-l-blue-500'>
-                    <CardHeader>
-                        <CardTitle className='flex items-center gap-2'>
-                            <Github className='h-5 w-5 text-blue-500' />
-                            About Fix iT Rock
-                        </CardTitle>
-                        <CardDescription>
-                            A comprehensive platform for mobile repair tools and content management
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className='space-y-4'>
-                            <div className='bg-muted rounded-lg p-4'>
-                                <h4 className='mb-2 font-semibold'>🎯 What We Do</h4>
-                                <p className='text-sm text-muted-foreground'>
-                                    Fix iT Rock provides mobile repair professionals with essential tools, 
-                                    firmware downloads, and content management solutions.
-                                </p>
-                            </div>
-                            
-                            <div className='bg-muted rounded-lg p-4'>
-                                <h4 className='mb-2 font-semibold'>🚀 Key Features</h4>
-                                <ul className='text-sm text-muted-foreground space-y-1'>
-                                    <li>• Mobile firmware downloads and management</li>
-                                    <li>• USB drivers and flash tools repository</li>
-                                    <li>• FRP bypass solutions and dump files</li>
-                                    <li>• Advanced file organization and cloud integration</li>
-                                    <li>• Professional content management system</li>
-                                </ul>
-                            </div>
-                            
-                            <div className='bg-muted rounded-lg p-4'>
-                                <h4 className='mb-2 font-semibold'>🔗 Get Involved</h4>
-                                <p className='text-sm text-muted-foreground'>
-                                    Visit our GitHub repository to see the latest developments, 
-                                    report issues, or contribute to the project.
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
         </div>
     )
