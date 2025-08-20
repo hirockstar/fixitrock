@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { Github } from 'lucide-react'
+import { SiGithub } from 'react-icons/si'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/card'
 
@@ -8,8 +8,6 @@ export const metadata: Metadata = {
     description: 'Track all changes, new features, and improvements made to Fix iT Rock',
 }
 
-// This will be populated by @changesets when releases are created
-// For now, we'll show a message about how to use changesets
 export default function ChangelogPage() {
     return (
         <div className='container mx-auto px-4 py-8'>
@@ -27,7 +25,7 @@ export default function ChangelogPage() {
                 <Card className='border-l-4 border-l-blue-500'>
                     <CardHeader>
                         <CardTitle className='flex items-center gap-2'>
-                            <Github className='h-5 w-5 text-blue-500' />
+                            <SiGithub className='h-5 w-5 text-blue-500' />
                             How to Add Changes
                         </CardTitle>
                         <CardDescription>
@@ -88,7 +86,7 @@ export default function ChangelogPage() {
                             rel='noopener noreferrer'
                             target='_blank'
                         >
-                            <Github className='h-4 w-4' />
+                            <SiGithub className='h-4 w-4' />
                             View on GitHub
                         </a>
                         <a
