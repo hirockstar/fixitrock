@@ -148,7 +148,6 @@ export class DownloadService {
         // Performance tracking
         let lastUIUpdate = 0
         let lastSpeedCheck = Date.now()
-        let bytesSinceLastCheck = 0
         const downloadStartTime = Date.now()
 
         // Smart chunking based on file size
@@ -202,10 +201,8 @@ export class DownloadService {
                     lastUIUpdate = now
 
                     // Update speed check for performance monitoring
-                    bytesSinceLastCheck += value.length
                     if (now - lastSpeedCheck >= 1000) {
                         lastSpeedCheck = now
-                        bytesSinceLastCheck = 0
                     }
                 }
             }
@@ -226,7 +223,7 @@ export class DownloadService {
         options: DownloadOptions
     ): Promise<void> {
         try {
-            const blob = new Blob(downloadData.chunks)
+            const blob = new Blob(downloadData.chunks as BlobPart[])
             const url = URL.createObjectURL(blob)
             const link = document.createElement('a')
 

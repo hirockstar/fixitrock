@@ -52,3 +52,4 @@ migrations/
 migrations/
 src/app/(app)/test/page.tsx
 docs/
+scripts/auto-changelog.js

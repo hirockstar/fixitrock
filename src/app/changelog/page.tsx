@@ -1,140 +1,15 @@
 import { Metadata } from 'next'
-import { CalendarDays, GitBranch, Zap, Bug, Star, ExternalLink, Github } from 'lucide-react'
+import { CalendarDays, GitBranch, Zap, Bug, Star, ExternalLink } from 'lucide-react'
+import { SiGithub } from 'react-icons/si'
 
 import { Badge } from '@/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
+import { changelogData } from '@/config/changelog'
 
 export const metadata: Metadata = {
     title: 'Changelog - Fix iT Rock',
     description: 'Track all changes, new features, and improvements made to Fix iT Rock',
-}
-
-// Auto-generated changelog data based on current changes
-const changelogData = {
-    versions: [
-        {
-            version: '0.1.3',
-            date: '2025-08-21',
-            summary: 'Package version update and changelog enhancements',
-            entries: [
-                {
-                    id: 'package-version-update',
-                    version: '0.1.3',
-                    date: '2025-08-21',
-                    title: 'Package Version Update & Changelog Enhancements',
-                    description:
-                        'Updated package version to 0.1.3 and enhanced changelog page with detailed version history and UI improvements',
-                    type: 'improvement',
-                    author: {
-                        name: 'Rock ❤️ Star',
-                        avatar: '/icons/fixitrock.png',
-                        role: 'Lead Developer',
-                    },
-                    changes: [
-                        'Updated package version to 0.1.3',
-                        'Enhanced changelog page with detailed version history',
-                        'Improved UI design and user experience',
-                        'Added comprehensive version tracking',
-                        'Enhanced changelog data structure',
-                        'Improved timeline visualization',
-                        'Added better change categorization',
-                    ],
-                    tags: ['Version Update', 'UI Improvements', 'Changelog', 'Enhancement'],
-                    pullRequest: '#4',
-                },
-            ],
-        },
-        {
-            version: '0.1.2',
-            date: '2025-08-21',
-            summary: 'Changelog system implementation and UI improvements',
-            entries: [
-                {
-                    id: 'changelog-system',
-                    version: '0.1.2',
-                    date: '2025-08-21',
-                    title: 'Changelog System',
-                    description:
-                        'Complete changelog system implementation with beautiful timeline design',
-                    type: 'feature',
-                    author: {
-                        name: 'Rock ❤️ Star',
-                        avatar: '/icons/fixitrock.png',
-                        role: 'Lead Developer',
-                    },
-                    changes: [
-                        'Created beautiful changelog page with timeline design',
-                        'Added TypeScript interfaces and data structure',
-                        'Implemented utility functions for changelog management',
-                        'Integrated with site navigation and footer',
-                        'Added GitHub repository and WhatsApp contact links',
-                        'Created comprehensive documentation',
-                        'Implemented relaxed and modern UI design',
-                    ],
-                    tags: ['Changelog', 'Documentation', 'UI', 'Timeline'],
-                    pullRequest: '#1',
-                },
-            ],
-        },
-        {
-            version: '0.1.1',
-            date: '2025-08-21',
-            summary: 'Core platform features and project foundation',
-            entries: [
-                {
-                    id: 'space-management',
-                    version: '0.1.1',
-                    date: '2025-08-21',
-                    title: 'Space Management System',
-                    description:
-                        'Advanced file and content management system with cloud integration and download capabilities',
-                    type: 'feature',
-                    author: {
-                        name: 'Rock ❤️ Star',
-                        avatar: '/icons/fixitrock.png',
-                        role: 'Lead Developer',
-                    },
-                    changes: [
-                        'OneDrive integration for cloud storage',
-                        'Advanced file organization and categorization',
-                        'Real-time file synchronization',
-                        'Enhanced security and access controls',
-                        'Improved file preview and management',
-                        'Download management system with progress tracking',
-                        'File sharing and collaboration features',
-                    ],
-                    tags: ['Storage', 'Cloud', 'Security', 'File Management', 'Downloads'],
-                    pullRequest: '#2',
-                },
-                {
-                    id: 'mobile-content',
-                    version: '0.1.1',
-                    date: '2025-08-21',
-                    title: 'Mobile Content & Downloads',
-                    description: 'Comprehensive mobile repair tools and content management system',
-                    type: 'feature',
-                    author: {
-                        name: 'Rock ❤️ Star',
-                        avatar: '/icons/fixitrock.png',
-                        role: 'Lead Developer',
-                    },
-                    changes: [
-                        'Mobile firmware downloads and management',
-                        'USB drivers and flash tools repository',
-                        'FRP bypass solutions and dump files',
-                        'EMMC ISP pinout documentation',
-                        'Samsung MDM file repository',
-                        'Windows files and utilities',
-                        'Mobile apps and gaming content section',
-                        'Advanced search and filtering system',
-                    ],
-                    tags: ['Mobile Repair', 'Firmware', 'Drivers', 'Tools', 'Downloads'],
-                    pullRequest: '#3',
-                },
-            ],
-        },
-    ],
 }
 
 const getTypeIcon = (type: string) => {
@@ -192,7 +67,7 @@ export default function ChangelogPage() {
                 <div className='from-accent via-primary to-accent absolute top-0 bottom-0 left-4 w-0.5 bg-gradient-to-b opacity-30 sm:left-8' />
 
                 {changelogData.versions.map((version, versionIndex) =>
-                    version.entries.map((entry, entryIndex) => (
+                    version.entries.map((entry) => (
                         <div
                             key={`${version.version}-${entry.id}`}
                             className='relative mb-8 last:mb-0 sm:mb-12'
@@ -206,7 +81,7 @@ export default function ChangelogPage() {
                             <div className='bg-border absolute top-2 left-6 h-0.5 w-4 sm:left-10 sm:w-8' />
 
                             <div className='ml-12 sm:ml-20'>
-                                <Card className='border-l-accent group border-l-4 transition-all duration-300 hover:shadow-xl'>
+                                <Card className='border-l-primary group border-l-4 shadow-none transition-all duration-300'>
                                     <CardHeader className='pb-4'>
                                         <div className='flex flex-col justify-between gap-3 sm:flex-row sm:items-center sm:gap-2'>
                                             <div className='flex flex-wrap items-center gap-3'>
@@ -227,7 +102,7 @@ export default function ChangelogPage() {
                                                 </Badge>
                                                 {entry.pullRequest && (
                                                     <Badge className='text-xs' variant='outline'>
-                                                        <Github className='mr-1 h-3 w-3' />
+                                                        <SiGithub className='mr-1 h-3 w-3' />
                                                         {entry.pullRequest}
                                                     </Badge>
                                                 )}
@@ -238,7 +113,7 @@ export default function ChangelogPage() {
                                             </div>
                                         </div>
 
-                                        <CardTitle className='group-hover:text-accent text-xl transition-colors sm:text-2xl'>
+                                        <CardTitle className='text-xl sm:text-2xl'>
                                             {entry.title}
                                         </CardTitle>
                                         <CardDescription className='text-base leading-relaxed'>
@@ -310,7 +185,7 @@ export default function ChangelogPage() {
                             rel='noopener noreferrer'
                             target='_blank'
                         >
-                            <Github className='h-4 w-4' />
+                            <SiGithub className='h-4 w-4' />
                             View on GitHub
                         </a>
                         <a

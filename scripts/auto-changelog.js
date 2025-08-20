@@ -4,9 +4,9 @@ import fs from 'fs'
 import { execSync } from 'child_process'
 
 // Configuration
-const CHANGELOG_FILE = 'src/app/changelog/page.tsx'
+const CHANGELOG_CONFIG_FILE = 'src/config/changelog.ts'
 const PACKAGE_JSON = 'package.json'
-const CHANGELOG_DATA_START = 'const changelogData = {'
+const CHANGELOG_DATA_START = 'export const changelogData: ChangelogData = {'
 const CHANGELOG_DATA_END = '}'
 
 // Change types and their version bump rules
@@ -47,15 +47,14 @@ function getGitChanges() {
         const changes = execSync('git diff --name-only HEAD~1', { encoding: 'utf8' })
 
         return changes.trim().split('\n').filter(Boolean)
-    } catch (error) {
-        console.log('No previous commits found, checking all files...')
-
+    } catch {
+        // No previous commits found, checking all files...
         return []
     }
 }
 
 // Analyze changes and determine change type
-function analyzeChanges(changes) {
+function analyzeChanges(_changes) {
     const changeType = 'feature' // Default to feature
 
     // You can add logic here to analyze file changes and determine type
@@ -66,7 +65,7 @@ function analyzeChanges(changes) {
 }
 
 // Generate changelog entry
-function generateChangelogEntry(changeType, changes) {
+function generateChangelogEntry(changeType, _changes) {
     const currentDate = new Date().toISOString().split('T')[0]
     const currentVersion = getCurrentVersion()
     const newVersion = bumpVersion(currentVersion, changeType)
@@ -97,7 +96,6 @@ function generateChangelogEntry(changeType, changes) {
 
 // Generate commit message with PR hashtag
 function generateCommitMessage(newVersion, changeType) {
-    const timestamp = new Date().toISOString().split('T')[0]
     const prNumber = Math.floor(Math.random() * 1000)
 
     return `chore: bump version to ${newVersion} and update changelog
@@ -112,12 +110,13 @@ Closes #${prNumber}`
 
 // Update changelog file
 function updateChangelogFile(entry) {
-    const changelogContent = fs.readFileSync(CHANGELOG_FILE, 'utf8')
+    const changelogContent = fs.readFileSync(CHANGELOG_CONFIG_FILE, 'utf8')
 
     // Find the changelog data section
     const startIndex = changelogContent.indexOf(CHANGELOG_DATA_START)
 
     if (startIndex === -1) {
+        // eslint-disable-next-line no-console
         console.error('Could not find changelog data section')
 
         return false
@@ -127,6 +126,7 @@ function updateChangelogFile(entry) {
     const endIndex = changelogContent.indexOf(CHANGELOG_DATA_END, startIndex)
 
     if (endIndex === -1) {
+        // eslint-disable-next-line no-console
         console.error('Could not find end of changelog data')
 
         return false
@@ -173,7 +173,7 @@ function updateChangelogFile(entry) {
     // Replace the content
     const newContent = changelogContent.replace(currentData, updatedData)
 
-    fs.writeFileSync(CHANGELOG_FILE, newContent)
+    fs.writeFileSync(CHANGELOG_CONFIG_FILE, newContent)
 
     return true
 }
@@ -188,21 +188,26 @@ function updatePackageVersion(newVersion) {
 
 // Main function
 function main() {
+    // eslint-disable-next-line no-console
     console.log('🚀 Auto-Changelog Generator')
+    // eslint-disable-next-line no-console
     console.log('============================')
 
     try {
         // Get current version
         const currentVersion = getCurrentVersion()
 
+        // eslint-disable-next-line no-console
         console.log(`📦 Current version: ${currentVersion}`)
 
         // Get git changes
         const changes = getGitChanges()
 
+        // eslint-disable-next-line no-console
         console.log(`📝 Detected ${changes.length} changed files`)
 
         if (changes.length === 0) {
+            // eslint-disable-next-line no-console
             console.log('✨ No changes detected, nothing to update')
 
             return
@@ -211,17 +216,21 @@ function main() {
         // Analyze changes
         const changeType = analyzeChanges(changes)
 
+        // eslint-disable-next-line no-console
         console.log(`🔍 Change type: ${changeType}`)
 
         // Generate changelog entry
         const { entry, newVersion } = generateChangelogEntry(changeType, changes)
 
+        // eslint-disable-next-line no-console
         console.log(`🆕 New version: ${newVersion}`)
 
         // Update changelog file
         if (updateChangelogFile(entry)) {
+            // eslint-disable-next-line no-console
             console.log('✅ Changelog file updated successfully')
         } else {
+            // eslint-disable-next-line no-console
             console.error('❌ Failed to update changelog file')
 
             return
@@ -229,23 +238,35 @@ function main() {
 
         // Update package.json version
         updatePackageVersion(newVersion)
+        // eslint-disable-next-line no-console
         console.log('✅ Package version updated successfully')
 
         // Generate commit message
         const commitMessage = generateCommitMessage(newVersion, changeType)
 
+        // eslint-disable-next-line no-console
         console.log('\n📝 Generated Commit Message:')
+        // eslint-disable-next-line no-console
         console.log('============================')
+        // eslint-disable-next-line no-console
         console.log(commitMessage)
+        // eslint-disable-next-line no-console
         console.log('\n💡 To commit these changes, run:')
+        // eslint-disable-next-line no-console
         console.log('git add .')
+        // eslint-disable-next-line no-console
         console.log(`git commit -m "${commitMessage.split('\n')[0]}"`)
+        // eslint-disable-next-line no-console
         console.log('git push origin main')
 
+        // eslint-disable-next-line no-console
         console.log('\n🎉 Auto-changelog generation complete!')
+        // eslint-disable-next-line no-console
         console.log(`📋 New entry added for version ${newVersion}`)
-        console.log(`🔗 Check ${CHANGELOG_FILE} to see the changes`)
+        // eslint-disable-next-line no-console
+        console.log(`🔗 Check ${CHANGELOG_CONFIG_FILE} to see the changes`)
     } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('❌ Error:', error.message)
         process.exit(1)
     }
