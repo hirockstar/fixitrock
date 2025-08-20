@@ -30,6 +30,37 @@ export interface ChangelogData {
 export const changelogData: ChangelogData = {
     versions: [
         {
+            version: '0.1.5',
+            date: '2025-08-21',
+            summary: 'ESLint fixes and code quality improvements',
+            entries: [
+                {
+                    id: 'auto-1730000000000',
+                    version: '0.1.5',
+                    date: '2025-08-21',
+                    title: 'Auto-generated update for 0.1.5',
+                    description:
+                        'Fixed all ESLint errors in auto-changelog script and improved code quality',
+                    type: 'improvement',
+                    author: {
+                        name: 'Rock ❤️ Star',
+                        avatar: '/icons/fixitrock.png',
+                        role: 'Lead Developer',
+                    },
+                    changes: [
+                        'Fixed all ESLint errors in auto-changelog script',
+                        'Added proper ESLint disable comments for console statements',
+                        'Removed unused variables and parameters',
+                        'Improved code quality and maintainability',
+                        'Updated version and changelog system',
+                        'Enhanced error handling in changelog script',
+                    ],
+                    tags: ['ESLint', 'Code Quality', 'Auto-generated', 'Maintenance'],
+                    pullRequest: '#332',
+                },
+            ],
+        },
+        {
             version: '0.1.3',
             date: '2025-08-21',
             summary: 'Package version update and changelog enhancements',
