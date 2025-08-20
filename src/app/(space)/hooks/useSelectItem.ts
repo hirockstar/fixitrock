@@ -2,8 +2,10 @@
 
 import { useRouter } from 'next/navigation'
 
-import { getDownloadUrl, isFolder, isPreviewable } from '@/lib/utils'
+import { isFolder, isPreviewable } from '@/lib/utils'
 import { DriveItem } from '@/types/drive'
+import { useDownload } from '@/hooks/useDownload'
+import { useDownloadStore } from '@/zustand/store/download'
 
 import { getHref } from '../utils'
 
@@ -12,6 +14,8 @@ export function useSelectItem(
     setPreviewOpen?: (open: boolean) => void
 ) {
     const router = useRouter()
+    const { downloadFile, pauseDownload, resumeDownload } = useDownload()
+    const { downloads } = useDownloadStore()
 
     return (item: DriveItem) => {
         setSelectedItem?.(item)
@@ -22,9 +26,17 @@ export function useSelectItem(
             router.push(getHref(item), { scroll: false })
             setPreviewOpen?.(true)
         } else {
-            const downloadUrl = getDownloadUrl(item)
+            const download = downloads.get(item.id)
 
-            if (downloadUrl) window.location.href = downloadUrl
+            if (!download) {
+                downloadFile(item)
+            } else if (download.status === 'downloading') {
+                pauseDownload(item.id)
+            } else if (download.status === 'paused') {
+                resumeDownload(download)
+            } else {
+                downloadFile(item)
+            }
         }
     }
 }

@@ -2,14 +2,14 @@
 import { Button, Image, Input } from '@heroui/react'
 import { Search, X } from 'lucide-react'
 import { useState } from 'react'
+
 import { useSearch } from '@tanstack/query'
+import { Navigation, User } from '@/app/login/types'
+import AnimatedSearch, { useOpen } from '@/ui/farmer/search'
 
 import { DriveItem } from './drive-item'
 import ShortcutKey from './shortcutkey'
 import { Suggestion } from './suggestion'
-
-import { Navigation, User } from '@/app/login/types'
-import AnimatedSearch, { useOpen } from '@/ui/farmer/search'
 
 export function SearchBar({
     user,
@@ -51,7 +51,7 @@ export function SearchBar({
                                 <X size={18} />
                             </Button>
                         ) : (
-                            <> {children}</>
+                            <div className='flex items-center gap-2'> {children}</div>
                         )
                     }
                     placeholder={user ? `Hi ${user.name}` : 'Work in progress . . . '}

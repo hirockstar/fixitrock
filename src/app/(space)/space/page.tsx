@@ -64,7 +64,11 @@ export const metadata: Metadata = {
 }
 
 async function Space() {
-    const data = await getChildren('')
+    try {
+        const data = await getChildren('')
 
-    return <Grid data={data} />
+        return <Grid data={data} />
+    } catch (error) {
+        throw error
+    }
 }

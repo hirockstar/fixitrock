@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
 import { Metadata } from 'next'
 
-import { getSlug } from '@/actions/supabase/getSlug'
 import { getUser, userSession } from '@/actions/user'
+import { getSlug } from '@/actions/supabase/getSlug'
 
 import Products from './ui/products'
 import { Brands } from './ui/brands'

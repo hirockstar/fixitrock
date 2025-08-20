@@ -74,6 +74,12 @@ export const siteConfig = {
             description: 'Find genuine mobile parts and authorized service centers near you',
             icon: FaRupeeSign,
         },
+        {
+            href: '/changelog',
+            title: 'Changelog',
+            description: 'Track all changes, new features, and improvements made to Fix iT Rock',
+            icon: GiAutoRepair,
+        },
     ],
     themes: [
         {

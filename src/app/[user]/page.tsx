@@ -1,12 +1,12 @@
 import { notFound, redirect } from 'next/navigation'
 import { Metadata } from 'next'
 
-import { Profile, Tabs } from './ui'
-
 import { getTabs } from '@/actions/supabase'
 import { getUser } from '@/actions/user'
 import { getProducts } from '@/actions/user/products'
 import { userAvatar } from '@/lib/utils'
+
+import { Profile, Tabs } from './ui'
 
 type Props = {
     params: Promise<{ user: string }>

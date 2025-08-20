@@ -19,7 +19,13 @@ export default function Footer() {
                 >
                     {siteConfig.title}
                 </Link>
-                <div className='flex items-center gap-2'>
+                <div className='flex items-center gap-4'>
+                    <Link
+                        href='/changelog'
+                        className='text-sm text-muted-foreground hover:text-foreground transition-colors'
+                    >
+                        Changelog
+                    </Link>
                     <Status />
                     <ThemeSwitcher />
                 </div>

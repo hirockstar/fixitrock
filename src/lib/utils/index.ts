@@ -199,8 +199,8 @@ export function slugify(text: string): string {
 export function path(url: string, isFile?: boolean) {
     const path = url
         .replace(
-            `https://fixitrock-my.sharepoint.com/personal/ftp_fixitrock_com/Documents/${siteConfig.baseDirectory}`,
-            ''
+            `https://fixitrock-my.sharepoint.com/personal/space_fixitrock_com/Documents/${siteConfig.baseDirectory}`,
+            `${siteConfig.directoryUrl}`
         )
         .trim()
 
@@ -209,10 +209,10 @@ export function path(url: string, isFile?: boolean) {
         const fileName = parts.pop()
         const folderPath = parts.join('/')
 
-        return `${folderPath}#${fileName}`
+        return `${folderPath}#${fileName}`.toLowerCase()
     }
 
-    return path
+    return path.toLowerCase()
 }
 
 export const formatDuration = (milliseconds: number): string => {
@@ -240,4 +240,52 @@ export function userAvatar(user: User): string {
 
     // Add cache busting parameter if user has been updated
     return user?.updated_at ? `${avatarUrl}?t=${user.updated_at}` : avatarUrl
+}
+
+// Download progress utilities
+export { getDownloadBackground } from './downloadProgress'
+
+/**
+ * Wraps server actions with consistent error handling
+ * This ensures all errors are properly caught and don't crash the UI
+ */
+export function withErrorHandling<T extends readonly unknown[], R>(
+    action: (...args: T) => Promise<R>
+): (...args: T) => Promise<R> {
+    return async (...args: T): Promise<R> => {
+        try {
+            return await action(...args)
+        } catch (error) {
+            // Log the error for debugging
+            logWarning('Server action error:', error)
+
+            // Re-throw the error so it can be caught by ErrorBoundary
+            if (error instanceof Error) {
+                throw error
+            } else {
+                throw new Error(typeof error === 'string' ? error : 'An unexpected error occurred')
+            }
+        }
+    }
+}
+
+/**
+ * Creates a safe server action that returns structured error responses
+ * instead of throwing errors
+ */
+export function createSafeAction<T extends readonly unknown[], R>(
+    action: (...args: T) => Promise<R>
+): (...args: T) => Promise<{ success: boolean; data?: R; error?: string }> {
+    return async (...args: T) => {
+        try {
+            const result = await action(...args)
+
+            return { success: true, data: result }
+        } catch (error) {
+            const errorMessage =
+                error instanceof Error ? error.message : 'An unexpected error occurred'
+
+            return { success: false, error: errorMessage }
+        }
+    }
 }

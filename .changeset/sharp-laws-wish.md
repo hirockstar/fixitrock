@@ -1,5 +1,0 @@
----
-'fixitrock': patch
----
-
-minor

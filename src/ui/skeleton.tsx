@@ -2,9 +2,9 @@
 import { Card, CardBody, CardFooter, CardHeader, Skeleton } from '@heroui/react'
 import { Quote } from 'lucide-react'
 
-import { MagicCard } from './magiccard'
-
 import { cn } from '@/lib/utils'
+
+import { MagicCard } from './magiccard'
 
 type GridSkeletonProps = {
     length?: number

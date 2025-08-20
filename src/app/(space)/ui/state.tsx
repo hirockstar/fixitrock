@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@heroui/react'
 import { AlertCircle, RefreshCw, FolderOpen, FileText, Search } from 'lucide-react'
 

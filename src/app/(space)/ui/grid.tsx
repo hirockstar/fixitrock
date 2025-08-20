@@ -1,14 +1,11 @@
 'use client'
 
-import { Card, CardFooter, CardHeader } from '@heroui/react'
+import { Button, Card, CardFooter, CardHeader } from '@heroui/react'
 import React from 'react'
 import Link from 'next/link'
 
-import { getHref } from '../utils'
-import { useSelectItem } from '../hooks'
-
 import { BlogCardAnimation, fromLeftVariant } from '@/lib/FramerMotionVariants'
-import { formatBytes, formatDateTime } from '@/lib/utils'
+import { formatBytes, formatDateTime, getDownloadBackground } from '@/lib/utils'
 import { Drive, DriveItem } from '@/types/drive'
 import { ContextMenu, ContextMenuTrigger } from '@/ui/context-menu'
 import AnimatedDiv from '@/ui/farmer/div'
@@ -18,6 +15,12 @@ import { Thumbnail } from '@/ui'
 import { Menu } from '@/app/(space)/ui'
 import { isFolder, isPreviewable } from '@/lib/utils'
 import { useKeyboardNavigation } from '@/hooks'
+import { useDownloadStore } from '@/zustand/store'
+
+import { useSelectItem } from '../hooks'
+import { getHref } from '../utils'
+
+import { DownloadSwitch } from './download/switch'
 
 export function Grid({
     data,
@@ -32,7 +35,8 @@ export function Grid({
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
     const onSelect = useSelectItem(setActive, setOpen)
-    const { selectedIndex, listRef, getItemRef } = useKeyboardNavigation({
+    const { downloads } = useDownloadStore()
+    const { listRef, getItemRef } = useKeyboardNavigation({
         length: data?.value.length ?? 0,
         mode: 'grid',
         onSelect: (index) => {
@@ -48,6 +52,12 @@ export function Grid({
                 const isFolderOrPreviewable = isFolder(c) || isPreviewable(c)
                 const href = isFolderOrPreviewable ? getHref(c) : undefined
                 const cardProps = href ? { as: Link, href } : {}
+                const bg = getDownloadBackground(downloads.get(c.id))
+                const progress = downloads.get(c.id)?.progress || 0
+                const switchProps = DownloadSwitch({
+                    c: c,
+                    downloads,
+                })
 
                 return (
                     <ContextMenu
@@ -70,17 +80,32 @@ export function Grid({
                             >
                                 <Card
                                     aria-label={c?.name}
-                                    className={`h-full w-full rounded-xl border bg-transparent transition-all duration-200 select-none hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] ${selectedIndex === index ? 'dark:border-bg-teal-400/25 border-teal-400/20' : focus?.name === c.name ? 'bg-teal-400/20 ring-2 ring-teal-400/50 dark:bg-teal-400/25' : ''}`}
+                                    className={`h-full w-full rounded-xl border bg-transparent transition-all duration-200 select-none hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]`}
                                     data-index={index}
                                     shadow='none'
                                     onPress={() => onSelect(c)}
                                     {...cardProps}
                                 >
+                                    <div className={bg} style={{ width: `${progress}%` }} />
                                     <MagicCard className='flex h-full flex-col'>
-                                        <CardHeader className='p-3 pb-1'>
+                                        <CardHeader className='justify-between p-2'>
                                             <h1 className='truncate text-start text-sm font-medium'>
                                                 {c?.name}
                                             </h1>
+                                            {!isFolderOrPreviewable && switchProps && (
+                                                <Button
+                                                    isIconOnly
+                                                    className='size-7 min-w-0'
+                                                    color={switchProps.color}
+                                                    isLoading={switchProps.isLoading}
+                                                    radius='full'
+                                                    size='sm'
+                                                    startContent={switchProps.icon}
+                                                    title={switchProps.title}
+                                                    variant='light'
+                                                    onPress={() => onSelect(c)}
+                                                />
+                                            )}
                                         </CardHeader>
                                         <Thumbnail
                                             name={c?.name as string}

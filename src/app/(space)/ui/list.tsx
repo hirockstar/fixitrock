@@ -1,15 +1,19 @@
 'use client'
 
-import { Card, CardBody } from '@heroui/react'
+import { Button, Card, CardBody } from '@heroui/react'
 import React from 'react'
 import Link from 'next/link'
 import { CornerDownLeft } from 'lucide-react'
 
-import { useSelectItem } from '../hooks'
-import { getHref } from '../utils'
-
 import { BlogCardAnimation, fromTopVariant } from '@/lib/FramerMotionVariants'
-import { formatBytes, formatCount, formatDateTime, isFolder, isPreviewable } from '@/lib/utils'
+import {
+    formatBytes,
+    formatCount,
+    formatDateTime,
+    getDownloadBackground,
+    isFolder,
+    isPreviewable,
+} from '@/lib/utils'
 import { Drive, DriveItem } from '@/types/drive'
 import { ContextMenu, ContextMenuTrigger } from '@/ui/context-menu'
 import AnimatedDiv from '@/ui/farmer/div'
@@ -17,6 +21,12 @@ import { ListSkeleton } from '@/ui/skeleton'
 import { Thumbnail } from '@/ui'
 import { Menu } from '@/app/(space)/ui'
 import { useKeyboardNavigation } from '@/hooks'
+import { useDownloadStore } from '@/zustand/store'
+
+import { getHref } from '../utils'
+import { useSelectItem } from '../hooks'
+
+import { DownloadSwitch } from './download/switch'
 
 export function List({
     data,
@@ -32,6 +42,7 @@ export function List({
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
     const onSelect = useSelectItem(setActive, setOpen)
+    const { downloads } = useDownloadStore()
     const { selectedIndex, listRef } = useKeyboardNavigation({
         length: data?.value.length ?? 0,
         mode: 'list',
@@ -48,6 +59,12 @@ export function List({
                 const isFolderOrPreviewable = isFolder(c) || isPreviewable(c)
                 const href = isFolderOrPreviewable ? getHref(c) : undefined
                 const cardProps = href ? { as: Link, href } : {}
+                const bg = getDownloadBackground(downloads.get(c.id))
+                const progress = downloads.get(c.id)?.progress || 0
+                const switchProps = DownloadSwitch({
+                    c: c,
+                    downloads,
+                })
 
                 return (
                     <ContextMenu
@@ -71,12 +88,19 @@ export function List({
                                     key={c.id}
                                     isHoverable
                                     aria-label={c?.name}
-                                    className={`group data-[hover=true]:bg-muted/30 w-full rounded-xl border bg-transparent p-0 transition-all duration-200 select-none active:scale-[0.98] dark:data-[hover=true]:bg-[#0a0a0a] ${selectedIndex === index ? 'dark:border-bg-teal-400/25 border-teal-400/20' : focus?.name === c.name ? 'bg-teal-400/20 ring-2 ring-teal-400/50 dark:bg-teal-400/25' : ''}`}
+                                    className={`group data-[hover=true]:bg-muted/30 relative w-full rounded-xl border bg-transparent p-0 transition-all duration-200 select-none active:scale-[0.98] dark:data-[hover=true]:bg-[#0a0a0a]`}
                                     shadow='none'
                                     onPress={() => onSelect(c)}
                                     {...cardProps}
                                     data-index={index}
                                 >
+                                    <div
+                                        className={bg}
+                                        style={{
+                                            width: `${progress}%`,
+                                        }}
+                                    />
+
                                     <CardBody className='flex flex-row items-center gap-2 p-2'>
                                         <Thumbnail
                                             name={c?.name as string}
@@ -84,7 +108,7 @@ export function List({
                                             type='List'
                                         />
                                         <div className='min-w-0 flex-1 space-y-1'>
-                                            <h2 className='truncate text-start text-sm font-medium transition-colors group-hover:text-teal-500'>
+                                            <h2 className='truncate text-start text-sm font-medium'>
                                                 {c?.name}
                                             </h2>
                                             <div className='text-muted-foreground flex flex-wrap gap-x-2 gap-y-0.5 text-xs'>
@@ -128,12 +152,28 @@ export function List({
                                                     ))}
                                             </div>
                                         </div>
-                                        {selectedIndex === index && (
-                                            <CornerDownLeft
-                                                className='text-muted-foreground opacity-70'
-                                                size={18}
-                                            />
-                                        )}
+                                        <div className='mr-2 flex items-center gap-2'>
+                                            {!isFolderOrPreviewable && switchProps && (
+                                                <Button
+                                                    isIconOnly
+                                                    color={switchProps.color}
+                                                    isLoading={switchProps.isLoading}
+                                                    size='sm'
+                                                    startContent={switchProps.icon}
+                                                    title={switchProps.title}
+                                                    variant='light'
+                                                    onPress={() => onSelect(c)}
+                                                />
+                                            )}
+                                            {selectedIndex === index && (
+                                                <Button
+                                                    isIconOnly
+                                                    size='sm'
+                                                    startContent={<CornerDownLeft size={18} />}
+                                                    variant='light'
+                                                />
+                                            )}
+                                        </div>
                                     </CardBody>
                                 </Card>
                             </AnimatedDiv>

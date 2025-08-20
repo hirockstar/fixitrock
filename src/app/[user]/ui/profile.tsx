@@ -6,12 +6,12 @@ import { ArrowLeft, Calendar, Camera, MapPin, Share } from 'lucide-react'
 import Link from 'next/link'
 import { FaCamera } from 'react-icons/fa'
 
-import AvatarCover from './add'
-import { Actions } from './actions'
-
 import { User } from '@/app/login/types'
 import { Verified } from '@/ui/icons'
 import { formatDateTime, userAvatar } from '@/lib/utils'
+
+import { Actions } from './actions'
+import AvatarCover from './add'
 
 type ProfileProps = {
     user: User

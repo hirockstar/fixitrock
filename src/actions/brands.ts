@@ -5,10 +5,10 @@ import type { Brands } from '@/types/brands'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { cache } from 'react'
 
-import { logWarning } from '@/lib/utils'
+import { logWarning, withErrorHandling } from '@/lib/utils'
 import { createClient } from '@/supabase/server'
 
-async function userSession() {
+const userSession = withErrorHandling(async () => {
     const supabase = await createClient()
     const { data } = await supabase.auth.getClaims()
 
@@ -28,9 +28,9 @@ async function userSession() {
     } catch {
         throw new Error('Authentication failed')
     }
-}
+})
 
-async function checkAuth() {
+const checkAuth = withErrorHandling(async () => {
     const user = await userSession()
 
     // Check if user has admin role (role = 3)
@@ -39,7 +39,7 @@ async function checkAuth() {
     }
 
     return user
-}
+})
 
 // Helper function to upload brand logos to Supabase Storage
 async function uploadBrandLogos(
@@ -297,11 +297,8 @@ export const getAllBrands = cache(async function getAllBrands(): Promise<{
 })
 
 // Add new brand
-export async function addBrand(
-    prevState: BrandActionState,
-    formData: FormData
-): Promise<BrandActionState> {
-    try {
+export const addBrand = withErrorHandling(
+    async (prevState: BrandActionState, formData: FormData): Promise<BrandActionState> => {
         await checkAuth()
         const supabase = await createClient()
 
@@ -409,25 +406,12 @@ export async function addBrand(
             success: true,
             message: 'Brand added successfully!',
         }
-    } catch (error) {
-        return {
-            errors: {
-                general: [
-                    error instanceof Error
-                        ? `${error.message}\n${error.stack}`
-                        : 'Failed to add brand',
-                ],
-            },
-        }
     }
-}
+)
 
 // Edit brand
-export async function editBrand(
-    prevState: BrandActionState,
-    formData: FormData
-): Promise<BrandActionState> {
-    try {
+export const editBrand = withErrorHandling(
+    async (prevState: BrandActionState, formData: FormData): Promise<BrandActionState> => {
         await checkAuth()
         const supabase = await createClient()
 
@@ -542,14 +526,10 @@ export async function editBrand(
         }
 
         // Create logo JSONB object
-        const logoObject: { light: string | null; dark: string | null } = {
-            light: finalLightLogo || null,
-            dark: finalDarkLogo || null,
+        const logoObject = {
+            light: finalLightLogo,
+            dark: finalDarkLogo,
         }
-
-        // If a logo was deleted and not replaced, set to null
-        if (delete_light_logo === 'true' && !logo_light.trim()) logoObject.light = null
-        if (delete_dark_logo === 'true' && !logo_dark.trim()) logoObject.dark = null
 
         // Update brand
         const { error } = await supabase
@@ -558,7 +538,6 @@ export async function editBrand(
                 name: name.trim(),
                 logo: logoObject,
                 description: description?.trim() || null,
-                updated_at: new Date().toISOString(),
             })
             .eq('id', id)
             .select()
@@ -579,21 +558,12 @@ export async function editBrand(
             success: true,
             message: 'Brand updated successfully!',
         }
-    } catch (error) {
-        return {
-            errors: {
-                general: [error instanceof Error ? error.message : 'Failed to update brand'],
-            },
-        }
     }
-}
+)
 
 // Delete brand
-export async function deleteBrand(
-    prevState: BrandActionState,
-    formData: FormData
-): Promise<BrandActionState> {
-    try {
+export const deleteBrand = withErrorHandling(
+    async (prevState: BrandActionState, formData: FormData): Promise<BrandActionState> => {
         await checkAuth()
         const supabase = await createClient()
 
@@ -625,31 +595,18 @@ export async function deleteBrand(
             success: true,
             message: 'Brand deleted successfully!',
         }
-    } catch (error) {
-        return {
-            errors: {
-                general: [error instanceof Error ? error.message : 'Failed to delete brand'],
-            },
-        }
     }
-}
+)
 
 // Get single brand by ID
-export async function getBrandById(id: number) {
-    try {
-        const supabase = await createClient()
+export const getBrandById = withErrorHandling(async (id: number) => {
+    const supabase = await createClient()
 
-        const { data, error } = await supabase.from('brands').select('*').eq('id', id).single()
+    const { data, error } = await supabase.from('brands').select('*').eq('id', id).single()
 
-        if (error) {
-            throw new Error(error.message)
-        }
-
-        return { data, error: null }
-    } catch (error) {
-        return {
-            data: null,
-            error: error instanceof Error ? error.message : 'Failed to fetch brand',
-        }
+    if (error) {
+        throw new Error(error.message)
     }
-}
+
+    return { data, error: null }
+})
