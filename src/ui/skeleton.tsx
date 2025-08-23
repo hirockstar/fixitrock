@@ -118,9 +118,9 @@ export const ListSkeleton = () => {
                             <Skeleton className='h-4 w-14 rounded-lg sm:w-20' />
                         </span>
                     </div>
-                    <div className='flex-1'>
+                    <div className='mr-2 flex-1'>
                         <div className='flex items-end justify-end'>
-                            <Skeleton className='size-10 justify-end rounded-lg' />
+                            <Skeleton className='size-8 justify-end rounded-lg' />
                         </div>
                     </div>
                 </div>

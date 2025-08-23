@@ -893,3 +893,69 @@ export function Verified({ className = 'size-6' }: { className?: string }) {
         </svg>
     )
 }
+
+export function Eye(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            height={24}
+            viewBox='0 0 24 24'
+            width={24}
+            xmlns='http://www.w3.org/2000/svg'
+            {...props}
+        >
+            <defs>
+                <animate
+                    attributeName='transform'
+                    calcMode='spline'
+                    dur='2.4s'
+                    id='eye'
+                    keySplines='0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1'
+                    keyTimes='0;0.9;0.93;0.96;1'
+                    repeatCount='indefinite'
+                    values='translate(0,0) scale(1,1);translate(0,0) scale(1,1);translate(0,15) scale(1,0);translate(0,15) scale(1,0);translate(0,0) scale(1,1)'
+                />
+                <animate
+                    attributeName='transform'
+                    calcMode='spline'
+                    dur='2.4s'
+                    id='squeeze'
+                    keySplines='0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1'
+                    keyTimes='0;0.9;0.93;0.96;1'
+                    repeatCount='indefinite'
+                    values='translate(0,0) scale(1,1);translate(0,0) scale(1,1);translate(0,3) scale(1,0.8);translate(0,3) scale(1,0.8);translate(0,0) scale(1,1)'
+                />
+            </defs>
+            <path
+                d='M19.195 11.31c.325.41.325.97 0 1.38-1.114 1.4-3.916 4.45-7.195 4.45-3.28 0-6.08-3.05-7.195-4.45a1.097 1.097 0 010-1.38C5.92 9.91 8.721 6.86 12 6.86c3.28 0 6.08 3.05 7.195 4.45z'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth={1.5}
+            >
+                <animateTransform
+                    attributeName='transform'
+                    calcMode='spline'
+                    dur='2.4s'
+                    href='#eye'
+                    keySplines='0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1'
+                    keyTimes='0;0.9;0.93;0.96;1'
+                    repeatCount='indefinite'
+                    type='translate'
+                    values='0,0;0,0;0,15;0,15;0,0'
+                />
+            </path>
+            <circle cx='12' cy='12' fill='none' r='1.972' stroke='currentColor' strokeWidth={1.5}>
+                <animateTransform
+                    attributeName='transform'
+                    calcMode='spline'
+                    dur='2.4s'
+                    href='#squeeze'
+                    keySplines='0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1'
+                    keyTimes='0;0.9;0.93;0.96;1'
+                    repeatCount='indefinite'
+                    type='translate'
+                    values='0,0;0,0;0,3;0,3;0,0'
+                />
+            </circle>
+        </svg>
+    )
+}

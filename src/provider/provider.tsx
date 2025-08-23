@@ -24,7 +24,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         >
             <QueryClientProvider client={queryClient}>
                 <HeroUIProvider navigate={router.push} spinnerVariant='spinner' useHref={useHref}>
-                    <ToastProvider maxVisibleToasts={9} toastProps={{ radius: 'lg' }} />
+                    <ToastProvider
+                        maxVisibleToasts={9}
+                        toastProps={{ radius: 'lg', classNames: { description: 'text-xs' } }}
+                    />
                     {children}
                     <NextTopLoader color='red' height={2} showSpinner={false} />
                 </HeroUIProvider>

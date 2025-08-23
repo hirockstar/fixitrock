@@ -1,8 +1,7 @@
 'use client'
 
-import { ArrowDownToLine, Download } from 'lucide-react'
-import { FaPause, FaPlay } from 'react-icons/fa'
-import { IoAlertCircle } from 'react-icons/io5'
+import { CircleCheckBig, CloudDownload } from 'lucide-react'
+import { IoPauseCircle, IoPlay, IoRefresh } from 'react-icons/io5'
 
 import { DownloadItem } from '@/zustand/store/download'
 import { DriveItem } from '@/types/drive'
@@ -19,7 +18,7 @@ export function DownloadSwitch({ c, downloads, size = 16 }: DownloadSwitchProps)
     const getSwitchProps = () => {
         if (!download) {
             return {
-                icon: <ArrowDownToLine size={size} />,
+                icon: <CloudDownload size={size} />,
                 title: 'Click file to download',
             }
         }
@@ -29,32 +28,44 @@ export function DownloadSwitch({ c, downloads, size = 16 }: DownloadSwitchProps)
                 return {
                     title: `Queued - Position ${download.queuePosition || '?'}`,
                     isLoading: true,
+                    borderColor: 'border-slate-500/15 dark:border-slate-400/20',
                 }
             case 'downloading':
                 return {
-                    icon: <FaPause size={size} />,
+                    icon: (
+                        <IoPauseCircle className='text-blue-500 dark:text-blue-400' size={size} />
+                    ),
                     title: 'Downloading - Click file to pause',
+                    borderColor: 'border-blue-500/15 dark:border-blue-400/20',
                 }
             case 'paused':
                 return {
-                    icon: <FaPlay size={size} />,
+                    icon: <IoPlay className='text-amber-500 dark:text-amber-400' size={size} />,
                     title: 'Paused - Click file to resume',
+                    borderColor: 'border-amber-500/15 dark:border-amber-400/20',
                 }
             case 'completed':
                 return {
-                    icon: <Download size={size} />,
+                    icon: (
+                        <CircleCheckBig
+                            className='text-emerald-500 dark:text-emerald-400'
+                            size={size}
+                        />
+                    ),
                     title: 'Completed - Click file to download again',
                     color: 'success' as const,
+                    borderColor: 'border-emerald-500/15 dark:border-emerald-400/20',
                 }
             case 'error':
                 return {
-                    icon: <IoAlertCircle size={size} />,
+                    icon: <IoRefresh className='text-rose-500 dark:text-rose-400' size={size} />,
                     title: 'Error - Click file to retry',
                     color: 'danger' as const,
+                    borderColor: 'border-rose-500/15 dark:border-rose-400/20',
                 }
             default:
                 return {
-                    icon: <Download size={size} />,
+                    icon: <CloudDownload size={size} />,
                     title: 'Click file to download',
                 }
         }

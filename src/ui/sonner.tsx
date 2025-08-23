@@ -8,6 +8,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
     return (
         <Sonner
+            richColors
             className='toaster group'
             style={
                 {
@@ -17,6 +18,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
                 } as React.CSSProperties
             }
             theme={theme as ToasterProps['theme']}
+            visibleToasts={9}
             {...props}
         />
     )

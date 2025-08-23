@@ -4,16 +4,10 @@ import { Button, Card, CardBody } from '@heroui/react'
 import React from 'react'
 import Link from 'next/link'
 import { CornerDownLeft } from 'lucide-react'
+import { FaEye, FaFolder } from 'react-icons/fa'
 
 import { BlogCardAnimation, fromTopVariant } from '@/lib/FramerMotionVariants'
-import {
-    formatBytes,
-    formatCount,
-    formatDateTime,
-    getDownloadBackground,
-    isFolder,
-    isPreviewable,
-} from '@/lib/utils'
+import { formatBytes, formatCount, formatDateTime, getDownloadBackground } from '@/lib/utils'
 import { Drive, DriveItem } from '@/types/drive'
 import { ContextMenu, ContextMenuTrigger } from '@/ui/context-menu'
 import AnimatedDiv from '@/ui/farmer/div'
@@ -22,6 +16,7 @@ import { Thumbnail } from '@/ui'
 import { Menu } from '@/app/(space)/ui'
 import { useKeyboardNavigation } from '@/hooks'
 import { useDownloadStore } from '@/zustand/store'
+import { useChild } from '@/zustand/store'
 
 import { getHref } from '../utils'
 import { useSelectItem } from '../hooks'
@@ -43,6 +38,7 @@ export function List({
     const [open, setOpen] = React.useState(false)
     const onSelect = useSelectItem(setActive, setOpen)
     const { downloads } = useDownloadStore()
+    const { isFolder, isPreviewable, isDownloadable } = useChild()
     const { selectedIndex, listRef } = useKeyboardNavigation({
         length: data?.value.length ?? 0,
         mode: 'list',
@@ -61,10 +57,13 @@ export function List({
                 const cardProps = href ? { as: Link, href } : {}
                 const bg = getDownloadBackground(downloads.get(c.id))
                 const progress = downloads.get(c.id)?.progress || 0
-                const switchProps = DownloadSwitch({
-                    c: c,
-                    downloads,
-                })
+                const download = isDownloadable(c)
+                    ? DownloadSwitch({
+                          c: c,
+                          downloads,
+                          size: 18,
+                      })
+                    : null
 
                 return (
                     <ContextMenu
@@ -88,7 +87,13 @@ export function List({
                                     key={c.id}
                                     isHoverable
                                     aria-label={c?.name}
-                                    className={`group data-[hover=true]:bg-muted/30 relative w-full rounded-xl border bg-transparent p-0 transition-all duration-200 select-none active:scale-[0.98] dark:data-[hover=true]:bg-[#0a0a0a]`}
+                                    className={`group data-[hover=true]:bg-muted/30 relative w-full rounded-xl border bg-transparent p-0 transition-all duration-200 select-none active:scale-[0.98] dark:data-[hover=true]:bg-[#0a0a0a] ${
+                                        selectedIndex === index
+                                            ? 'border-purple-400/60 bg-purple-50/30 ring-1 ring-purple-400/30 dark:border-purple-400/50 dark:bg-purple-950/20'
+                                            : focus?.name === c.name
+                                              ? 'border-indigo-400/40 bg-indigo-50/20 ring-1 ring-indigo-400/20 dark:border-indigo-400/30 dark:bg-indigo-950/15'
+                                              : ''
+                                    }`}
                                     shadow='none'
                                     onPress={() => onSelect(c)}
                                     {...cardProps}
@@ -153,14 +158,37 @@ export function List({
                                             </div>
                                         </div>
                                         <div className='mr-2 flex items-center gap-2'>
-                                            {!isFolderOrPreviewable && switchProps && (
+                                            {isFolder(c) && (
                                                 <Button
                                                     isIconOnly
-                                                    color={switchProps.color}
-                                                    isLoading={switchProps.isLoading}
+                                                    className='border'
                                                     size='sm'
-                                                    startContent={switchProps.icon}
-                                                    title={switchProps.title}
+                                                    startContent={<FaFolder size={18} />}
+                                                    title='Open folder'
+                                                    variant='light'
+                                                    onPress={() => onSelect(c)}
+                                                />
+                                            )}
+                                            {isPreviewable(c) && (
+                                                <Button
+                                                    isIconOnly
+                                                    className='border'
+                                                    size='sm'
+                                                    startContent={<FaEye size={18} />}
+                                                    title='View file'
+                                                    variant='light'
+                                                    onPress={() => onSelect(c)}
+                                                />
+                                            )}
+                                            {download && (
+                                                <Button
+                                                    isIconOnly
+                                                    className={`bg-background border ${download.borderColor}`}
+                                                    color={download.color}
+                                                    isLoading={download.isLoading}
+                                                    size='sm'
+                                                    startContent={download.icon}
+                                                    title={download.title}
                                                     variant='light'
                                                     onPress={() => onSelect(c)}
                                                 />
@@ -168,8 +196,10 @@ export function List({
                                             {selectedIndex === index && (
                                                 <Button
                                                     isIconOnly
+                                                    className='bg-background border'
                                                     size='sm'
                                                     startContent={<CornerDownLeft size={18} />}
+                                                    title='Select item'
                                                     variant='light'
                                                 />
                                             )}

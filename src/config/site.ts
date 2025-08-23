@@ -1,5 +1,5 @@
 import { Moon, SunIcon } from 'lucide-react'
-import { BsUsbSymbol, BsApple } from 'react-icons/bs'
+import { BsUsbSymbol, BsApple, BsCode } from 'react-icons/bs'
 import { FaRupeeSign, FaUnlock } from 'react-icons/fa'
 import { MdPhonelinkSetup } from 'react-icons/md'
 import { RiComputerLine } from 'react-icons/ri'
@@ -78,7 +78,7 @@ export const siteConfig = {
             href: '/changelog',
             title: 'Changelog',
             description: 'Track all changes, new features, and improvements made to Fix iT Rock',
-            icon: GiAutoRepair,
+            icon: BsCode,
         },
     ],
     themes: [

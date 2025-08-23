@@ -26,7 +26,6 @@ export interface ChangelogData {
     versions: ChangelogVersion[]
 }
 
-// Auto-generated changelog data based on current changes
 export const changelogData: ChangelogData = {
     versions: [
         {
@@ -56,7 +55,7 @@ export const changelogData: ChangelogData = {
                         'Enhanced error handling in changelog script',
                     ],
                     tags: ['ESLint', 'Code Quality', 'Auto-generated', 'Maintenance'],
-                    pullRequest: '#332',
+                    pullRequest: '#5',
                 },
             ],
         },
@@ -120,7 +119,7 @@ export const changelogData: ChangelogData = {
                         'Implemented relaxed and modern UI design',
                     ],
                     tags: ['Changelog', 'Documentation', 'UI', 'Timeline'],
-                    pullRequest: '#1',
+                    pullRequest: '#3',
                 },
             ],
         },
@@ -177,7 +176,7 @@ export const changelogData: ChangelogData = {
                         'Advanced search and filtering system',
                     ],
                     tags: ['Mobile Repair', 'Firmware', 'Drivers', 'Tools', 'Downloads'],
-                    pullRequest: '#3',
+                    pullRequest: '#1',
                 },
             ],
         },
