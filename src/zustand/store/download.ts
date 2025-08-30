@@ -321,7 +321,7 @@ export const useDownloadStore = create<DownloadStore>()(
                 }
 
                 return Array.from(safeDownloads.values()).filter(
-                    (download) => download.status === 'queued' || download.status === 'downloading'
+                    (download) => download.status === 'downloading'
                 )
             },
 

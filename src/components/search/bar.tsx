@@ -1,22 +1,28 @@
 'use client'
-import { Button, Image, Input } from '@heroui/react'
-import { Search, X } from 'lucide-react'
 import { useState } from 'react'
+import { X } from 'lucide-react'
+import { Button } from '@heroui/react'
 
 import { useSearch } from '@tanstack/query'
-import { Navigation, User } from '@/app/login/types'
+import { Navigation, User as UserType } from '@/app/login/types'
 import AnimatedSearch, { useOpen } from '@/ui/farmer/search'
-
-import { DriveItem } from './drive-item'
-import ShortcutKey from './shortcutkey'
-import { Suggestion } from './suggestion'
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '@/ui/search'
+import { searchCommandsTheme } from '@/config/search-commands'
+import { getSearchPlaceholder } from '@/lib/utils'
 
 export function SearchBar({
     user,
     navigation,
     children,
 }: {
-    user: User | null
+    user: UserType | null
     navigation: Navigation[]
     children: React.ReactNode
 }) {
@@ -24,20 +30,39 @@ export function SearchBar({
     const { data, isLoading } = useSearch(query)
     const { open, setOpen } = useOpen()
 
+    const renderCommands = () => {
+        return Object.entries(searchCommandsTheme).map(([category, subcategories]) => (
+            <CommandGroup key={category} heading={category}>
+                {Object.entries(subcategories).map(([subcategory, commands]) =>
+                    commands.map((command) => (
+                        <CommandItem
+                            key={command.id}
+                            description={command.description}
+                            startContent={
+                                command.icon || <div className='bg-muted h-4 w-4 rounded' />
+                            }
+                            title={command.title}
+                            value={command.title.toLowerCase()}
+                        />
+                    ))
+                )}
+            </CommandGroup>
+        ))
+    }
+
     return (
         <AnimatedSearch open={open} setOpen={setOpen}>
-            <div
-                className={`${open ? 'bg-background flex h-full max-h-[80dvh] flex-col rounded-lg sm:h-[60dvh] sm:border' : ''} overflow-hidden`}
+            <Command
+                className={`${open ? 'h-[80dvh] rounded-b-none md:h-[60dvh] md:rounded-lg md:border' : 'border'}`}
             >
-                <Input
-                    classNames={{
-                        inputWrapper: `bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 h-11 min-h-10 overflow-hidden shadow-none backdrop-blur ${
-                            open
-                                ? 'rounded-none border-b p-2 px-2.5!'
-                                : 'overflow-hidden rounded-xl border'
-                        }`,
-                        mainWrapper: 'overflow-hidden',
-                    }}
+                {open && (
+                    <CommandList>
+                        <CommandEmpty>No commands found.</CommandEmpty>
+                        {renderCommands()}
+                    </CommandList>
+                )}
+                <CommandInput
+                    classNames={{ base: `${open ? 'sticky bottom-0 border-y' : ''}` }}
                     endContent={
                         query ? (
                             <Button
@@ -54,41 +79,10 @@ export function SearchBar({
                             <div className='flex items-center gap-2'> {children}</div>
                         )
                     }
-                    placeholder={user ? `Hi ${user.name}` : 'Work in progress . . . '}
-                    size='lg'
-                    startContent={<Search size={20} />}
-                    type='text'
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onFocus={() => setOpen(true)}
+                    placeholder={getSearchPlaceholder(user?.name)}
+                    onClick={() => setOpen(true)}
                 />
-
-                {open && (
-                    <div className='flex-1 overflow-y-auto'>
-                        {!query && <Suggestion navigation={navigation} setOpen={setOpen} />}
-                        {query && (
-                            <DriveItem
-                                data={data}
-                                isLoading={isLoading}
-                                query={query}
-                                setOpen={setOpen}
-                            />
-                        )}
-                    </div>
-                )}
-
-                {open && (
-                    <div className='sticky bottom-0 hidden items-center justify-between border-t p-1.5 select-none lg:flex'>
-                        <Image
-                            alt='Fix iT Rock'
-                            height={30}
-                            src='/icons/fixitrock.png'
-                            width={30}
-                        />
-                        <ShortcutKey />
-                    </div>
-                )}
-            </div>
+            </Command>
         </AnimatedSearch>
     )
 }

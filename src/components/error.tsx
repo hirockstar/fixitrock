@@ -1,6 +1,8 @@
 'use client'
 import { Component, ReactNode } from 'react'
-import { addToast, Button } from '@heroui/react'
+import { Button } from '@heroui/react'
+import { Copy } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { logWarning } from '@/lib/utils'
 
@@ -26,20 +28,20 @@ export class ErrorBoundary extends Component<Props, State> {
         logWarning('ErrorBoundary caught an error:', error)
 
         // Determine error type and show appropriate toast
-        let title = 'An error occurred'
-        let description = error.message || 'Something went wrong'
-        let color: 'danger' | 'warning' = 'danger'
-        let endContent: React.ReactNode | undefined
+        let title = 'Error'
+        let description = this.getShortErrorDescription(error.message)
+        let toastType: 'error' | 'warning' = 'error'
+        let action: React.ReactNode | undefined
 
         // Handle specific error types
         if (
             error.message.includes('Not authenticated') ||
             error.message.includes('Authentication failed')
         ) {
-            title = 'Authentication Error'
-            description = 'Please log in again to continue'
-            color = 'warning'
-            endContent = (
+            title = 'Auth Error'
+            description = 'Please log in again'
+            toastType = 'warning'
+            action = (
                 <Button
                     color='primary'
                     size='sm'
@@ -54,34 +56,23 @@ export class ErrorBoundary extends Component<Props, State> {
             error.message.includes('Not authorized')
         ) {
             title = 'Access Denied'
-            description =
-                "You don't have permission to perform this action. Contact support if needed."
-            color = 'warning'
-            endContent = (
-                <div className='flex gap-2'>
-                    <Button
-                        color='primary'
-                        size='sm'
-                        variant='flat'
-                        onPress={() => this.setState({ hasError: false, error: undefined })}
-                    >
-                        Try Again
-                    </Button>
-                    <Button
-                        color='secondary'
-                        size='sm'
-                        variant='flat'
-                        onPress={() => this.handleContactSupport(error)}
-                    >
-                        Contact Support
-                    </Button>
-                </div>
+            description = "You don't have permission"
+            toastType = 'warning'
+            action = (
+                <Button
+                    color='primary'
+                    size='sm'
+                    variant='flat'
+                    onPress={() => this.setState({ hasError: false, error: undefined })}
+                >
+                    Try Again
+                </Button>
             )
         } else if (error.message.includes('Network') || error.message.includes('fetch')) {
             title = 'Network Error'
-            description = 'Please check your internet connection and try again'
-            color = 'warning'
-            endContent = (
+            description = 'Check internet connection'
+            toastType = 'warning'
+            action = (
                 <Button
                     color='primary'
                     size='sm'
@@ -92,10 +83,10 @@ export class ErrorBoundary extends Component<Props, State> {
                 </Button>
             )
         } else if (error.message.includes('Token') || error.message.includes('OAuth')) {
-            title = 'Authentication Error'
-            description = 'Please re-authenticate with your account'
-            color = 'warning'
-            endContent = (
+            title = 'Auth Error'
+            description = 'Re-authenticate required'
+            toastType = 'warning'
+            action = (
                 <Button
                     color='primary'
                     size='sm'
@@ -106,9 +97,8 @@ export class ErrorBoundary extends Component<Props, State> {
                 </Button>
             )
         } else {
-            // For unknown errors, provide both Try Again and Contact Support buttons
-            description = `${error.message || 'An unexpected error occurred'}. Try again or contact support if the issue persists.`
-            endContent = (
+            // For unknown errors, provide Try Again and Copy buttons
+            action = (
                 <div className='flex gap-2'>
                     <Button
                         color='primary'
@@ -119,39 +109,67 @@ export class ErrorBoundary extends Component<Props, State> {
                         Try Again
                     </Button>
                     <Button
-                        color='secondary'
+                        isIconOnly
+                        className='min-w-unit-8'
                         size='sm'
-                        variant='flat'
-                        onPress={() => this.handleContactSupport(error)}
+                        variant='light'
+                        onPress={() => this.handleCopyError(error)}
                     >
-                        Contact Support
+                        <Copy size={16} />
                     </Button>
                 </div>
             )
         }
 
-        addToast({
-            title,
-            description,
-            color,
-            endContent,
-        })
+        // Show toast based on type
+        if (toastType === 'error') {
+            toast.error(title, {
+                description,
+                action,
+            })
+        } else {
+            toast.warning(title, {
+                description,
+                action,
+            })
+        }
 
         // Auto-recover from certain errors after a delay
-        if (color === 'warning') {
+        if (toastType === 'warning') {
             setTimeout(() => {
                 this.setState({ hasError: false, error: undefined })
             }, 5000) // Auto-recover after 5 seconds for warning-level errors
         }
     }
 
-    handleContactSupport = (error: Error) => {
-        // Redirect to WhatsApp for support
-        const whatsappUrl = 'https://wa.me/919927242828'
-        const message = `Hi, I need support for an error: ${error.message}`
-        const encodedMessage = encodeURIComponent(message)
+    getShortErrorDescription = (message: string): string => {
+        // Extract the most relevant part of the error message
+        if (message.includes('map is not a function')) return 'Invalid data structure'
+        if (message.includes('Cannot read properties')) return 'Property access failed'
+        if (message.includes('is not defined')) return 'Variable not defined'
+        if (message.includes('Unexpected token')) return 'Syntax error'
+        if (message.includes('Failed to fetch')) return 'Request failed'
+        if (message.includes('timeout')) return 'Request timeout'
 
-        window.open(`${whatsappUrl}?text=${encodedMessage}`, '_blank')
+        // For other errors, take first 50 characters
+        return message.length > 50 ? message.substring(0, 50) + '...' : message
+    }
+
+    handleCopyError = (error: Error) => {
+        const errorText = `${error.name}: ${error.message}\nStack: ${error.stack}`
+
+        navigator.clipboard
+            .writeText(errorText)
+            .then(() => {
+                toast.success('Copied!', {
+                    description: 'Error details copied to clipboard',
+                })
+            })
+            .catch(() => {
+                toast.error('Copy failed', {
+                    description: 'Could not copy error details',
+                })
+            })
     }
 
     render() {

@@ -1,8 +1,7 @@
 'use client'
 
-import { X } from 'lucide-react'
 import { Button, Progress } from '@heroui/react'
-import { FaPause, FaPlay, FaStop } from 'react-icons/fa'
+import { FaPause, FaPlay, FaStop, FaTrash } from 'react-icons/fa'
 
 import { DownloadItem } from '@/zustand/store/download'
 import { formatBytes } from '@/lib/utils'
@@ -111,14 +110,14 @@ export function Status({ download, onPause, onResume, onCancel, onRemove }: Acti
                             {onRemove && (
                                 <Button
                                     isIconOnly
+                                    color='danger'
                                     radius='full'
                                     size='sm'
+                                    startContent={<FaTrash size={14} />}
                                     title='Remove from history'
                                     variant='light'
                                     onPress={onRemove}
-                                >
-                                    <X size={14} />
-                                </Button>
+                                />
                             )}
                         </>
                     ) : isCancelled || isError ? (
@@ -129,24 +128,22 @@ export function Status({ download, onPause, onResume, onCancel, onRemove }: Acti
                                     color='primary'
                                     radius='full'
                                     size='sm'
+                                    startContent={<FaPlay size={14} />}
                                     title='Retry download'
                                     variant='light'
                                     onPress={onResume}
-                                >
-                                    <FaPlay size={14} />
-                                </Button>
+                                />
                             )}
                             {onRemove && (
                                 <Button
                                     isIconOnly
                                     radius='full'
                                     size='sm'
+                                    startContent={<FaTrash size={14} />}
                                     title='Remove from history'
                                     variant='light'
                                     onPress={onRemove}
-                                >
-                                    <X size={14} />
-                                </Button>
+                                />
                             )}
                         </>
                     ) : download.status === 'queued' ? (
@@ -156,12 +153,11 @@ export function Status({ download, onPause, onResume, onCancel, onRemove }: Acti
                                     isIconOnly
                                     radius='full'
                                     size='sm'
+                                    startContent={<FaStop size={14} />}
                                     title='Cancel download'
                                     variant='light'
                                     onPress={onCancel}
-                                >
-                                    <FaStop size={14} />
-                                </Button>
+                                />
                             )}
                         </>
                     ) : isPaused ? (
@@ -171,37 +167,47 @@ export function Status({ download, onPause, onResume, onCancel, onRemove }: Acti
                                     isIconOnly
                                     radius='full'
                                     size='sm'
+                                    startContent={<FaPlay size={14} />}
                                     title='Resume'
                                     variant='light'
                                     onPress={onResume}
-                                >
-                                    <FaPlay size={14} />
-                                </Button>
+                                />
                             )}
                             {onCancel && (
                                 <Button
                                     isIconOnly
                                     radius='full'
                                     size='sm'
+                                    startContent={<FaStop size={14} />}
                                     title='Cancel download'
                                     variant='light'
                                     onPress={onCancel}
-                                >
-                                    <FaStop size={14} />
-                                </Button>
+                                />
                             )}
                         </>
                     ) : (
-                        <Button
-                            isIconOnly
-                            radius='full'
-                            size='sm'
-                            title='Pause'
-                            variant='light'
-                            onPress={onPause}
-                        >
-                            <FaPause size={14} />
-                        </Button>
+                        <>
+                            <Button
+                                isIconOnly
+                                radius='full'
+                                size='sm'
+                                startContent={<FaPause size={14} />}
+                                title='Pause'
+                                variant='light'
+                                onPress={onPause}
+                            />
+                            {onCancel && (
+                                <Button
+                                    isIconOnly
+                                    radius='full'
+                                    size='sm'
+                                    startContent={<FaStop size={14} />}
+                                    title='Cancel download'
+                                    variant='light'
+                                    onPress={onCancel}
+                                />
+                            )}
+                        </>
                     )}
                 </div>
             </div>
@@ -230,17 +236,20 @@ export function Status({ download, onPause, onResume, onCancel, onRemove }: Acti
                                 Queue {download.queuePosition || '?'}
                             </span>
                         ) : (
-                            <>
-                                <span>{getSpeedText()}</span>
-                                <span>-</span>
-                                <span>
-                                    {formatBytes(downloaded)} of {formatBytes(total)}
-                                </span>
-                                <span>-</span>
-                                <span className={isPaused ? 'text-warning' : ''}>
-                                    {getStatusText()}
-                                </span>
-                            </>
+                            <div className='flex flex-1 items-center justify-between'>
+                                <div className='flex items-center gap-2'>
+                                    <span>{getSpeedText()}</span>
+                                    <span>-</span>
+                                    <span>
+                                        {formatBytes(downloaded)} of {formatBytes(total)}
+                                    </span>
+                                    <span>-</span>
+                                    <span className={isPaused ? 'text-warning' : ''}>
+                                        {getStatusText()}
+                                    </span>
+                                </div>
+                                <span className='text-end'>{progressPercentage}%</span>
+                            </div>
                         )}
                     </>
                 )}

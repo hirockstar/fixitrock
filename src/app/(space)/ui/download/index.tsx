@@ -83,11 +83,12 @@ export function Download() {
                                     ? `${activeCount} active download${activeCount !== 1 ? 's' : ''} - Click to view download manager`
                                     : 'View download history - No active downloads'
                             }
-                            className='bg-default/40'
+                            className='bg-default/20'
                             content={activeCount.toString()}
                             radius='full'
                             size='sm'
                             startContent={<ArrowDownToLine size={18} />}
+                            variant='light'
                             onPress={() => setIsOpen(true)}
                         />
                     </Badge>
@@ -126,11 +127,12 @@ export function Download() {
                                 ? `${activeCount} active download${activeCount !== 1 ? 's' : ''} - Click to view download manager`
                                 : 'View download history - No active downloads'
                         }
-                        className='bg-default/40'
+                        className='bg-default/20'
                         content={activeCount.toString()}
                         radius='full'
                         size='sm'
                         startContent={<ArrowDownToLine size={18} />}
+                        variant='light'
                         onPress={() => setIsOpen(true)}
                     />
                 </Badge>

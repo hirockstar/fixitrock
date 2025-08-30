@@ -289,3 +289,38 @@ export function createSafeAction<T extends readonly unknown[], R>(
         }
     }
 }
+
+export function getGreeting() {
+    const hour = new Date().getHours()
+
+    if (hour >= 0 && hour < 4) return 'Ready to rock the night'
+    if (hour >= 4 && hour < 12) return 'Time to crush it'
+    if (hour >= 12 && hour < 17) return "Let's make moves"
+    if (hour >= 17 && hour < 21) return 'Still got energy'
+
+    return 'Night mode activated'
+}
+
+export function getGreetingWithName(name: string) {
+    const hour = new Date().getHours()
+
+    if (hour >= 0 && hour < 4) return `Hey ${name}, ready to rock the night?`
+    if (hour >= 4 && hour < 12) return `Good morning ${name}, time to crush it!`
+    if (hour >= 12 && hour < 17) return `Hey ${name}, let's make moves!`
+    if (hour >= 17 && hour < 21) return `Evening ${name}, still got energy?`
+
+    return `Night ${name}, mode activated!`
+}
+
+export function getSearchPlaceholder(name?: string) {
+    if (!name) return 'What do you need?'
+
+    const hour = new Date().getHours()
+
+    if (hour >= 0 && hour < 4) return `Hey ${name}, still awake? 😴 What's the plan?`
+    if (hour >= 4 && hour < 12) return `Morning ${name}, what are we building today?`
+    if (hour >= 12 && hour < 17) return `Afternoon ${name}, what's next?`
+    if (hour >= 17 && hour < 21) return `Evening ${name}, what's on your mind?`
+
+    return `Night ${name}, what's the vibe?`
+}

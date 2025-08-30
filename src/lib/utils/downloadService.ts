@@ -372,14 +372,20 @@ export class DownloadService {
 
         if (!downloadData) return
 
+        // First pause the download to stop the stream processing
         downloadData.isPaused = true
-        downloadData.controller.abort()
 
+        // Cancel the reader first to stop stream processing
         if (downloadData.reader) {
             try {
                 downloadData.reader.cancel()
             } catch {}
         }
+
+        // Then abort the controller
+        try {
+            downloadData.controller.abort()
+        } catch {}
 
         this.activeDownloads.delete(id)
 
@@ -389,7 +395,20 @@ export class DownloadService {
 
     cancelAllDownloads(): void {
         for (const downloadData of this.activeDownloads.values()) {
-            downloadData.controller.abort()
+            // First pause the download to stop the stream processing
+            downloadData.isPaused = true
+
+            // Cancel the reader first to stop stream processing
+            if (downloadData.reader) {
+                try {
+                    downloadData.reader.cancel()
+                } catch {}
+            }
+
+            // Then abort the controller
+            try {
+                downloadData.controller.abort()
+            } catch {}
         }
         this.activeDownloads.clear()
 

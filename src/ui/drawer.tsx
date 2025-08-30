@@ -67,9 +67,7 @@ function DrawerContent({
                 data-slot='drawer-content'
                 {...props}
             >
-                {showbar && (
-                    <div className='bg-default mx-auto mt-2.5 mb-4 h-1 w-[80px] rounded-full' />
-                )}
+                {showbar && <div className='bg-default mx-auto my-2 h-1 w-[80px] rounded-full' />}
                 {hideCloseButton && (
                     <DrawerPrimitive.Close
                         className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
