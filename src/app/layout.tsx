@@ -11,8 +11,6 @@ import { fontVariables } from '@/lib/fonts'
 import { ErrorBoundary } from '@/components/error'
 import { userSession } from '@/actions/user'
 
-import { Download } from './(space)/ui/download'
-
 export default async function RootLayout({
     children,
     modal,
@@ -74,7 +72,6 @@ export default async function RootLayout({
                                 <div className='flex-1 overflow-clip'>{children}</div>
                                 {modal}
                                 <SearchBar navigation={navigation} user={user}>
-                                    <Download />
                                     <UserDrawer navigation={navigation} user={user} />
                                 </SearchBar>
                                 <Footer />

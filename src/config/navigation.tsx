@@ -1,40 +1,47 @@
-export const Navigations = {
-    brands: [
-        {
-            id: 'brands',
-            href: 'brands',
-            icon: 'mdi:award',
-            title: 'Browse Brands . . .',
-            priority: 1,
-            description: 'Explore your complete brand catalog with advanced filtering and search',
-        },
-        {
-            id: 'create',
-            href: 'brands/create',
-            icon: 'material-symbols:add',
-            title: 'Add New Brand',
-            priority: 2,
-            description: 'Create and add new brands to the catalog with detailed specifications',
-        },
-    ],
-    products: [
-        {
-            id: 'products',
-            href: 'products',
-            icon: 'gridicons:product',
-            title: 'Browse Products . . .',
-            priority: 1,
-            description: 'Explore your complete product catalog with advanced filtering and search',
-        },
-        {
-            id: 'create',
-            icon: 'material-symbols:add',
-            title: 'Add New Product',
-            action: 'navigate' as const,
-            priority: 2,
-            description: 'Create and add new products to the catalog with detailed specifications',
-        },
-    ],
+export type CommandType = {
+    id: string
+    title: string
+    description?: string
+    icon: string
+    type?: 'section' | 'action' | 'file' | 'product'
+    href?: string
+    children?: CommandType[]
+    searchHook?: (query: string) => { data: CommandType[]; isLoading: boolean }
+    onSelect?: () => void
+}
+
+export const Navigations: Record<string, CommandType[]> = {
+    // brands: [
+    //     {
+    //         id: 'brands',
+    //         href: 'brands',
+    //         icon: 'mdi:award',
+    //         title: 'Browse Brands . . .',
+    //         description: 'Explore your complete brand catalog with advanced filtering and search',
+    //     },
+    //     {
+    //         id: 'create',
+    //         href: 'brands/create',
+    //         icon: 'material-symbols:add',
+    //         title: 'Add New Brand',
+    //         description: 'Create and add new brands to the catalog with detailed specifications',
+    //     },
+    // ],
+    // products: [
+    //     {
+    //         id: 'products',
+    //         href: 'products',
+    //         icon: 'gridicons:product',
+    //         title: 'Browse Products . . .',
+    //         description: 'Explore your complete product catalog with advanced filtering and search',
+    //     },
+    //     {
+    //         id: 'create',
+    //         icon: 'material-symbols:add',
+    //         title: 'Add New Product',
+    //         description: 'Create and add new products to the catalog with detailed specifications',
+    //     },
+    // ],
     space: [
         {
             id: 'space',
@@ -42,9 +49,7 @@ export const Navigations = {
             description:
                 'Space is a place where you can find all the tools you need to fix your device',
             icon: 'fluent:phone-link-setup-24-regular',
-            action: 'navigate' as const,
-            priority: 1,
-            search: true,
+            type: 'section',
             children: [
                 {
                     id: 'space-apps',
@@ -52,7 +57,6 @@ export const Navigations = {
                     description: 'Get the latest apps for Android, iOS, Windows, MacOS, and Linux',
                     icon: 'ri:apps-2-ai-line',
                     href: '/space/apps',
-                    priority: 2,
                 },
                 {
                     id: 'space-games',
@@ -60,8 +64,6 @@ export const Navigations = {
                     description: 'Download premium games for mobile, PC, and gaming consoles',
                     icon: 'ion:game-controller',
                     href: '/space/games',
-
-                    priority: 3,
                 },
                 {
                     id: 'space-frp',
@@ -69,8 +71,6 @@ export const Navigations = {
                     description: 'Remove Factory Reset Protection and unlock your Android device',
                     icon: 'hugeicons:phone-lock',
                     href: '/frp',
-
-                    priority: 4,
                 },
                 {
                     id: 'space-icloud',
@@ -78,8 +78,6 @@ export const Navigations = {
                     description: 'Unlock iCloud locked devices with our reliable bypass solutions',
                     icon: 'mdi:apple',
                     href: '/space/icloud',
-
-                    priority: 5,
                 },
                 {
                     id: 'space-drivers',
@@ -87,8 +85,6 @@ export const Navigations = {
                     description: 'Download official USB drivers for Android flashing and rooting',
                     icon: 'hugeicons:usb-connected-01',
                     href: '/space/drivers',
-
-                    priority: 6,
                 },
                 {
                     id: 'space-flash-tool',
@@ -96,8 +92,6 @@ export const Navigations = {
                     description: 'Professional tools for flashing, rooting, and unlocking devices',
                     icon: 'hugeicons:phone-arrow-up',
                     href: '/space/flash-tool',
-
-                    priority: 7,
                 },
                 {
                     id: 'space-spare-parts',
@@ -106,8 +100,6 @@ export const Navigations = {
                         'Find genuine mobile parts and authorized service centers near you',
                     icon: 'mynaui:rupee-waves',
                     href: '/scpl',
-
-                    priority: 8,
                 },
             ],
         },
@@ -117,8 +109,6 @@ export const Navigations = {
             description: 'Remove Factory Reset Protection and unlock your Android device',
             icon: 'hugeicons:phone-lock',
             href: '/frp',
-
-            priority: 2,
         },
         {
             id: 'space-flash-tool',
@@ -126,8 +116,6 @@ export const Navigations = {
             description: 'Professional tools for flashing, rooting, and unlocking devices',
             icon: 'hugeicons:phone-arrow-up',
             href: '/space/flash-tool',
-
-            priority: 3,
         },
     ],
     general: [
@@ -137,42 +125,38 @@ export const Navigations = {
             description: 'Return to home page',
             icon: 'simple-icons:ghostery',
             href: '/',
-            priority: 1,
         },
         {
             id: 'theme',
             title: 'Change Theme . . .',
             description: 'Choose your preferred theme',
             icon: 'fa7-solid:brush',
-            action: 'navigate' as const,
-            priority: 2,
+            type: 'section',
             children: [
                 {
                     id: 'theme-light',
                     title: 'Light',
                     description: 'Change Theme to Light',
                     icon: 'line-md:moon-to-sunny-outline-loop-transition',
-                    props: { theme: 'light' },
-                    action: 'theme' as const,
-                    priority: 1,
+                    type: 'action',
+                    onSelect: () => alert('Changing theme to light...'),
                 },
                 {
                     id: 'theme-system',
                     title: 'System',
                     description: 'Change Theme to System',
                     icon: 'line-md:computer',
-                    props: { theme: 'system' },
-                    action: 'theme' as const,
-                    priority: 2,
+
+                    type: 'action',
+                    onSelect: () => alert('Changing theme to system...'),
                 },
                 {
                     id: 'theme-dark',
                     title: 'Dark',
                     description: 'Change Theme to Dark',
                     icon: 'line-md:sunny-outline-to-moon-alt-loop-transition',
-                    props: { theme: 'dark' },
-                    action: 'theme' as const,
-                    priority: 3,
+                    type: 'action',
+                    onSelect: () => alert('Changing theme to dark...'),
                 },
             ],
         },

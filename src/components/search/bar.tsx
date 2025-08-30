@@ -1,21 +1,23 @@
 'use client'
-import { useState } from 'react'
-import { X } from 'lucide-react'
+import { ArrowLeft, SearchIcon, X } from 'lucide-react'
 import { Button } from '@heroui/react'
+import React from 'react'
+import { CommandLoading } from 'cmdk'
 
-import { useSearch } from '@tanstack/query'
 import { Navigation, User as UserType } from '@/app/login/types'
 import AnimatedSearch, { useOpen } from '@/ui/farmer/search'
 import {
     Command,
     CommandEmpty,
-    CommandGroup,
     CommandInput,
     CommandItem,
     CommandList,
+    CommandGroup,
 } from '@/ui/search'
-import { searchCommandsTheme } from '@/config/search-commands'
 import { getSearchPlaceholder } from '@/lib/utils'
+import { Icon } from '@/lib'
+import { CommandType, Navigations } from '@/config/navigation'
+import { Download } from '@/app/(space)/ui/download'
 
 export function SearchBar({
     user,
@@ -26,28 +28,72 @@ export function SearchBar({
     navigation: Navigation[]
     children: React.ReactNode
 }) {
-    const [query, setQuery] = useState('')
-    const { data, isLoading } = useSearch(query)
     const { open, setOpen } = useOpen()
+    const [stack, setStack] = React.useState<CommandType[][]>([Object.values(Navigations).flat()])
+    const [query, setQuery] = React.useState('')
 
-    const renderCommands = () => {
-        return Object.entries(searchCommandsTheme).map(([category, subcategories]) => (
-            <CommandGroup key={category} heading={category}>
-                {Object.entries(subcategories).map(([subcategory, commands]) =>
-                    commands.map((command) => (
-                        <CommandItem
-                            key={command.id}
-                            description={command.description}
-                            startContent={
-                                command.icon || <div className='bg-muted h-4 w-4 rounded' />
-                            }
-                            title={command.title}
-                            value={command.title.toLowerCase()}
-                        />
-                    ))
-                )}
-            </CommandGroup>
-        ))
+    const currentItems = stack[stack.length - 1]
+
+    const allItems = [...Object.values(Navigations).flat()]
+
+    const findParentItem = () => {
+        if (stack.length === 1) return null
+
+        const currentStackItems = stack[stack.length - 1]
+
+        return allItems.find((item) =>
+            currentStackItems.some((stackItem) => stackItem.id === item.id)
+        )
+    }
+
+    const parentItem = findParentItem()
+
+    let itemsToRender: CommandType[] = currentItems
+    let sectionLoading = false
+
+    if (query.trim() && !parentItem) {
+        const searchableItems = allItems.flatMap((section) =>
+            section.children ? [section, ...section.children] : [section]
+        )
+
+        const filteredItems = searchableItems.filter(
+            (item) =>
+                item.title.toLowerCase().includes(query.toLowerCase()) ||
+                item.description?.toLowerCase().includes(query.toLowerCase())
+        )
+
+        itemsToRender = filteredItems
+        sectionLoading = false
+    } else if (parentItem?.searchHook) {
+        const { data, isLoading } = parentItem.searchHook(query)
+
+        itemsToRender = query ? data : (parentItem.children ?? [])
+        sectionLoading = isLoading
+    } else if (parentItem?.children) {
+        itemsToRender = parentItem.children
+    }
+
+    // console.log('Search Debug:', {
+    //     query,
+    //     parentItem: parentItem?.title,
+    // })
+    function handleSelect(item: CommandType) {
+        if (item.children || item.searchHook) {
+            // entering section
+            const children = item.children ?? []
+
+            setStack((prev) => [...prev, children])
+        } else if (item.onSelect) {
+            item.onSelect()
+            setOpen(false)
+        }
+    }
+
+    function handleBack() {
+        if (stack.length > 1) {
+            setStack((prev) => prev.slice(0, -1))
+            setQuery('')
+        }
     }
 
     return (
@@ -57,30 +103,84 @@ export function SearchBar({
             >
                 {open && (
                     <CommandList>
-                        <CommandEmpty>No commands found.</CommandEmpty>
-                        {renderCommands()}
+                        {sectionLoading && <CommandLoading>Loading...</CommandLoading>}
+                        <CommandEmpty>No results found.</CommandEmpty>
+
+                        {stack.length === 1 &&
+                            Object.entries(Navigations).map(([groupName, items]) => (
+                                <CommandGroup
+                                    key={groupName}
+                                    heading={groupName.charAt(0).toUpperCase() + groupName.slice(1)}
+                                >
+                                    {items.map((item) => (
+                                        <CommandItem
+                                            key={item.id}
+                                            description={item.description}
+                                            startContent={<Icon icon={item.icon} />}
+                                            title={item.title}
+                                            value={item.title}
+                                            onSelect={() => handleSelect(item)}
+                                        />
+                                    ))}
+                                </CommandGroup>
+                            ))}
+                        <CommandGroup>
+                            {!sectionLoading &&
+                                stack.length > 1 &&
+                                itemsToRender.map((item) => (
+                                    <CommandItem
+                                        key={item.id}
+                                        description={item.description}
+                                        startContent={<Icon icon={item.icon} />}
+                                        title={item.title}
+                                        value={item.title}
+                                        onSelect={() => handleSelect(item)}
+                                    />
+                                ))}
+                        </CommandGroup>
                     </CommandList>
                 )}
                 <CommandInput
                     classNames={{ base: `${open ? 'sticky bottom-0 border-y' : ''}` }}
                     endContent={
-                        query ? (
-                            <Button
-                                isIconOnly
-                                className='data-hover:bg-foreground/10'
-                                radius='full'
-                                size='sm'
-                                variant='light'
-                                onPress={() => setQuery('')}
-                            >
-                                <X size={18} />
-                            </Button>
-                        ) : (
-                            <div className='flex items-center gap-2'> {children}</div>
-                        )
+                        <>
+                            <Download />
+                            {query ? (
+                                <Button
+                                    isIconOnly
+                                    className='bg-default/20'
+                                    radius='full'
+                                    size='sm'
+                                    startContent={<X size={18} />}
+                                    variant='light'
+                                    onPress={() => setQuery('')}
+                                />
+                            ) : (
+                                children
+                            )}
+                        </>
                     }
                     placeholder={getSearchPlaceholder(user?.name)}
-                    onClick={() => setOpen(true)}
+                    startContent={
+                        <Button
+                            isIconOnly
+                            className={stack.length === 1 ? '' : 'bg-default/20'}
+                            radius='full'
+                            size='sm'
+                            startContent={
+                                stack.length === 1 ? (
+                                    <SearchIcon size={18} />
+                                ) : (
+                                    <ArrowLeft size={18} />
+                                )
+                            }
+                            variant={stack.length === 1 ? 'light' : 'flat'}
+                            onPress={stack.length === 1 ? () => '' : handleBack}
+                        />
+                    }
+                    value={query}
+                    onFocus={() => setOpen(true)}
+                    onValueChange={setQuery}
                 />
             </Command>
         </AnimatedSearch>

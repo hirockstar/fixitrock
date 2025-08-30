@@ -87,7 +87,7 @@ export function Download() {
                             content={activeCount.toString()}
                             radius='full'
                             size='sm'
-                            startContent={<ArrowDownToLine size={18} />}
+                            startContent={<ArrowDownToLine size={16} />}
                             variant='light'
                             onPress={() => setIsOpen(true)}
                         />
@@ -131,7 +131,7 @@ export function Download() {
                         content={activeCount.toString()}
                         radius='full'
                         size='sm'
-                        startContent={<ArrowDownToLine size={18} />}
+                        startContent={<ArrowDownToLine size={16} />}
                         variant='light'
                         onPress={() => setIsOpen(true)}
                     />

@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Command as CommandPrimitive } from 'cmdk'
-import { SearchIcon } from 'lucide-react'
+import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/ui/dialog'
@@ -54,6 +54,7 @@ function CommandDialog({
 function CommandInput({
     classNames,
     endContent,
+    startContent,
     ...props
 }: React.ComponentProps<typeof CommandPrimitive.Input> & {
     classNames?: {
@@ -61,6 +62,7 @@ function CommandInput({
         input?: string
     }
     endContent?: React.ReactNode
+    startContent?: React.ReactNode
 }) {
     return (
         <div
@@ -71,7 +73,7 @@ function CommandInput({
             data-slot='command-input-wrapper'
         >
             <div className='mr-2 flex flex-1 items-center gap-2'>
-                <SearchIcon className='size-5 shrink-0' /> {/* TODO: opacity-50 */}
+                {startContent && <div className='flex items-center'>{startContent}</div>}
                 <CommandPrimitive.Input
                     className={cn(
                         'placeholder:text-foreground-500 text-medium flex w-full bg-transparent bg-clip-text font-normal outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
@@ -81,7 +83,7 @@ function CommandInput({
                     {...props}
                 />
             </div>
-            {endContent && <div className='flex items-center'>{endContent}</div>}
+            {endContent && <div className='flex items-center gap-2.5'>{endContent}</div>}
         </div>
     )
 }
@@ -144,11 +146,13 @@ function CommandItem({
     title,
     description,
     classNames,
+    href,
     ...props
 }: React.ComponentProps<typeof CommandPrimitive.Item> & {
     startContent?: React.ReactNode
     endContent?: React.ReactNode
     title?: string
+    href?: string
     description?: string
     classNames?: {
         base?: string
@@ -158,15 +162,8 @@ function CommandItem({
         endContent?: string
     }
 }) {
-    return (
-        <CommandPrimitive.Item
-            className={cn(
-                "data-[selected=true]:bg-default/20 dark:data-[selected=true]:bg-default/20 data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 overflow-hidden rounded-sm border px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-                classNames?.base
-            )}
-            data-slot='command-item'
-            {...props}
-        >
+    const itemContent = (
+        <>
             {startContent && (
                 <div
                     className={cn('flex shrink-0 rounded-lg border p-2', classNames?.startContent)}
@@ -187,6 +184,36 @@ function CommandItem({
             {endContent && (
                 <div className={cn('flex items-center', classNames?.endContent)}>{endContent}</div>
             )}
+        </>
+    )
+
+    if (href) {
+        return (
+            <Link className='block' href={href}>
+                <CommandPrimitive.Item
+                    className={cn(
+                        "data-[selected=true]:bg-default/20 dark:data-[selected=true]:bg-default/20 data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 overflow-hidden rounded-sm border px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+                        classNames?.base
+                    )}
+                    data-slot='command-item'
+                    {...props}
+                >
+                    {itemContent}
+                </CommandPrimitive.Item>
+            </Link>
+        )
+    }
+
+    return (
+        <CommandPrimitive.Item
+            className={cn(
+                "data-[selected=true]:bg-default/20 dark:data-[selected=true]:bg-default/20 data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 overflow-hidden rounded-sm border px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+                classNames?.base
+            )}
+            data-slot='command-item'
+            {...props}
+        >
+            {itemContent}
         </CommandPrimitive.Item>
     )
 }
