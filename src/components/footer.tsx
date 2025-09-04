@@ -3,7 +3,6 @@
 import Link from 'next/link'
 
 import { siteConfig } from '@/config/site'
-import { Status } from '@/ui/status'
 
 import ThemeSwitcher from './theme'
 
@@ -20,7 +19,6 @@ export default function Footer() {
                     {siteConfig.title}
                 </Link>
                 <div className='flex items-center gap-4'>
-                    <Status />
                     <ThemeSwitcher />
                 </div>
             </div>

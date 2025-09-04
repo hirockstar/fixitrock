@@ -11,7 +11,7 @@ function Command({ className, ...props }: React.ComponentProps<typeof CommandPri
     return (
         <CommandPrimitive
             className={cn(
-                'bg-background flex h-full w-full flex-col overflow-hidden rounded-xl',
+                'bg-background flex h-auto w-full flex-col overflow-hidden rounded-lg',
                 className
             )}
             data-slot='command'
@@ -67,12 +67,12 @@ function CommandInput({
     return (
         <div
             className={cn(
-                'bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 flex items-center p-1 px-2 backdrop-blur',
+                'bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 flex items-center px-1 py-1 backdrop-blur md:py-0.5',
                 classNames?.base
             )}
             data-slot='command-input-wrapper'
         >
-            <div className='mr-2 flex flex-1 items-center gap-2'>
+            <div className='flex flex-1 items-center gap-2'>
                 {startContent && <div className='flex items-center'>{startContent}</div>}
                 <CommandPrimitive.Input
                     className={cn(
@@ -92,7 +92,7 @@ function CommandList({ className, ...props }: React.ComponentProps<typeof Comman
     return (
         <CommandPrimitive.List
             className={cn(
-                'min-h-full scroll-py-1 overflow-x-hidden overflow-y-auto outline-0 [&_[cmdk-list-sizer]]:mb-12 [&_[cmdk-list-sizer]]:min-h-full',
+                'flex flex-1 scroll-py-1 flex-col overflow-x-hidden overflow-y-auto outline-0',
                 className
             )}
             data-slot='command-list'
@@ -133,7 +133,7 @@ function CommandSeparator({
 }: React.ComponentProps<typeof CommandPrimitive.Separator>) {
     return (
         <CommandPrimitive.Separator
-            className={cn('bg-border -mx-1 h-px', className)}
+            className={cn('bg-border h-px', className)}
             data-slot='command-separator'
             {...props}
         />
@@ -166,7 +166,10 @@ function CommandItem({
         <>
             {startContent && (
                 <div
-                    className={cn('flex shrink-0 rounded-lg border p-2', classNames?.startContent)}
+                    className={cn(
+                        'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border',
+                        classNames?.startContent
+                    )}
                 >
                     {startContent}
                 </div>
@@ -189,7 +192,7 @@ function CommandItem({
 
     if (href) {
         return (
-            <Link className='block' href={href}>
+            <Link passHref className='block' href={href}>
                 <CommandPrimitive.Item
                     className={cn(
                         "data-[selected=true]:bg-default/20 dark:data-[selected=true]:bg-default/20 data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 overflow-hidden rounded-sm border px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",

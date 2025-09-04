@@ -324,3 +324,14 @@ export function getSearchPlaceholder(name?: string) {
 
     return `Night ${name}, what's the vibe?`
 }
+
+/**
+ * Capitalizes the first letter of a string
+ * @param text - The text to capitalize
+ * @returns The text with the first letter capitalized
+ */
+export function capitalize(text: string): string {
+    if (!text) return text
+
+    return text.charAt(0).toUpperCase() + text.slice(1)
+}

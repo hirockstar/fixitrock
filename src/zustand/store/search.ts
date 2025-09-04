@@ -1,178 +1,292 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { useEffect, Dispatch, SetStateAction } from 'react'
 
-import { ProcessedCommand } from '@/config/search-commands'
+import { CommandType } from '@/config/navigation'
 
-interface SearchState {
-    // Search state
+interface NavigationGroup {
+    heading: string
+    navigationItems: CommandType[]
+}
+
+interface SearchBarState {
+    // State
     query: string
-    searchResults: Record<string, ProcessedCommand[]> | null
-    isLoading: boolean
-
-    // Commands state
-    commands: ProcessedCommand[]
-    groupedCommands: Record<string, ProcessedCommand[]>
-
-    // Navigation state
-    pages: string[]
-    activePage: string
-    isHome: boolean
+    pages: string | null
+    dynamicNavigations: Record<string, CommandType[]> | null
+    open: boolean
 
     // Actions
     setQuery: (query: string) => void
-    clearQuery: () => void
-    setCommands: (commands: ProcessedCommand[]) => void
-    setLoading: (loading: boolean) => void
-    navigateToPage: (pageName: string) => void
-    popPage: () => void
-    goHome: () => void
+    setPages: (pages: string | null) => void
+    setDynamicNavigations: (navigations: Record<string, CommandType[]>) => void
+    setOpen: Dispatch<SetStateAction<boolean>>
 
-    // Search functions
-    searchCommands: (query: string) => void
-    getSearchResults: () => Record<string, ProcessedCommand[]> | null
+    // Methods
+    bounce: (ref: React.RefObject<HTMLDivElement | null>) => void
+    onKeyDown: (e: KeyboardEvent) => void
+    popPage: () => void
+    getFilteredItems: (items: CommandType[]) => CommandType[]
+    initializeStore: (navigations: Record<string, CommandType[]>) => void
+    handleSelect: (item: CommandType) => void
+
+    // New rendering methods
+    getNavigationGroups: () => NavigationGroup[]
+    isPageMode: () => boolean
+    getCurrentPageItems: () => CommandType[]
 }
 
-export const useSearchStore = create<SearchState>()(
+export const useSearchStore = create<SearchBarState>()(
     devtools(
         (set, get) => ({
             // Initial state
             query: '',
-            searchResults: null,
-            isLoading: true,
-            commands: [],
-            groupedCommands: {},
-            pages: ['home'],
-            activePage: 'home',
-            isHome: true,
+            pages: null,
+            dynamicNavigations: null,
+            open: false,
 
             // Actions
-            setQuery: (query: string) => {
-                set({ query })
-                if (query.trim()) {
-                    get().searchCommands(query)
-                } else {
-                    set({ searchResults: null })
+            setQuery: (query: string) => set({ query }),
+            setPages: (pages: string | null) => set({ pages }),
+            setDynamicNavigations: (navigations: Record<string, CommandType[]>) =>
+                set({ dynamicNavigations: navigations }),
+            setOpen: (value: SetStateAction<boolean>) => {
+                const newValue = typeof value === 'function' ? value(get().open) : value
+
+                set({ open: newValue })
+            },
+
+            // Methods
+            bounce: (ref: React.RefObject<HTMLDivElement | null>) => {
+                const { setQuery } = get()
+
+                if (ref.current) {
+                    ref.current.style.transform = 'scale(0.96)'
+                    setTimeout(() => {
+                        if (ref.current) {
+                            ref.current.style.transform = ''
+                        }
+                    }, 100)
+                    setQuery('')
                 }
             },
 
-            clearQuery: () => {
-                set({ query: '', searchResults: null })
-            },
+            onKeyDown: (e: KeyboardEvent) => {
+                const { query, popPage } = get()
 
-            setCommands: (commands: ProcessedCommand[]) => {
-                // Group commands by category
-                const grouped = commands.reduce(
-                    (acc, cmd) => {
-                        const category = cmd.id.split('-')[0] || 'general'
-
-                        if (!acc[category]) {
-                            acc[category] = []
-                        }
-                        acc[category].push(cmd)
-
-                        return acc
-                    },
-                    {} as Record<string, ProcessedCommand[]>
-                )
-
-                set({
-                    commands,
-                    groupedCommands: grouped,
-                    isLoading: false,
-                })
-            },
-
-            setLoading: (loading: boolean) => {
-                set({ isLoading: loading })
-            },
-
-            navigateToPage: (pageName: string) => {
-                set((state) => ({
-                    pages: [...state.pages, pageName],
-                    activePage: pageName,
-                    isHome: false,
-                }))
-            },
-
-            popPage: () => {
-                set((state) => {
-                    const newPages = [...state.pages]
-
-                    newPages.splice(-1, 1)
-                    const newActivePage = newPages[newPages.length - 1] || 'home'
-
-                    return {
-                        pages: newPages,
-                        activePage: newActivePage,
-                        isHome: newActivePage === 'home',
-                    }
-                })
-            },
-
-            goHome: () => {
-                set({
-                    pages: ['home'],
-                    activePage: 'home',
-                    isHome: true,
-                })
-            },
-
-            // Search functions
-            searchCommands: (query: string) => {
-                const { commands } = get()
-
-                if (!query.trim()) {
-                    set({ searchResults: null })
-
+                if (query.length) {
                     return
                 }
 
-                const results: Record<string, ProcessedCommand[]> = {}
-                const queryLower = query.toLowerCase()
+                if (e.key === 'Backspace') {
+                    e.preventDefault()
+                    popPage()
+                }
+            },
 
-                commands.forEach((cmd) => {
-                    const category = cmd.id.split('-')[0] || 'general'
+            popPage: () => set({ pages: null }),
 
-                    // Check if main command matches search
-                    if (
-                        cmd.title.toLowerCase().includes(queryLower) ||
-                        cmd.description.toLowerCase().includes(queryLower)
-                    ) {
-                        if (!results[category]) results[category] = []
-                        results[category].push(cmd)
-                    }
+            getFilteredItems: (items: CommandType[]) => {
+                const { query } = get()
 
-                    // Check if children match search
-                    if (cmd.children && cmd.children.length > 0) {
-                        const matchingChildren = cmd.children.filter(
-                            (child) =>
-                                child.title.toLowerCase().includes(queryLower) ||
-                                child.description.toLowerCase().includes(queryLower)
-                        )
+                if (!query.trim()) {
+                    return items
+                }
 
-                        if (matchingChildren.length > 0) {
-                            if (!results[category]) results[category] = []
-                            // Add children with parent context
-                            matchingChildren.forEach((child) => {
-                                results[category].push({
-                                    ...child,
-                                    title: `${cmd.title} > ${child.title}`,
-                                    description: `${child.description} (from ${cmd.title})`,
+                const searchQuery = query.toLowerCase()
+
+                return items.filter((item) => {
+                    const itemMatches =
+                        item.title.toLowerCase().includes(searchQuery) ||
+                        item.description?.toLowerCase().includes(searchQuery)
+
+                    const childrenMatch = item.children?.some(
+                        (child) =>
+                            child.title.toLowerCase().includes(searchQuery) ||
+                            child.description?.toLowerCase().includes(searchQuery)
+                    )
+
+                    return itemMatches || childrenMatch
+                })
+            },
+
+            initializeStore: (navigations: Record<string, CommandType[]>) => {
+                set({ dynamicNavigations: navigations })
+            },
+
+            handleSelect: (item: CommandType) => {
+                const { setOpen } = get()
+
+                // Check if the item has setPages action (like theme selection)
+                if (item.onSelect && item.onSelect.toString().includes('setPages')) {
+                    // Don't close for setPages actions
+                    item.onSelect()
+                } else {
+                    // Close for href items and other actions like setTheme
+                    setOpen(false)
+                    item.onSelect?.()
+                }
+            },
+
+            // New rendering methods
+            isPageMode: () => {
+                const { pages } = get()
+
+                return pages !== null
+            },
+
+            getCurrentPageItems: () => {
+                const { pages, dynamicNavigations } = get()
+
+                if (!pages || !dynamicNavigations) return []
+
+                const allItems = Object.values(dynamicNavigations).flat()
+                const currentPageItem = allItems.find((item) => item.id === pages)
+
+                return currentPageItem?.children || []
+            },
+
+            getNavigationGroups: () => {
+                const { query, pages, dynamicNavigations } = get()
+
+                // Page mode - show children of current page
+                if (pages && dynamicNavigations) {
+                    const allItems = Object.values(dynamicNavigations).flat()
+                    const currentPageItem = allItems.find((item) => item.id === pages)
+                    const children = currentPageItem?.children || []
+
+                    return [
+                        {
+                            heading: pages,
+                            navigationItems: children,
+                        },
+                    ]
+                }
+
+                // Normal/Filter mode - show all navigation groups
+                if (!dynamicNavigations) return []
+
+                const groups: NavigationGroup[] = []
+                const allNavigationItems: CommandType[] = []
+
+                Object.entries(dynamicNavigations).forEach(([heading, items]) => {
+                    const filteredItems = get().getFilteredItems(items)
+
+                    if (filteredItems.length > 0) {
+                        const navigationItems: CommandType[] = []
+
+                        filteredItems.forEach((item) => {
+                            // Add the main item only if it doesn't exist anywhere
+                            if (!allNavigationItems.some((navItem) => navItem.id === item.id)) {
+                                navigationItems.push(item)
+                                allNavigationItems.push(item)
+                            }
+
+                            // If searching, also add matching children
+                            if (query.trim() && item.children) {
+                                const matchingChildren = item.children.filter((child) => {
+                                    const childMatches =
+                                        child.title.toLowerCase().includes(query.toLowerCase()) ||
+                                        child.description
+                                            ?.toLowerCase()
+                                            .includes(query.toLowerCase())
+
+                                    return childMatches
                                 })
+
+                                // Add children only if they don't exist anywhere
+                                matchingChildren.forEach((child) => {
+                                    if (
+                                        !allNavigationItems.some(
+                                            (navItem) => navItem.id === child.id
+                                        )
+                                    ) {
+                                        navigationItems.push(child)
+                                        allNavigationItems.push(child)
+                                    }
+                                })
+                            }
+                        })
+
+                        if (navigationItems.length > 0) {
+                            groups.push({
+                                heading,
+                                navigationItems,
                             })
                         }
                     }
                 })
 
-                set({ searchResults: results })
-            },
-
-            getSearchResults: () => {
-                return get().searchResults
+                return groups
             },
         }),
         {
-            name: 'search-store',
+            name: 'search-bar-store',
         }
     )
 )
+
+// Hook for easier usage
+export const useSearchBar = () => {
+    const open = useSearchStore((state) => state.open)
+    const setOpen = useSearchStore((state) => state.setOpen)
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const handleKeyDown = (event: KeyboardEvent) => {
+                if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
+                    event.preventDefault()
+                    setOpen(true)
+                }
+                if (event.key === 'Escape') {
+                    setOpen(false)
+                }
+            }
+
+            document.addEventListener('keydown', handleKeyDown)
+
+            return () => {
+                document.removeEventListener('keydown', handleKeyDown)
+            }
+        }
+    }, [setOpen])
+
+    useEffect(() => {
+        if (open && typeof window !== 'undefined') {
+            document.documentElement.style.overflow = 'hidden'
+            const isScrollable =
+                document.documentElement.scrollHeight > document.documentElement.clientHeight
+
+            document.documentElement.style.paddingRight = isScrollable ? '11px' : '0px'
+        } else {
+            document.documentElement.style.overflow = ''
+            document.documentElement.style.paddingRight = ''
+        }
+    }, [open])
+
+    return {
+        // State
+        query: useSearchStore((state) => state.query),
+        pages: useSearchStore((state) => state.pages),
+        dynamicNavigations: useSearchStore((state) => state.dynamicNavigations),
+        open,
+        setOpen,
+
+        // Actions
+        setQuery: useSearchStore((state) => state.setQuery),
+        setPages: useSearchStore((state) => state.setPages),
+        setDynamicNavigations: useSearchStore((state) => state.setDynamicNavigations),
+
+        // Methods
+        bounce: useSearchStore((state) => state.bounce),
+        onKeyDown: useSearchStore((state) => state.onKeyDown),
+        popPage: useSearchStore((state) => state.popPage),
+        getFilteredItems: useSearchStore((state) => state.getFilteredItems),
+        handleSelect: useSearchStore((state) => state.handleSelect),
+
+        // New rendering methods
+        getNavigationGroups: useSearchStore((state) => state.getNavigationGroups),
+        isPageMode: useSearchStore((state) => state.isPageMode),
+        getCurrentPageItems: useSearchStore((state) => state.getCurrentPageItems),
+    }
+}
