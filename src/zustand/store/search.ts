@@ -28,12 +28,13 @@ interface SearchBarState {
     popPage: () => void
     getFilteredItems: (items: CommandType[]) => CommandType[]
     initializeStore: (navigations: Record<string, CommandType[]>) => void
-    handleSelect: (item: CommandType) => void
+    handleSelect: (item: CommandType, ref?: React.RefObject<HTMLDivElement | null>) => void
 
     // New rendering methods
     getNavigationGroups: () => NavigationGroup[]
     isPageMode: () => boolean
     getCurrentPageItems: () => CommandType[]
+    heading: () => string | null
 }
 
 export const useSearchStore = create<SearchBarState>()(
@@ -59,14 +60,26 @@ export const useSearchStore = create<SearchBarState>()(
             // Methods
             bounce: (ref: React.RefObject<HTMLDivElement | null>) => {
                 const { setQuery } = get()
-
-                if (ref.current) {
-                    ref.current.style.transform = 'scale(0.96)'
+                if (ref.current) { 
+                    ref.current.style.transition = 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)'         
+                    ref.current.style.transform = 'scale(0.98)'                
                     setTimeout(() => {
-                        if (ref.current) {
-                            ref.current.style.transform = ''
+                        if (ref.current) {                   
+                            ref.current.style.transform = 'scale(1.02)'    
+                            setTimeout(() => {
+                                if (ref.current) {                             
+                                    ref.current.style.transform = 'scale(1)'
+                            
+                                    setTimeout(() => {
+                                        if (ref.current) {
+                                            ref.current.style.transition = ''
+                                        }
+                                    }, 150)
+                                }
+                            }, 75)
                         }
-                    }, 100)
+                    }, 75)
+                    
                     setQuery('')
                 }
             },
@@ -114,16 +127,13 @@ export const useSearchStore = create<SearchBarState>()(
                 set({ dynamicNavigations: navigations })
             },
 
-            handleSelect: (item: CommandType) => {
-                const { setOpen } = get()
-
-                // Check if the item has setPages action (like theme selection)
+            handleSelect: (item: CommandType, ref?: React.RefObject<HTMLDivElement | null>) => {
+                const { setOpen, bounce } = get()
                 if (item.onSelect && item.onSelect.toString().includes('setPages')) {
-                    // Don't close for setPages actions
+                    if (ref) bounce(ref)
                     item.onSelect()
                 } else {
-                    // Close for href items and other actions like setTheme
-                    setOpen(false)
+                      setOpen(false)
                     item.onSelect?.()
                 }
             },
@@ -144,6 +154,16 @@ export const useSearchStore = create<SearchBarState>()(
                 const currentPageItem = allItems.find((item) => item.id === pages)
 
                 return currentPageItem?.children || []
+            },
+
+            heading: () => {
+                const { pages, dynamicNavigations } = get()
+                if (!pages || !dynamicNavigations) return null
+
+                const allItems = Object.values(dynamicNavigations).flat()
+                const currentPageItem = allItems.find((item) => item.id === pages)
+
+                return currentPageItem?.title || null
             },
 
             getNavigationGroups: () => {
@@ -282,11 +302,13 @@ export const useSearchBar = () => {
         onKeyDown: useSearchStore((state) => state.onKeyDown),
         popPage: useSearchStore((state) => state.popPage),
         getFilteredItems: useSearchStore((state) => state.getFilteredItems),
-        handleSelect: useSearchStore((state) => state.handleSelect),
+        handleSelect: (item: CommandType, ref?: React.RefObject<HTMLDivElement | null>) => 
+            useSearchStore.getState().handleSelect(item, ref),
 
         // New rendering methods
         getNavigationGroups: useSearchStore((state) => state.getNavigationGroups),
         isPageMode: useSearchStore((state) => state.isPageMode),
         getCurrentPageItems: useSearchStore((state) => state.getCurrentPageItems),
+        heading: useSearchStore((state) => state.heading),
     }
 }

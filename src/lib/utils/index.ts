@@ -316,13 +316,105 @@ export function getSearchPlaceholder(name?: string) {
     if (!name) return 'What do you need?'
 
     const hour = new Date().getHours()
+    const placeholders = [
+        // Late night (0-3)
+        `Hey ${name}, still awake? 😴 What's the plan?`,
+        `Yo ${name}, burning the midnight oil? Let's find something!`,
+        `${name}, night owl mode! What's cooking?`,
+        `Still up ${name}? Let's get stuff done!`,
+        `Insomniac ${name}? Let's explore!`,
+        
+        // Pre-dawn (3-6)
+        `Early bird ${name}! What's the mission?`,
+        `Yo ${name}, up before the sun? Let's go!`,
+        `${name}, dawn patrol! What's cooking?`,
+        `Hey ${name}, early riser! What's the plan?`,
+        
+        // Coffee time (6-9)
+        `Morning ${name}, coffee time! ☕ What are we building?`,
+        `Rise and shine ${name}! Ready to conquer?`,
+        `Good morning ${name}, coffee in hand? Let's go!`,
+        `Hey ${name}, first cup of the day? What's up?`,
+        `Morning ${name}, caffeine mode! What's the game plan?`,
+        `Yo ${name}, coffee break! Let's find something cool`,
+        `${name}, morning fuel! What do you need?`,
+        
+        // Work mode (9-12)
+        `Hey ${name}, work mode activated! What's the mission?`,
+        `Morning ${name}, ready to hustle? Let's go!`,
+        `Yo ${name}, productivity time! What's next?`,
+        `${name}, morning grind! What's cooking?`,
+        `Hey ${name}, let's get things done! What's up?`,
+        
+        // Lunch time (12-14)
+        `Lunch time ${name}! 🍕 What's the plan?`,
+        `Hey ${name}, lunch break! What's on the menu?`,
+        `Yo ${name}, food time! Let's find something`,
+        `${name}, lunch vibes! What do you need?`,
+        `Hey ${name}, break time! What's cooking?`,
+        `Lunch break ${name}! What's the move?`,
+        
+        // Post-lunch (14-17)
+        `Afternoon ${name}, food coma over? Let's hustle!`,
+        `Hey ${name}, post-lunch energy! What's next?`,
+        `Afternoon ${name}, what's the mission?`,
+        `Yo ${name}, afternoon grind time! What's up?`,
+        `${name}, afternoon vibes! What do you need?`,
+        `Hey ${name}, afternoon mode! Let's go!`,
+        
+        // Coffee break (15-17)
+        `Coffee break ${name}! ☕ What's brewing?`,
+        `Hey ${name}, afternoon coffee? Let's find something!`,
+        `Yo ${name}, caffeine boost time! What's up?`,
+        `${name}, coffee o'clock! What's the plan?`,
+        
+        // Evening wind down (17-19)
+        `Evening ${name}, work day done? What's on your mind?`,
+        `Hey ${name}, evening mode! What's the plan?`,
+        `${name}, evening vibes! Let's find something cool`,
+        `Evening ${name}, what's the mission?`,
+        `Yo ${name}, evening hustle! What's next?`,
+        `Hey ${name}, evening chill! What do you need?`,
+        
+        // Dinner time (19-21)
+        `Dinner time ${name}! 🍽️ What's cooking?`,
+        `Hey ${name}, dinner vibes! What's on the menu?`,
+        `Yo ${name}, food time! Let's find something`,
+        `${name}, dinner mode! What's the plan?`,
+        `Hey ${name}, dinner break! What's up?`,
+        `Dinner time ${name}! What's the move?`,
+        
+        // Night chill (21-23)
+        `Night ${name}, what's the vibe?`,
+        `Hey ${name}, night mode activated! Let's go!`,
+        `${name}, night owl! What's cooking?`,
+        `Night ${name}, ready to explore?`,
+        `Yo ${name}, night vibes! What's the plan?`,
+        `Hey ${name}, night chill! What do you need?`,
+        
+        // Late night (23-24)
+        `Late night ${name}! What's the mission?`,
+        `Hey ${name}, late night vibes! Let's find something`,
+        `Yo ${name}, night owl mode! What's up?`,
+        `${name}, late night energy! What's cooking?`
+    ]
 
-    if (hour >= 0 && hour < 4) return `Hey ${name}, still awake? 😴 What's the plan?`
-    if (hour >= 4 && hour < 12) return `Morning ${name}, what are we building today?`
-    if (hour >= 12 && hour < 17) return `Afternoon ${name}, what's next?`
-    if (hour >= 17 && hour < 21) return `Evening ${name}, what's on your mind?`
+    // Return a random placeholder based on specific time ranges
+    const timeBasedPlaceholders = placeholders.filter((_, index) => {
+        if (hour >= 0 && hour < 3) return index < 5
+        if (hour >= 3 && hour < 6) return index >= 5 && index < 9
+        if (hour >= 6 && hour < 9) return index >= 9 && index < 16
+        if (hour >= 9 && hour < 12) return index >= 16 && index < 21
+        if (hour >= 12 && hour < 14) return index >= 21 && index < 27
+        if (hour >= 14 && hour < 15) return index >= 27 && index < 33
+        if (hour >= 15 && hour < 17) return index >= 33 && index < 37
+        if (hour >= 17 && hour < 19) return index >= 37 && index < 43
+        if (hour >= 19 && hour < 21) return index >= 43 && index < 49
+        if (hour >= 21 && hour < 23) return index >= 49 && index < 55
+        return index >= 55
+    })
 
-    return `Night ${name}, what's the vibe?`
+    return timeBasedPlaceholders[Math.floor(Math.random() * timeBasedPlaceholders.length)]
 }
 
 /**

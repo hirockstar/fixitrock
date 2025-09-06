@@ -1,6 +1,5 @@
 import React from 'react'
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { Tooltip as TooltipPrimitive, Dialog as DialogPrimitive } from 'radix-ui'
 import {
     ArrowUp,
     Paperclip,

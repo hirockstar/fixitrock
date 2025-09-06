@@ -51,6 +51,7 @@ export default function UserDrawer({
         <>
             <Button
                 isIconOnly
+                className='bg-default/20 size-6.5 min-w-0'
                 radius='full'
                 size='sm'
                 variant={user ? 'flat' : 'light'}
@@ -59,7 +60,7 @@ export default function UserDrawer({
                 {user ? (
                     <Image alt={user.name} height={30} src={userAvatar(user)} width={30} />
                 ) : (
-                    <FaUserCircle aria-label='Login to your account' size={22} />
+                    <FaUserCircle aria-label='Login to your account' size={20} />
                 )}
             </Button>
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useAnimation } from 'motion/react'
+import { AnimatePresence, motion, useAnimation } from 'motion/react'
 import { useEffect, useState } from 'react'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
@@ -40,17 +40,20 @@ export default function AnimatedSearch({ children, open, setOpen }: AnimatedSear
                     }
                 }}
             />
-            <motion.div
-                animate={controls}
-                className={`fixed bottom-4 z-50 w-[95%] md:w-[640px]`}
-                initial={isHidden && !open ? 'hidden' : 'visible'}
-                transition={{ type: 'spring', stiffness: 350, damping: 35 }}
-                variants={Bottom}
-            >
-                <Modal open={open} setOpen={setOpen}>
-                    {children}
-                </Modal>
-            </motion.div>
+            <AnimatePresence>
+                <motion.div
+                    animate={controls}
+                    className={`fixed bottom-4 z-50 w-[95%] md:w-[640px]`}
+                    exit='hidden'
+                    initial={isHidden && !open ? 'hidden' : 'visible'}
+                    transition={{ type: 'spring', stiffness: 350, damping: 35 }}
+                    variants={Bottom}
+                >
+                    <Modal open={open} setOpen={setOpen}>
+                        {children}
+                    </Modal>
+                </motion.div>
+            </AnimatePresence>
         </div>
     )
 }

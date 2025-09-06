@@ -2,6 +2,8 @@ export type CommandType = {
     id: string
     title: string
     description?: string
+    shortCut?: string
+    keywords?: string[]
     icon: string
     href?: string
     children?: CommandType[]
@@ -19,12 +21,18 @@ export const Navigations = (actions: Actions): Record<string, CommandType[]> => 
         space: [
             {
                 id: 'space',
-                title: 'Search in Space . . .',
-                description:
-                    'Space is a place where you can find all the tools you need to fix your device',
+                title: 'Search Firmwares . . .',
                 icon: 'fluent:phone-link-setup-24-regular',
                 onSelect: () => actions.setPages!('space'),
                 children: [
+                    {
+                        id: 'space-firmwares',
+                        title: 'Firmwares',
+                        description:
+                            'Download official firmware files for all mobile devices and brands',
+                        icon: 'fluent:phone-link-setup-24-regular',
+                        href: '/space',
+                    },
                     {
                         id: 'space-apps',
                         title: 'Apps',
@@ -86,14 +94,12 @@ export const Navigations = (actions: Actions): Record<string, CommandType[]> => 
             {
                 id: 'space-frp',
                 title: 'FRP Bypass',
-                description: 'Remove Factory Reset Protection and unlock your Android device',
                 icon: 'hugeicons:phone-lock',
                 href: '/frp',
             },
             {
                 id: 'space-flash-tool',
                 title: 'Flashing Tools',
-                description: 'Professional tools for flashing, rooting, and unlocking devices',
                 icon: 'hugeicons:phone-arrow-up',
                 href: '/space/flash-tool',
             },
@@ -101,38 +107,33 @@ export const Navigations = (actions: Actions): Record<string, CommandType[]> => 
         general: [
             {
                 id: 'home',
-                title: 'Go back',
-                description: 'Return to home page',
+                title: 'Return to Home',
                 icon: 'simple-icons:ghostery',
                 href: '/',
             },
             {
                 id: 'theme',
                 title: 'Change Theme . . .',
-                description: 'Choose your preferred theme',
                 icon: 'fa7-solid:brush',
                 onSelect: () => actions.setPages!('theme'),
                 children: [
                     {
                         id: 'light',
-                        title: 'Light',
-                        description: 'Change Theme to Light',
+                        title: 'Change Theme to Light',
                         icon: 'line-md:moon-to-sunny-outline-loop-transition',
 
                         onSelect: () => actions.setTheme!('light'),
                     },
                     {
                         id: 'system',
-                        title: 'System',
-                        description: 'Change Theme to System',
+                        title: 'Change Theme to System',
                         icon: 'line-md:computer',
 
                         onSelect: () => actions.setTheme!('system'),
                     },
                     {
                         id: 'dark',
-                        title: 'Dark',
-                        description: 'Change Theme to Dark',
+                        title: 'Change Theme to Dark',
                         icon: 'line-md:sunny-outline-to-moon-alt-loop-transition',
                         onSelect: () => actions.setTheme!('dark'),
                     },
@@ -142,11 +143,11 @@ export const Navigations = (actions: Actions): Record<string, CommandType[]> => 
         help: [
             {
                 id: 'support',
-                title: 'Support',
-                description: 'Contact us for any help',
-                icon: 'mdi:email',
+                title: 'Contact Support',
+                icon: 'bx:support',
                 href: 'https://wa.me/919927241144',
             },
         ],
     }
 }
+

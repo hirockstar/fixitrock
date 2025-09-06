@@ -83,7 +83,7 @@ export function Download() {
                                     ? `${activeCount} active download${activeCount !== 1 ? 's' : ''} - Click to view download manager`
                                     : 'View download history - No active downloads'
                             }
-                            className='bg-default/20'
+                            className='bg-default/20 size-6.5 min-w-0'
                             content={activeCount.toString()}
                             radius='full'
                             size='sm'
@@ -127,7 +127,7 @@ export function Download() {
                                 ? `${activeCount} active download${activeCount !== 1 ? 's' : ''} - Click to view download manager`
                                 : 'View download history - No active downloads'
                         }
-                        className='bg-default/20'
+                        className='bg-default/20 size-6.5 min-w-0'
                         content={activeCount.toString()}
                         radius='full'
                         size='sm'
