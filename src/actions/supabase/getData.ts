@@ -13,7 +13,7 @@ export async function getData<T>(
 
     const supabase = await createClient()
 
-    const query = supabase.from(parsedTableName).select('*')
+    const query = supabase.from(parsedTableName).select('*').order('id', { ascending: true })
 
     if (filters) {
         query.filter(filters[0], filters[1], filters[2])

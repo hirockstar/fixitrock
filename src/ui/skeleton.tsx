@@ -145,3 +145,17 @@ export const MarkdownSkeleton = () => {
         </div>
     )
 }
+
+
+export function FRPSkeleton() {
+    return (
+            <div className='grid grid-cols-3 md:grid-cols-4'>
+                {Array.from({ length: 28 }).map((_, i) => (
+                    <div key={i} className='flex flex-col items-center space-y-2 p-3'>
+                        <Skeleton className='w-16 h-16 rounded-2xl' />
+                        <Skeleton className='h-3 w-12 rounded-full' />
+                    </div>
+                ))}
+            </div>
+    )
+}

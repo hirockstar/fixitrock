@@ -70,11 +70,12 @@ export function Download() {
             <Popover open={isOpen} onOpenChange={setIsOpen}>
                 <PopoverTrigger asChild>
                     <Badge
-                        className='text-white'
+                        className='min-w-0 min-h-0 size-3'
+                        size='sm'
                         color='success'
-                        content={activeCount.toString()}
                         isInvisible={!hasActiveDownloads}
                         shape='circle'
+                        isOneChar 
                     >
                         <Button
                             isIconOnly
@@ -114,11 +115,12 @@ export function Download() {
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
                 <Badge
-                    className='text-white'
-                    color='success'
-                    content={activeCount.toString()}
-                    isInvisible={!hasActiveDownloads}
-                    shape='circle'
+                     className='min-w-0 min-h-0 size-3'
+                        size='sm'
+                        color='success'
+                        isInvisible={!hasActiveDownloads}
+                        shape='circle'
+                        isOneChar 
                 >
                     <Button
                         isIconOnly
