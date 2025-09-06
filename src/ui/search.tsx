@@ -11,7 +11,7 @@ function Command({ className, ...props }: React.ComponentProps<typeof CommandPri
     return (
         <CommandPrimitive
             className={cn(
-                'bg-background flex h-auto w-full flex-col overflow-hidden rounded-lg',
+                'bg-background flex h-auto w-full flex-col overflow-hidden rounded-md',
                 className
             )}
             data-slot='command'
@@ -67,7 +67,7 @@ function CommandInput({
     return (
         <div
             className={cn(
-                'bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 flex items-center px-1 py-1 backdrop-blur',
+                'bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 flex items-center h-10 px-1.5 backdrop-blur',
                 classNames?.base
             )}
             data-slot='command-input-wrapper'

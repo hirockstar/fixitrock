@@ -31,10 +31,7 @@ export function LoginModal() {
         </Dialog>
     ) : (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
-            <DrawerContent
-                onInteractOutside={(e) => e.preventDefault()}
-                onPointerDownOutside={(e) => e.preventDefault()}
-            >
+            <DrawerContent>
                 <Steps />
             </DrawerContent>
         </Drawer>
@@ -57,7 +54,6 @@ function Steps() {
         setError('')
         setLoading(true)
         try {
-            // Always format as +91XXXXXXXXXX
             const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`
 
             await sendOtp(formattedPhone)
@@ -104,7 +100,11 @@ function Steps() {
                 />
             )}
 
-            {error && <p className='text-center text-sm text-red-500'>{error}</p>}
+            {error && (
+                <div className='mx-4 mb-4 rounded-md bg-red-50 p-3 text-center text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400'>
+                    {error}
+                </div>
+            )}
         </>
     )
 }

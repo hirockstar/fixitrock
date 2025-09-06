@@ -134,10 +134,10 @@ export function SearchBar({
                             {query ? (
                                 <Button
                                     isIconOnly
-                                    className='bg-default/20 size-6.5 min-w-0'
+                                    className='bg-default/20'
                                     radius='full'
                                     size='sm'
-                                    startContent={<X size={16} />}
+                                    startContent={<X size={18} />}
                                     variant='light'
                                     onPress={() => setQuery('')}
                                 />
@@ -150,13 +150,14 @@ export function SearchBar({
                     startContent={
                         <Button
                             isIconOnly
-                            className={`${pages ? 'bg-default/20' : ''} size-6.5 min-w-0`}
+                            className={`${pages ? 'bg-default/20' : 'data-[hover=true]:bg-transparent'}`}
                             radius='full'
                             size='sm'
                             startContent={
-                                pages ? <ArrowLeft size={16} /> : <SearchIcon size={16} />
+                                pages ? <ArrowLeft size={18} /> : <SearchIcon size={18} />
                             }
                             variant={pages ? 'flat' : 'light'}
+                 
                             onPress={() => {
                                 if (isPageMode()) {
                                     popPage()

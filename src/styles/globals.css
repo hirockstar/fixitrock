@@ -252,6 +252,37 @@
     input[type="number"] {
         -moz-appearance: textfield; /* Firefox */
     }
+
+    /* Prevent iOS Safari zoom on input focus */
+    input[type="tel"],
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select {
+        font-size: 16px !important;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    /* Ensure minimum font size on mobile devices */
+    @media screen and (max-width: 768px) {
+        input[type="tel"],
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        textarea,
+        select {
+            font-size: 16px !important;
+            transform: scale(1);
+        }
+        
+        /* Specific styling for OTP inputs */
+        [data-slot="input"] {
+            font-size: 16px !important;
+        }
+    }
 }
 
 svg {

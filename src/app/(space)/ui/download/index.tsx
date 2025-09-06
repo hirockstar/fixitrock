@@ -83,11 +83,11 @@ export function Download() {
                                     ? `${activeCount} active download${activeCount !== 1 ? 's' : ''} - Click to view download manager`
                                     : 'View download history - No active downloads'
                             }
-                            className='bg-default/20 size-6.5 min-w-0'
+                            className='bg-default/20'
                             content={activeCount.toString()}
                             radius='full'
                             size='sm'
-                            startContent={<ArrowDownToLine size={16} />}
+                            startContent={<ArrowDownToLine size={18} />}
                             variant='light'
                             onPress={() => setIsOpen(true)}
                         />
@@ -127,11 +127,11 @@ export function Download() {
                                 ? `${activeCount} active download${activeCount !== 1 ? 's' : ''} - Click to view download manager`
                                 : 'View download history - No active downloads'
                         }
-                        className='bg-default/20 size-6.5 min-w-0'
+                        className='bg-default/20'
                         content={activeCount.toString()}
                         radius='full'
                         size='sm'
-                        startContent={<ArrowDownToLine size={16} />}
+                        startContent={<ArrowDownToLine size={18} />}
                         variant='light'
                         onPress={() => setIsOpen(true)}
                     />

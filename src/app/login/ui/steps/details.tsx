@@ -104,7 +104,7 @@ export function StepDetails({ user, setUser, loading, setLoading, setError }: St
             }}
         >
             <DrawerHeader className='w-full px-0 py-2'>
-                <DrawerTitle className='text-xl font-semibold'>Interdouce Yourself</DrawerTitle>
+                <DrawerTitle className='text-xl font-semibold'>Introduce Yourself</DrawerTitle>
                 <DrawerDescription className='text-muted-foreground text-sm'>
                     We need some more information to create your account.
                 </DrawerDescription>

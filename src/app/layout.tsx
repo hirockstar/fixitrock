@@ -117,4 +117,6 @@ export const viewport: Viewport = {
     maximumScale: 1,
     userScalable: false,
     themeColor: META_THEME_COLORS.dark,
+    width: 'device-width',
+    initialScale: 1,
 }
