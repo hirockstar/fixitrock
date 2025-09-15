@@ -78,7 +78,8 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'FRP Bypass',
-        description: 'Professional FRP bypass tools and methods to unlock Android devices. Remove Google Factory Reset Protection with our comprehensive guide and trusted solutions.',
+        description:
+            'Professional FRP bypass tools and methods to unlock Android devices. Remove Google Factory Reset Protection with our comprehensive guide and trusted solutions.',
         url: `${siteConfig.domain}/frp`,
         type: 'website',
         images: [
@@ -95,7 +96,8 @@ export const metadata: Metadata = {
     twitter: {
         card: 'summary_large_image',
         title: 'FRP Bypass Tools - Unlock Android Devices',
-        description: 'Professional FRP bypass tools and methods to unlock Android devices. Remove Google Factory Reset Protection with our comprehensive guide.',
+        description:
+            'Professional FRP bypass tools and methods to unlock Android devices. Remove Google Factory Reset Protection with our comprehensive guide.',
         images: [`/space/og?slug=/FRP-Files`],
         creator: '@rockstar',
     },

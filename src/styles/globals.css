@@ -230,6 +230,16 @@
     }
 }
 
+@keyframes bounce-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+.bounce {
+  animation: bounce-pop 120ms ease;
+}
+
 @layer utilities {
     .no-scrollbar::-webkit-scrollbar {
         display: none;
@@ -288,7 +298,6 @@
 svg {
     pointer-events: none;
 }
-
 
 
 .mdx {

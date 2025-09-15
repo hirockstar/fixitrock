@@ -8,14 +8,13 @@
         "css": "src/styles/globals.css",
         "baseColor": "neutral",
         "cssVariables": true
-        
     },
     "aliases": {
-            "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+        "components": "@/components",
+        "utils": "@/lib/utils",
+        "ui": "@/ui",
+        "lib": "@/lib",
+        "hooks": "@/hooks"
     },
     "iconLibrary": "lucide"
 }

@@ -1,11 +1,12 @@
 'use client'
 
 import { AnimatePresence, motion, useAnimation } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import useScroll from '@/hooks/useScroll'
 import { Bottom } from '@/lib/FramerMotionVariants'
+import { useSearchStore } from '@/zustand/store'
 
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '../drawer'
 
@@ -88,7 +89,7 @@ export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
 }
 
 export const useOpen = () => {
-    const [open, setOpen] = useState(false)
+    const { open, setOpen } = useSearchStore()
 
     useEffect(() => {
         if (typeof window !== 'undefined') {

@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Command as CommandPrimitive } from 'cmdk'
-import { SearchIcon } from 'lucide-react'
+import { ScrollShadow } from '@heroui/react'
 
 import { cn } from '@/lib/utils'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/ui/dialog'
@@ -11,7 +11,7 @@ function Command({ className, ...props }: React.ComponentProps<typeof CommandPri
     return (
         <CommandPrimitive
             className={cn(
-                'bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md',
+                'bg-background/80 flex w-full flex-col backdrop-blur outline-none',
                 className
             )}
             data-slot='command'
@@ -53,33 +53,40 @@ function CommandDialog({
 
 function CommandInput({
     className,
+    startContent,
+    endContent,
     ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input>) {
+}: React.ComponentProps<typeof CommandPrimitive.Input> & {
+    startContent?: React.ReactNode
+    endContent?: React.ReactNode
+}) {
     return (
         <div
-            className='flex h-9 items-center gap-2 border-b px-3'
+            className={cn('flex h-10 items-center p-1.5', className)}
             data-slot='command-input-wrapper'
         >
-            <SearchIcon className='size-4 shrink-0 opacity-50' />
-            <CommandPrimitive.Input
-                className={cn(
-                    'placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
-                    className
-                )}
-                data-slot='command-input'
-                {...props}
-            />
+            <div className='flex flex-1 items-center gap-2'>
+                {startContent && <div className='flex items-center'>{startContent}</div>}
+                <CommandPrimitive.Input
+                    className='placeholder:text-foreground-500 text-medium flex w-full bg-transparent bg-clip-text font-normal outline-hidden disabled:cursor-not-allowed disabled:opacity-50'
+                    data-slot='command-input'
+                    {...props}
+                />
+            </div>
+            {endContent && <div className='flex items-center gap-2.5'>{endContent}</div>}
         </div>
     )
 }
 
 function CommandList({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.List>) {
     return (
-        <CommandPrimitive.List
-            className={cn('max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto', className)}
-            data-slot='command-list'
-            {...props}
-        />
+        <ScrollShadow isEnabled className='flex-1 outline-0' size={20}>
+            <CommandPrimitive.List
+                className={cn('flex flex-col outline-0', className)}
+                data-slot='command-list'
+                {...props}
+            />
+        </ScrollShadow>
     )
 }
 
@@ -93,6 +100,9 @@ function CommandEmpty({ ...props }: React.ComponentProps<typeof CommandPrimitive
     )
 }
 
+function CommandLoading({ ...props }: React.ComponentProps<typeof CommandPrimitive.Loading>) {
+    return <CommandPrimitive.Loading data-slot='command-loading' {...props} />
+}
 function CommandGroup({
     className,
     ...props
@@ -115,7 +125,7 @@ function CommandSeparator({
 }: React.ComponentProps<typeof CommandPrimitive.Separator>) {
     return (
         <CommandPrimitive.Separator
-            className={cn('bg-border -mx-1 h-px', className)}
+            className={cn('bg-border h-px', className)}
             data-slot='command-separator'
             {...props}
         />
@@ -126,7 +136,7 @@ function CommandItem({ className, ...props }: React.ComponentProps<typeof Comman
     return (
         <CommandPrimitive.Item
             className={cn(
-                "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+                "data-[selected=true]:bg-default/20 data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
                 className
             )}
             data-slot='command-item'
@@ -153,6 +163,7 @@ export {
     CommandEmpty,
     CommandGroup,
     CommandItem,
+    CommandLoading,
     CommandShortcut,
     CommandSeparator,
 }

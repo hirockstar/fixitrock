@@ -88,29 +88,10 @@ export type SearchItem = {
     name: string
     size: number
     webUrl: string
-    createdBy: {
-        user: {
-            email: string
-            id: string
-            displayName: string
-        }
-    }
-    lastModifiedDateTime: string
-    parentReference: {
-        path: string
-    }
-    folder: {
-        childCount: number
-    }
     file: {
         mimeType: string
     }
-    thumbnails: Thumbnail[]
-    video: {
-        duration: number
-        width: number
-        height: number
-    }
+    lastModifiedDateTime: string
 }
 
 export type Search = {

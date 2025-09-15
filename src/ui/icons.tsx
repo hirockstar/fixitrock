@@ -960,11 +960,36 @@ export function Eye(props: SVGProps<SVGSVGElement>) {
     )
 }
 
-
 export function UserIcon(props: SVGProps<SVGSVGElement>) {
-	return (<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}><circle cx={12} cy={6} r={4} fill="currentColor"></circle><ellipse cx={12} cy={17} fill="currentColor" rx={7} ry={4}></ellipse></svg>);
+    return (
+        <svg
+            height={24}
+            viewBox='0 0 24 24'
+            width={24}
+            xmlns='http://www.w3.org/2000/svg'
+            {...props}
+        >
+            <circle cx={12} cy={6} fill='currentColor' r={4} />
+            <ellipse cx={12} cy={17} fill='currentColor' rx={7} ry={4} />
+        </svg>
+    )
 }
 
 export function DownloadIcon(props: SVGProps<SVGSVGElement>) {
-	return (<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" {...props}><path fill="currentColor" fillRule="evenodd" d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12m12-6a1 1 0 1 0-2 0v6.586l-2.293-2.293a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L13 12.586zM7 18a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1" clipRule="evenodd"></path></svg>);
+    return (
+        <svg
+            height={24}
+            viewBox='0 0 24 24'
+            width={24}
+            xmlns='http://www.w3.org/2000/svg'
+            {...props}
+        >
+            <path
+                clipRule='evenodd'
+                d='M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11s-4.925 11-11 11S1 18.075 1 12m12-6a1 1 0 1 0-2 0v6.586l-2.293-2.293a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L13 12.586zM7 18a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1'
+                fill='currentColor'
+                fillRule='evenodd'
+            />
+        </svg>
+    )
 }

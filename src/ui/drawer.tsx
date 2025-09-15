@@ -53,7 +53,7 @@ function DrawerContent({
             <DrawerOverlay />
             <DrawerPrimitive.Content
                 className={cn(
-                    'group/drawer-content bg-background fixed z-50 flex h-auto flex-col focus:outline-none',
+                    'group/drawer-content bg-background/80 fixed z-50 flex h-auto flex-col backdrop-blur focus:outline-none',
                     // Top Drawer
                     'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b',
                     // Bottom Drawer

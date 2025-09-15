@@ -323,13 +323,13 @@ export function getSearchPlaceholder(name?: string) {
         `${name}, night owl mode! What's cooking?`,
         `Still up ${name}? Let's get stuff done!`,
         `Insomniac ${name}? Let's explore!`,
-        
+
         // Pre-dawn (3-6)
         `Early bird ${name}! What's the mission?`,
         `Yo ${name}, up before the sun? Let's go!`,
         `${name}, dawn patrol! What's cooking?`,
         `Hey ${name}, early riser! What's the plan?`,
-        
+
         // Coffee time (6-9)
         `Morning ${name}, coffee time! ☕ What are we building?`,
         `Rise and shine ${name}! Ready to conquer?`,
@@ -338,14 +338,14 @@ export function getSearchPlaceholder(name?: string) {
         `Morning ${name}, caffeine mode! What's the game plan?`,
         `Yo ${name}, coffee break! Let's find something cool`,
         `${name}, morning fuel! What do you need?`,
-        
+
         // Work mode (9-12)
         `Hey ${name}, work mode activated! What's the mission?`,
         `Morning ${name}, ready to hustle? Let's go!`,
         `Yo ${name}, productivity time! What's next?`,
         `${name}, morning grind! What's cooking?`,
         `Hey ${name}, let's get things done! What's up?`,
-        
+
         // Lunch time (12-14)
         `Lunch time ${name}! 🍕 What's the plan?`,
         `Hey ${name}, lunch break! What's on the menu?`,
@@ -353,7 +353,7 @@ export function getSearchPlaceholder(name?: string) {
         `${name}, lunch vibes! What do you need?`,
         `Hey ${name}, break time! What's cooking?`,
         `Lunch break ${name}! What's the move?`,
-        
+
         // Post-lunch (14-17)
         `Afternoon ${name}, food coma over? Let's hustle!`,
         `Hey ${name}, post-lunch energy! What's next?`,
@@ -361,13 +361,13 @@ export function getSearchPlaceholder(name?: string) {
         `Yo ${name}, afternoon grind time! What's up?`,
         `${name}, afternoon vibes! What do you need?`,
         `Hey ${name}, afternoon mode! Let's go!`,
-        
+
         // Coffee break (15-17)
         `Coffee break ${name}! ☕ What's brewing?`,
         `Hey ${name}, afternoon coffee? Let's find something!`,
         `Yo ${name}, caffeine boost time! What's up?`,
         `${name}, coffee o'clock! What's the plan?`,
-        
+
         // Evening wind down (17-19)
         `Evening ${name}, work day done? What's on your mind?`,
         `Hey ${name}, evening mode! What's the plan?`,
@@ -375,7 +375,7 @@ export function getSearchPlaceholder(name?: string) {
         `Evening ${name}, what's the mission?`,
         `Yo ${name}, evening hustle! What's next?`,
         `Hey ${name}, evening chill! What do you need?`,
-        
+
         // Dinner time (19-21)
         `Dinner time ${name}! 🍽️ What's cooking?`,
         `Hey ${name}, dinner vibes! What's on the menu?`,
@@ -383,7 +383,7 @@ export function getSearchPlaceholder(name?: string) {
         `${name}, dinner mode! What's the plan?`,
         `Hey ${name}, dinner break! What's up?`,
         `Dinner time ${name}! What's the move?`,
-        
+
         // Night chill (21-23)
         `Night ${name}, what's the vibe?`,
         `Hey ${name}, night mode activated! Let's go!`,
@@ -391,12 +391,12 @@ export function getSearchPlaceholder(name?: string) {
         `Night ${name}, ready to explore?`,
         `Yo ${name}, night vibes! What's the plan?`,
         `Hey ${name}, night chill! What do you need?`,
-        
+
         // Late night (23-24)
         `Late night ${name}! What's the mission?`,
         `Hey ${name}, late night vibes! Let's find something`,
         `Yo ${name}, night owl mode! What's up?`,
-        `${name}, late night energy! What's cooking?`
+        `${name}, late night energy! What's cooking?`,
     ]
 
     // Return a random placeholder based on specific time ranges
@@ -411,6 +411,7 @@ export function getSearchPlaceholder(name?: string) {
         if (hour >= 17 && hour < 19) return index >= 37 && index < 43
         if (hour >= 19 && hour < 21) return index >= 43 && index < 49
         if (hour >= 21 && hour < 23) return index >= 49 && index < 55
+
         return index >= 55
     })
 

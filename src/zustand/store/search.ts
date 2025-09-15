@@ -1,255 +1,119 @@
+import React, { useEffect } from 'react'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { useEffect, Dispatch, SetStateAction } from 'react'
 
-import { CommandType } from '@/config/navigation'
-
-interface NavigationGroup {
-    heading: string
-    navigationItems: CommandType[]
+type Item = {
+    id: string
+    title: string
+    description?: string
+    keywords?: string[]
+    shortcut?: string[]
+    icon?: string
+    href?: string
+    action?: {
+        type: 'theme' | 'section' | 'toast' | 'custom'
+        value: string
+    }
+    children?: Item[]
 }
-
-interface SearchBarState {
-    // State
+type SearchState = {
     query: string
-    pages: string | null
-    dynamicNavigations: Record<string, CommandType[]> | null
+    setQuery: (value: string) => void
     open: boolean
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    ref: React.RefObject<HTMLDivElement>
+    bounce: () => void
+    page: string | null
+    setPage: (id: string | null) => void
+    tab: string
+    setTab: (tab: string) => void
+    onSelect: (
+        item: Item,
+        router?: { push: (href: string) => void },
+        setTheme?: (theme: string) => void
+    ) => void
+    onKeyDown: (e: React.KeyboardEvent) => void
 
-    // Actions
-    setQuery: (query: string) => void
-    setPages: (pages: string | null) => void
-    setDynamicNavigations: (navigations: Record<string, CommandType[]>) => void
-    setOpen: Dispatch<SetStateAction<boolean>>
-
-    // Methods
-    bounce: (ref: React.RefObject<HTMLDivElement | null>) => void
-    onKeyDown: (e: KeyboardEvent) => void
-    popPage: () => void
-    getFilteredItems: (items: CommandType[]) => CommandType[]
-    initializeStore: (navigations: Record<string, CommandType[]>) => void
-    handleSelect: (item: CommandType, ref?: React.RefObject<HTMLDivElement | null>) => void
-
-    // New rendering methods
-    getNavigationGroups: () => NavigationGroup[]
-    isPageMode: () => boolean
-    getCurrentPageItems: () => CommandType[]
-    heading: () => string | null
+    shouldFilter: boolean
+    setShouldFilter: (v: boolean) => void
 }
 
-export const useSearchStore = create<SearchBarState>()(
+export const useSearchStore = create<SearchState>()(
     devtools(
-        (set, get) => ({
-            // Initial state
-            query: '',
-            pages: null,
-            dynamicNavigations: null,
-            open: false,
+        (set, get) => {
+            const ref = React.createRef<HTMLDivElement>()
 
-            // Actions
-            setQuery: (query: string) => set({ query }),
-            setPages: (pages: string | null) => set({ pages }),
-            setDynamicNavigations: (navigations: Record<string, CommandType[]>) =>
-                set({ dynamicNavigations: navigations }),
-            setOpen: (value: SetStateAction<boolean>) => {
-                const newValue = typeof value === 'function' ? value(get().open) : value
-
-                set({ open: newValue })
-            },
-
-            // Methods
-            bounce: (ref: React.RefObject<HTMLDivElement | null>) => {
-                const { setQuery } = get()
-                if (ref.current) { 
-                    ref.current.style.transition = 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)'         
-                    ref.current.style.transform = 'scale(0.98)'                
-                    setTimeout(() => {
-                        if (ref.current) {                   
-                            ref.current.style.transform = 'scale(1.02)'    
-                            setTimeout(() => {
-                                if (ref.current) {                             
-                                    ref.current.style.transform = 'scale(1)'
-                            
-                                    setTimeout(() => {
-                                        if (ref.current) {
-                                            ref.current.style.transition = ''
-                                        }
-                                    }, 150)
-                                }
-                            }, 75)
-                        }
-                    }, 75)
-                    
-                    setQuery('')
-                }
-            },
-
-            onKeyDown: (e: KeyboardEvent) => {
-                const { query, popPage } = get()
-
-                if (query.length) {
-                    return
-                }
-
-                if (e.key === 'Backspace') {
-                    e.preventDefault()
-                    popPage()
-                }
-            },
-
-            popPage: () => set({ pages: null }),
-
-            getFilteredItems: (items: CommandType[]) => {
-                const { query } = get()
-
-                if (!query.trim()) {
-                    return items
-                }
-
-                const searchQuery = query.toLowerCase()
-
-                return items.filter((item) => {
-                    const itemMatches =
-                        item.title.toLowerCase().includes(searchQuery) ||
-                        item.description?.toLowerCase().includes(searchQuery)
-
-                    const childrenMatch = item.children?.some(
-                        (child) =>
-                            child.title.toLowerCase().includes(searchQuery) ||
-                            child.description?.toLowerCase().includes(searchQuery)
-                    )
-
-                    return itemMatches || childrenMatch
-                })
-            },
-
-            initializeStore: (navigations: Record<string, CommandType[]>) => {
-                set({ dynamicNavigations: navigations })
-            },
-
-            handleSelect: (item: CommandType, ref?: React.RefObject<HTMLDivElement | null>) => {
-                const { setOpen, bounce } = get()
-                if (item.onSelect && item.onSelect.toString().includes('setPages')) {
-                    if (ref) bounce(ref)
-                    item.onSelect()
-                } else {
-                      setOpen(false)
-                    item.onSelect?.()
-                }
-            },
-
-            // New rendering methods
-            isPageMode: () => {
-                const { pages } = get()
-
-                return pages !== null
-            },
-
-            getCurrentPageItems: () => {
-                const { pages, dynamicNavigations } = get()
-
-                if (!pages || !dynamicNavigations) return []
-
-                const allItems = Object.values(dynamicNavigations).flat()
-                const currentPageItem = allItems.find((item) => item.id === pages)
-
-                return currentPageItem?.children || []
-            },
-
-            heading: () => {
-                const { pages, dynamicNavigations } = get()
-                if (!pages || !dynamicNavigations) return null
-
-                const allItems = Object.values(dynamicNavigations).flat()
-                const currentPageItem = allItems.find((item) => item.id === pages)
-
-                return currentPageItem?.title || null
-            },
-
-            getNavigationGroups: () => {
-                const { query, pages, dynamicNavigations } = get()
-
-                // Page mode - show children of current page
-                if (pages && dynamicNavigations) {
-                    const allItems = Object.values(dynamicNavigations).flat()
-                    const currentPageItem = allItems.find((item) => item.id === pages)
-                    const children = currentPageItem?.children || []
-
-                    return [
-                        {
-                            heading: pages,
-                            navigationItems: children,
-                        },
-                    ]
-                }
-
-                // Normal/Filter mode - show all navigation groups
-                if (!dynamicNavigations) return []
-
-                const groups: NavigationGroup[] = []
-                const allNavigationItems: CommandType[] = []
-
-                Object.entries(dynamicNavigations).forEach(([heading, items]) => {
-                    const filteredItems = get().getFilteredItems(items)
-
-                    if (filteredItems.length > 0) {
-                        const navigationItems: CommandType[] = []
-
-                        filteredItems.forEach((item) => {
-                            // Add the main item only if it doesn't exist anywhere
-                            if (!allNavigationItems.some((navItem) => navItem.id === item.id)) {
-                                navigationItems.push(item)
-                                allNavigationItems.push(item)
-                            }
-
-                            // If searching, also add matching children
-                            if (query.trim() && item.children) {
-                                const matchingChildren = item.children.filter((child) => {
-                                    const childMatches =
-                                        child.title.toLowerCase().includes(query.toLowerCase()) ||
-                                        child.description
-                                            ?.toLowerCase()
-                                            .includes(query.toLowerCase())
-
-                                    return childMatches
-                                })
-
-                                // Add children only if they don't exist anywhere
-                                matchingChildren.forEach((child) => {
-                                    if (
-                                        !allNavigationItems.some(
-                                            (navItem) => navItem.id === child.id
-                                        )
-                                    ) {
-                                        navigationItems.push(child)
-                                        allNavigationItems.push(child)
-                                    }
-                                })
-                            }
-                        })
-
-                        if (navigationItems.length > 0) {
-                            groups.push({
-                                heading,
-                                navigationItems,
-                            })
-                        }
+            return {
+                ref,
+                query: '',
+                setQuery: (value) => {
+                    set({ query: value })
+                },
+                bounce: () => {
+                    if (ref.current) {
+                        ref.current.classList.remove('bounce')
+                        void ref.current.offsetWidth
+                        ref.current.classList.add('bounce')
                     }
-                })
+                },
+                page: null,
+                setPage: (id: string | null) => set({ page: id }, false, 'setPage'),
+                tab: 'actions',
+                setTab: (tab: string) => set({ tab: tab }, false, 'setTab'),
+                onSelect: (
+                    item: Item,
+                    router: { push: (href: string) => void },
+                    setTheme: (theme: string) => void
+                ) => {
+                    if (item.action?.type === 'section' && item.children) {
+                        get().setPage(item.id)
+                        get().bounce()
+                    } else if (item.href) {
+                        router.push(item.href)
+                        get().setOpen(false)
+                    } else if (item.action?.type === 'theme') {
+                        setTheme(item.action.value)
+                        get().setOpen(false)
+                    }
+                },
+                onKeyDown: (event: KeyboardEvent) => {
+                    const { page, setPage, open, bounce, query } = get()
 
-                return groups
-            },
-        }),
-        {
-            name: 'search-bar-store',
-        }
+                    if (!open) return
+
+                    switch (event.key) {
+                        case 'Backspace':
+                        case 'ArrowLeft':
+                            if (page && query === '') {
+                                event.preventDefault()
+                                setPage(null)
+                                bounce()
+                            } else if (!page && query.length === 0) {
+                                bounce()
+                            }
+                            break
+                    }
+                },
+                shouldFilter: true,
+                setShouldFilter: (v) => set({ shouldFilter: v }),
+                open: false,
+                setOpen: (value) =>
+                    set((state) => {
+                        const next =
+                            typeof value === 'function'
+                                ? (value as (prev: boolean) => boolean)(state.open)
+                                : value
+
+                        return { open: next }
+                    }),
+            }
+        },
+        { name: 'csearch-store' }
     )
 )
 
-// Hook for easier usage
-export const useSearchBar = () => {
-    const open = useSearchStore((state) => state.open)
-    const setOpen = useSearchStore((state) => state.setOpen)
+export const useOpen = () => {
+    const { open, setOpen } = useSearchStore()
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -269,7 +133,7 @@ export const useSearchBar = () => {
                 document.removeEventListener('keydown', handleKeyDown)
             }
         }
-    }, [setOpen])
+    }, [])
 
     useEffect(() => {
         if (open && typeof window !== 'undefined') {
@@ -285,30 +149,331 @@ export const useSearchBar = () => {
     }, [open])
 
     return {
-        // State
-        query: useSearchStore((state) => state.query),
-        pages: useSearchStore((state) => state.pages),
-        dynamicNavigations: useSearchStore((state) => state.dynamicNavigations),
         open,
         setOpen,
-
-        // Actions
-        setQuery: useSearchStore((state) => state.setQuery),
-        setPages: useSearchStore((state) => state.setPages),
-        setDynamicNavigations: useSearchStore((state) => state.setDynamicNavigations),
-
-        // Methods
-        bounce: useSearchStore((state) => state.bounce),
-        onKeyDown: useSearchStore((state) => state.onKeyDown),
-        popPage: useSearchStore((state) => state.popPage),
-        getFilteredItems: useSearchStore((state) => state.getFilteredItems),
-        handleSelect: (item: CommandType, ref?: React.RefObject<HTMLDivElement | null>) => 
-            useSearchStore.getState().handleSelect(item, ref),
-
-        // New rendering methods
-        getNavigationGroups: useSearchStore((state) => state.getNavigationGroups),
-        isPageMode: useSearchStore((state) => state.isPageMode),
-        getCurrentPageItems: useSearchStore((state) => state.getCurrentPageItems),
-        heading: useSearchStore((state) => state.heading),
     }
 }
+
+// 'use client'
+
+// import type { NavigationType } from '@/config/navigation'
+
+// import React from 'react'
+// import { create } from 'zustand'
+// import { devtools } from 'zustand/middleware'
+
+// type NavigationGroups = Record<string, NavigationType[]>
+// type WithContinuePropagation = { continuePropagation?: () => void }
+// type SearchKeyboardEvent = (KeyboardEvent | React.KeyboardEvent) & WithContinuePropagation
+
+// type SearchState = {
+//     query: string
+//     open: boolean
+//     page: string | null
+//     navigations: NavigationGroups | null
+//     filteredGroups: [string, NavigationType[]][]
+//     flatItems: NavigationType[]
+//     activeIndex: number
+//     ref: React.RefObject<HTMLDivElement>
+//     heading: string | null
+//     router?: { push: (href: string) => void }
+//     setRouter: (router: { push: (href: string) => void }) => void
+//     itemRefs: Record<string, React.RefObject<HTMLDivElement | null>>
+//     setItemRef: (id: string, ref: React.RefObject<HTMLDivElement | null>) => void
+
+//     bounce: () => void
+//     setQuery: (value: string) => void
+//     setOpen: (value: boolean | ((prev: boolean) => boolean)) => void
+//     setPage: (value: string | null) => void
+//     initialize: (data: NavigationGroups) => void
+//     setActiveIndex: (index: number) => void
+
+//     moveUp: () => void
+//     moveDown: () => void
+//     reset: () => void
+//     executeActive: () => void
+//     handleSelect: (item: NavigationType) => void
+//     getGroups: () => NavigationGroups
+//     getCurrentPageItems: () => NavigationType[]
+//     handleKeyDown: (e: SearchKeyboardEvent) => void
+//     applyFilter: () => void
+//     scrollActiveItemIntoView: () => void
+// }
+
+// export const useSearchStore = create<SearchState>()(
+//     devtools(
+//         (set, get) => {
+//             const ref = React.createRef<HTMLDivElement>()
+
+//             return {
+//                 query: '',
+//                 open: false,
+//                 page: null,
+//                 navigations: null,
+//                 filteredGroups: [],
+//                 flatItems: [],
+//                 activeIndex: -1,
+//                 ref,
+//                 heading: null,
+//                 itemRefs: {},
+//                 router: undefined,
+//                 setRouter: (router) => set({ router }),
+//                 setItemRef: (id, r) => {
+//                     set((state) => ({
+//                         itemRefs: { ...state.itemRefs, [id]: r },
+//                     }))
+//                 },
+
+//                 bounce: () => {
+//                     const el = get().ref.current
+
+//                     if (!el) return
+//                     el.style.transition = 'transform 120ms ease'
+//                     el.style.transform = 'scale(0.96)'
+//                     setTimeout(() => {
+//                         if (el) el.style.transform = ''
+//                     }, 120)
+//                 },
+
+//                 setQuery: (value) => {
+//                     set({ query: value })
+//                     get().applyFilter()
+//                 },
+
+//                 setOpen: (value) =>
+//                     set((state) => {
+//                         const next =
+//                             typeof value === 'function'
+//                                 ? (value as (prev: boolean) => boolean)(state.open)
+//                                 : value
+
+//                         if (next && state.flatItems.length > 0)
+//                             return { open: true, activeIndex: 0 }
+
+//                         return { open: next }
+//                     }),
+
+//                 setPage: (value) => {
+//                     const { navigations } = get()
+
+//                     if (!value || !navigations) return set({ page: value, heading: null })
+
+//                     const allItems = Object.values(navigations).flat()
+//                     const current = allItems.find((n) => n.id === value)
+
+//                     set({ page: value, heading: current?.title ?? null })
+//                 },
+
+//                 scrollActiveItemIntoView: () => {
+//                     const { activeIndex, flatItems, itemRefs } = get()
+
+//                     if (activeIndex < 0 || !flatItems[activeIndex]) return
+//                     const item = flatItems[activeIndex]
+//                     const ref = itemRefs[item.id]
+
+//                     if (ref?.current) {
+//                         const el = ref.current
+
+//                         el.scrollIntoView({ block: 'nearest' })
+//                         const group = el.closest('[data-slot="search-group"]') as HTMLElement | null
+
+//                         if (
+//                             group &&
+//                             group.parentElement &&
+//                             group.offsetTop < group.parentElement.scrollTop
+//                         ) {
+//                             group.scrollIntoView({ block: 'start' })
+//                         }
+//                     }
+//                 },
+//                 initialize: (data) => {
+//                     set({ navigations: data })
+//                     get().applyFilter()
+//                 },
+
+//                 setActiveIndex: (index) => {
+//                     const { flatItems } = get()
+
+//                     if (flatItems.length === 0) return set({ activeIndex: -1 })
+//                     set({ activeIndex: Math.max(0, Math.min(index, flatItems.length - 1)) })
+//                 },
+
+//                 moveUp: () => {
+//                     const { activeIndex, flatItems } = get()
+
+//                     if (flatItems.length === 0) return
+//                     const next = (activeIndex - 1 + flatItems.length) % flatItems.length
+
+//                     set({ activeIndex: next })
+//                 },
+
+//                 moveDown: () => {
+//                     const { activeIndex, flatItems } = get()
+
+//                     if (flatItems.length === 0) return
+//                     const next = (activeIndex + 1) % flatItems.length
+
+//                     set({ activeIndex: next })
+//                 },
+
+//                 reset: () => set({ activeIndex: -1, flatItems: [], filteredGroups: [] }),
+
+//                 executeActive: () => {
+//                     const { activeIndex, flatItems, handleSelect, router, setOpen } = get()
+
+//                     if (activeIndex < 0 || flatItems.length === 0) return
+//                     const selected = flatItems[activeIndex]
+
+//                     if (!selected) return
+//                     if (selected.href && router) router.push(selected.href)
+//                     else if (selected.href) window.location.href = selected.href
+//                     else handleSelect(selected)
+
+//                     // Only close if not navigating to children
+//                     if (!selected.children?.length) setOpen(false)
+//                 },
+
+//                 handleSelect: (item) => {
+//                     const { setOpen, applyFilter, bounce } = get()
+
+//                     item.onSelect?.()
+//                     if (item.children?.length) {
+//                         applyFilter()
+//                         bounce()
+
+//                         return
+//                     }
+//                     setOpen(false)
+//                     applyFilter()
+//                 },
+
+//                 getGroups: () => get().navigations ?? {},
+//                 getCurrentPageItems: () => {
+//                     const { page, navigations } = get()
+
+//                     if (!page || !navigations) return []
+//                     const all = Object.values(navigations).flat()
+//                     const current = all.find((n) => n.id === page)
+
+//                     return current?.children ?? []
+//                 },
+
+//                 handleKeyDown: (event) => {
+//                     const {
+//                         moveUp,
+//                         moveDown,
+//                         executeActive,
+//                         setOpen,
+//                         open,
+//                         setPage,
+//                         applyFilter,
+//                         page,
+//                         query,
+//                         bounce,
+//                     } = get()
+
+//                     if (!open) return
+
+//                     switch (event.key) {
+//                         case 'ArrowUp':
+//                             event.preventDefault()
+//                             event.continuePropagation?.()
+//                             moveUp()
+//                             break
+//                         case 'ArrowDown':
+//                             event.preventDefault()
+//                             event.continuePropagation?.()
+//                             moveDown()
+//                             break
+//                         case 'Enter':
+//                         case 'Space':
+//                         case 'ArrowRight':
+//                             event.preventDefault()
+//                             event.continuePropagation?.()
+//                             executeActive()
+//                             break
+//                         case 'Escape':
+//                             event.preventDefault()
+//                             event.continuePropagation?.()
+//                             setOpen(false)
+//                             break
+//                         case 'Backspace':
+//                         case 'ArrowLeft':
+//                             if (page && query === '') {
+//                                 event.preventDefault()
+//                                 event.continuePropagation?.()
+//                                 setPage(null)
+//                                 applyFilter()
+//                                 bounce()
+//                             } else if (!page && query.length === 0) bounce()
+//                             break
+//                     }
+//                 },
+
+//                 applyFilter: () => {
+//                     const { query, navigations, page } = get()
+
+//                     if (!navigations) return set({ filteredGroups: [], flatItems: [] })
+//                     const allItems = page
+//                         ? get().getCurrentPageItems()
+//                         : Object.values(navigations).flat()
+//                     const q = query.toLowerCase()
+//                     const filteredGroups: [string, NavigationType[]][] = []
+
+//                     if (!page) {
+//                         Object.entries(navigations).forEach(([groupName, items]) => {
+//                             const filtered = items.filter(
+//                                 (item) =>
+//                                     !q ||
+//                                     item.title.toLowerCase().includes(q) ||
+//                                     item.description?.toLowerCase().includes(q) ||
+//                                     item.keywords?.some((k) => k.toLowerCase().includes(q))
+//                             )
+
+//                             filteredGroups.push([groupName, filtered])
+//                         })
+//                     } else {
+//                         filteredGroups.push([
+//                             page,
+//                             allItems.filter(
+//                                 (item) =>
+//                                     !q ||
+//                                     item.title.toLowerCase().includes(q) ||
+//                                     item.description?.toLowerCase().includes(q) ||
+//                                     item.keywords?.some((k) => k.toLowerCase().includes(q))
+//                             ),
+//                         ])
+//                     }
+
+//                     const flatItems = filteredGroups.flatMap(([_, items]) => items)
+
+//                     set({ filteredGroups, flatItems })
+//                 },
+//             }
+//         },
+//         { name: 'search-store' }
+//     )
+// )
+
+// export const useSearch = () => useSearchStore()
+
+// let hotkeysInitialized = false
+
+// export const enableSearchHotkeys = () => {
+//     if (hotkeysInitialized || typeof window === 'undefined') return
+
+//     const handleKeyDown = (event: KeyboardEvent) => {
+//         if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
+//             event.preventDefault()
+//             useSearchStore.getState().setOpen(true)
+
+//             return
+//         }
+//         if (event.key === 'Escape') {
+//             useSearchStore.getState().setOpen(false)
+//         }
+//     }
+
+//     window.addEventListener('keydown', handleKeyDown)
+//     hotkeysInitialized = true
+// }

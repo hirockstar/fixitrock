@@ -10,6 +10,7 @@ import { SearchBar } from '@/components/search/bar'
 import { fontVariables } from '@/lib/fonts'
 import { ErrorBoundary } from '@/components/error'
 import { userSession } from '@/actions/user'
+import { Group } from '@/components/search/quick'
 
 export default async function RootLayout({
     children,
@@ -23,46 +24,7 @@ export default async function RootLayout({
     return (
         <html suppressHydrationWarning lang='en'>
             <head>
-                {/* Browser compatibility meta tags */}
-                <meta content='IE=edge' httpEquiv='X-UA-Compatible' />
-                <meta
-                    content='width=device-width, initial-scale=1, maximum-scale=5'
-                    name='viewport'
-                />
-
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-            try {
-                if (typeof localStorage !== 'undefined' && localStorage.theme === 'dark' || 
-                    ((!('theme' in localStorage) || localStorage.theme === 'system') && 
-                     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    const meta = document.querySelector('meta[name="theme-color"]');
-                    if (meta) meta.setAttribute('content', '${META_THEME_COLORS.dark}');
-                }
-            } catch (e) {
-                console.warn('Theme detection failed:', e);
-            }
-            `,
-                    }}
-                />
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-            if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(function(registration) {
-                            console.log('SW registered: ', registration);
-                        })
-                        .catch(function(registrationError) {
-                            console.log('SW registration failed: ', registrationError);
-                        });
-                });
-            }
-            `,
-                    }}
-                />
+                <meta content={META_THEME_COLORS.light} name='theme-color' />
             </head>
             <body className={cn('bg-background min-h-svh font-sans antialiased', fontVariables)}>
                 <AuthProvider>
@@ -71,9 +33,10 @@ export default async function RootLayout({
                             <div className='bg-background relative flex min-h-screen flex-col'>
                                 <div className='flex-1 overflow-clip'>{children}</div>
                                 {modal}
-                                <SearchBar command={command} user={user}>
-                                    <UserDrawer navigation={navigation} user={user} />
-                                </SearchBar>
+                                <SearchBar
+                                    command={command as Group[]}
+                                    endContent={<UserDrawer navigation={navigation} user={user} />}
+                                />
                                 <Footer />
                             </div>
                         </Providers>
@@ -114,9 +77,12 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
+    themeColor: [
+        { color: '#fff', media: '(prefers-color-scheme: light)' },
+        { color: '#000', media: '(prefers-color-scheme: dark)' },
+    ],
     maximumScale: 1,
     userScalable: false,
-    themeColor: META_THEME_COLORS.dark,
     width: 'device-width',
     initialScale: 1,
 }

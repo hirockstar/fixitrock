@@ -67,7 +67,7 @@ function CommandInput({
     return (
         <div
             className={cn(
-                'bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 flex items-center h-10 px-1.5 backdrop-blur',
+                'bg-background/80 data-[hover=true]:bg-background/80 group-data-[focus=true]:bg-background/80 flex h-10 items-center px-1.5 backdrop-blur',
                 classNames?.base
             )}
             data-slot='command-input-wrapper'
@@ -118,7 +118,7 @@ function CommandGroup({
     return (
         <CommandPrimitive.Group
             className={cn(
-                'text-foreground [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:select-none  p-1 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 overflow-hidden flex flex-col [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium ',
+                'text-foreground [&_[cmdk-group-heading]]:text-muted-foreground flex flex-col overflow-hidden p-1 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:select-none',
                 className
             )}
             data-slot='command-group'
@@ -163,18 +163,18 @@ function CommandItem({
     }
 }) {
     const Content = (
-         <CommandPrimitive.Item
-                    className={cn(
-                        "data-[selected=true]:bg-default/20 dark:data-[selected=true]:bg-default/20 px-2 py-1.5 rounded-md data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 overflow-hidden text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-                        classNames?.base
-                    )}
-                    data-slot='command-item'
-                    {...props}
-                >
+        <CommandPrimitive.Item
+            className={cn(
+                "data-[selected=true]:bg-default/20 dark:data-[selected=true]:bg-default/20 data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+                classNames?.base
+            )}
+            data-slot='command-item'
+            {...props}
+        >
             {startContent && (
                 <div
                     className={cn(
-                        'flex h-8 w-8 shrink-0 items-center justify-center rounded-sm overflow-hidden border',
+                        'flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-sm border',
                         classNames?.startContent
                     )}
                 >
@@ -199,8 +199,8 @@ function CommandItem({
 
     if (href) {
         return (
-            <Link passHref className='block' href={href}>              
-                {Content}               
+            <Link passHref className='block' href={href}>
+                {Content}
             </Link>
         )
     }
@@ -228,5 +228,4 @@ export {
     CommandItem,
     CommandShortcut,
     CommandSeparator,
-
 }

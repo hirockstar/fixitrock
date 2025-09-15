@@ -3,7 +3,6 @@
 import { Button, Image, User as HeroUser } from '@heroui/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { FaUserCircle } from 'react-icons/fa'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import {

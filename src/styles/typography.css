@@ -1,4 +1,4 @@
-.prose:not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     --tw-prose-body: var(--color-text-tertiary);
     --tw-prose-headings: var(--color-text-primary);
     --tw-prose-lead: var(--color-text-tertiary);
@@ -22,15 +22,14 @@
     line-height: var(--text-md--line-height);
 }
 
-.prose :not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-
+.prose :not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     /* Text */
     &:where(p) {
         margin-top: calc(var(--spacing) * 4);
         margin-bottom: calc(var(--spacing) * 4);
     }
 
-    &:where([class~="lead"]) {
+    &:where([class~='lead']) {
         font-size: var(--text-md);
         line-height: var(--text-md--line-height);
         margin-top: 1.2em;
@@ -269,12 +268,12 @@
 
         &::before,
         &::after {
-            content: "";
+            content: '';
         }
     }
 }
 
-.prose.prose-centered-quote :not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose.prose-centered-quote :not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     &:where(blockquote) {
         padding-inline-start: 0px !important;
         border-left: none;
@@ -290,7 +289,7 @@
     }
 }
 
-.prose.prose-minimal-quote :not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose.prose-minimal-quote :not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     &:where(blockquote) {
         border-left: none;
         padding-inline-start: 0px !important;
@@ -302,30 +301,27 @@
     }
 }
 
-.prose.md\:prose-lg:not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose.md\:prose-lg:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @media (width >=48rem
 
-        /* 768px */
-    ) {
+ /* 768px */) {
         /* Base */
         font-size: var(--text-lg);
         line-height: var(--text-lg--line-height);
     }
 }
 
-.prose.md\:prose-lg :not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose.md\:prose-lg :not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @media (width >=48rem
 
-        /* 768px */
-    ) {
-
+ /* 768px */) {
         /* Text */
         &:where(p) {
             margin-top: calc(var(--spacing) * 4.5);
             margin-bottom: calc(var(--spacing) * 4.5);
         }
 
-        &:where([class~="lead"]) {
+        &:where([class~='lead']) {
             font-size: var(--text-xl);
             line-height: var(--text-xl--line-height);
             margin-top: 1.09em;
@@ -469,10 +465,10 @@
 }
 
 /* Remove top margin from first element */
-.prose> :first-child:not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose > :first-child:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     margin-top: 0;
 }
 
-.prose> :last-child:not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose > :last-child:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     margin-bottom: 0;
 }

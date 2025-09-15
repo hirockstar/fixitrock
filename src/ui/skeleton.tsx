@@ -104,6 +104,7 @@ export const QuoteSkeleton = ({
         </>
     )
 }
+
 export const ListSkeleton = () => {
     return (
         <>
@@ -129,6 +130,25 @@ export const ListSkeleton = () => {
     )
 }
 
+export const SpaceSearchSkeleton = () => {
+    return (
+        <>
+            {Array.from({ length: 8 }).map((_, index) => (
+                <div key={index}>
+                    <Skeleton className='size-10 flex-shrink-0 rounded-lg' />
+                    <div className='flex flex-grow flex-col gap-y-2'>
+                        <Skeleton className='h-4 w-auto rounded-lg sm:max-w-sm' />
+                        <span className='text-muted-foreground flex items-center gap-2 text-xs'>
+                            <Skeleton className='h-4 w-14 rounded-lg sm:w-20' /> •
+                            <Skeleton className='h-4 w-14 rounded-lg sm:w-20' />
+                        </span>
+                    </div>
+                </div>
+            ))}
+        </>
+    )
+}
+
 export const MarkdownSkeleton = () => {
     return (
         <div aria-busy='true' className='flex flex-col gap-4'>
@@ -146,16 +166,15 @@ export const MarkdownSkeleton = () => {
     )
 }
 
-
 export function FRPSkeleton() {
     return (
-            <div className='grid grid-cols-3 md:grid-cols-4'>
-                {Array.from({ length: 28 }).map((_, i) => (
-                    <div key={i} className='flex flex-col items-center space-y-2 p-3'>
-                        <Skeleton className='w-16 h-16 rounded-2xl' />
-                        <Skeleton className='h-3 w-12 rounded-full' />
-                    </div>
-                ))}
-            </div>
+        <div className='grid grid-cols-3 md:grid-cols-4'>
+            {Array.from({ length: 28 }).map((_, i) => (
+                <div key={i} className='flex flex-col items-center space-y-2 p-3'>
+                    <Skeleton className='h-16 w-16 rounded-2xl' />
+                    <Skeleton className='h-3 w-12 rounded-full' />
+                </div>
+            ))}
+        </div>
     )
 }
