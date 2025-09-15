@@ -10,7 +10,6 @@ import { SearchBar } from '@/components/search/bar'
 import { fontVariables } from '@/lib/fonts'
 import { ErrorBoundary } from '@/components/error'
 import { userSession } from '@/actions/user'
-import { Group } from '@/components/search/quick'
 
 export default async function RootLayout({
     children,
@@ -33,10 +32,9 @@ export default async function RootLayout({
                             <div className='bg-background relative flex min-h-screen flex-col'>
                                 <div className='flex-1 overflow-clip'>{children}</div>
                                 {modal}
-                                <SearchBar
-                                    command={command as Group[]}
-                                    endContent={<UserDrawer navigation={navigation} user={user} />}
-                                />
+                                <SearchBar command={command} user={user}>
+                                    <UserDrawer navigation={navigation} user={user} />
+                                </SearchBar>
                                 <Footer />
                             </div>
                         </Providers>

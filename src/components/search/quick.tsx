@@ -1,156 +1,129 @@
 'use client'
 
-import React from 'react'
-import { useTheme } from 'next-themes'
+import React, { useEffect } from 'react'
 import { useRouter } from 'nextjs-toploader/app'
+import { useTheme } from 'next-themes'
 
 import { Icon } from '@/lib'
-import { CommandGroup, CommandItem, CommandSeparator } from '@/ui/command'
+import { CommandEmpty, CommandGroup, CommandItem } from '@/ui/command'
 import { useSearchStore } from '@/zustand/store'
+import { capitalize } from '@/lib/utils'
 
-export function QuickAction({ command }: { command: Group[] }) {
-    const { page, onSelect } = useSearchStore()
-    const { setTheme } = useTheme()
+import { Navigations } from './type'
+
+export function QuickAction({ command }: { command: Record<string, Navigations> | null }) {
     const router = useRouter()
-    const mergedGroups = [...command, ...Actions]
+    const { setTheme } = useTheme()
+    const { setDynamicNavigations, getNavigationGroups, onSelect } = useSearchStore()
 
-    if (page) {
-        let expandedItem: Item | undefined
-        let groupTitle = ''
+    useEffect(() => {
+        setDynamicNavigations({ ...command, ...actions })
+    }, [command, setDynamicNavigations])
 
-        for (const group of mergedGroups) {
-            const found = group.children.find((item) => item.id === page)
-
-            if (found) {
-                expandedItem = found
-                groupTitle = found.title
-                break
-            }
-        }
-        if (expandedItem && expandedItem.children) {
-            return (
-                <>
-                    <CommandGroup heading={groupTitle}>
-                        {expandedItem.children.map((item) => (
-                            <CommandItem
-                                key={item.id}
-                                onSelect={() => onSelect(item, router, setTheme)}
-                            >
-                                <div className='flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-sm border'>
-                                    {item.icon && <Icon className='size-4' icon={item.icon} />}
-                                </div>
-                                <div className='flex w-full flex-1 flex-col items-start truncate'>
-                                    {item.title && (
-                                        <div className='text-sm font-medium'>{item.title}</div>
-                                    )}
-                                </div>
-                            </CommandItem>
-                        ))}
-                    </CommandGroup>
-                </>
-            )
-        }
-    }
+    const groups = getNavigationGroups()
 
     return (
         <>
-            {mergedGroups.map((group, idx) => (
-                <React.Fragment key={group.id}>
-                    <CommandGroup heading={group.title}>
-                        {group.children.map((item) => (
-                            <CommandItem
-                                key={item.id}
-                                value={item.title}
-                                onSelect={() => onSelect(item, router, setTheme)}
-                            >
-                                <div className='flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-sm border'>
-                                    {item.icon && <Icon className='size-4' icon={item.icon} />}
-                                </div>
-                                <div className='flex w-full flex-1 flex-col items-start truncate'>
-                                    {item.title && (
-                                        <div className='text-sm font-medium'>{item.title}</div>
-                                    )}
-                                </div>
-                            </CommandItem>
-                        ))}
-                    </CommandGroup>
-                    {idx < mergedGroups.length - 1 && <CommandSeparator />}
-                </React.Fragment>
+            {groups.map((group) => (
+                <CommandGroup key={group.heading} heading={capitalize(group.heading)}>
+                    {group.navigationItems?.map((item) => (
+                        <CommandItem
+                            key={item.id}
+                            onSelect={() => onSelect(item, router, setTheme)}
+                        >
+                            {item.icon && <Icon className='size-6' icon={item.icon} />}
+                            <div className='ml-0.5 flex w-full flex-1 flex-col items-start truncate'>
+                                {item.title && (
+                                    <div className='text-sm font-medium'>{item.title}</div>
+                                )}
+                            </div>
+                        </CommandItem>
+                    ))}
+                </CommandGroup>
             ))}
+            <CommandEmpty>No Results Found</CommandEmpty>
         </>
     )
 }
 
-const Actions = [
-    {
-        id: 'general',
-        title: 'General',
-        children: [
-            {
-                id: 'home',
-                title: 'Return to Home',
-                icon: 'simple-icons:ghostery',
-                href: '/',
-            },
-            {
-                id: 'theme',
-                title: 'Change Theme . . .',
-                icon: 'fa7-solid:brush',
-                action: { type: 'section' as const, value: 'theme' },
-                children: [
-                    {
-                        id: 'light',
-                        title: 'Change Theme to Light',
-                        icon: 'line-md:moon-to-sunny-outline-loop-transition',
-                        action: { type: 'theme' as const, value: 'light' },
-                    },
-                    {
-                        id: 'system',
-                        title: 'Change Theme to System',
-                        icon: 'line-md:computer',
-                        action: { type: 'theme' as const, value: 'system' },
-                    },
-                    {
-                        id: 'dark',
-                        title: 'Change Theme to Dark',
-                        icon: 'line-md:sunny-outline-to-moon-alt-loop-transition',
-                        action: { type: 'theme' as const, value: 'dark' },
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        id: 'help',
-        title: 'Help',
-        children: [
-            {
-                id: 'support',
-                title: 'Contact Support',
-                icon: 'bx:support',
-                href: 'https://wa.me/919927241144',
-            },
-        ],
-    },
-]
-
-export type Item = {
-    id: string
-    title: string
-    description?: string
-    keywords?: string[]
-    shortcut?: string[]
-    icon?: string
-    href?: string
-    action?: {
-        type: 'theme' | 'section' | 'toast' | 'custom'
-        value: string
-    }
-    children?: Item[]
-}
-
-export type Group = {
-    id: string
-    title: string
-    children: Item[]
+const actions: Record<string, Navigations> = {
+    space: [
+        {
+            id: 'space',
+            title: 'Search Firmwares . . .',
+            icon: 'fluent:phone-link-setup-24-regular',
+            action: { type: 'tab', value: 'space' },
+            keywords: ['search', 'firmware', 'phone', 'device', 'flash'],
+        },
+        {
+            id: 'space-frp',
+            title: 'FRP Bypass',
+            icon: 'hugeicons:phone-lock',
+            href: '/frp',
+            keywords: ['frp', 'bypass', 'google', 'lock', 'android'],
+        },
+        {
+            id: 'space-flash-tool',
+            title: 'Flashing Tools',
+            icon: 'hugeicons:phone-arrow-up',
+            href: '/space/flash-tool',
+            keywords: ['flash', 'tools', 'firmware', 'update', 'phone'],
+        },
+        {
+            id: 'space-spare-parts',
+            title: 'Spare Parts Price',
+            description: 'Find genuine mobile parts and authorized service centers near you',
+            icon: 'mynaui:rupee-waves',
+            href: '/scpl',
+            keywords: ['spare', 'parts', 'price', 'mobile', 'repair'],
+        },
+    ],
+    general: [
+        {
+            id: 'home',
+            title: 'Return to Home',
+            icon: 'simple-icons:ghostery',
+            href: '/',
+            keywords: ['home', 'go back', 'main', 'start', 'homepage'],
+        },
+        {
+            id: 'theme',
+            title: 'Change Theme . . .',
+            icon: 'fa7-solid:brush',
+            action: { type: 'section', value: 'theme' },
+            keywords: ['theme', 'appearance', 'light', 'dark', 'mode', 'color'],
+            children: [
+                {
+                    id: 'light',
+                    title: 'Change Theme to Light',
+                    icon: 'line-md:moon-to-sunny-outline-loop-transition',
+                    action: { type: 'theme', value: 'light' },
+                    keywords: ['light', 'bright', 'day', 'theme', 'mode'],
+                },
+                {
+                    id: 'system',
+                    title: 'Change Theme to System',
+                    icon: 'line-md:computer',
+                    action: { type: 'theme', value: 'system' },
+                    keywords: ['system', 'auto', 'follow', 'device', 'theme'],
+                },
+                {
+                    id: 'dark',
+                    title: 'Change Theme to Dark',
+                    icon: 'line-md:sunny-outline-to-moon-alt-loop-transition',
+                    action: { type: 'theme', value: 'dark' },
+                    keywords: ['dark', 'night', 'theme', 'mode', 'black'],
+                },
+            ],
+        },
+    ],
+    help: [
+        {
+            id: 'support',
+            title: 'Contact Support',
+            icon: 'bx:support',
+            href: 'https://wa.me/919927241144',
+            keywords: ['support', 'help', 'contact', 'whatsapp', 'customer'],
+        },
+    ],
 }

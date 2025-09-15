@@ -11,7 +11,7 @@ type GridSkeletonProps = {
     className?: string
 }
 
-export const GridSkeleton = ({ length = 12, className }: GridSkeletonProps) => {
+export const GridSkeleton = ({ length = 15, className }: GridSkeletonProps) => {
     if (!length) return null
 
     return (

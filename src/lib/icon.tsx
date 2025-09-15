@@ -33,7 +33,11 @@ function Icon({ icon, className, fallback, ssr = true }: Props) {
         return fallback || <Skeleton className={cn('rounded-sm', className)} />
     }
 
-    return <IconifyIcon className={className} icon={icon} />
+    return (
+        <div className='flex shrink-0 items-center justify-center'>
+            <IconifyIcon className={className} icon={icon} />
+        </div>
+    )
 }
 
 Icon.displayName = 'Icon'

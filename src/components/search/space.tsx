@@ -24,9 +24,7 @@ export function Space() {
             <CommandGroup heading='Search in Space . . .'>
                 {Spaces.map((item) => (
                     <CommandItem key={item.id} onSelect={() => onSelect(item, router)}>
-                        <div className='flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-sm border'>
-                            <Icon className='size-4' icon={item.icon} />
-                        </div>
+                        <Icon className='size-6' icon={item.icon} />
                         <div className='flex w-full flex-1 flex-col items-start truncate'>
                             {item.title && <div className='text-sm font-medium'>{item.title}</div>}
                             {item.description && (
@@ -56,9 +54,7 @@ export function Space() {
                         setOpen(false)
                     }}
                 >
-                    <div className='flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-sm border'>
-                        <Thumbnail name={c.name} type='List' />
-                    </div>
+                    <Thumbnail name={c.name} type='List' />
                     <div className='flex w-full flex-1 flex-col items-start truncate'>
                         <div className='text-sm font-medium'>{c.name}</div>
                         <p className='text-muted-foreground items-center text-xs'>
@@ -89,21 +85,21 @@ const Spaces = [
         icon: 'fluent:phone-link-setup-24-regular',
         href: '/space',
     },
-    {
-        id: 'space-apps',
-        title: 'Apps',
-        description: 'Get the latest apps for Android, iOS, Windows, MacOS, and Linux',
-        icon: 'ri:apps-2-ai-line',
+    // {
+    //     id: 'space-apps',
+    //     title: 'Apps',
+    //     description: 'Get the latest apps for Android, iOS, Windows, MacOS, and Linux',
+    //     icon: 'ri:apps-2-ai-line',
 
-        href: '/space/apps',
-    },
-    {
-        id: 'space-games',
-        title: 'Games',
-        description: 'Download premium games for mobile, PC, and gaming consoles',
-        icon: 'ion:game-controller',
-        href: '/space/games',
-    },
+    //     href: '/space/apps',
+    // },
+    // {
+    //     id: 'space-games',
+    //     title: 'Games',
+    //     description: 'Download premium games for mobile, PC, and gaming consoles',
+    //     icon: 'ion:game-controller',
+    //     href: '/space/games',
+    // },
     {
         id: 'space-frp',
         title: 'FRP Bypass',
@@ -138,6 +134,7 @@ const Spaces = [
         description: 'Find genuine mobile parts and authorized service centers near you',
         icon: 'mynaui:rupee-waves',
         href: '/scpl',
+        keywords: ['spare', 'parts', 'price', 'mobile', 'repair'],
     },
 ]
 

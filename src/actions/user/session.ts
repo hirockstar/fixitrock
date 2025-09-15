@@ -5,12 +5,12 @@ import { cache } from 'react'
 import { getNavigation, getCommand } from '@/actions/supabase'
 import { Navigation, User } from '@/app/login/types'
 import { createClient } from '@/supabase/server'
-import { Group } from '@/components/search/quick'
+import { Navigations } from '@/components/search/type'
 
 export const userSession = cache(async function userSession(): Promise<{
     user: User | null
     navigation: Navigation[]
-    command: Group[] | null
+    command: Record<string, Navigations> | null
 }> {
     const supabase = await createClient()
     const { data, error: claimsError } = await supabase.auth.getClaims()
@@ -42,17 +42,20 @@ export const userSession = cache(async function userSession(): Promise<{
         })),
     ]
 
-    // Process command data to add username prefix to hrefs
     const processedCommand = commandFromDb
-        ? commandFromDb.map((group) => ({
-              ...group,
-              children: group.children.map((item) => ({
-                  ...item,
-                  href: item.href
-                      ? `/@${user.username}/${item.href.replace(/^\/+/, '')}`
-                      : item.href,
-              })),
-          }))
+        ? Object.fromEntries(
+              Object.entries(commandFromDb).map(([groupName, items]) => [
+                  groupName,
+                  Array.isArray(items)
+                      ? items.map((item) => ({
+                            ...item,
+                            href: item.href
+                                ? `/@${user.username}/${item.href.replace(/^\/+/, '')}`
+                                : `/@${user.username}/`,
+                        }))
+                      : [],
+              ])
+          )
         : null
 
     return { user: user as User, navigation, command: processedCommand }

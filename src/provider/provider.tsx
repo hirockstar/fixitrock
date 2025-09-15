@@ -8,11 +8,14 @@ import { useRouter } from 'nextjs-toploader/app'
 import { useState } from 'react'
 
 import { siteConfig } from '@/config/site'
+import { useOpen } from '@/zustand/store'
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const [queryClient] = useState(() => new QueryClient())
     const router = useRouter()
     const useHref = (href: string) => siteConfig.domain + href
+
+    useOpen()
 
     return (
         <ThemeProvider

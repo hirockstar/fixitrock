@@ -7,20 +7,26 @@ import AnimatedSearch from '@/ui/farmer/search'
 import { Command, CommandInput, CommandList } from '@/ui/command'
 import { Download } from '@/app/(space)/ui/download'
 import { Icon } from '@/lib'
-import { useOpen, useSearchStore } from '@/zustand/store'
+import { useSearchStore } from '@/zustand/store'
+import { User as UserType } from '@/app/login/types'
+import { getSearchPlaceholder } from '@/lib/utils'
 
-import { Group, QuickAction } from './quick'
+import { QuickAction } from './quick'
 import { Space } from './space'
+import { Navigations } from './type'
 
 export function SearchBar({
-    endContent,
+    user,
+    children,
     command,
 }: {
-    endContent: React.ReactNode
-    command: Group[]
+    user: UserType | null
+    children: React.ReactNode
+    command: Record<string, Navigations> | null
 }) {
-    const { open, setOpen } = useOpen()
     const {
+        open,
+        setOpen,
         bounce,
         onKeyDown,
         query,
@@ -32,6 +38,7 @@ export function SearchBar({
         shouldFilter,
         setShouldFilter,
         ref,
+        heading,
     } = useSearchStore()
     const tabs = [
         { key: 'actions', title: 'Suggestions', icon: 'pajamas:suggestion-ai', shouldFilter: true },
@@ -75,7 +82,7 @@ export function SearchBar({
 
                                 if (!selectedTab) return
                                 setTab(key as string)
-                                bounce()
+                                // bounce()
                                 setShouldFilter(selectedTab.shouldFilter)
                             }}
                         >
@@ -108,11 +115,11 @@ export function SearchBar({
                                     onPress={() => setQuery('')}
                                 />
                             ) : (
-                                endContent
+                                children
                             )}
                         </>
                     }
-                    placeholder='What do you need?'
+                    placeholder={heading() || getSearchPlaceholder(user?.name)}
                     startContent={
                         <Button
                             isIconOnly

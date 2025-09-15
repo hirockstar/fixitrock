@@ -6,7 +6,6 @@ import { useEffect } from 'react'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import useScroll from '@/hooks/useScroll'
 import { Bottom } from '@/lib/FramerMotionVariants'
-import { useSearchStore } from '@/zustand/store'
 
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '../drawer'
 
@@ -65,7 +64,7 @@ export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
     if (isDesktop) {
         return (
             <div
-                className={`z-50 transition-transform duration-300 ${open && 'fixed bottom-4 w-[640px] translate-y-[-23dvh] transform'}`}
+                className={`z-50 transition-transform duration-300 ${open && 'fixed bottom-4 max-h-[50vh] w-[640px] translate-y-[-23dvh] transform'}`}
             >
                 {children}
             </div>
@@ -86,46 +85,4 @@ export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
             </Drawer>
         </>
     )
-}
-
-export const useOpen = () => {
-    const { open, setOpen } = useSearchStore()
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const handleKeyDown = (event: KeyboardEvent) => {
-                if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
-                    event.preventDefault()
-                    setOpen(true)
-                }
-                if (event.key === 'Escape') {
-                    setOpen(false)
-                }
-            }
-
-            document.addEventListener('keydown', handleKeyDown)
-
-            return () => {
-                document.removeEventListener('keydown', handleKeyDown)
-            }
-        }
-    }, [])
-
-    useEffect(() => {
-        if (open && typeof window !== 'undefined') {
-            document.documentElement.style.overflow = 'hidden'
-            const isScrollable =
-                document.documentElement.scrollHeight > document.documentElement.clientHeight
-
-            document.documentElement.style.paddingRight = isScrollable ? '11px' : '0px'
-        } else {
-            document.documentElement.style.overflow = ''
-            document.documentElement.style.paddingRight = ''
-        }
-    }, [open])
-
-    return {
-        open,
-        setOpen,
-    }
 }
