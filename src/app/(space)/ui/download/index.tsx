@@ -43,6 +43,7 @@ export function Download() {
             }
         }
     }, [])
+
     const activeDownloads = getActiveDownloads()
     const pausedDownloads = getPausedDownloads()
     const completedDownloads = getCompletedDownloads()

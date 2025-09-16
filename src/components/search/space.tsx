@@ -24,7 +24,7 @@ export function Space() {
             <CommandGroup heading='Search in Space . . .'>
                 {Spaces.map((item) => (
                     <CommandItem key={item.id} onSelect={() => onSelect(item, router)}>
-                        <Icon className='size-6' icon={item.icon} />
+                        <Icon base='size-6' className='size-6' icon={item.icon} />
                         <div className='flex w-full flex-1 flex-col items-start truncate'>
                             {item.title && <div className='text-sm font-medium'>{item.title}</div>}
                             {item.description && (

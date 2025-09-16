@@ -148,7 +148,7 @@ function CommandItem({ className, ...props }: React.ComponentProps<typeof Comman
 function CommandShortcut({ className, ...props }: React.ComponentProps<'span'>) {
     return (
         <span
-            className={cn('text-muted-foreground ml-auto text-xs tracking-widest', className)}
+            className={cn('ml-auto space-x-1 text-xs tracking-widest', className)}
             data-slot='command-shortcut'
             {...props}
         />

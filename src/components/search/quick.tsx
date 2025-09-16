@@ -5,7 +5,7 @@ import { useRouter } from 'nextjs-toploader/app'
 import { useTheme } from 'next-themes'
 
 import { Icon } from '@/lib'
-import { CommandEmpty, CommandGroup, CommandItem } from '@/ui/command'
+import { CommandEmpty, CommandGroup, CommandItem, CommandSeparator } from '@/ui/command'
 import { useSearchStore } from '@/zustand/store'
 import { capitalize } from '@/lib/utils'
 
@@ -24,22 +24,28 @@ export function QuickAction({ command }: { command: Record<string, Navigations> 
 
     return (
         <>
-            {groups.map((group) => (
-                <CommandGroup key={group.heading} heading={capitalize(group.heading)}>
-                    {group.navigationItems?.map((item) => (
-                        <CommandItem
-                            key={item.id}
-                            onSelect={() => onSelect(item, router, setTheme)}
-                        >
-                            {item.icon && <Icon className='size-6' icon={item.icon} />}
-                            <div className='ml-0.5 flex w-full flex-1 flex-col items-start truncate'>
-                                {item.title && (
-                                    <div className='text-sm font-medium'>{item.title}</div>
+            {groups.map((group, index) => (
+                <React.Fragment key={group.heading}>
+                    <CommandGroup heading={capitalize(group.heading)}>
+                        {group.navigationItems?.map((item) => (
+                            <CommandItem
+                                key={item.id}
+                                onSelect={() => onSelect(item, router, setTheme)}
+                            >
+                                {item.icon && (
+                                    <Icon base='size-6' className='size-6' icon={item.icon} />
                                 )}
-                            </div>
-                        </CommandItem>
-                    ))}
-                </CommandGroup>
+                                <div className='flex w-full flex-1 flex-col items-start truncate'>
+                                    {item.title && (
+                                        <div className='text-sm font-medium'>{item.title}</div>
+                                    )}
+                                </div>
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+
+                    {index < groups.length - 1 && <CommandSeparator />}
+                </React.Fragment>
             ))}
             <CommandEmpty>No Results Found</CommandEmpty>
         </>

@@ -5,15 +5,16 @@ import { ArrowLeft, SearchIcon, X } from 'lucide-react'
 
 import AnimatedSearch from '@/ui/farmer/search'
 import { Command, CommandInput, CommandList } from '@/ui/command'
-import { Download } from '@/app/(space)/ui/download'
 import { Icon } from '@/lib'
 import { useSearchStore } from '@/zustand/store'
 import { User as UserType } from '@/app/login/types'
 import { getSearchPlaceholder } from '@/lib/utils'
+import { tabs } from '@/config/tabs'
 
 import { QuickAction } from './quick'
 import { Space } from './space'
 import { Navigations } from './type'
+import { Downloads, Download } from './download'
 
 export function SearchBar({
     user,
@@ -40,22 +41,13 @@ export function SearchBar({
         ref,
         heading,
     } = useSearchStore()
-    const tabs = [
-        { key: 'actions', title: 'Suggestions', icon: 'pajamas:suggestion-ai', shouldFilter: true },
-        {
-            key: 'space',
-            title: 'Space',
-            icon: 'fluent:phone-link-setup-24-regular',
-            shouldFilter: false,
-        },
-    ] as const
 
     return (
         <AnimatedSearch open={open} setOpen={setOpen}>
             <Command
                 ref={ref}
                 loop
-                className={open ? 'h-[50vh] md:rounded-lg md:border' : 'rounded-lg border'}
+                className={open ? 'h-[50vh] md:rounded-lg md:border' : 'rounded-xl border'}
                 shouldFilter={shouldFilter}
                 onKeyDown={onKeyDown}
             >
@@ -64,6 +56,7 @@ export function SearchBar({
                         <CommandList>
                             {tab === 'actions' && <QuickAction command={command} />}
                             {tab === 'space' && <Space />}
+                            {tab === 'downloads' && <Downloads />}
                         </CommandList>
 
                         <Tabs
@@ -82,7 +75,6 @@ export function SearchBar({
 
                                 if (!selectedTab) return
                                 setTab(key as string)
-                                // bounce()
                                 setShouldFilter(selectedTab.shouldFilter)
                             }}
                         >

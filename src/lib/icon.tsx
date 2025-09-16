@@ -8,12 +8,13 @@ import { cn } from '@/lib/utils'
 
 type Props = {
     icon: string
+    base?: string
     className?: string
     fallback?: React.ReactNode | null
     ssr?: boolean
 }
 
-function Icon({ icon, className, fallback, ssr = true }: Props) {
+function Icon({ icon, className, fallback, ssr = true, base }: Props) {
     const [loaded, setLoaded] = useState(ssr ? true : false)
 
     useEffect(() => {
@@ -34,7 +35,7 @@ function Icon({ icon, className, fallback, ssr = true }: Props) {
     }
 
     return (
-        <div className='flex shrink-0 items-center justify-center'>
+        <div className={cn('flex shrink-0 items-center justify-center', base)}>
             <IconifyIcon className={className} icon={icon} />
         </div>
     )

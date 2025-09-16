@@ -39,6 +39,8 @@ interface DownloadStore {
     getCompletedDownloads: () => DownloadItem[]
     getPausedDownloads: () => DownloadItem[]
     getQueuedDownloads: () => DownloadItem[]
+    badge: () => boolean
+    hasDownloads: () => boolean
 }
 
 const ensureDownloadsMap = (downloads: unknown): Map<string, DownloadItem> => {
@@ -413,8 +415,33 @@ export const useDownloadStore = create<DownloadStore>()(
                     return { downloads: newDownloads }
                 })
 
-                // Update queue positions after starting a download
                 get().updateQueuePositions()
+            },
+            badge: () => {
+                const { getActiveDownloads, getPausedDownloads, getQueuedDownloads } = get()
+
+                const count =
+                    getActiveDownloads().length +
+                    getPausedDownloads().length +
+                    getQueuedDownloads().length
+
+                return count > 0
+            },
+            hasDownloads: () => {
+                const {
+                    getActiveDownloads,
+                    getPausedDownloads,
+                    getCompletedDownloads,
+                    getQueuedDownloads,
+                } = get()
+
+                const count =
+                    getActiveDownloads().length +
+                    getPausedDownloads().length +
+                    getCompletedDownloads().length +
+                    getQueuedDownloads().length
+
+                return count > 0
             },
         }),
         {
