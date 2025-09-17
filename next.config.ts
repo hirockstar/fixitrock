@@ -45,6 +45,11 @@ const nextConfig: NextConfig = {
                 permanent: true,
             },
             {
+                source: '/space/og',
+                destination: '/Space/og/',
+                permanent: true,
+            },
+            {
                 source: '/space/og/:path*',
                 destination: '/Space/og/:path*',
                 permanent: true,
