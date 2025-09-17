@@ -83,7 +83,7 @@ const Spaces = [
         title: 'Firmwares',
         description: 'Download official firmware files for all mobile devices and brands',
         icon: 'fluent:phone-link-setup-24-regular',
-        href: '/Space',
+        href: '/space',
     },
     // {
     //     id: 'space-apps',
@@ -91,14 +91,14 @@ const Spaces = [
     //     description: 'Get the latest apps for Android, iOS, Windows, MacOS, and Linux',
     //     icon: 'ri:apps-2-ai-line',
 
-    //     href: '/Space/apps',
+    //     href: '/space/apps',
     // },
     // {
     //     id: 'space-games',
     //     title: 'Games',
     //     description: 'Download premium games for mobile, PC, and gaming consoles',
     //     icon: 'ion:game-controller',
-    //     href: '/Space/games',
+    //     href: '/space/games',
     // },
     {
         id: 'space-frp',
@@ -112,21 +112,21 @@ const Spaces = [
         title: 'iCloud Bypass',
         description: 'Unlock iCloud locked devices with our reliable bypass solutions',
         icon: 'mdi:apple',
-        href: '/Space/iCloud',
+        href: '/space/iCloud',
     },
     {
         id: 'space-drivers',
         title: 'USB Drivers',
         description: 'Download official USB drivers for Android flashing and rooting',
         icon: 'hugeicons:usb-connected-01',
-        href: '/Space/Drivers',
+        href: '/space/Drivers',
     },
     {
         id: 'space-flash-tool',
         title: 'Flashing Tools',
         description: 'Professional tools for flashing, rooting, and unlocking devices',
         icon: 'hugeicons:phone-arrow-up',
-        href: '/Space/Flash-Tool',
+        href: '/space/Flash-Tool',
     },
     {
         id: 'space-spare-parts',

@@ -137,14 +137,14 @@ export async function generateMetadata({ params }: { params: Promise<{ space?: s
             title: title,
             url: `${siteConfig.domain}/${drivePath}`,
             type: 'website',
-            images: `/Space/og?slug=/${drivePath}`,
+            images: `/space/og?slug=/${drivePath}`,
             siteName: siteConfig.title,
         },
         twitter: {
             card: 'summary_large_image',
             title,
             description: `Explore ${title} on ${siteConfig.title}`,
-            images: `/Space/og?slug=/${drivePath}`,
+            images: `/space/og?slug=/${drivePath}`,
         },
     }
 }

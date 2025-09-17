@@ -36,7 +36,7 @@ export const CommandPages = [
                         description:
                             'Download official firmware files for all mobile devices and brands',
                         icon: 'fluent:phone-link-setup-24-regular',
-                        href: '/Space',
+                        href: '/space',
                     },
                     {
                         id: 'space-apps',
@@ -44,14 +44,14 @@ export const CommandPages = [
                         description:
                             'Get the latest apps for Android, iOS, Windows, MacOS, and Linux',
                         icon: 'ri:apps-2-ai-line',
-                        href: '/Space/apps',
+                        href: '/space/apps',
                     },
                     {
                         id: 'space-games',
                         title: 'Games',
                         description: 'Download premium games for mobile, PC, and gaming consoles',
                         icon: 'ion:game-controller',
-                        href: '/Space/games',
+                        href: '/space/games',
                     },
                     {
                         id: 'space-frp',
@@ -67,7 +67,7 @@ export const CommandPages = [
                         description:
                             'Unlock iCloud locked devices with our reliable bypass solutions',
                         icon: 'mdi:apple',
-                        href: '/Space/icloud',
+                        href: '/space/icloud',
                     },
                     {
                         id: 'space-drivers',
@@ -75,7 +75,7 @@ export const CommandPages = [
                         description:
                             'Download official USB drivers for Android flashing and rooting',
                         icon: 'hugeicons:usb-connected-01',
-                        href: '/Space/drivers',
+                        href: '/space/drivers',
                     },
                     {
                         id: 'space-flash-tool',
@@ -83,7 +83,7 @@ export const CommandPages = [
                         description:
                             'Professional tools for flashing, rooting, and unlocking devices',
                         icon: 'hugeicons:phone-arrow-up',
-                        href: '/Space/flash-tool',
+                        href: '/space/flash-tool',
                     },
                     {
                         id: 'space-spare-parts',
@@ -105,7 +105,7 @@ export const CommandPages = [
                 id: 'space-flash-tool',
                 title: 'Flashing Tools',
                 icon: 'hugeicons:phone-arrow-up',
-                href: '/Space/flash-tool',
+                href: '/space/flash-tool',
             },
         ],
     },
@@ -194,7 +194,7 @@ export const Navigations = (actions: Actions): Record<string, NavigationType[]> 
                         description:
                             'Download official firmware files for all mobile devices and brands',
                         icon: 'fluent:phone-link-setup-24-regular',
-                        href: '/Space',
+                        href: '/space',
                     },
                     {
                         id: 'space-apps',
@@ -203,14 +203,14 @@ export const Navigations = (actions: Actions): Record<string, NavigationType[]> 
                             'Get the latest apps for Android, iOS, Windows, MacOS, and Linux',
                         icon: 'ri:apps-2-ai-line',
 
-                        href: '/Space/apps',
+                        href: '/space/apps',
                     },
                     {
                         id: 'space-games',
                         title: 'Games',
                         description: 'Download premium games for mobile, PC, and gaming consoles',
                         icon: 'ion:game-controller',
-                        href: '/Space/games',
+                        href: '/space/games',
                     },
                     {
                         id: 'space-frp',
@@ -226,7 +226,7 @@ export const Navigations = (actions: Actions): Record<string, NavigationType[]> 
                         description:
                             'Unlock iCloud locked devices with our reliable bypass solutions',
                         icon: 'mdi:apple',
-                        href: '/Space/icloud',
+                        href: '/space/icloud',
                     },
                     {
                         id: 'space-drivers',
@@ -234,7 +234,7 @@ export const Navigations = (actions: Actions): Record<string, NavigationType[]> 
                         description:
                             'Download official USB drivers for Android flashing and rooting',
                         icon: 'hugeicons:usb-connected-01',
-                        href: '/Space/drivers',
+                        href: '/space/drivers',
                     },
                     {
                         id: 'space-flash-tool',
@@ -242,7 +242,7 @@ export const Navigations = (actions: Actions): Record<string, NavigationType[]> 
                         description:
                             'Professional tools for flashing, rooting, and unlocking devices',
                         icon: 'hugeicons:phone-arrow-up',
-                        href: '/Space/flash-tool',
+                        href: '/space/flash-tool',
                     },
                     {
                         id: 'space-spare-parts',
@@ -264,7 +264,7 @@ export const Navigations = (actions: Actions): Record<string, NavigationType[]> 
                 id: 'space-flash-tool',
                 title: 'Flashing Tools',
                 icon: 'hugeicons:phone-arrow-up',
-                href: '/Space/flash-tool',
+                href: '/space/flash-tool',
             },
         ],
         general: [

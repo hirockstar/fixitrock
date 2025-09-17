@@ -89,7 +89,7 @@ const actions: Record<string, Navigations> = {
             id: 'space-flash-tool',
             title: 'Flashing Tools',
             icon: 'hugeicons:phone-arrow-up',
-            href: '/Space/Flash-Tool',
+            href: '/space/Flash-Tool',
             keywords: ['flash', 'tools', 'firmware', 'update', 'phone'],
         },
         {

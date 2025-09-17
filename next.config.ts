@@ -11,47 +11,27 @@ const nextConfig: NextConfig = {
         return [
             {
                 source: '/fw',
-                destination: 'https://fixitrock.com/Space',
+                destination: '/space',
                 permanent: true,
             },
             {
                 source: '/fw/:path*',
-                destination: 'https://fixitrock.com/Space/:path*',
+                destination: '/space/:path*',
                 permanent: true,
             },
             {
                 source: '/drive',
-                destination: 'https://fixitrock.com/Space',
+                destination: '/space',
                 permanent: true,
             },
             {
                 source: '/drive/:path*',
-                destination: 'https://fixitrock.com/Space/:path*',
+                destination: '/space/:path*',
                 permanent: true,
             },
             {
                 source: '/drive/og',
-                destination: '/Space/og',
-                permanent: true,
-            },
-            {
-                source: '/space',
-                destination: 'https://fixitrock.com/Space',
-                permanent: true,
-            },
-            {
-                source: '/space/:path*',
-                destination: 'https://fixitrock.com/Space/:path*',
-                permanent: true,
-            },
-            {
-                source: '/space/og',
-                destination: '/Space/og/',
-                permanent: true,
-            },
-            {
-                source: '/space/og/:path*',
-                destination: '/Space/og/:path*',
+                destination: '/space/og',
                 permanent: true,
             },
         ]

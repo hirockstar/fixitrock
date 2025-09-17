@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
 
 export default function NotFound() {
     const pathname = usePathname()
-    const parentPath = pathname.split('/').slice(0, -1).join('/') || '/Space'
+    const parentPath = pathname.split('/').slice(0, -1).join('/') || '/space'
 
     return (
         <div className='flex min-h-[60vh] w-full flex-col items-center justify-center gap-4 p-4'>

@@ -54,10 +54,10 @@ export const metadata: Metadata = {
         title: `${siteConfig.title}: Your Space for Repair Tools`,
         description:
             'Download mobile repair tools, firmware files, FRP bypass tools, and Windows drivers. A free and comprehensive resource for phone and computer technicians.',
-        url: `${siteConfig.domain}/Space`,
+        url: `${siteConfig.domain}/space`,
         siteName: siteConfig.title,
         type: 'website',
-        images: '/Space/og',
+        images: '/space/og',
     },
     category: 'technology',
 }
