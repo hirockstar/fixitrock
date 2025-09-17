@@ -64,7 +64,7 @@ export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
     if (isDesktop) {
         return (
             <div
-                className={`z-50 transition-transform duration-300 ${open && 'fixed bottom-4 max-h-[50vh] w-[640px] translate-y-[-23dvh] transform'}`}
+                className={`z-50 transition-transform duration-300 ${open && 'fixed bottom-4 max-h-[50vh] w-[640px] translate-y-[-25vh] transform'}`}
             >
                 {children}
             </div>
