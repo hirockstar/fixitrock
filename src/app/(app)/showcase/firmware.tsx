@@ -60,7 +60,7 @@ export default function Firmware() {
                                             aria-label={c?.name}
                                             as={Link}
                                             className='w-full rounded-2xl border bg-transparent select-none'
-                                            href={`/space/${c.name.toLowerCase()}`}
+                                            href={`/Space/${c.name}`}
                                             shadow='none'
                                         >
                                             <CardHeader className='mb-px p-2'>

@@ -84,7 +84,7 @@ export const metadata: Metadata = {
         type: 'website',
         images: [
             {
-                url: `/space/og?slug=/FRP-Files`,
+                url: `/Space/og?slug=/FRP-Files`,
                 width: 1200,
                 height: 630,
                 alt: 'FRP Bypass Tools - Unlock Android Devices',
@@ -98,7 +98,7 @@ export const metadata: Metadata = {
         title: 'FRP Bypass Tools - Unlock Android Devices',
         description:
             'Professional FRP bypass tools and methods to unlock Android devices. Remove Google Factory Reset Protection with our comprehensive guide.',
-        images: [`/space/og?slug=/FRP-Files`],
+        images: [`/Space/og?slug=/FRP-Files`],
         creator: '@rockstar',
     },
     category: 'Technology',

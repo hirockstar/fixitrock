@@ -171,7 +171,7 @@ const Folder = React.memo(
                     shadow='none'
                     onPress={() => {
                         setOpen(false)
-                        route.push(`/space/${folder.name}`)
+                        route.push(`/Space/${folder.name}`)
                     }}
                 >
                     <CardBody className='flex-row items-center gap-2.5'>

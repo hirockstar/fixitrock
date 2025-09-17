@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         url: `${siteConfig.domain}/login`,
         siteName: siteConfig.title,
         type: 'website',
-        images: '/space/og',
+        images: '/Space/og',
         locale: 'en_US',
     },
     alternates: {

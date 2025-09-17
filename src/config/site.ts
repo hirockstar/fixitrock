@@ -3,7 +3,6 @@ import { BsUsbSymbol, BsApple, BsCode } from 'react-icons/bs'
 import { FaRupeeSign, FaUnlock } from 'react-icons/fa'
 import { MdPhonelinkSetup } from 'react-icons/md'
 import { RiComputerLine } from 'react-icons/ri'
-import { TbApps, TbDeviceGamepad2 } from 'react-icons/tb'
 import { SiGhostery } from 'react-icons/si'
 import { GiAutoRepair } from 'react-icons/gi'
 
@@ -16,7 +15,7 @@ export const siteConfig = {
         'We Provide Mobile Firmwares Drivers Flash Tool FRP Dump FIle EMMC ISP PinOut Samsung MDM File Windows Files.',
     domain: process.env.NEXT_PUBLIC_SITE_URL || 'https://fixitrock.com',
     baseDirectory: 'Space',
-    directoryUrl: '/space',
+    directoryUrl: '/Space',
     redirectUri: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://fixitrock.com'}/oauth`,
     cacheControlHeader: 'max-age=0, s-maxage=60, stale-while-revalidate',
     suggestion: [
@@ -27,23 +26,23 @@ export const siteConfig = {
             icon: SiGhostery,
         },
         {
-            href: '/space',
+            href: '/Space',
             title: 'Space',
             description: 'Download official firmware files for all mobile devices and brands',
             icon: GiAutoRepair,
         },
-        {
-            href: '/space/apps',
-            title: 'Apps',
-            description: 'Get the latest apps for Android, iOS, Windows, MacOS, and Linux',
-            icon: TbApps,
-        },
-        {
-            href: '/space/games',
-            title: 'Games',
-            description: 'Download premium games for mobile, PC, and gaming consoles',
-            icon: TbDeviceGamepad2,
-        },
+        // {
+        //     href: '/Space/apps',
+        //     title: 'Apps',
+        //     description: 'Get the latest apps for Android, iOS, Windows, MacOS, and Linux',
+        //     icon: TbApps,
+        // },
+        // {
+        //     href: '/Space/games',
+        //     title: 'Games',
+        //     description: 'Download premium games for mobile, PC, and gaming consoles',
+        //     icon: TbDeviceGamepad2,
+        // },
         {
             href: '/frp',
             title: 'FRP Bypass',
@@ -51,19 +50,19 @@ export const siteConfig = {
             icon: FaUnlock,
         },
         {
-            href: '/space/icloud',
+            href: '/Space/iCloud',
             title: 'iCloud Bypass',
             description: 'Unlock iCloud locked devices with our reliable bypass solutions',
             icon: BsApple,
         },
         {
-            href: '/space/drivers',
+            href: '/Space/Drivers',
             title: 'USB Drivers',
             description: 'Download official USB drivers for Android flashing and rooting',
             icon: BsUsbSymbol,
         },
         {
-            href: '/space/flash-tool',
+            href: '/Space/Flash-Tool',
             title: 'Flashing Tools',
             description: 'Professional tools for flashing, rooting, and unlocking devices',
             icon: MdPhonelinkSetup,

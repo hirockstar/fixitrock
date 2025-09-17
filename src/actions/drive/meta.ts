@@ -25,7 +25,7 @@ export const getMeta = cache(async (meta: string) => {
             try {
                 const thumbnailResponse = await client
                     .api(`/me/drive/items/${response.id}:/icon.png`)
-                    .expand('thumbnails')
+                    .expand('thumbnails($select=large)')
                     .get()
 
                 thumbnails = thumbnailResponse?.thumbnails || null

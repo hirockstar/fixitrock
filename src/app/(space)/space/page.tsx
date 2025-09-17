@@ -24,27 +24,26 @@ export default function SpacePage() {
 }
 
 export const metadata: Metadata = {
-    title: 'Space',
+    title: 'Space - Mobile & Computer Repair Resources',
     description:
-        'Your digital space for mobile repair tools, firmware files, and guides. Everything you need in one place.',
+        'Download mobile repair tools, firmware files, FRP bypass tools, and Windows drivers. A free and comprehensive resource for phone and computer technicians.',
     keywords: [
-        'fixitrock',
-        'flash tool',
-        'FRP bypass files',
+        'flash tool download',
+        'firmware files free',
+        'FRP bypass tool',
         'EMMC ISP pinout',
-        'Samsung MDM file',
-        'Windows drivers',
-        'FRP dump file',
-        'firmware files',
-        'Android tools',
-        'Drive Fix iT Rock',
+        'Samsung MDM bypass',
+        'Windows repair drivers',
+        'Android flashing tools',
+        'mobile repair tools',
+        'fixitrock downloads',
     ],
 
     manifest: '/manifest.json',
     appleWebApp: {
         capable: true,
         statusBarStyle: 'black-translucent',
-        title: `Drive`,
+        title: `Space - ${siteConfig.title}`,
         startupImage: ['/icons/fixitrock.png'],
     },
     icons: {
@@ -52,13 +51,13 @@ export const metadata: Metadata = {
     },
     metadataBase: new URL(siteConfig.domain),
     openGraph: {
-        title: 'Space - Mobile Repair Resources',
+        title: `${siteConfig.title}: Your Space for Repair Tools`,
         description:
-            'Your digital space for mobile repair tools, firmware files, and guides. Everything you need in one place.',
-        url: new URL(siteConfig.domain),
+            'Download mobile repair tools, firmware files, FRP bypass tools, and Windows drivers. A free and comprehensive resource for phone and computer technicians.',
+        url: `${siteConfig.domain}/Space`,
         siteName: siteConfig.title,
         type: 'website',
-        images: '/space/og',
+        images: '/Space/og',
     },
     category: 'technology',
 }

@@ -120,12 +120,12 @@ export async function generateMetadata({ params }: { params: Promise<{ space?: s
     const resolvedParams = await params
     const space = resolvedParams.space ?? []
     const drivePath = space.join('/')
-    const title = formatTitle(space[space.length - 1])
+    const title = formatTitle(space.at(-1)) || 'Page Not Found'
 
     return {
-        title: title || 'Page Not Found',
-        description: title || 'Not Found',
-        keywords: title || 'Not Found',
+        title: title,
+        description: title,
+        keywords: title,
         authors: [
             {
                 name: 'Rock Star 💕',
@@ -134,11 +134,17 @@ export async function generateMetadata({ params }: { params: Promise<{ space?: s
         ],
         publisher: 'Rock Star 💕',
         openGraph: {
-            title: title || '',
-            url: new URL(siteConfig.domain),
+            title: title,
+            url: `${siteConfig.domain}/${drivePath}`,
             type: 'website',
-            images: `/space/og?slug=/${drivePath}`,
+            images: `/Space/og?slug=/${drivePath}`,
             siteName: siteConfig.title,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description: `Explore ${title} on ${siteConfig.title}`,
+            images: `/Space/og?slug=/${drivePath}`,
         },
     }
 }

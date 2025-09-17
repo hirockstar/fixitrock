@@ -6,11 +6,10 @@ export function getHref(item: DriveItem): string {
     const path =
         item?.parentReference?.path
             ?.replace(`/drive/root:/${siteConfig.baseDirectory}`, siteConfig.directoryUrl)
-            .replace(/\/$/, '')
-            .toLowerCase() || ''
+            .replace(/\/$/, '') || ''
 
-    if (isFolder(item)) return `${path}/${item.name.toLowerCase()}`
-    if (isPreviewable(item)) return `${path}/?view=${item.name.toLowerCase()}`
+    if (isFolder(item)) return `${path}/${item.name}`
+    if (isPreviewable(item)) return `${path}/?view=${item.name}`
 
     return getDownloadUrl(item) || ''
 }
