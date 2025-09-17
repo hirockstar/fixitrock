@@ -7,7 +7,8 @@ export interface DownloadItem {
     id: string
     name: string
     progress: number
-    status: 'queued' | 'downloading' | 'paused' | 'completed' | 'error'
+    status: 'queued' | 'downloading' | 'paused' | 'completed' | 'error' | 'native'
+    nativeMessage?: string
     error?: string
     startTime: number
     endTime?: number
@@ -81,29 +82,30 @@ export const useDownloadStore = create<DownloadStore>()(
                     return
                 }
 
-                // Check if download already exists
-                const existingDownload = get().downloads.get(item.id)
-
-                if (existingDownload) {
-                    // If download exists, don't add again
-                    return
-                }
-
+                // Hybrid logic: if file > 3GB, use native browser download
+                const isNative = (item.size || 0) > 3 * 1024 * 1024 * 1024
                 const downloadItem: DownloadItem = {
                     id: item.id,
                     name: item.name,
                     progress: 0,
-                    status: 'queued', // Start as queued, will be updated when network starts
+                    status: isNative ? 'native' : 'queued',
                     startTime: Date.now(),
                     size: item.size || 0,
                     downloadUrl: item['@microsoft.graph.downloadUrl'] || undefined,
-                    networkStartTime: undefined, // Will be set when download actually starts
+                    networkStartTime: undefined,
+                    nativeMessage: isNative
+                        ? 'File is larger than 3GB. Downloaded via browser.'
+                        : undefined,
                 }
 
                 set((state) => {
                     const currentDownloads = ensureDownloadsMap(state.downloads)
                     const newDownloads = safeUpdateDownloads(currentDownloads, (downloads) => {
-                        downloads.set(item.id, downloadItem)
+                        // For native downloads, always re-add (overwrite) to allow re-trigger
+                        // For non-native, only add if not already present
+                        if (isNative || !downloads.has(item.id)) {
+                            downloads.set(item.id, downloadItem)
+                        }
 
                         return downloads
                     })
@@ -111,8 +113,23 @@ export const useDownloadStore = create<DownloadStore>()(
                     return { downloads: newDownloads }
                 })
 
-                // Update queue positions after adding
-                get().updateQueuePositions()
+                // If native, trigger browser download immediately
+                if (isNative && downloadItem.downloadUrl) {
+                    // Use a hidden anchor to trigger download
+                    if (typeof window !== 'undefined') {
+                        const a = document.createElement('a')
+
+                        a.href = downloadItem.downloadUrl
+                        a.download = downloadItem.name
+                        a.style.display = 'none'
+                        document.body.appendChild(a)
+                        a.click()
+                        document.body.removeChild(a)
+                    }
+                } else {
+                    // Update queue positions after adding for custom downloads
+                    get().updateQueuePositions()
+                }
             },
 
             updateProgress: (

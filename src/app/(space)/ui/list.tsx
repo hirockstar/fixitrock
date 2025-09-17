@@ -116,7 +116,7 @@ export function List({
                                             <h2 className='truncate text-start text-sm font-medium'>
                                                 {c?.name}
                                             </h2>
-                                            <div className='text-muted-foreground flex flex-wrap gap-x-2 gap-y-0.5 text-xs'>
+                                            <div className='text-muted-foreground flex flex-nowrap gap-x-2 gap-y-0.5 text-[10px] sm:text-xs'>
                                                 {[
                                                     c?.size && (
                                                         <span

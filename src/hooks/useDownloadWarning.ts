@@ -7,7 +7,7 @@ const NOTIFICATION_CONFIG = {
     title: 'Downloads Running',
     icon: '/favicon.ico',
     tag: 'download-warning',
-    timeout: 5000, // 5 seconds
+    timeout: 5000,
 } as const
 
 const canShowNotification = (): boolean => {

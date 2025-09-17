@@ -75,7 +75,7 @@ export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
         <>
             {!open && <div className='z-50'>{children}</div>}
             <Drawer open={open} onOpenChange={setOpen}>
-                <DrawerContent>
+                <DrawerContent className='h-[80vh]'>
                     <DrawerHeader className='sr-only'>
                         <DrawerTitle />
                         <DrawerDescription />

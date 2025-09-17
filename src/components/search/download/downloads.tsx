@@ -253,7 +253,7 @@ export function Downloads() {
                                         <h3 className='truncate text-sm font-medium'>
                                             {download.name}
                                         </h3>
-                                        <div className='text-muted-foreground flex w-full items-center gap-2 text-xs'>
+                                        <div className='text-muted-foreground flex w-full items-center gap-2 text-[10px] sm:text-xs'>
                                             {status.isCompleted ? (
                                                 <span>{formatBytes(status.total)}</span>
                                             ) : status.isCancelled || status.isError ? (

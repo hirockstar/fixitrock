@@ -47,7 +47,9 @@ export function SearchBar({
             <Command
                 ref={ref}
                 loop
-                className={open ? 'h-[50vh] md:rounded-lg md:border' : 'rounded-xl border'}
+                className={
+                    open ? 'h-full md:h-[50vh] md:rounded-lg md:border' : 'rounded-xl border'
+                }
                 shouldFilter={shouldFilter}
                 onKeyDown={onKeyDown}
             >
@@ -93,6 +95,7 @@ export function SearchBar({
                     </>
                 )}
                 <CommandInput
+                    className={open ? 'border-b md:border-b-0' : ''}
                     endContent={
                         <>
                             <Download />
