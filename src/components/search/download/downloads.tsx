@@ -5,7 +5,7 @@ import { Button, Progress } from '@heroui/react'
 import { FaPlay, FaStop, FaTrash, FaPause } from 'react-icons/fa'
 
 import { CommandGroup, CommandItem, CommandSeparator, CommandShortcut } from '@/ui/command'
-import { capitalize, formatBytes } from '@/lib/utils'
+import { formatBytes } from '@/lib/utils'
 import { useDownloadWarning } from '@/hooks/useDownloadWarning'
 import { DownloadItem, useDownloadStore } from '@/zustand/store'
 import { useDownload } from '@/hooks/useDownload'
@@ -242,7 +242,7 @@ export function Downloads() {
         <>
             {sortedDateKeys.map((group, index) => (
                 <React.Fragment key={group}>
-                    <CommandGroup key={group} heading={capitalize(group)}>
+                    <CommandGroup key={group} heading={group}>
                         {downloadsByDate[group]?.map((download) => {
                             const status = getDownloadStatus(download)
 

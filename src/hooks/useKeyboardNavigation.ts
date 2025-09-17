@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 
+import { useSearchStore } from '@/zustand/store'
+
 export type KeyboardNavMode = 'list' | 'grid'
 
 export interface UseKeyboardNavigationProps {
@@ -15,6 +17,7 @@ export function useKeyboardNavigation({
     minItemWidth = 280,
     onSelect,
 }: UseKeyboardNavigationProps) {
+    const open = useSearchStore((state) => state.open)
     const [selectedIndex, setSelectedIndex] = useState<number>(-1)
     const [keyboardNav, setKeyboardNav] = useState<boolean>(false)
     const [columns, setColumns] = useState(1)
@@ -128,10 +131,11 @@ export function useKeyboardNavigation({
     )
 
     useEffect(() => {
+        if (open) return
         window.addEventListener('keydown', handleKeyDown)
 
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [handleKeyDown])
+    }, [handleKeyDown, open])
 
     // Scroll selected item into view
     useEffect(() => {

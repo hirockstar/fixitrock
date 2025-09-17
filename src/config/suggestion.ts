@@ -13,6 +13,7 @@ export const Suggestion = [
                 id: 'theme',
                 title: 'Change Theme . . .',
                 icon: 'fa7-solid:brush',
+
                 children: [
                     {
                         id: 'light',

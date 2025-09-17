@@ -63,15 +63,13 @@ export function SearchBar({
 
                         <Tabs
                             classNames={{
-                                base: 'h-10 items-center border-y bg-transparent',
-                                tabList: 'gap-1.5',
-                                tab: 'h-auto rounded-sm border px-2 shadow-none',
-                                cursor: 'dark:bg-default/20 bg-default/20 overflow-hidden rounded text-white shadow-none',
-                                tabContent: 'group-data-[selected=true]:text-foreground',
+                                tabList: 'relative w-full rounded-none border-y p-0',
+                                cursor: 'w-full',
+                                tab: 'h-10 max-w-fit px-2',
                             }}
                             selectedKey={tab}
                             size='sm'
-                            variant='light'
+                            variant='underlined'
                             onSelectionChange={(key) => {
                                 const selectedTab = tabs.find((t) => t.key === key)
 

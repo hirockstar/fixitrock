@@ -5,7 +5,7 @@ import { useDownloadStore } from '@/zustand/store'
 export const tabConfigs = [
     {
         key: 'actions',
-        title: 'Suggestions',
+        title: 'Shortcuts',
         icon: 'pajamas:suggestion-ai',
         shouldFilter: true,
         visible: () => true,

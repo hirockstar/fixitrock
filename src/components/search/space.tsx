@@ -21,7 +21,7 @@ export function Space() {
 
     if (!query) {
         return (
-            <CommandGroup heading='Search in Space . . .'>
+            <CommandGroup heading='⚡&nbsp;&nbsp;Quick Access in Space'>
                 {Spaces.map((item) => (
                     <CommandItem key={item.id} onSelect={() => onSelect(item, router)}>
                         <Icon base='size-6' className='size-6' icon={item.icon} />
@@ -45,7 +45,7 @@ export function Space() {
     }
 
     return (
-        <CommandGroup heading='Search in Space . . .'>
+        <CommandGroup heading='🔍&nbsp;&nbsp;Results in Space'>
             {items.map((c: SearchItem) => (
                 <CommandItem
                     key={c.id}
@@ -151,7 +151,7 @@ const Loading = () => {
     ]
 
     return (
-        <CommandGroup heading='Search in Space . . .'>
+        <CommandGroup heading='🔎&nbsp;&nbsp;Searching in Space...'>
             {meta.map((l) => (
                 <CommandItem key={l.id} value={l.title + Math.random()}>
                     {/* Icon/thumbnail placeholder */}

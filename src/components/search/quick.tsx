@@ -5,9 +5,14 @@ import { useRouter } from 'nextjs-toploader/app'
 import { useTheme } from 'next-themes'
 
 import { Icon } from '@/lib'
-import { CommandEmpty, CommandGroup, CommandItem, CommandSeparator } from '@/ui/command'
+import {
+    CommandEmpty,
+    CommandGroup,
+    CommandItem,
+    CommandSeparator,
+    CommandShortcut,
+} from '@/ui/command'
 import { useSearchStore } from '@/zustand/store'
-import { capitalize } from '@/lib/utils'
 
 import { Navigations } from './type'
 
@@ -26,7 +31,7 @@ export function QuickAction({ command }: { command: Record<string, Navigations> 
         <>
             {groups.map((group, index) => (
                 <React.Fragment key={group.heading}>
-                    <CommandGroup heading={capitalize(group.heading)}>
+                    <CommandGroup heading={group.heading}>
                         {group.navigationItems?.map((item) => (
                             <CommandItem
                                 key={item.id}
@@ -40,6 +45,18 @@ export function QuickAction({ command }: { command: Record<string, Navigations> 
                                         <div className='text-sm font-medium'>{item.title}</div>
                                     )}
                                 </div>
+                                {item.shortcut && (
+                                    <CommandShortcut className='flex gap-1'>
+                                        {item.shortcut?.map((s, i) => (
+                                            <kbd
+                                                key={i}
+                                                className='bg-border rounded px-1.5 py-0.5 font-mono'
+                                            >
+                                                {s}
+                                            </kbd>
+                                        ))}
+                                    </CommandShortcut>
+                                )}
                             </CommandItem>
                         ))}
                     </CommandGroup>
@@ -53,7 +70,7 @@ export function QuickAction({ command }: { command: Record<string, Navigations> 
 }
 
 const actions: Record<string, Navigations> = {
-    space: [
+    '📦\u00A0\u00A0space': [
         {
             id: 'space',
             title: 'Search Firmwares . . .',
@@ -84,7 +101,7 @@ const actions: Record<string, Navigations> = {
             keywords: ['spare', 'parts', 'price', 'mobile', 'repair'],
         },
     ],
-    general: [
+    '⚙️\u00A0\u00A0general': [
         {
             id: 'home',
             title: 'Return to Home',
@@ -105,6 +122,7 @@ const actions: Record<string, Navigations> = {
                     icon: 'line-md:moon-to-sunny-outline-loop-transition',
                     action: { type: 'theme', value: 'light' },
                     keywords: ['light', 'bright', 'day', 'theme', 'mode'],
+                    shortcut: ['⌘', 'L'],
                 },
                 {
                     id: 'system',
@@ -112,6 +130,7 @@ const actions: Record<string, Navigations> = {
                     icon: 'line-md:computer',
                     action: { type: 'theme', value: 'system' },
                     keywords: ['system', 'auto', 'follow', 'device', 'theme'],
+                    shortcut: ['⌘', 'S'],
                 },
                 {
                     id: 'dark',
@@ -119,11 +138,12 @@ const actions: Record<string, Navigations> = {
                     icon: 'line-md:sunny-outline-to-moon-alt-loop-transition',
                     action: { type: 'theme', value: 'dark' },
                     keywords: ['dark', 'night', 'theme', 'mode', 'black'],
+                    shortcut: ['⌘', 'D'],
                 },
             ],
         },
     ],
-    help: [
+    '💬\u00A0\u00A0help': [
         {
             id: 'support',
             title: 'Contact Support',
