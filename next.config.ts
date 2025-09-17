@@ -34,6 +34,21 @@ const nextConfig: NextConfig = {
                 destination: '/Space/og',
                 permanent: true,
             },
+            {
+                source: '/space',
+                destination: 'https://fixitrock.com/Space',
+                permanent: true,
+            },
+            {
+                source: '/space/:path*',
+                destination: 'https://fixitrock.com/Space/:path*',
+                permanent: true,
+            },
+            {
+                source: '/space/og/:path*',
+                destination: '/Space/og/:path*',
+                permanent: true,
+            },
         ]
     },
 }
