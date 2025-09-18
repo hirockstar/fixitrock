@@ -19,7 +19,7 @@ import { useDownloadStore } from '@/zustand/store'
 import { useChild } from '@/zustand/store'
 
 import { getHref } from '../utils'
-import { useSelectItem } from '../hooks'
+import { useSelectItem, useMenuManager } from '../hooks'
 
 import { DownloadSwitch } from './download/switch'
 
@@ -41,6 +41,7 @@ export function List({
     const onSelect = useSelectItem(setActive, setOpen)
     const { downloads } = useDownloadStore()
     const { isFolder, isPreviewable, isDownloadable } = useChild()
+    const { handleRename, handleDelete, menuManager } = useMenuManager()
     const { selectedIndex, listRef } = useKeyboardNavigation({
         length: data?.value.length ?? 0,
         mode: 'list',
@@ -218,12 +219,16 @@ export function List({
                                 setOpen(open)
                             }}
                             userRole={userRole}
+                            onDelete={handleDelete}
+                            onRename={handleRename}
                             onSelected={onSelect}
                         />
                     </ContextMenu>
                 )
             })}
             {loadMore && <ListSkeleton />}
+
+            {menuManager()}
         </div>
     )
 }

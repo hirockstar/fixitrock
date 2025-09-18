@@ -18,7 +18,7 @@ import { useKeyboardNavigation } from '@/hooks'
 import { useDownloadStore } from '@/zustand/store'
 import { useChild } from '@/zustand/store'
 
-import { useSelectItem } from '../hooks'
+import { useSelectItem, useMenuManager } from '../hooks'
 import { getHref } from '../utils'
 
 import { DownloadSwitch } from './download/switch'
@@ -40,6 +40,7 @@ export function Grid({
     const onSelect = useSelectItem(setActive, setOpen)
     const { downloads } = useDownloadStore()
     const { isFolder, isPreviewable, isDownloadable } = useChild()
+    const { handleRename, handleDelete, menuManager } = useMenuManager()
     const { selectedIndex, listRef, getItemRef } = useKeyboardNavigation({
         length: data?.value.length ?? 0,
         mode: 'grid',
@@ -172,12 +173,16 @@ export function Grid({
                                 setOpen(open)
                             }}
                             userRole={userRole}
+                            onDelete={handleDelete}
+                            onRename={handleRename}
                             onSelected={onSelect}
                         />
                     </ContextMenu>
                 )
             })}
             {loadMore && <GridSkeleton />}
+
+            {menuManager()}
         </div>
     )
 }

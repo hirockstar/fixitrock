@@ -9,7 +9,6 @@ import { siteConfig } from '@/config/site'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { logWarning } from '@/lib/utils'
 import { DriveItem } from '@/types/drive'
-import { useDriveStore } from '@/zustand/store'
 import {
     ContextMenuContent,
     ContextMenuItem,
@@ -19,31 +18,28 @@ import {
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/ui/drawer'
 import { Delete as DIcon, Link, NewTab, NewWindow, Rename as RIcon, Share } from '@/ui/icons'
 
-import { Rename } from './rename'
-import { Delete } from './delete'
-
 export function Menu({
     c,
     open,
     setOpen,
     onSelected,
     userRole,
+    onRename,
+    onDelete,
 }: {
     c: DriveItem
     open: boolean
     setOpen: (open: boolean) => void
     onSelected: (c: DriveItem) => void
     userRole?: number
+    onRename?: (item: DriveItem) => void
+    onDelete?: (item: DriveItem) => void
 }) {
     const path = usePathname()
     const isDesktop = useMediaQuery('(min-width: 768px)')
     const url = `${siteConfig.domain}${c.folder ? `${c.href}` : `${path}#${c.name}`}`
 
     const isAdmin = userRole === 3
-    const driveStore = useDriveStore()
-
-    const [renameDialogOpen, setRenameDialogOpen] = React.useState(false)
-    const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
 
     const handleCopy = () => {
         copy(url)
@@ -66,57 +62,13 @@ export function Menu({
     const handleShare = () => share(url)
 
     const handleRename = () => {
-        setRenameDialogOpen(true)
+        onRename?.(c)
         setOpen(false)
     }
 
     const handleDelete = () => {
-        setDeleteDialogOpen(true)
+        onDelete?.(c)
         setOpen(false)
-    }
-
-    const handleRenameSuccess = (item: DriveItem, newName: string) => {
-        addToast({
-            title: 'Renamed successfully!',
-            description: `"${item.name}" has been renamed to "${newName}"`,
-            color: 'success',
-        })
-
-        const currentChildren = driveStore.children
-        const updatedChildren = currentChildren.map((child) =>
-            child.id === item.id ? { ...child, name: newName } : child
-        )
-
-        driveStore.setChildren(updatedChildren)
-    }
-
-    const handleRenameError = (error: string) => {
-        addToast({
-            title: 'Rename failed',
-            description: error,
-            color: 'danger',
-        })
-    }
-
-    const handleDeleteSuccess = (item: DriveItem) => {
-        addToast({
-            title: 'Deleted successfully!',
-            description: `"${item.name}" has been deleted`,
-            color: 'success',
-        })
-
-        const currentChildren = driveStore.children
-        const updatedChildren = currentChildren.filter((child) => child.id !== item.id)
-
-        driveStore.setChildren(updatedChildren)
-    }
-
-    const handleDeleteError = (error: string) => {
-        addToast({
-            title: 'Delete failed',
-            description: error,
-            color: 'danger',
-        })
     }
 
     const openInNewTab = () => window.open(url, '_blank')
@@ -246,24 +198,6 @@ export function Menu({
                     </DrawerContent>
                 </Drawer>
             )}
-
-            <Rename
-                currentPath={path}
-                item={c}
-                open={renameDialogOpen}
-                onOpenChange={setRenameDialogOpen}
-                onRenameError={handleRenameError}
-                onRenameSuccess={handleRenameSuccess}
-            />
-
-            <Delete
-                currentPath={path}
-                item={c}
-                open={deleteDialogOpen}
-                onDeleteError={handleDeleteError}
-                onDeleteSuccess={handleDeleteSuccess}
-                onOpenChange={setDeleteDialogOpen}
-            />
         </>
     )
 }

@@ -1,3 +1,2 @@
-import { useSelectItem } from './useSelectItem'
-
-export { useSelectItem }
+export { useMenuManager } from './useMenuManager'
+export { useSelectItem } from './useSelectItem'
