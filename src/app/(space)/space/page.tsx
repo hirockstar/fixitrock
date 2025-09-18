@@ -4,6 +4,7 @@ import { Metadata } from 'next'
 import { GridSkeleton } from '@/ui/skeleton'
 import { siteConfig } from '@/config/site'
 import { getChildren } from '@/actions/drive'
+import { userSession } from '@/actions/user'
 
 import { Grid } from '../ui'
 
@@ -66,7 +67,9 @@ async function Space() {
     try {
         const data = await getChildren('')
 
-        return <Grid data={data} />
+        const { user } = await userSession()
+
+        return <Grid data={data} userRole={user?.role} />
     } catch (error) {
         throw error
     }

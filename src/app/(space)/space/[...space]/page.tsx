@@ -7,6 +7,7 @@ import { SortField, SortOrder } from '@/types/drive'
 import { GridSkeleton, ListSkeleton } from '@/ui/skeleton'
 import { siteConfig } from '@/config/site'
 import { getChildren, getReadme } from '@/actions/drive'
+import { userSession } from '@/actions/user'
 import { Readme } from '@/app/(space)/ui/preview'
 import { formatTitle } from '@/app/(space)/utils'
 
@@ -98,11 +99,14 @@ async function Space({ space, ...props }: Props) {
         const initial = await getChildren(`/${space}`, undefined, 50)
         const raw = await getReadme(`/${space}`)
 
+        const { user } = await userSession()
+
         return (
             <>
                 <Data
                     initial={{ ...initial, nextPage: initial['@odata.nextLink'] }}
                     space={space}
+                    userRole={user?.role}
                     {...props}
                 />
                 <Readme className='rounded-lg border p-2 2xl:px-[2rem]' raw={raw || ''} />

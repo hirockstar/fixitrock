@@ -65,7 +65,7 @@ export function SearchBar({
                             classNames={{
                                 tabList: 'relative w-full rounded-none border-y p-0',
                                 cursor: 'w-full',
-                                tab: 'h-10 max-w-fit px-2',
+                                tab: 'h-10 max-w-fit px-2 data-[focus-visible=true]:outline-0',
                             }}
                             selectedKey={tab}
                             size='sm'

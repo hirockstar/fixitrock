@@ -91,6 +91,7 @@ export default function Firmware() {
                                             setActive(c)
                                             setOpen(open)
                                         }}
+                                        userRole={undefined}
                                         onSelected={selectItem}
                                     />
                                 </ContextMenu>

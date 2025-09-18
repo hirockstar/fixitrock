@@ -27,11 +27,13 @@ export function Grid({
     data,
     loadMore,
     focus,
+    userRole,
 }: {
     data?: Drive
     isLoading?: boolean
     loadMore?: boolean
     focus?: DriveItem | null
+    userRole?: number
 }) {
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
@@ -169,6 +171,7 @@ export function Grid({
                                 setActive(c)
                                 setOpen(open)
                             }}
+                            userRole={userRole}
                             onSelected={onSelect}
                         />
                     </ContextMenu>

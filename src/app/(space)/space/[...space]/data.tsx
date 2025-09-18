@@ -17,9 +17,18 @@ interface Props {
     sortField?: SortField
     sortOrder?: SortOrder
     initial: Drive & { nextPage?: string }
+    userRole?: number
 }
 
-export function Data({ space, layout: view, query, sortField, sortOrder, initial }: Props) {
+export function Data({
+    space,
+    layout: view,
+    query,
+    sortField,
+    sortOrder,
+    initial,
+    userRole,
+}: Props) {
     const { initialize } = useDriveStore()
     const {
         setLayout,
@@ -87,7 +96,7 @@ export function Data({ space, layout: view, query, sortField, sortOrder, initial
     }, [syncFromURL, syncFromLocalStorage])
 
     const filteredData = getDriveItems({ data: children, query, sortField, sortOrder })
-    const props = { data: { value: filteredData }, loadMore: loadingMore, ref }
+    const props = { data: { value: filteredData }, loadMore: loadingMore, ref, userRole }
 
     if (isError)
         return (

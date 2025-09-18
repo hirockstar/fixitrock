@@ -27,12 +27,14 @@ export function List({
     data,
     loadMore,
     focus,
+    userRole,
 }: {
     data?: Drive
     isLoading?: boolean
     loadMore?: boolean
     focus?: DriveItem | null
     ref: React.Ref<HTMLDivElement>
+    userRole?: number
 }) {
     const [active, setActive] = React.useState<DriveItem | null>(null)
     const [open, setOpen] = React.useState(false)
@@ -215,6 +217,7 @@ export function List({
                                 setActive(c)
                                 setOpen(open)
                             }}
+                            userRole={userRole}
                             onSelected={onSelect}
                         />
                     </ContextMenu>

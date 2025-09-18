@@ -1,9 +1,8 @@
-import { getChildren } from './children'
-import { getID } from './id'
-import { getMeta } from './meta'
-import { getReadme } from './readme'
-import { getSearch } from './search'
-import { getStorage } from './storage'
-import { getToken } from './token'
-
-export { getChildren, getMeta, getReadme, getSearch, getStorage, getToken, getID }
+export { getChildren } from './children'
+export { canRename, canDelete } from './can'
+export { getID } from './id'
+export { getMeta } from './meta'
+export { getReadme } from './readme'
+export { getSearch } from './search'
+export { getStorage } from './storage'
+export { getToken } from './token'
