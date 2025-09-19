@@ -8,7 +8,7 @@ import { Command, CommandInput, CommandList } from '@/ui/command'
 import { Icon } from '@/lib'
 import { useSearchStore } from '@/zustand/store'
 import { User as UserType } from '@/app/login/types'
-import { getSearchPlaceholder } from '@/lib/utils'
+import { HeyYou } from '@/lib/utils'
 import { tabs } from '@/config/tabs'
 
 import { QuickAction } from './quick'
@@ -112,7 +112,7 @@ export function SearchBar({
                             )}
                         </>
                     }
-                    placeholder={heading() || getSearchPlaceholder(user?.name)}
+                    placeholder={heading() || HeyYou(user?.name)}
                     startContent={
                         <Button
                             isIconOnly

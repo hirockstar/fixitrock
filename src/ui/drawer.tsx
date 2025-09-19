@@ -83,7 +83,15 @@ function DrawerContent({
         </DrawerPortal>
     )
 }
-
+function DrawerBody({ className, ...props }: React.ComponentProps<'div'>) {
+    return (
+        <div
+            className={cn('flex-1 overflow-y-auto p-4', className)}
+            data-slot='drawer-body'
+            {...props}
+        />
+    )
+}
 function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
     return (
         <div
@@ -134,6 +142,7 @@ export {
     DrawerTrigger,
     DrawerClose,
     DrawerContent,
+    DrawerBody,
     DrawerHeader,
     DrawerFooter,
     DrawerTitle,

@@ -2,21 +2,20 @@
 
 import * as React from 'react'
 import { useActionState } from 'react'
-import {
-    Button,
-    Modal,
-    ModalBody,
-    Form,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    Image,
-} from '@heroui/react'
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
 
 import { canDelete } from '@/actions/drive'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { DriveItem } from '@/types/drive'
-import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/ui/drawer'
+import {
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+} from '@/ui/drawer'
+import { Delete as Icon } from '@/ui/icons'
 
 interface DeleteProps {
     item: DriveItem
@@ -36,40 +35,33 @@ export function Delete({
     onDeleteError,
 }: DeleteProps) {
     const [deleteState, deleteAction, isDeleting] = useActionState(canDelete, { errors: {} })
-    const lastDeleteState = React.useRef<typeof deleteState | null>(null)
+    const processedStateRef = React.useRef<typeof deleteState>(null)
     const isDesktop = useMediaQuery('(min-width: 768px)')
 
-    // Handle delete success/error
     React.useEffect(() => {
-        // Only process if this is a new state (different from last processed)
-        if (lastDeleteState.current !== deleteState) {
+        if (
+            open &&
+            deleteState &&
+            processedStateRef.current !== deleteState &&
+            (deleteState.success || Object.keys(deleteState.errors || {}).length > 0)
+        ) {
             if (deleteState.success && deleteState.message) {
                 onDeleteSuccess?.(item)
                 onOpenChange(false)
+                processedStateRef.current = deleteState
             } else if (deleteState.errors && Object.keys(deleteState.errors).length > 0) {
                 const errorMessage = Object.values(deleteState.errors)[0] || 'Failed to delete item'
 
                 onDeleteError?.(errorMessage)
+                processedStateRef.current = deleteState
             }
-
-            // Update the last processed state
-            lastDeleteState.current = deleteState
         }
-    }, [deleteState, item, onDeleteSuccess, onDeleteError, onOpenChange])
+    }, [deleteState, open, item, onDeleteSuccess, onDeleteError, onOpenChange])
 
-    // Reset state when dialog opens
     React.useEffect(() => {
         if (open) {
-            lastDeleteState.current = null
         }
     }, [open])
-
-    const handleSubmit = (formData: FormData) => {
-        formData.set('itemId', item.id)
-        formData.set('itemName', item.name)
-        formData.set('currentPath', currentPath)
-        deleteAction(formData)
-    }
 
     if (isDesktop) {
         return (
@@ -80,15 +72,13 @@ export function Delete({
                 size='md'
                 onOpenChange={onOpenChange}
             >
-                <Form action={handleSubmit}>
+                <form action={deleteAction}>
+                    <input name='itemId' type='hidden' value={item.id} />
+                    <input name='itemName' type='hidden' value={item.name} />
+                    <input name='currentPath' type='hidden' value={currentPath} />
                     <ModalContent>
-                        <ModalHeader className='text-muted-foreground mx-auto items-center py-0 text-center'>
-                            <Image
-                                isBlurred
-                                alt='Delete'
-                                className='size-40'
-                                src='/onedrive/delete.webp'
-                            />
+                        <ModalHeader className='text-muted-foreground mx-auto items-center text-center'>
+                            <Icon className='text-danger size-20' />
                         </ModalHeader>
                         <ModalBody>
                             <h1 className='text-muted-foreground text-center text-balance'>
@@ -120,29 +110,24 @@ export function Delete({
                             </Button>
                         </ModalFooter>
                     </ModalContent>
-                </Form>
+                </form>
             </Modal>
         )
     }
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
-            <Form action={handleSubmit}>
-                <DrawerContent>
-                    <DrawerHeader className='py-0'>
-                        <DrawerTitle className='text-muted-foreground mx-auto items-center text-center'>
-                            <Image
-                                isBlurred
-                                alt='Delete'
-                                className='size-40'
-                                src='/onedrive/delete.webp'
-                            />
-                        </DrawerTitle>
-                    </DrawerHeader>
-                    <h1 className='text-muted-foreground text-center text-balance'>
-                        Are you sure you want to delete
-                        <p className='text-foreground'>{item.name}</p>
-                    </h1>
+            <DrawerContent>
+                <DrawerHeader className='items-center text-center'>
+                    <Icon className='text-danger size-20' />
+                    <DrawerDescription>Are you sure you want to delete</DrawerDescription>
+                    <DrawerTitle className='text-foreground'>{item.name}</DrawerTitle>
+                </DrawerHeader>
+
+                <form action={deleteAction}>
+                    <input name='itemId' type='hidden' value={item.id} />
+                    <input name='itemName' type='hidden' value={item.name} />
+                    <input name='currentPath' type='hidden' value={currentPath} />
                     <DrawerFooter className='flex-row gap-4'>
                         <Button
                             fullWidth
@@ -166,8 +151,8 @@ export function Delete({
                             {isDeleting ? 'Deleting...' : 'Delete'}
                         </Button>
                     </DrawerFooter>
-                </DrawerContent>
-            </Form>
+                </form>
+            </DrawerContent>
         </Drawer>
     )
 }

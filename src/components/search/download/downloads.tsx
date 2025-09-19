@@ -283,16 +283,6 @@ export function Downloads() {
                                                                 {formatBytes(status.downloaded)} of{' '}
                                                                 {formatBytes(status.total)}
                                                             </span>
-                                                            <span>-</span>
-                                                            <span
-                                                                className={
-                                                                    status.isPaused
-                                                                        ? 'text-warning'
-                                                                        : ''
-                                                                }
-                                                            >
-                                                                {status.getStatusText()}
-                                                            </span>
                                                         </div>
                                                         <span className='text-end'>
                                                             {status.progressPercentage}%

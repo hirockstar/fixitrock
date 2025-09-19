@@ -50,18 +50,20 @@ export async function canRename(prevState: ActionState, formData: FormData): Pro
         await checkAdminRole()
 
         const itemId = formData.get('itemId') as string
-        const newName = formData.get('newName') as string
+        const newNameRaw = formData.get('newName') as string
+        const extension = (formData.get('extension') as string) || ''
         const currentPath = (formData.get('currentPath') as string) || '/'
 
         if (!itemId?.trim()) {
             return { errors: { itemId: 'Item ID is required' } }
         }
 
-        if (!newName?.trim()) {
+        if (!newNameRaw?.trim()) {
             return { errors: { newName: 'New name is required' } }
         }
 
-        const trimmedName = newName.trim()
+        // always preserve extension if present
+        const trimmedName = newNameRaw.trim() + extension
 
         const invalidChars = /[<>:"/\\|?*]/
 
@@ -107,7 +109,6 @@ export async function canRename(prevState: ActionState, formData: FormData): Pro
             return { errors: { general: 'Access denied: Only administrators can rename items' } }
         }
 
-        // Handle specific OneDrive API errors
         if (errorMessage.includes('nameAlreadyExists')) {
             return { errors: { newName: `A file or folder with this name already exists` } }
         } else if (errorMessage.includes('invalidRequest')) {

@@ -6,7 +6,6 @@ import {
     Button,
     Modal,
     ModalContent,
-    Form,
     Input,
     ModalFooter,
     ModalHeader,
@@ -62,51 +61,38 @@ export function Rename({
     const { nameWithoutExt, extension } = getFileNameParts(item.name)
     const [newName, setNewName] = React.useState(nameWithoutExt)
     const [renameState, renameAction, isRenaming] = useActionState(canRename, { errors: {} })
-    const lastRenameState = React.useRef<typeof renameState | null>(null)
+    const processedStateRef = React.useRef<typeof renameState>(null)
     const isDesktop = useMediaQuery('(min-width: 768px)')
 
-    // Handle rename success/error
     React.useEffect(() => {
-        // Only process if this is a new state (different from last processed)
-        if (lastRenameState.current !== renameState) {
+        if (
+            open &&
+            renameState &&
+            processedStateRef.current !== renameState &&
+            (renameState.success || Object.keys(renameState.errors || {}).length > 0)
+        ) {
             if (renameState.success && renameState.message) {
                 const fullNewName = newName.trim() + extension
 
                 onRenameSuccess?.(item, fullNewName)
                 onOpenChange(false)
-                // Reset the state immediately after processing success
-                lastRenameState.current = null
+                processedStateRef.current = renameState
             } else if (renameState.errors && Object.keys(renameState.errors).length > 0) {
                 const errorMessage = Object.values(renameState.errors)[0] || 'Failed to rename item'
 
                 onRenameError?.(errorMessage)
-                // Reset the state immediately after processing error
-                lastRenameState.current = null
-            } else {
-                // Update the last processed state only for non-success/error states
-                lastRenameState.current = renameState
+                processedStateRef.current = renameState
             }
         }
-    }, [renameState, item, newName, extension, onRenameSuccess, onRenameError, onOpenChange])
+    }, [renameState, open, item, newName, extension, onRenameSuccess, onRenameError, onOpenChange])
 
-    // Reset state when dialog opens
     React.useEffect(() => {
         if (open) {
             const { nameWithoutExt } = getFileNameParts(item.name)
 
             setNewName(nameWithoutExt)
-            lastRenameState.current = null
         }
     }, [open, item.name])
-
-    const handleSubmit = (formData: FormData) => {
-        const fullNewName = newName.trim() + extension
-
-        formData.set('newName', fullNewName)
-        formData.set('itemId', item.id)
-        formData.set('currentPath', currentPath)
-        renameAction(formData)
-    }
 
     if (isDesktop) {
         return (
@@ -117,7 +103,11 @@ export function Rename({
                 size='md'
                 onOpenChange={onOpenChange}
             >
-                <Form action={handleSubmit}>
+                <form action={renameAction}>
+                    <input name='itemId' type='hidden' value={item.id} />
+                    <input name='currentPath' type='hidden' value={currentPath} />
+                    <input name='extension' type='hidden' value={extension} />
+
                     <ModalContent>
                         <ModalHeader className='flex-col'>
                             <h3 className='text-foreground font-semibold'>
@@ -137,6 +127,7 @@ export function Rename({
                                     )
                                 }
                                 isDisabled={isRenaming}
+                                name='newName'
                                 placeholder={nameWithoutExt}
                                 size='sm'
                                 startContent={
@@ -174,22 +165,25 @@ export function Rename({
                             </Button>
                         </ModalFooter>
                     </ModalContent>
-                </Form>
+                </form>
             </Modal>
         )
     }
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
-            <Form action={handleSubmit}>
-                <DrawerContent>
-                    <DrawerHeader>
-                        <DrawerTitle>Rename {item.folder ? 'folder' : 'file'}</DrawerTitle>
-                        <DrawerDescription>
-                            Enter a new name for{' '}
-                            <span className='text-foreground'>"{item.name}"</span>
-                        </DrawerDescription>
-                    </DrawerHeader>
+            <DrawerContent>
+                <DrawerHeader>
+                    <DrawerTitle>Rename {item.folder ? 'folder' : 'file'}</DrawerTitle>
+                    <DrawerDescription>
+                        Enter a new name for <span className='text-foreground'>"{item.name}"</span>
+                    </DrawerDescription>
+                </DrawerHeader>
+                <form action={renameAction}>
+                    <input name='itemId' type='hidden' value={item.id} />
+                    <input name='currentPath' type='hidden' value={currentPath} />
+                    <input name='extension' type='hidden' value={extension} />
+
                     <Input
                         autoFocus
                         isRequired
@@ -198,6 +192,7 @@ export function Rename({
                             extension && <p className='text-muted-foreground'>{extension}</p>
                         }
                         isDisabled={isRenaming}
+                        name='newName'
                         placeholder={nameWithoutExt}
                         size='sm'
                         startContent={
@@ -231,8 +226,8 @@ export function Rename({
                             Rename
                         </Button>
                     </DrawerFooter>
-                </DrawerContent>
-            </Form>
+                </form>
+            </DrawerContent>
         </Drawer>
     )
 }
