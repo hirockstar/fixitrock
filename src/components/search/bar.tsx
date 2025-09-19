@@ -112,7 +112,7 @@ export function SearchBar({
                             )}
                         </>
                     }
-                    placeholder={heading() || HeyYou(user?.name)}
+                    placeholder={heading() || (user ? HeyYou(user?.name) : 'What do you need?')}
                     startContent={
                         <Button
                             isIconOnly

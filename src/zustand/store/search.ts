@@ -181,9 +181,16 @@ export const useSearchStore = create<SearchState>()(
                 },
 
                 heading: () => {
-                    const { page, dynamicNavigations } = get()
+                    const { page, dynamicNavigations, tab } = get()
 
-                    if (!page || !dynamicNavigations) return null
+                    if (!page || !dynamicNavigations) {
+                        // Show active tab when no page is selected (but skip 'actions' tab)
+                        if (tab && tab !== 'actions') {
+                            return `Search in ${tab.charAt(0).toUpperCase() + tab.slice(1)} . . .`
+                        }
+
+                        return null
+                    }
 
                     const allItems = Object.values(dynamicNavigations).flat()
                     const currentPageItem = allItems.find((item) => item.id === page)
