@@ -114,10 +114,10 @@ export const formatPrice = (price: number) => {
 }
 
 export const getStockStatus = (qty: number) => {
-    if (qty === 0) return { color: 'danger' as const, text: 'Out of Stock' }
-    if (qty <= 1) return { color: 'warning' as const, text: 'Low Stock' }
+    if (qty === 0) return { color: 'bg-red-400' as const, text: 'Sold Out' }
+    if (qty <= 1) return { color: 'bg-amber-400' as const, text: 'Few left' }
 
-    return { color: 'success' as const, text: 'In Stock' }
+    return { color: 'bg-emerald-400' as const, text: 'In Stock' }
 }
 
 // Helper to get the first image URL from product.img

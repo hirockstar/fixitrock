@@ -15,15 +15,7 @@ type InputProps = {
     href?: string
 } & Props
 
-export function Input({
-    value = '',
-    hotKey,
-    end,
-    href,
-    base = 'sm:w-[40%] lg:w-[25%]',
-    onChange,
-    ...inputProps
-}: InputProps) {
+export function Input({ value = '', hotKey, end, href, onChange, ...inputProps }: InputProps) {
     const inputRef = useRef<HTMLInputElement>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -57,8 +49,8 @@ export function Input({
             className='bg-transparent'
             classNames={{
                 inputWrapper:
-                    'h-10 min-h-10 w-full rounded-sm border bg-transparent shadow-none group-data-[focus=true]:bg-transparent data-[hover=true]:bg-transparent',
-                base: base,
+                    'rounded-sm border bg-transparent shadow-none group-data-[focus=true]:bg-transparent data-[hover=true]:bg-transparent',
+
                 input: 'truncate overflow-hidden',
             }}
             endContent={
@@ -74,7 +66,8 @@ export function Input({
                             {hotKey.toUpperCase()}
                         </Button>
                     )}
-                    {end}
+
+                    <div className='ml-0.5 flex items-center gap-0.5'>{end}</div>
                 </>
             }
             size='sm'

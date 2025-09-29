@@ -48,7 +48,7 @@ export default async function RootLayout({
 export const metadata: Metadata = {
     title: {
         default: siteConfig.title,
-        template: `%s - ${siteConfig.title}`,
+        template: `%s ~ ${siteConfig.title}`,
     },
     description: siteConfig.description,
     manifest: '/manifest.json',

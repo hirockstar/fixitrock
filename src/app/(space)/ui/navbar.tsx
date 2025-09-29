@@ -70,7 +70,7 @@ export function Navbar({
             }}
             maxWidth='full'
         >
-            <div className='hidden h-10 items-center gap-1.5 select-none sm:flex'>
+            <div className='hidden items-center gap-1.5 select-none sm:flex'>
                 <Button
                     as={Link}
                     className='h-8 w-8 min-w-0 p-0'
@@ -85,21 +85,30 @@ export function Navbar({
                     {formatTitle(lastSegment)}
                 </h1>
             </div>
-
-            <Input
-                end={
-                    <div className='ml-0.5 flex items-center gap-0.5'>
-                        <SwitchLayout />
-                        <span className='text-muted-foreground text-xs'>|</span>
-                        <SortBy sort={handleSort} />
-                    </div>
-                }
-                hotKey='F'
-                href={backHref}
-                placeholder={`Search in ${formatTitle(lastSegment)} . . .`}
-                value={query}
-                onInput={(e) => handleQueryChange(e.currentTarget.value)}
-            />
+            <div className='flex w-full items-center gap-2 sm:w-[50%] md:w-[40%] xl:w-[25%]'>
+                <Input
+                    end={
+                        <>
+                            <SwitchLayout />
+                            <span className='text-muted-foreground text-xs'>|</span>
+                            <SortBy sort={handleSort} />
+                        </>
+                    }
+                    hotKey='F'
+                    href={backHref}
+                    placeholder={`Search in ${formatTitle(lastSegment)} . . .`}
+                    value={query}
+                    onInput={(e) => handleQueryChange(e.currentTarget.value)}
+                />
+                {/* <Button
+                    className='border-1.5 bg-default/20 hidden min-w-fit rounded-sm border-dashed sm:flex'
+                    size='sm'
+                    startContent={<Upload size={20} />}
+                    variant='light'
+                >
+                    Add Files
+                </Button> */}
+            </div>
         </Header>
     )
 }

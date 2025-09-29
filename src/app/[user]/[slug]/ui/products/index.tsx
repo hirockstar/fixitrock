@@ -16,7 +16,7 @@ export default async function Products({ params }: ProductsProps) {
     const { data: brands = [] } = await getAllBrands()
 
     return (
-        <div className='mt-4 flex w-full flex-col gap-4 p-2 md:px-4 2xl:px-[10%]'>
+        <div className='mb-4 flex h-full w-full flex-col gap-4 px-2 md:px-4 2xl:px-[10%]'>
             {canManage ? (
                 <ProductsTable
                     brand={brands as Brand[]}

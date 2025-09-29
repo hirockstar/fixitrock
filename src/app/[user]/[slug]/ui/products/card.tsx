@@ -46,10 +46,12 @@ export default function ProductsCard({ products }: ProductsListProps) {
                             {formatPrice(product.price ?? 0)}
                         </p>
                     </CardFooter>
-                    <Tooltip content={getStockStatus(product.qty).text}>
+                    <Tooltip
+                        className={`${getStockStatus(product.qty).color} rounded-full text-white`}
+                        content={getStockStatus(product.qty).text}
+                    >
                         <Chip
-                            className='absolute top-3 right-3 z-10 size-3 min-w-0'
-                            color={getStockStatus(product.qty).color}
+                            className={`absolute top-3 right-3 z-10 size-3 min-w-0 ${getStockStatus(product.qty).color}`}
                         />
                     </Tooltip>
                 </Card>
