@@ -1,22 +1,8 @@
 'use client'
 
 import React, { useEffect, useActionState } from 'react'
-import {
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    Input,
-    Textarea,
-    Button,
-    Autocomplete,
-    AutocompleteItem,
-    Form,
-    addToast,
-    Image,
-} from '@heroui/react'
-import { Box, Tag, IndianRupee, X, GalleryHorizontalEnd, Settings2, CirclePlus } from 'lucide-react'
+import { Input, Textarea, Button, Form, addToast, Image, ScrollShadow } from '@heroui/react'
+import { Box, Tag, IndianRupee, X, GalleryHorizontalEnd } from 'lucide-react'
 import { MdAddShoppingCart } from 'react-icons/md'
 import { BiImageAdd } from 'react-icons/bi'
 
@@ -24,6 +10,18 @@ import { Product } from '@/types/products'
 import { Brand } from '@/types/brands'
 import { useImageManager } from '@/hooks/useImageManager'
 import { addProduct, updateProduct } from '@/actions/user/products'
+import { useMediaQuery } from '@/hooks'
+import {
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+} from '@/ui/drawer'
+import { cn } from '@/lib/utils'
+
+import { Combobox, ComboboxItem } from './combobox'
 
 const CATEGORIES = [
     'battery',
@@ -60,10 +58,23 @@ interface AddEditProps {
     brands: Brand[]
 }
 
-const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
-    <div className='flex items-center gap-2 py-2 select-none'>
-        <span>{icon}</span>
-        <h3 className='text-foreground font-semibold tracking-wide uppercase'>{title}</h3>
+const Section = ({
+    icon,
+    title,
+    children,
+    className,
+}: {
+    icon: React.ReactNode
+    title: string
+    children: React.ReactNode
+    className: string
+}) => (
+    <div className='mb-2 flex w-full flex-col space-y-4'>
+        <div className='flex items-center gap-2 select-none'>
+            <span>{icon}</span>
+            <h3 className='text-foreground font-semibold tracking-wide uppercase'>{title}</h3>
+        </div>
+        <div className={cn(className)}>{children}</div>
     </div>
 )
 
@@ -98,12 +109,11 @@ const ImagePreview = ({
 )
 
 export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddEditProps) {
-    // Choose action based on mode
+    const isDesktop = useMediaQuery('(min-width: 786px)')
     const action = mode === 'add' ? addProduct : updateProduct
     const [{ errors }, formAction, isLoading] = useActionState(action, {
         errors: {},
     })
-
     // Use image manager hook
     const {
         images,
@@ -148,40 +158,29 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
     }
 
     // Dynamic content based on mode
-    const Title = mode === 'add' ? 'Add Product' : 'Edit Product'
+    const Title = mode === 'add' ? 'Create Product' : 'Edit Product'
+    const Description =
+        mode === 'add' ? 'Create a new product entry.' : `Modify details for "${product?.name}".`
+
     const Submit = mode === 'add' ? 'Add Product' : 'Update Product'
     const id = mode === 'add' ? 'add-product' : 'edit-product'
-    const icon = mode === 'add' ? <CirclePlus size={20} /> : <Settings2 size={20} />
+    // const icon = mode === 'add' ? <CirclePlus size={20} /> : <Settings2 size={20} />
 
     return (
-        <Modal
-            hideCloseButton
-            className='border dark:bg-[#0a0a0a]'
-            isOpen={isOpen}
-            placement='center'
-            scrollBehavior='inside'
-            size='2xl'
-            onClose={onClose}
-        >
-            <ModalContent className='overflow-hidden'>
-                <ModalHeader className='flex-1 items-center justify-between border-b bg-gray-50 select-none dark:bg-zinc-900'>
-                    <p className='flex items-center gap-2'>
-                        {icon} {Title}
-                    </p>
-                    <Button
-                        isIconOnly
-                        className='border'
-                        radius='full'
-                        size='sm'
-                        startContent={<X size={18} />}
-                        variant='light'
-                        onPress={onClose}
-                    />
-                </ModalHeader>
-                <ModalBody>
+        <Drawer direction={isDesktop ? 'right' : 'bottom'} open={isOpen} onOpenChange={onClose}>
+            <DrawerContent
+                className='h-[70vh] data-[vaul-drawer-direction=right]:sm:max-w-md md:h-full'
+                hideCloseButton={isDesktop ? true : false}
+                showbar={isDesktop ? false : true}
+            >
+                <DrawerHeader className='border-b p-2'>
+                    <DrawerTitle className=''>{Title}</DrawerTitle>
+                    <DrawerDescription className='text-xs'>{Description}</DrawerDescription>
+                </DrawerHeader>
+                <ScrollShadow hideScrollBar>
                     <Form
                         action={handleFormSubmit}
-                        className='gap-4'
+                        className='gap-4 p-2'
                         id={id}
                         validationErrors={errors}
                     >
@@ -190,11 +189,11 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
                             <input name='id' type='hidden' value={product.id} />
                         )}
                         {/* Product Images */}
-                        <SectionHeader
+                        <Section
+                            className='flex w-full items-center gap-3 rounded-sm border p-2'
                             icon={<GalleryHorizontalEnd size={20} />}
                             title='Product Images'
-                        />
-                        <div className='flex w-full items-center gap-3 rounded-sm border p-2'>
+                        >
                             {/* Existing images */}
                             {existingImages.map((url, idx) => (
                                 <ImagePreview
@@ -225,7 +224,7 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
                                     <BiImageAdd className='text-muted-foreground' size={30} />
                                 </Button>
                             )}
-                        </div>
+                        </Section>
                         {/* Hidden file input - no name attribute to prevent automatic form submission */}
                         <input
                             ref={fileInputRef}
@@ -243,8 +242,11 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
                         )}
 
                         {/* Product Details */}
-                        <SectionHeader icon={<Box size={20} />} title='Product Details' />
-                        <div className='flex w-full flex-col gap-4'>
+                        <Section
+                            className='flex w-full flex-col gap-4'
+                            icon={<Box size={20} />}
+                            title='Product Details'
+                        >
                             <Input
                                 isRequired
                                 defaultValue={mode === 'edit' ? product?.name || '' : ''}
@@ -275,50 +277,49 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
                                 placeholder='Features, specs, etc.'
                                 radius='sm'
                             />
-                        </div>
-                        {/* Category & Brand */}
-                        <SectionHeader icon={<Tag size={20} />} title='Category & Brand' />
-                        <div className='grid w-full grid-cols-1 gap-4 sm:grid-cols-2'>
-                            <Autocomplete
-                                isRequired
-                                defaultSelectedKey={mode === 'edit' ? product?.category || '' : ''}
-                                errorMessage={errors?.category}
-                                isInvalid={!!errors?.category}
-                                label='Category'
-                                labelPlacement='outside'
-                                name='category'
-                                placeholder='Choose category'
-                                radius='sm'
-                            >
-                                {CATEGORIES.map((c) => (
-                                    <AutocompleteItem key={c}>{c}</AutocompleteItem>
-                                ))}
-                            </Autocomplete>
-                            <Autocomplete
-                                isRequired
+                        </Section>
+                        {/* Brand &  Category */}
+                        <Section
+                            className='flex w-full items-center gap-4'
+                            icon={<Tag size={20} />}
+                            title='Brand & Category'
+                        >
+                            <Combobox
                                 defaultSelectedKey={mode === 'edit' ? product?.brand || '' : ''}
                                 errorMessage={errors?.brand}
                                 isInvalid={!!errors?.brand}
-                                label='Brand'
-                                labelPlacement='outside'
+                                label='Brands'
                                 name='brand'
-                                placeholder='Choose brand'
-                                radius='sm'
+                                placeholder='Select Brand'
                             >
                                 {brands.map((b: Brand) => (
-                                    <AutocompleteItem
-                                        key={b.name}
-                                        // startContent={<BrandImage brand={b} />}
-                                    >
+                                    <ComboboxItem key={b.name} value={b.name}>
                                         {b.name}
-                                    </AutocompleteItem>
+                                    </ComboboxItem>
                                 ))}
-                            </Autocomplete>
-                        </div>
+                            </Combobox>
+                            <Combobox
+                                defaultSelectedKey={mode === 'edit' ? product?.category || '' : ''}
+                                errorMessage={errors?.brand}
+                                isInvalid={!!errors?.brand}
+                                label='Categories'
+                                name='category'
+                                placeholder='Select Category'
+                            >
+                                {CATEGORIES.map((c) => (
+                                    <ComboboxItem key={c} value={c}>
+                                        {c}
+                                    </ComboboxItem>
+                                ))}
+                            </Combobox>
+                        </Section>
 
                         {/* Pricing & Stock */}
-                        <SectionHeader icon={<IndianRupee size={20} />} title='Pricing & Stock' />
-                        <div className='grid w-full grid-cols-2 gap-4 pb-2 md:grid-cols-4'>
+                        <Section
+                            className='grid w-full grid-cols-2 gap-4 pb-2 md:grid-cols-4'
+                            icon={<IndianRupee size={20} />}
+                            title='Pricing & Stock'
+                        >
                             <Input
                                 isRequired
                                 defaultValue={
@@ -381,10 +382,11 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
                                 startContent={<MdAddShoppingCart size={20} />}
                                 type='number'
                             />
-                        </div>
+                        </Section>
                     </Form>
-                </ModalBody>
-                <ModalFooter className='flex-row-reverse border-t bg-gray-50 select-none dark:bg-zinc-900'>
+                </ScrollShadow>
+
+                <DrawerFooter className='flex-row-reverse border-t p-2 select-none'>
                     <Button
                         className='w-full'
                         color='primary'
@@ -403,8 +405,8 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
                     >
                         Cancel
                     </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
     )
 }

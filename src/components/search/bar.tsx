@@ -48,7 +48,9 @@ export function SearchBar({
                 ref={ref}
                 loop
                 className={
-                    open ? 'h-full md:h-[50vh] md:rounded-lg md:border' : 'rounded-xl border'
+                    open
+                        ? 'md:bg-background/80 h-full md:h-[50vh] md:rounded-lg md:border md:backdrop-blur'
+                        : 'rounded-xl border'
                 }
                 shouldFilter={shouldFilter}
                 onKeyDown={onKeyDown}

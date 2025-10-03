@@ -53,13 +53,13 @@ function DrawerContent({
             <DrawerOverlay />
             <DrawerPrimitive.Content
                 className={cn(
-                    'group/drawer-content bg-background fixed z-50 flex h-auto flex-col focus:outline-none',
+                    'group/drawer-content bg-background/80 fixed z-50 flex h-auto flex-col backdrop-blur focus:outline-none',
                     // Top Drawer
                     'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80dvh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b',
                     // Bottom Drawer
                     'min-h-min data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80dvh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t md:min-h-auto',
                     // Right Drawer
-                    'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-[280px]',
+                    'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:rounded-2xl data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-[280px]',
                     // Left Drawer
                     'data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:sm:max-w-sm',
                     className
@@ -83,6 +83,12 @@ function DrawerContent({
         </DrawerPortal>
     )
 }
+
+// Nested Drawer Components
+function DrawerNested({ ...props }: React.ComponentProps<typeof DrawerPrimitive.NestedRoot>) {
+    return <DrawerPrimitive.NestedRoot data-slot='drawer-nested-root' {...props} />
+}
+
 function DrawerBody({ className, ...props }: React.ComponentProps<'div'>) {
     return (
         <div
@@ -92,13 +98,10 @@ function DrawerBody({ className, ...props }: React.ComponentProps<'div'>) {
         />
     )
 }
+
 function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
     return (
-        <div
-            className={cn('flex flex-col gap-1.5 p-4', className)}
-            data-slot='drawer-header'
-            {...props}
-        />
+        <div className={cn('flex flex-col p-4', className)} data-slot='drawer-header' {...props} />
     )
 }
 
@@ -142,6 +145,7 @@ export {
     DrawerTrigger,
     DrawerClose,
     DrawerContent,
+    DrawerNested,
     DrawerBody,
     DrawerHeader,
     DrawerFooter,

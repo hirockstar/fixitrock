@@ -10,10 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 function Command({ className, ...props }: React.ComponentProps<typeof CommandPrimitive>) {
     return (
         <CommandPrimitive
-            className={cn(
-                'bg-background/80 flex w-full flex-col backdrop-blur outline-none',
-                className
-            )}
+            className={cn('flex w-full flex-col outline-none', className)}
             data-slot='command'
             {...props}
         />

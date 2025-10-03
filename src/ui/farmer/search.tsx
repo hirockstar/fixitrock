@@ -73,7 +73,7 @@ export function Modal({ children, open, setOpen }: AnimatedSearchProps) {
 
     return (
         <>
-            {!open && <div className='z-50'>{children}</div>}
+            {!open && <div className='bg-background/80 z-50 backdrop-blur'>{children}</div>}
             <Drawer open={open} onOpenChange={setOpen}>
                 <DrawerContent className='h-[80vh]'>
                     <DrawerHeader className='sr-only'>
