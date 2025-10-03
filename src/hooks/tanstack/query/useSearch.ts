@@ -11,15 +11,9 @@ export const useSearch = (query: string) => {
     const [debouncedQuery, setDebouncedQuery] = useState(query)
 
     useEffect(() => {
-        if (query) {
-            const handler = setTimeout(() => {
-                setDebouncedQuery(query)
-            }, 1000)
+        const handler = setTimeout(() => setDebouncedQuery(query), 300)
 
-            return () => {
-                clearTimeout(handler)
-            }
-        }
+        return () => clearTimeout(handler)
     }, [query])
 
     useEffect(() => {
@@ -28,10 +22,12 @@ export const useSearch = (query: string) => {
         }
     }, [query, debouncedQuery, queryClient])
 
-    return useQuery<Search>({
+    const result = useQuery<Search>({
         queryKey: ['search', debouncedQuery],
         queryFn: () => getSearch(debouncedQuery),
         enabled: !!debouncedQuery,
         refetchOnWindowFocus: false,
     })
+
+    return { ...result, debouncedQuery }
 }

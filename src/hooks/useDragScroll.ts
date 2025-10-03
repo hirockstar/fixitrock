@@ -1,65 +1,52 @@
-import { useRef, useEffect } from 'react'
+import { useCallback } from 'react'
 
-/**
- * Hook to enable drag-to-scroll functionality on horizontal scrollable elements
- * Provides the same touch-like dragging experience on desktop as on mobile devices
- */
-export const useDragScroll = () => {
-    const scrollRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        const element = scrollRef.current
-
-        if (!element) return
+export function useDragScroll<T extends HTMLElement>() {
+    const setRef = useCallback((node: T | null) => {
+        if (!node) return
 
         let isDown = false
-        let startX: number
-        let scrollLeft: number
+        let startX = 0
+        let scrollLeft = 0
 
         const handleMouseDown = (e: MouseEvent) => {
             isDown = true
-            element.classList.add('active')
-            startX = e.pageX - element.offsetLeft
-            scrollLeft = element.scrollLeft
-            element.style.cursor = 'grabbing'
+            startX = e.pageX - node.offsetLeft
+            scrollLeft = node.scrollLeft
+            node.style.cursor = 'grabbing'
         }
 
         const handleMouseLeave = () => {
             isDown = false
-            element.classList.remove('active')
-            element.style.cursor = 'grab'
+            node.style.cursor = 'grab'
         }
 
         const handleMouseUp = () => {
             isDown = false
-            element.classList.remove('active')
-            element.style.cursor = 'grab'
+            node.style.cursor = 'grab'
         }
 
         const handleMouseMove = (e: MouseEvent) => {
             if (!isDown) return
             e.preventDefault()
-            const x = e.pageX - element.offsetLeft
-            const walk = (x - startX) * 1.5 // Scroll speed multiplier
+            const x = e.pageX - node.offsetLeft
+            const walk = (x - startX) * 1
 
-            element.scrollLeft = scrollLeft - walk
+            node.scrollLeft = scrollLeft - walk
         }
 
-        // Set initial cursor
-        element.style.cursor = 'grab'
-
-        element.addEventListener('mousedown', handleMouseDown)
-        element.addEventListener('mouseleave', handleMouseLeave)
-        element.addEventListener('mouseup', handleMouseUp)
-        element.addEventListener('mousemove', handleMouseMove)
+        node.style.cursor = 'grab'
+        node.addEventListener('mousedown', handleMouseDown)
+        node.addEventListener('mouseleave', handleMouseLeave)
+        node.addEventListener('mouseup', handleMouseUp)
+        node.addEventListener('mousemove', handleMouseMove)
 
         return () => {
-            element.removeEventListener('mousedown', handleMouseDown)
-            element.removeEventListener('mouseleave', handleMouseLeave)
-            element.removeEventListener('mouseup', handleMouseUp)
-            element.removeEventListener('mousemove', handleMouseMove)
+            node.removeEventListener('mousedown', handleMouseDown)
+            node.removeEventListener('mouseleave', handleMouseLeave)
+            node.removeEventListener('mouseup', handleMouseUp)
+            node.removeEventListener('mousemove', handleMouseMove)
         }
     }, [])
 
-    return scrollRef
+    return setRef
 }

@@ -184,7 +184,9 @@ export const useSearchStore = create<SearchState>()(
                     const { page, dynamicNavigations, tab } = get()
 
                     if (!page || !dynamicNavigations) {
-                        // Show active tab when no page is selected (but skip 'actions' tab)
+                        if (tab === 'space') {
+                            return 'Search device or model (e.g. V9, PD1730)'
+                        }
                         if (tab && tab !== 'actions') {
                             return `Search in ${tab.charAt(0).toUpperCase() + tab.slice(1)} . . .`
                         }

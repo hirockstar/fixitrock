@@ -68,7 +68,7 @@ function CommandInput({
             <div className='flex flex-1 items-center gap-2'>
                 {startContent && <div className='flex items-center'>{startContent}</div>}
                 <CommandPrimitive.Input
-                    className='placeholder:text-foreground-500 text-medium flex w-full bg-transparent bg-clip-text font-normal outline-hidden disabled:cursor-not-allowed disabled:opacity-50'
+                    className='placeholder:text-foreground-500 text-medium flex w-full bg-transparent bg-clip-text font-normal outline-hidden placeholder:text-sm disabled:cursor-not-allowed disabled:opacity-50'
                     data-slot='command-input'
                     {...props}
                 />

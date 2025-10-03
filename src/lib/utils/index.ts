@@ -115,12 +115,11 @@ export const formatPrice = (price: number) => {
 
 export const getStockStatus = (qty: number) => {
     if (qty === 0) return { color: 'bg-red-400' as const, text: 'Sold Out' }
-    if (qty <= 1) return { color: 'bg-amber-400' as const, text: 'Few left' }
+    if (qty <= 1) return { color: 'bg-amber-400' as const, text: 'Low Stock' }
 
     return { color: 'bg-emerald-400' as const, text: 'In Stock' }
 }
 
-// Helper to get the first image URL from product.img
 export const getProductImage = (product: Product) => {
     if (!product.img || product.img.length === 0) return null
     const first = product.img[0]
@@ -325,4 +324,16 @@ export function capitalize(text: string): string {
     if (!text) return text
 
     return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+export function formatNumber(num: number): string {
+    if (num < 1000) {
+        return num.toString()
+    } else if (num < 1_000_000) {
+        return (num / 1000).toFixed(num % 1000 === 0 ? 0 : 1) + 'K'
+    } else if (num < 1_000_000_000) {
+        return (num / 1_000_000).toFixed(num % 1_000_000 === 0 ? 0 : 1) + 'M'
+    } else {
+        return (num / 1_000_000_000).toFixed(num % 1_000_000_000 === 0 ? 0 : 1) + 'B'
+    }
 }

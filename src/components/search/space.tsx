@@ -15,9 +15,10 @@ import { useSearchStore } from '@/zustand/store'
 export function Space() {
     const { query, onSelect, setOpen } = useSearchStore()
     const router = useRouter()
-    const { data, isLoading } = useSearch(query)
+    const { data, isLoading, debouncedQuery } = useSearch(query)
 
     const items = data?.value ?? []
+    const isPendingSearch = query && query !== debouncedQuery
 
     if (!query) {
         return (
@@ -37,10 +38,10 @@ export function Space() {
         )
     }
 
-    if (isLoading) {
+    if (isLoading || isPendingSearch) {
         return <Loading />
     }
-    if (!isLoading && items.length === 0 && query.length > 0) {
+    if (!isLoading && items.length === 0) {
         return <CommandEmpty>No result found</CommandEmpty>
     }
 

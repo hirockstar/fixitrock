@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Button, Checkbox } from '@heroui/react'
-import { ArrowLeft, SearchIcon, Tag, Building, Info, ArrowRightIcon } from 'lucide-react'
+import { ArrowLeft, Tag, Building, Info, ArrowRightIcon, Columns, FilterX } from 'lucide-react'
 
 import {
     Command,
+    CommandEmpty,
     CommandGroup,
     CommandInput,
     CommandItem,
@@ -18,15 +19,14 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
 import { Drawer, DrawerContent, DrawerTrigger } from '@/ui/drawer'
 
-type StatusOption = { key: string; label: string }
-
 type FilterProps = {
     categories: string[]
     brands: string[]
-    statusOptions: StatusOption[]
+    status: Array<{ key: string; label: string }>
+    columns: Array<{ key: string; label: string }>
 }
 
-type Section = 'root' | 'category' | 'brand' | 'status'
+type Section = 'root' | 'category' | 'brand' | 'status' | 'columns'
 
 export function Filter(props: FilterProps) {
     const [open, setOpen] = React.useState(false)
@@ -45,7 +45,7 @@ export function Filter(props: FilterProps) {
                         Filter
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent align='end' className='w-60 overflow-hidden p-0'>
+                <PopoverContent align='end' className='w-[200px] overflow-hidden p-0'>
                     <Content {...props} />
                 </PopoverContent>
             </Popover>
@@ -64,16 +64,25 @@ export function Filter(props: FilterProps) {
                     Filter
                 </Button>
             </DrawerTrigger>
-            <DrawerContent>
+            <DrawerContent className='h-[80vh]'>
                 <Content {...props} />
             </DrawerContent>
         </Drawer>
     )
 }
 
-function Content({ categories, brands, statusOptions }: FilterProps) {
+function Content({ categories, brands, status, columns }: FilterProps) {
     const [section, setSection] = useState<Section>('root')
-    const { values, toggleCategory, toggleBrand, toggleStatus } = useProductFilterStore()
+    const { values, toggleCategory, toggleBrand, toggleStatus, toggleColumn } =
+        useProductFilterStore()
+
+    const sortedCategories = useMemo(() => {
+        return categories.filter((c) => c !== 'all').sort((a, b) => a.localeCompare(b))
+    }, [categories])
+
+    const sortedBrands = useMemo(() => {
+        return brands.filter((b) => b !== 'all').sort((a, b) => a.localeCompare(b))
+    }, [brands])
 
     const placeholder =
         section === 'root'
@@ -82,12 +91,15 @@ function Content({ categories, brands, statusOptions }: FilterProps) {
               ? 'Select categories . . .'
               : section === 'brand'
                 ? 'Select brands . . .'
-                : 'Select status . . .'
+                : section === 'status'
+                  ? 'Select status . . .'
+                  : 'Select columns . . .'
 
     const rootItems = [
         { key: 'brand' as const, label: 'Brands', icon: <Building className='size-4' /> },
         { key: 'category' as const, label: 'Categories', icon: <Tag className='size-4' /> },
         { key: 'status' as const, label: 'Status', icon: <Info className='size-4' /> },
+        { key: 'columns' as const, label: 'Columns', icon: <Columns className='size-4' /> },
     ]
 
     const showBack = section !== 'root'
@@ -103,7 +115,9 @@ function Content({ categories, brands, statusOptions }: FilterProps) {
                         className={showBack ? 'bg-default/20' : 'data-[hover=true]:bg-transparent'}
                         radius='full'
                         size='sm'
-                        startContent={showBack ? <ArrowLeft size={16} /> : <SearchIcon size={16} />}
+                        startContent={
+                            showBack ? <ArrowLeft size={16} /> : <FilterIcon className='size-4' />
+                        }
                         variant={showBack ? 'flat' : 'light'}
                         onPress={() => showBack && setSection('root')}
                     />
@@ -133,49 +147,45 @@ function Content({ categories, brands, statusOptions }: FilterProps) {
 
                 {section === 'category' && (
                     <CommandGroup heading='Category'>
-                        {categories
-                            .filter((c) => c !== 'all')
-                            .map((cat) => {
-                                const checked = values.categories.includes(cat)
+                        {sortedCategories.map((cat: string) => {
+                            const checked = values.categories.includes(cat)
 
-                                return (
-                                    <CommandItem key={cat} onSelect={() => toggleCategory(cat)}>
-                                        <Checkbox
-                                            isSelected={checked}
-                                            size='sm'
-                                            onValueChange={() => toggleCategory(cat)}
-                                        />
-                                        {cat}
-                                    </CommandItem>
-                                )
-                            })}
+                            return (
+                                <CommandItem key={cat} onSelect={() => toggleCategory(cat)}>
+                                    <Checkbox
+                                        isSelected={checked}
+                                        size='sm'
+                                        onValueChange={() => toggleCategory(cat)}
+                                    />
+                                    {cat}
+                                </CommandItem>
+                            )
+                        })}
                     </CommandGroup>
                 )}
 
                 {section === 'brand' && (
                     <CommandGroup heading='Brand'>
-                        {brands
-                            .filter((b) => b !== 'all')
-                            .map((b) => {
-                                const checked = values.brands.includes(b)
+                        {sortedBrands.map((b: string) => {
+                            const checked = values.brands.includes(b)
 
-                                return (
-                                    <CommandItem key={b} onSelect={() => toggleBrand(b)}>
-                                        <Checkbox
-                                            isSelected={checked}
-                                            size='sm'
-                                            onValueChange={() => toggleBrand(b)}
-                                        />
-                                        {b}
-                                    </CommandItem>
-                                )
-                            })}
+                            return (
+                                <CommandItem key={b} onSelect={() => toggleBrand(b)}>
+                                    <Checkbox
+                                        isSelected={checked}
+                                        size='sm'
+                                        onValueChange={() => toggleBrand(b)}
+                                    />
+                                    {b}
+                                </CommandItem>
+                            )
+                        })}
                     </CommandGroup>
                 )}
 
                 {section === 'status' && (
                     <CommandGroup heading='Status'>
-                        {statusOptions.map((s) => {
+                        {status.map((s) => {
                             const checked = values.status.includes(s.key)
 
                             return (
@@ -191,6 +201,35 @@ function Content({ categories, brands, statusOptions }: FilterProps) {
                         })}
                     </CommandGroup>
                 )}
+
+                {section === 'columns' && (
+                    <CommandGroup heading='Columns'>
+                        {columns.map((column) => {
+                            const checked = values.columns.includes(column.key)
+
+                            return (
+                                <CommandItem
+                                    key={column.key}
+                                    onSelect={() => toggleColumn(column.key)}
+                                >
+                                    <Checkbox
+                                        isSelected={checked}
+                                        size='sm'
+                                        onValueChange={() => toggleColumn(column.key)}
+                                    />
+                                    {column.label}
+                                </CommandItem>
+                            )
+                        })}
+                    </CommandGroup>
+                )}
+
+                <CommandEmpty>
+                    <div className='text-muted-foreground flex flex-col items-center justify-center py-4'>
+                        <FilterX className='mb-2 h-6 w-6' />
+                        <p className='text-sm font-medium'>No filters found</p>
+                    </div>
+                </CommandEmpty>
             </CommandList>
         </Command>
     )

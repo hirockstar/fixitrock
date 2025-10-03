@@ -113,7 +113,7 @@ export default function Quantity({ product, canManage }: QuantityProps) {
     }
 
     return (
-        <div className='flex items-center justify-center gap-1 sm:gap-2'>
+        <div className='flex items-center justify-center gap-2'>
             <Button
                 isIconOnly
                 className='bg-background h-6 w-6 min-w-6 sm:h-7 sm:w-7'

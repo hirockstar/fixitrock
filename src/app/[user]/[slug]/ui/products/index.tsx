@@ -2,8 +2,8 @@ import { getAllBrands } from '@/actions/brands'
 import { Brand } from '@/types/brands'
 import { getProducts } from '@/actions/user/products'
 
-import ProductsTable from './table'
 import ProductsCard from './card'
+import ProductsTable from './table'
 
 interface ProductsProps {
     params: {
