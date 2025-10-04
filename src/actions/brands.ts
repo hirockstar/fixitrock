@@ -33,7 +33,6 @@ const userSession = withErrorHandling(async () => {
 const checkAuth = withErrorHandling(async () => {
     const user = await userSession()
 
-    // Check if user has admin role (role = 3)
     if (user.role !== 3) {
         throw new Error('Access denied: Admin role required')
     }
@@ -41,221 +40,76 @@ const checkAuth = withErrorHandling(async () => {
     return user
 })
 
-// Helper function to upload brand logos to Supabase Storage
-async function uploadBrandLogos(
+async function uploadBrandImage(
     brandName: string,
-    lightLogoUrl?: string,
-    darkLogoUrl?: string
-): Promise<{ lightLogoUrl?: string; darkLogoUrl?: string; error?: string }> {
+    imgUrl?: string
+): Promise<{ img?: string; error?: string }> {
     const supabase = await createClient()
-    const result: { lightLogoUrl?: string; darkLogoUrl?: string; error?: string } = {}
+    const result: { img?: string; error?: string } = {}
 
-    // Create brand folder name (slugified)
+    if (!imgUrl || !imgUrl.trim()) return result
+
     const brandSlug = brandName
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)+/g, '')
-    const brandFolder = `assets/brands/${brandSlug}`
+    const brandFolder = `brands/${brandSlug}`
 
-    // Helper function to download and upload image
-    async function downloadAndUploadImage(url: string, filename: string): Promise<string | null> {
-        try {
-            // Validate URL format first
-            if (!url || !url.trim()) {
-                throw new Error('Invalid URL provided')
-            }
+    try {
+        let blob: Blob
 
-            // Check if URL points to an image file
-            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']
-            const urlLower = url.toLowerCase()
-            const hasImageExtension = imageExtensions.some((ext) => urlLower.includes(`.${ext}`))
+        if (imgUrl.startsWith('data:')) {
+            const response = await fetch(imgUrl)
 
-            if (!hasImageExtension) {
-                throw new Error('URL does not appear to point to an image file')
-            }
+            blob = await response.blob()
+        } else {
+            const response = await fetch(imgUrl, { headers: { 'User-Agent': 'Mozilla/5.0' } })
 
-            // Download the image from URL
-            const response = await fetch(url, {
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (compatible; ImageDownloader/1.0)',
-                },
-            })
-
-            if (!response.ok) {
-                throw new Error(`Failed to download image: ${response.statusText}`)
-            }
-
-            // Check if response is actually an image
-            const contentType = response.headers.get('content-type')
-
-            if (!contentType || !contentType.startsWith('image/')) {
-                throw new Error(`URL does not return an image. Content-Type: ${contentType}`)
-            }
-
-            const blob = await response.blob()
-
-            // Validate blob is actually an image
-            if (!blob.type.startsWith('image/')) {
-                throw new Error(`Downloaded content is not an image. Type: ${blob.type}`)
-            }
-
-            // Determine file extension from URL or blob type
-            let extension = 'svg'
-
-            if (url.includes('.')) {
-                const urlParts = url.split('.')
-                const possibleExt = urlParts[urlParts.length - 1].split('?')[0].toLowerCase()
-
-                if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(possibleExt)) {
-                    extension = possibleExt
-                }
-            } else if (blob.type) {
-                const mimeToExt: Record<string, string> = {
-                    'image/jpeg': 'jpg',
-                    'image/jpg': 'jpg',
-                    'image/png': 'png',
-                    'image/gif': 'gif',
-                    'image/webp': 'webp',
-                    'image/svg+xml': 'svg',
-                }
-
-                extension = mimeToExt[blob.type] || 'svg'
-            }
-
-            const file = new File([blob], `${filename}.${extension}`, { type: blob.type })
-
-            const path = `${brandFolder}/${filename}.${extension}`
-            const { error } = await supabase.storage.from('assets').upload(path, file, {
-                cacheControl: '3600',
-                upsert: true,
-            })
-
-            if (error) {
-                throw new Error(`Failed to upload ${filename}: ${error.message}`)
-            }
-
-            const publicUrlData = supabase.storage.from('assets').getPublicUrl(path)
-
-            return publicUrlData.data.publicUrl
-        } catch (error) {
-            const errorMessage =
-                error instanceof Error ? `${error.message}\n${error.stack}` : String(error)
-
-            result.error = `Error processing ${filename} from URL ${url}: ${errorMessage}`
-
-            return null
+            if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`)
+            blob = await response.blob()
+            if (!blob.type.startsWith('image/')) throw new Error('URL does not return an image')
         }
-    }
 
-    // Upload light logo if provided
-    if (lightLogoUrl && lightLogoUrl.trim()) {
-        if (lightLogoUrl.startsWith('data:')) {
-            // Handle base64 data URL
-            const response = await fetch(lightLogoUrl)
-            const blob = await response.blob()
-            const file = new File([blob], 'light.svg', { type: 'image/svg+xml' })
+        let extension = blob.type.split('/')[1] || 'png'
 
-            const lightPath = `${brandFolder}/light.svg`
-            const { error: lightError } = await supabase.storage
-                .from('assets')
-                .upload(lightPath, file, {
-                    cacheControl: '3600',
-                    upsert: true,
-                })
-
-            if (!lightError) {
-                const publicUrlData = supabase.storage.from('assets').getPublicUrl(lightPath)
-
-                result.lightLogoUrl = publicUrlData.data.publicUrl
-            }
-        } else if (lightLogoUrl.startsWith('http')) {
-            // Download from URL and upload to Supabase
-            const uploadedUrl = await downloadAndUploadImage(lightLogoUrl, 'light')
-
-            if (uploadedUrl) {
-                result.lightLogoUrl = uploadedUrl
-            }
+        if (extension.includes('+')) {
+            extension = extension.split('+')[0]
         }
-    }
-
-    // Upload dark logo if provided
-    if (darkLogoUrl && darkLogoUrl.trim()) {
-        if (darkLogoUrl.startsWith('data:')) {
-            // Handle base64 data URL
-            const response = await fetch(darkLogoUrl)
-            const blob = await response.blob()
-            const file = new File([blob], 'dark.svg', { type: 'image/svg+xml' })
-
-            const darkPath = `${brandFolder}/dark.svg`
-            const { error: darkError } = await supabase.storage
-                .from('assets')
-                .upload(darkPath, file, {
-                    cacheControl: '3600',
-                    upsert: true,
-                })
-
-            if (!darkError) {
-                const publicUrlData = supabase.storage.from('assets').getPublicUrl(darkPath)
-
-                result.darkLogoUrl = publicUrlData.data.publicUrl
-            }
-        } else if (darkLogoUrl.startsWith('http')) {
-            // Download from URL and upload to Supabase
-            const uploadedUrl = await downloadAndUploadImage(darkLogoUrl, 'dark')
-
-            if (uploadedUrl) {
-                result.darkLogoUrl = uploadedUrl
-            }
+        if (!['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'].includes(extension)) {
+            extension = 'png'
         }
-    }
 
-    // If only one logo was uploaded, use it for both light and dark
-    if (result.lightLogoUrl && !result.darkLogoUrl) {
-        result.darkLogoUrl = result.lightLogoUrl
-    } else if (result.darkLogoUrl && !result.lightLogoUrl) {
-        result.lightLogoUrl = result.darkLogoUrl
+        const file = new File([blob], `logo.${extension}`, { type: blob.type })
+        const path = `${brandFolder}/logo.${extension}`
+
+        const { error } = await supabase.storage.from('assets').upload(path, file, {
+            cacheControl: '3600',
+            upsert: true,
+        })
+
+        if (error) throw new Error(error.message)
+        result.img = `/assets/${path}`
+    } catch (error) {
+        result.error = error instanceof Error ? error.message : String(error)
     }
 
     return result
 }
 
-// Helper function to delete specific brand logos from Supabase Storage
-async function deleteBrandLogos(
-    brandName: string,
-    options: { light?: boolean; dark?: boolean } = {}
-): Promise<void> {
+async function deleteBrandImage(imgPath?: string): Promise<void> {
+    if (!imgPath) return
     const supabase = await createClient()
-    // Create brand folder name (slugified)
-    const brandSlug = brandName
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)+/g, '')
-    const brandFolder = `assets/brands/${brandSlug}`
-    const toDelete: string[] = []
 
-    if (options.light) toDelete.push(`${brandFolder}/light.svg`)
-    if (options.dark) toDelete.push(`${brandFolder}/dark.svg`)
-    if (toDelete.length === 0) return
     try {
-        const { error: deleteError } = await supabase.storage.from('assets').remove(toDelete)
-
-        if (deleteError) {
-            throw new Error(`Failed to delete files: ${deleteError.message}`)
-        }
+        await supabase.storage.from('assets').remove([imgPath.replace(/^\/assets\//, '')])
     } catch (error) {
-        // Log error but don't fail the operation
-        const errorMessage = error instanceof Error ? error.message : String(error)
-
-        throw new Error(`Failed to delete brand logos: ${errorMessage}`)
+        logWarning('Failed to delete brand image:', error)
     }
 }
 
 export type BrandFormData = {
     name: string
-    logo: {
-        light: string
-        dark: string
-    }
+    img: string
     description: string
 }
 
@@ -264,14 +118,13 @@ export type BrandActionState = {
     message?: string
     errors?: {
         name?: string[]
-        logo_light?: string[]
-        logo_dark?: string[]
+        img?: string[]
         description?: string[]
+        keywords?: string[]
         general?: string[]
     }
 }
 
-// Get all brands (cached, tag: 'brands')
 export const getAllBrands = cache(async function getAllBrands(): Promise<{
     data: Brands | null
     error: string | null
@@ -283,9 +136,7 @@ export const getAllBrands = cache(async function getAllBrands(): Promise<{
             .select('*')
             .order('name', { ascending: true })
 
-        if (error) {
-            throw new Error(error.message)
-        }
+        if (error) throw new Error(error.message)
 
         return { data: data as Brands, error: null }
     } catch (error) {
@@ -296,179 +147,87 @@ export const getAllBrands = cache(async function getAllBrands(): Promise<{
     }
 })
 
-// Add new brand
 export const addBrand = withErrorHandling(
     async (prevState: BrandActionState, formData: FormData): Promise<BrandActionState> => {
         await checkAuth()
         const supabase = await createClient()
 
-        // Extract form data
         const name = (formData.get('name') ?? '') as string
-        const logo_light = (formData.get('logo_light') ?? '') as string
-        const logo_dark = (formData.get('logo_dark') ?? '') as string
+        const imgUrl = (formData.get('img') ?? '') as string
         const description = (formData.get('description') ?? '') as string
 
-        // Validation
         const errors: BrandActionState['errors'] = {}
 
-        if (!name || name.trim().length === 0) {
-            errors.name = ['Brand name is required']
-        } else if (name.length > 255) {
-            errors.name = ['Brand name must be less than 255 characters']
-        }
+        if (!name || name.trim().length === 0) errors.name = ['Brand name is required']
+        else if (name.length > 255) errors.name = ['Brand name must be less than 255 characters']
 
-        // Make both logos optional - at least one should be provided
-        if (!logo_light || logo_light.trim().length === 0) {
-            if (!logo_dark || logo_dark.trim().length === 0) {
-                errors.logo_light = ['At least one logo (light or dark) is required']
-                errors.logo_dark = ['At least one logo (light or dark) is required']
-            }
-        }
+        if (!imgUrl || imgUrl.trim().length === 0) errors.img = ['Brand image is required']
 
-        if (description && description.length > 1000) {
+        if (description && description.length > 1000)
             errors.description = ['Description must be less than 1000 characters']
-        }
 
-        if (Object.keys(errors).length > 0) {
-            return { errors }
-        }
+        if (Object.keys(errors).length > 0) return { errors }
 
-        // Check if brand name already exists
         const { data: existingBrand } = await supabase
             .from('brands')
             .select('id')
             .eq('name', name.trim())
             .single()
 
-        if (existingBrand) {
-            return {
-                errors: {
-                    name: ['A brand with this name already exists'],
-                },
-            }
-        }
+        if (existingBrand) return { errors: { name: ['A brand with this name already exists'] } }
 
-        // Upload logos if provided
-        let finalLightLogo = logo_light.trim()
-        let finalDarkLogo = logo_dark.trim()
+        const uploaded = await uploadBrandImage(name.trim(), imgUrl.trim())
 
-        // If only one logo is provided, use it for both light and dark
-        if (logo_light.trim() && !logo_dark.trim()) {
-            finalDarkLogo = logo_light.trim()
-        } else if (logo_dark.trim() && !logo_light.trim()) {
-            finalLightLogo = logo_dark.trim()
-        }
+        if (!uploaded.img) return { errors: { img: ['Failed to upload image'] } }
 
-        if (logo_light.trim() || logo_dark.trim()) {
-            const uploadedLogos = await uploadBrandLogos(
-                name.trim(),
-                logo_light.trim(),
-                logo_dark.trim()
-            )
-
-            if (uploadedLogos.lightLogoUrl) {
-                finalLightLogo = uploadedLogos.lightLogoUrl
-            }
-            if (uploadedLogos.darkLogoUrl) {
-                finalDarkLogo = uploadedLogos.darkLogoUrl
-            }
-        }
-
-        // Create logo JSONB object
-        const logoObject = {
-            light: finalLightLogo,
-            dark: finalDarkLogo,
-        }
-
-        // Insert new brand
         const { error } = await supabase
             .from('brands')
             .insert({
                 name: name.trim(),
-                logo: logoObject,
+                img: uploaded.img,
                 description: description?.trim() || null,
             })
             .select()
             .single()
 
-        if (error) {
-            return {
-                errors: {
-                    general: [error.message],
-                },
-            }
-        }
+        if (error) return { errors: { general: [error.message] } }
 
         revalidatePath('/')
-        revalidateTag('brands') // Invalidate brands cache
+        revalidateTag('brands')
 
-        return {
-            success: true,
-            message: 'Brand added successfully!',
-        }
+        return { success: true, message: 'Brand added successfully!' }
     }
 )
 
-// Edit brand
 export const editBrand = withErrorHandling(
     async (prevState: BrandActionState, formData: FormData): Promise<BrandActionState> => {
         await checkAuth()
         const supabase = await createClient()
 
-        // Extract form data
         const id = (formData.get('id') ?? '') as string
         const name = (formData.get('name') ?? '') as string
-        const logo_light = (formData.get('logo_light') ?? '') as string
-        const logo_dark = (formData.get('logo_dark') ?? '') as string
+        const imgUrl = (formData.get('img') ?? '') as string
         const description = (formData.get('description') ?? '') as string
-        const delete_light_logo = (formData.get('delete_light_logo') ?? '') as string
-        const delete_dark_logo = (formData.get('delete_dark_logo') ?? '') as string
 
-        // Validation
         const errors: BrandActionState['errors'] = {}
 
-        if (!id) {
-            errors.general = ['Brand ID is required']
-        }
-
-        if (!name || name.trim().length === 0) {
-            errors.name = ['Brand name is required']
-        } else if (name.length > 255) {
-            errors.name = ['Brand name must be less than 255 characters']
-        }
-
-        // Make both logos optional - at least one should be provided
-        if (!logo_light || logo_light.trim().length === 0) {
-            if (!logo_dark || logo_dark.trim().length === 0) {
-                errors.logo_light = ['At least one logo (light or dark) is required']
-                errors.logo_dark = ['At least one logo (light or dark) is required']
-            }
-        }
-
-        if (description && description.length > 1000) {
+        if (!id) errors.general = ['Brand ID is required']
+        if (!name || name.trim().length === 0) errors.name = ['Brand name is required']
+        else if (name.length > 255) errors.name = ['Brand name must be less than 255 characters']
+        if (!imgUrl || imgUrl.trim().length === 0) errors.img = ['Brand image is required']
+        if (description && description.length > 1000)
             errors.description = ['Description must be less than 1000 characters']
-        }
 
-        if (Object.keys(errors).length > 0) {
-            return { errors }
-        }
+        if (Object.keys(errors).length > 0) return { errors }
 
-        // Check if brand exists
         const { data: existingBrand } = await supabase
             .from('brands')
             .select('*')
             .eq('id', id)
             .single()
 
-        if (!existingBrand) {
-            return {
-                errors: {
-                    general: ['Brand not found'],
-                },
-            }
-        }
+        if (!existingBrand) return { errors: { general: ['Brand not found'] } }
 
-        // Check if name already exists for other brands
         const { data: nameExists } = await supabase
             .from('brands')
             .select('id')
@@ -476,137 +235,78 @@ export const editBrand = withErrorHandling(
             .neq('id', id)
             .single()
 
-        if (nameExists) {
-            return {
-                errors: {
-                    name: ['A brand with this name already exists'],
-                },
-            }
+        if (nameExists) return { errors: { name: ['A brand with this name already exists'] } }
+
+        let finalImg = imgUrl.trim()
+
+        if (imgUrl.trim()) {
+            const uploaded = await uploadBrandImage(name.trim(), imgUrl.trim())
+
+            if (uploaded.img) finalImg = uploaded.img
+            else return { errors: { img: ['Failed to upload image'] } }
+
+            if (existingBrand.img) await deleteBrandImage(existingBrand.img)
         }
 
-        // Handle logo deletion and upload
-        let finalLightLogo = logo_light.trim()
-        let finalDarkLogo = logo_dark.trim()
-
-        // If only one logo is provided, use it for both light and dark
-        if (logo_light.trim() && !logo_dark.trim()) {
-            finalDarkLogo = logo_light.trim()
-        } else if (logo_dark.trim() && !logo_light.trim()) {
-            finalLightLogo = logo_dark.trim()
-        }
-
-        // Check if we need to delete old logos
-        const shouldDeleteOldLogos = delete_light_logo === 'true' || delete_dark_logo === 'true'
-
-        if (shouldDeleteOldLogos) {
-            try {
-                await deleteBrandLogos(existingBrand.name, {
-                    light: delete_light_logo === 'true',
-                    dark: delete_dark_logo === 'true',
-                })
-            } catch (error) {
-                // Log error but continue with the update
-                logWarning('Failed to delete old logos:', error)
-            }
-        }
-
-        if (logo_light.trim() || logo_dark.trim()) {
-            const uploadedLogos = await uploadBrandLogos(
-                name.trim(),
-                logo_light.trim(),
-                logo_dark.trim()
-            )
-
-            if (uploadedLogos.lightLogoUrl) {
-                finalLightLogo = uploadedLogos.lightLogoUrl
-            }
-            if (uploadedLogos.darkLogoUrl) {
-                finalDarkLogo = uploadedLogos.darkLogoUrl
-            }
-        }
-
-        // Create logo JSONB object
-        const logoObject = {
-            light: finalLightLogo,
-            dark: finalDarkLogo,
-        }
-
-        // Update brand
         const { error } = await supabase
             .from('brands')
             .update({
                 name: name.trim(),
-                logo: logoObject,
+                img: finalImg,
                 description: description?.trim() || null,
             })
             .eq('id', id)
             .select()
             .single()
 
-        if (error) {
-            return {
-                errors: {
-                    general: [error.message],
-                },
-            }
-        }
+        if (error) return { errors: { general: [error.message] } }
 
         revalidatePath('/')
-        revalidateTag('brands') // Invalidate brands cache
+        revalidateTag('brands')
 
-        return {
-            success: true,
-            message: 'Brand updated successfully!',
-        }
+        return { success: true, message: 'Brand updated successfully!' }
     }
 )
 
-// Delete brand
 export const deleteBrand = withErrorHandling(
     async (prevState: BrandActionState, formData: FormData): Promise<BrandActionState> => {
         await checkAuth()
         const supabase = await createClient()
-
-        // Extract brand ID
         const id = formData.get('id') as string
 
-        if (!id) {
-            return {
-                errors: {
-                    general: ['Brand ID is required'],
-                },
-            }
+        if (!id) return { errors: { general: ['Brand ID is required'] } }
+
+        const { data: brand, error: fetchError } = await supabase
+            .from('brands')
+            .select('id, img')
+            .eq('id', parseInt(id))
+            .single()
+
+        if (fetchError)
+            return { errors: { general: [`Failed to fetch brand: ${fetchError.message}`] } }
+
+        try {
+            if (brand?.img) await deleteBrandImage(brand.img)
+        } catch (error) {
+            logWarning('Error deleting brand image:', error)
         }
 
-        const { error } = await supabase.from('brands').delete().eq('id', parseInt(id))
+        const { error: deleteError } = await supabase.from('brands').delete().eq('id', parseInt(id))
 
-        if (error) {
-            return {
-                errors: {
-                    general: [error.message],
-                },
-            }
-        }
+        if (deleteError) return { errors: { general: [deleteError.message] } }
 
         revalidatePath('/')
-        revalidateTag('brands') // Invalidate brands cache
+        revalidateTag('brands')
 
-        return {
-            success: true,
-            message: 'Brand deleted successfully!',
-        }
+        return { success: true, message: 'Brand deleted successfully!' }
     }
 )
 
-// Get single brand by ID
 export const getBrandById = withErrorHandling(async (id: number) => {
     const supabase = await createClient()
-
     const { data, error } = await supabase.from('brands').select('*').eq('id', id).single()
 
-    if (error) {
-        throw new Error(error.message)
-    }
+    if (error) throw new Error(error.message)
 
     return { data, error: null }
 })

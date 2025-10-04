@@ -20,6 +20,7 @@ import {
     DrawerTitle,
 } from '@/ui/drawer'
 import { cn } from '@/lib/utils'
+import { bucketUrl } from '@/supabase/bucket'
 
 import { Combobox, ComboboxItem } from './combobox'
 
@@ -34,21 +35,6 @@ const CATEGORIES = [
     'screen protector',
     'other',
 ]
-
-// const BrandImage = ({ brand }: { brand: Brand }) => {
-//     const { src } = useBrandImg(brand)
-
-//     return (
-//         <Image
-//             alt={brand.name}
-//             className='rounded-lg border p-0.5'
-//             height={24}
-//             radius='none'
-//             src={src}
-//             width={24}
-//         />
-//     )
-// }
 
 interface AddEditProps {
     isOpen: boolean
@@ -199,7 +185,7 @@ export default function AddEdit({ isOpen, onClose, mode, product, brands }: AddE
                                 <ImagePreview
                                     key={`existing-${idx}`}
                                     alt={`${idx + 1}`}
-                                    src={url}
+                                    src={bucketUrl(url)}
                                     onRemove={() => handleRemoveExistingImage(idx)}
                                 />
                             ))}

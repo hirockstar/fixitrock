@@ -7,10 +7,7 @@ export const ProductSchema = z.object({
     name: z.string(),
     compatible: z.string(),
     description: z.string().optional(),
-    img: z
-        .array(z.string())
-        .or(z.array(z.object({ url: z.string(), alt: z.string().optional() })))
-        .optional(),
+    img: z.array(z.string()).optional(),
     purchase: z.number(),
     staff_price: z.number().optional(),
     price: z.number().optional(),

@@ -90,9 +90,8 @@ async function uploadUserProductImages(
         })
 
         if (error) throw error
-        const publicUrlData = supabase.storage.from('user').getPublicUrl(path)
 
-        urls.push(publicUrlData.data.publicUrl)
+        urls.push(`/user/${path}`)
     }
 
     return urls
@@ -186,10 +185,6 @@ export async function addProduct(
     }
 }
 
-/**
- * Update an existing product (only if user owns it)
- * Works with useActionState pattern
- */
 export async function updateProduct(
     prevState: { errors: Record<string, string> },
     formData: FormData
@@ -232,25 +227,14 @@ export async function updateProduct(
         if (removedImages.length > 0 && currentProduct.slug) {
             try {
                 for (const imageUrl of removedImages) {
-                    // Extract path from URL - fix the regex to get correct path
-                    // URL format: https://.../storage/v1/object/public/@username/products/slug/filename
-                    const match = imageUrl.match(
-                        /\/storage\/v1\/object\/public\/user\/@([^\/]+)\/products\/([^\/]+)\/([^\/]+)$/
-                    )
+                    const path = imageUrl.replace(/^\/user\//, '')
 
-                    if (match && match[1] && match[2] && match[3]) {
-                        const username = match[1]
-                        const productSlug = match[2]
-                        const filename = match[3]
-                        const path = `@${username}/products/${productSlug}/${filename}`
+                    const { error: deleteError } = await supabase.storage
+                        .from('user')
+                        .remove([path])
 
-                        const { error: deleteError } = await supabase.storage
-                            .from('user')
-                            .remove([path])
-
-                        if (deleteError) {
-                            logWarning('updateProduct: failed to delete from storage:', deleteError)
-                        }
+                    if (deleteError) {
+                        logWarning('updateProduct: failed to delete from storage:', deleteError)
                     }
                 }
             } catch (e) {

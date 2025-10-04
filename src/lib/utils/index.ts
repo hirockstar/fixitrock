@@ -5,6 +5,7 @@ import { User } from '@/app/login/types'
 import { siteConfig } from '@/config/site'
 import { DriveItem } from '@/types/drive'
 import { Product } from '@/types/products'
+import { bucketUrl } from '@/supabase/bucket'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -120,14 +121,10 @@ export const getStockStatus = (qty: number) => {
     return { color: 'bg-emerald-400' as const, text: 'In Stock' }
 }
 
-export const getProductImage = (product: Product) => {
+export const getProductImage = (product: Product): string | null => {
     if (!product.img || product.img.length === 0) return null
-    const first = product.img[0]
 
-    if (typeof first === 'string') return first
-    if (typeof first === 'object' && first.url) return first.url
-
-    return null
+    return bucketUrl(product.img[0]) ?? null
 }
 
 export function formatDateTime(dateTimeString?: string | null | undefined): string {
@@ -235,7 +232,7 @@ export function userAvatar(user: User): string {
               ? '/fallback/other.png'
               : '/fallback/boy.png'
 
-    const avatarUrl = user?.avatar || fallbackAvatar || ''
+    const avatarUrl = bucketUrl(user?.avatar as string) || fallbackAvatar || ''
 
     // Add cache busting parameter if user has been updated
     return user?.updated_at ? `${avatarUrl}?t=${user.updated_at}` : avatarUrl

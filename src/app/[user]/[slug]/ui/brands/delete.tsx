@@ -17,7 +17,8 @@ import { addToast } from '@heroui/react'
 
 import { deleteBrand } from '@/actions/brands'
 import { Brand } from '@/types/brands'
-import { useBrandImg } from '@/hooks'
+import { bucketUrl } from '@/supabase/bucket'
+import { fallback } from '@/config/site'
 
 interface DeleteBrandProps {
     isOpen: boolean
@@ -28,7 +29,6 @@ interface DeleteBrandProps {
 export default function DeleteBrand({ isOpen, onClose, brand }: DeleteBrandProps) {
     const [{ errors }, formAction, isLoading] = useActionState(deleteBrand, { errors: {} })
     const formRef = useRef<HTMLFormElement>(null)
-    const { src } = useBrandImg(brand)
 
     useEffect(() => {
         if (errors && Object.keys(errors).length > 0) {
@@ -73,12 +73,12 @@ export default function DeleteBrand({ isOpen, onClose, brand }: DeleteBrandProps
                     </ModalHeader>
                     <ModalBody className='items-center py-6 md:flex-row'>
                         <input name='id' type='hidden' value={brand.id.toString()} />
-                        {src ? (
+                        {brand.img ? (
                             <Image
                                 alt={brand.name}
                                 className='border p-2'
                                 height={100}
-                                src={src}
+                                src={bucketUrl(brand.img) || fallback.brand}
                                 width={100}
                             />
                         ) : (

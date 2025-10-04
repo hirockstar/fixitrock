@@ -50,7 +50,7 @@ export function SearchBar({
                 className={
                     open
                         ? 'md:bg-background/80 h-full md:h-[50vh] md:rounded-lg md:border md:backdrop-blur'
-                        : 'rounded-xl border'
+                        : 'bg-background/80 rounded-xl border backdrop-blur'
                 }
                 shouldFilter={shouldFilter}
                 onKeyDown={onKeyDown}

@@ -14,12 +14,13 @@ import {
     Image,
     ModalFooter,
 } from '@heroui/react'
-import { X, CirclePlus, Settings2 } from 'lucide-react'
+import { X, CirclePlus, Settings2, Eye } from 'lucide-react'
 import { FaAward } from 'react-icons/fa6'
 import { FaLink } from 'react-icons/fa'
 
 import { addBrand, editBrand } from '@/actions/brands'
 import { Brand } from '@/types/brands'
+import { bucketUrl } from '@/supabase/bucket'
 
 interface AddEditProps {
     isOpen: boolean
@@ -28,107 +29,85 @@ interface AddEditProps {
     brand?: Brand | null
 }
 
-// Helper component for image preview
 const ImagePreview = ({
     src,
     alt,
     onRemove,
-    mode,
 }: {
     src: string
     alt: string
     onRemove: () => void
-    mode: 'light' | 'dark'
-}) => (
-    <div
-        className={`group relative flex w-full flex-col rounded-lg border p-3 ${
-            mode === 'light' ? 'bg-white' : 'bg-black'
-        }`}
-    >
-        <span
-            className={`mb-2 text-sm font-semibold tracking-wide uppercase ${
-                mode === 'light' ? 'text-blue-600' : 'text-purple-300'
-            }`}
-        >
-            {mode === 'light' ? 'Light' : 'Dark'} Logo Preview
-        </span>
-        <div className='flex w-full items-center justify-center'>
-            <div className='border-muted-foreground relative size-24 rounded-lg border-2 border-dashed p-2'>
-                <Image
-                    alt={alt}
-                    className='mx-auto items-center rounded-md object-contain'
-                    height={80}
-                    src={src || '/fallback.png'}
-                    width={80}
-                />
+}) => {
+    return (
+        <div className='mt-2 space-y-4 select-none'>
+            <h3 className='flex items-center gap-2 leading-none font-semibold'>
+                <Eye className='h-5 w-5' />
+                Live Preview
+            </h3>
+            <div className='group bg-default/10 relative flex items-center justify-center gap-8 rounded-2xl border-2 border-dashed p-4 md:gap-10 md:p-8'>
+                <div className='flex flex-col items-center gap-1.5'>
+                    <Image
+                        alt={alt}
+                        className='mx-auto items-center rounded-md border bg-white object-contain p-4'
+                        height={100}
+                        src={src || '/fallback.png'}
+                        width={100}
+                    />
+                    <p className='text-muted-foreground'>Light Mode</p>
+                </div>
+                <div className='flex flex-col items-center gap-1.5'>
+                    <Image
+                        alt={alt}
+                        className='mx-auto items-center rounded-md border bg-black object-contain p-4'
+                        height={100}
+                        src={src || '/fallback.png'}
+                        width={100}
+                    />
+                    <p className='text-muted-foreground'>Dark Mode</p>
+                </div>
                 <Button
                     isIconOnly
                     aria-label='Remove image'
-                    className='absolute -top-0.5 -right-0.5 z-30 h-5 w-5 min-w-0 rounded-full p-0 opacity-0 group-hover:opacity-100'
+                    className='absolute top-1.5 right-1.5 z-30 h-5 w-5 min-w-0 rounded-full p-0 opacity-0 group-hover:opacity-100'
                     onPress={onRemove}
                 >
                     <X className='size-4' />
                 </Button>
             </div>
         </div>
-    </div>
-)
+    )
+}
 
 export default function AddEdit({ isOpen, onClose, mode, brand }: AddEditProps) {
-    // Choose action based on mode
     const action = mode === 'add' ? addBrand : editBrand
-    const [state, formAction, isLoading] = useActionState(action, {
-        errors: {},
-    })
+    const [state, formAction, isLoading] = useActionState(action, { errors: {} })
 
-    // Image states
-    const [lightLogoUrl, setLightLogoUrl] = useState('')
-    const [darkLogoUrl, setDarkLogoUrl] = useState('')
-    const [existingLightLogo, setExistingLightLogo] = useState('')
-    const [existingDarkLogo, setExistingDarkLogo] = useState('')
-    const [deletedLightLogo, setDeletedLightLogo] = useState(false)
-    const [deletedDarkLogo, setDeletedDarkLogo] = useState(false)
+    const [imgUrl, setImgUrl] = useState('')
+    const [existingImg, setExistingImg] = useState('')
+    const [deletedImg, setDeletedImg] = useState(false)
 
-    // Reset form when modal opens/closes
     useEffect(() => {
         if (!isOpen) {
-            // Reset all states when modal closes
-            setLightLogoUrl('')
-            setDarkLogoUrl('')
-            setExistingLightLogo('')
-            setExistingDarkLogo('')
-            setDeletedLightLogo(false)
-            setDeletedDarkLogo(false)
+            setImgUrl('')
+            setExistingImg('')
+            setDeletedImg(false)
         } else if (mode === 'edit' && brand) {
-            // Set existing logos when editing
-            setExistingLightLogo(brand.logo?.light || '')
-            setExistingDarkLogo(brand.logo?.dark || '')
-            setLightLogoUrl('')
-            setDarkLogoUrl('')
-            setDeletedLightLogo(false)
-            setDeletedDarkLogo(false)
+            setExistingImg(brand.img || '')
+            setImgUrl('')
+            setDeletedImg(false)
         } else if (mode === 'add') {
-            // Clear everything when adding new brand
-            setLightLogoUrl('')
-            setDarkLogoUrl('')
-            setExistingLightLogo('')
-            setExistingDarkLogo('')
-            setDeletedLightLogo(false)
-            setDeletedDarkLogo(false)
+            setImgUrl('')
+            setExistingImg('')
+            setDeletedImg(false)
         }
     }, [isOpen, mode, brand])
 
-    // Error handling and success detection
     useEffect(() => {
         if (state?.errors && Object.keys(state.errors).length > 0) {
             const errorMessage = state.errors.general || 'Please check the form fields'
 
-            addToast({
-                title: errorMessage,
-                color: 'danger',
-            })
+            addToast({ title: errorMessage, color: 'danger' })
         } else if (!isLoading && state?.success) {
-            // Success - close modal and show success toast
             addToast({
                 title:
                     state.message ||
@@ -139,35 +118,17 @@ export default function AddEdit({ isOpen, onClose, mode, brand }: AddEditProps) 
         }
     }, [state, isLoading, onClose, mode])
 
-    // Handle form submission
     const handleFormSubmit = async (formData: FormData) => {
-        // Only append logo_light if not deleted
-        if (!deletedLightLogo) {
-            if (lightLogoUrl) {
-                formData.append('logo_light', lightLogoUrl)
-            } else if (existingLightLogo) {
-                formData.append('logo_light', existingLightLogo)
-            }
+        if (!deletedImg) {
+            if (imgUrl) formData.append('img', imgUrl)
+            else if (existingImg) formData.append('img', existingImg)
         }
-        // Only append logo_dark if not deleted
-        if (!deletedDarkLogo) {
-            if (darkLogoUrl) {
-                formData.append('logo_dark', darkLogoUrl)
-            } else if (existingDarkLogo) {
-                formData.append('logo_dark', existingDarkLogo)
-            }
-        }
-        // Add deletion flags
-        if (deletedLightLogo) {
-            formData.append('delete_light_logo', 'true')
-        }
-        if (deletedDarkLogo) {
-            formData.append('delete_dark_logo', 'true')
+        if (deletedImg) {
+            formData.append('delete_img', 'true')
         }
         await formAction(formData)
     }
 
-    // Dynamic content based on mode
     const Title = mode === 'add' ? 'Add Brand' : 'Edit Brand'
     const Submit = mode === 'add' ? 'Add Brand' : 'Update Brand'
     const id = mode === 'add' ? 'add-brand' : 'edit-brand'
@@ -201,7 +162,6 @@ export default function AddEdit({ isOpen, onClose, mode, brand }: AddEditProps) 
                         />
                     </ModalHeader>
                     <ModalBody className='gap-4 py-4'>
-                        {/* Add hidden input for id if editing */}
                         {mode === 'edit' && brand?.id && (
                             <input name='id' type='hidden' value={brand.id} />
                         )}
@@ -218,6 +178,16 @@ export default function AddEdit({ isOpen, onClose, mode, brand }: AddEditProps) 
                             radius='sm'
                             startContent={<FaAward />}
                         />
+                        <Input
+                            defaultValue={mode === 'edit' ? brand?.keywords || '' : ''}
+                            errorMessage={state?.errors?.keywords}
+                            isInvalid={!!state?.errors?.keywords}
+                            label='Keywords'
+                            labelPlacement='outside'
+                            name='keywords'
+                            placeholder='iPhone, MacBook, iPad, etc.'
+                            radius='sm'
+                        />
                         <Textarea
                             defaultValue={mode === 'edit' ? brand?.description || '' : ''}
                             errorMessage={state?.errors?.description}
@@ -231,55 +201,25 @@ export default function AddEdit({ isOpen, onClose, mode, brand }: AddEditProps) 
                         />
 
                         <Input
-                            errorMessage={state?.errors?.logo_light}
-                            id='logo_light'
-                            isInvalid={!!state?.errors?.logo_light}
-                            label='Light Mode Logo URL'
+                            errorMessage={state?.errors?.img}
+                            id='img'
+                            isInvalid={!!state?.errors?.img}
+                            label='Brand Image URL'
                             labelPlacement='outside'
-                            placeholder='https://example.com/logo-light.svg'
+                            placeholder='https://example.com/logo.svg'
                             radius='sm'
                             startContent={<FaLink />}
-                            value={lightLogoUrl}
-                            onChange={(e) => setLightLogoUrl(e.target.value)}
+                            value={imgUrl}
+                            onChange={(e) => setImgUrl(e.target.value)}
                         />
-                        {(lightLogoUrl || (existingLightLogo && !deletedLightLogo)) && (
+                        {(imgUrl || (existingImg && !deletedImg)) && (
                             <ImagePreview
-                                alt='Light Logo'
-                                mode='light'
-                                src={lightLogoUrl || existingLightLogo}
+                                alt='Brand Image'
+                                src={imgUrl || bucketUrl(existingImg)}
                                 onRemove={() => {
-                                    setLightLogoUrl('')
-                                    if (existingLightLogo) {
-                                        setDeletedLightLogo(true)
-                                    }
-                                    setExistingLightLogo('')
-                                }}
-                            />
-                        )}
-
-                        <Input
-                            errorMessage={state?.errors?.logo_dark}
-                            id='logo_dark'
-                            isInvalid={!!state?.errors?.logo_dark}
-                            label='Dark Mode Logo URL'
-                            labelPlacement='outside'
-                            placeholder='https://example.com/logo-dark.svg'
-                            radius='sm'
-                            startContent={<FaLink />}
-                            value={darkLogoUrl}
-                            onChange={(e) => setDarkLogoUrl(e.target.value)}
-                        />
-                        {(darkLogoUrl || (existingDarkLogo && !deletedDarkLogo)) && (
-                            <ImagePreview
-                                alt='Dark Logo'
-                                mode='dark'
-                                src={darkLogoUrl || existingDarkLogo}
-                                onRemove={() => {
-                                    setDarkLogoUrl('')
-                                    if (existingDarkLogo) {
-                                        setDeletedDarkLogo(true)
-                                    }
-                                    setExistingDarkLogo('')
+                                    setImgUrl('')
+                                    if (existingImg) setDeletedImg(true)
+                                    setExistingImg('')
                                 }}
                             />
                         )}

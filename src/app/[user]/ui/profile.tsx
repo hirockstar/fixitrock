@@ -9,6 +9,7 @@ import { FaCamera } from 'react-icons/fa'
 import { User } from '@/app/login/types'
 import { Verified } from '@/ui/icons'
 import { formatDateTime, userAvatar } from '@/lib/utils'
+import { bucketUrl } from '@/supabase/bucket'
 
 import { Actions } from './actions'
 import AvatarCover from './add'
@@ -88,7 +89,7 @@ export default function Profile({ user, canManage }: ProfileProps) {
                     className='h-30 w-full rounded-none border-b object-cover lg:h-[240px]'
                     radius='none'
                     src={
-                        (user.cover || '/fallback/cover.png') +
+                        (bucketUrl(user.cover as string) || '/fallback/cover.png') +
                         (user.updated_at ? `?t=${user.updated_at}` : '')
                     }
                 />

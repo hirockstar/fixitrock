@@ -64,266 +64,100 @@ export async function updateUser(formData: FormData) {
         throw new Error('Failed to update user')
     }
 }
-
 export async function uploadUserImage(file: File, type: 'avatar' | 'cover') {
     const session = await userSession()
     const user = session.user
 
-    if (!user) {
-        throw new Error('Not authenticated')
-    }
+    if (!user) throw new Error('Not authenticated')
+
     const supabase = await createClient()
 
     try {
-        // Convert File to ArrayBuffer
         const arrayBuffer = await file.arrayBuffer()
         const bytes = new Uint8Array(arrayBuffer)
-        // Always use .png extension for storage
         const fileName = `${type}.png`
-        const filePath = `user/@${user.username}/${fileName}`
-        // Upload to Supabase Storage (always overwrite)
-        const { error: uploadError } = await supabase.storage.from('user').upload(filePath, bytes, {
-            contentType: 'image/png',
-            upsert: true,
-        })
+        const storagePath = `@${user.username}/${fileName}`
+        const tablePath = `/user/@${user.username}/${fileName}`
+
+        // Upload to Supabase storage
+        const { error: uploadError } = await supabase.storage
+            .from('user')
+            .upload(storagePath, bytes, { contentType: 'image/png', upsert: true })
 
         if (uploadError) throw uploadError
-        // Get public URL
-        const { data: urlData } = supabase.storage.from('user').getPublicUrl(filePath)
+
         // Update user table
-        const updateData =
-            type === 'avatar' ? { avatar: urlData.publicUrl } : { cover: urlData.publicUrl }
+        const updateData = type === 'avatar' ? { avatar: tablePath } : { cover: tablePath }
         const { error: updateError } = await supabase
             .from('users')
-            .update({
-                ...updateData,
-                updated_at: new Date().toISOString(),
-            })
+            .update({ ...updateData, updated_at: new Date().toISOString() })
             .eq('id', user.id)
 
         if (updateError) throw updateError
+
         revalidatePath('/[user]/[slug]')
         revalidateTag(`user-${user.username}`)
 
-        return { url: urlData.publicUrl }
+        return { url: tablePath }
     } catch (error) {
         logWarning(`Error uploading ${type}:`, error)
-
         throw new Error(`Failed to upload ${type}`)
     }
 }
 
+// Update self avatar
+export async function updateSelfAvatar(file: File) {
+    return uploadUserImage(file, 'avatar')
+}
+
+// Update self cover
+export async function updateSelfCover(file: File) {
+    return uploadUserImage(file, 'cover')
+}
+
+// Delete a user image (avatar or cover)
 export async function deleteUserImage(type: 'avatar' | 'cover') {
     const session = await userSession()
     const user = session.user
 
-    if (!user) {
-        throw new Error('Not authenticated')
-    }
+    if (!user) throw new Error('Not authenticated')
+
     const supabase = await createClient()
 
     try {
         const fileName = `${type}.png`
-        const filePath = `user/@${user.username}/${fileName}`
+        const storagePath = `@${user.username}/${fileName}`
+        const tablePath = type === 'avatar' ? { avatar: null } : { cover: null }
 
         // Delete from storage
-        const { error: deleteError } = await supabase.storage.from('user').remove([filePath])
+        const { error: deleteError } = await supabase.storage.from('user').remove([storagePath])
 
         if (deleteError) throw deleteError
 
-        // Remove from user table
-        const updateData = type === 'avatar' ? { avatar: null } : { cover: null }
+        // Remove from table
         const { error: updateError } = await supabase
             .from('users')
-            .update({
-                ...updateData,
-                updated_at: new Date().toISOString(),
-            })
+            .update({ ...tablePath, updated_at: new Date().toISOString() })
             .eq('id', user.id)
 
         if (updateError) throw updateError
 
-        revalidatePath('/[user]/[slug]', 'layout')
+        revalidatePath('/[user]/[slug]')
         revalidateTag(`user-${user.username}`)
 
         return { success: true }
     } catch (error) {
         logWarning(`Error deleting ${type}:`, error)
-
         throw new Error(`Failed to delete ${type}`)
     }
 }
 
-export async function updateSelfAvatar(file: File) {
-    const session = await userSession()
-    const user = session.user
-
-    if (!user) {
-        throw new Error('Not authenticated')
-    }
-
-    const supabase = await createClient()
-
-    try {
-        // Convert File to ArrayBuffer
-        const arrayBuffer = await file.arrayBuffer()
-        const bytes = new Uint8Array(arrayBuffer)
-        const fileName = 'avatar.png'
-        const filePath = `user/@${user.username}/${fileName}`
-
-        // Upload to Supabase Storage (always overwrite)
-        const { error: uploadError } = await supabase.storage.from('user').upload(filePath, bytes, {
-            contentType: 'image/png',
-            upsert: true,
-        })
-
-        if (uploadError) throw uploadError
-
-        // Get public URL
-        const { data: urlData } = supabase.storage.from('user').getPublicUrl(filePath)
-
-        // Update user table
-        const { error: updateError } = await supabase
-            .from('users')
-            .update({
-                avatar: urlData.publicUrl,
-                updated_at: new Date().toISOString(),
-            })
-            .eq('id', user.id)
-
-        if (updateError) throw updateError
-        revalidatePath('/[user]/[slug]')
-        revalidateTag(`user-${user.username}`)
-
-        return { url: urlData.publicUrl }
-    } catch (error) {
-        logWarning('Error uploading avatar:', error)
-        throw new Error('Failed to upload avatar')
-    }
-}
-
-export async function updateSelfCover(file: File) {
-    const session = await userSession()
-    const user = session.user
-
-    if (!user) {
-        throw new Error('Not authenticated')
-    }
-
-    const supabase = await createClient()
-
-    try {
-        // Convert File to ArrayBuffer
-        const arrayBuffer = await file.arrayBuffer()
-        const bytes = new Uint8Array(arrayBuffer)
-        const fileName = 'cover.png'
-        const filePath = `user/@${user.username}/${fileName}`
-
-        // Upload to Supabase Storage (always overwrite)
-        const { error: uploadError } = await supabase.storage.from('user').upload(filePath, bytes, {
-            contentType: 'image/png',
-            upsert: true,
-        })
-
-        if (uploadError) throw uploadError
-
-        // Get public URL
-        const { data: urlData } = supabase.storage.from('user').getPublicUrl(filePath)
-
-        // Update user table
-        const { error: updateError } = await supabase
-            .from('users')
-            .update({
-                cover: urlData.publicUrl,
-                updated_at: new Date().toISOString(),
-            })
-            .eq('id', user.id)
-
-        if (updateError) throw updateError
-        revalidatePath('/[user]/[slug]')
-        revalidateTag(`user-${user.username}`)
-
-        return { url: urlData.publicUrl }
-    } catch (error) {
-        logWarning('Error uploading cover:', error)
-        throw new Error('Failed to upload cover')
-    }
-}
-
+// Remove self avatar
 export async function removeSelfAvatar() {
-    const session = await userSession()
-    const user = session.user
-
-    if (!user) {
-        throw new Error('Not authenticated')
-    }
-
-    const supabase = await createClient()
-
-    try {
-        const fileName = 'avatar.png'
-        const filePath = `user/@${user.username}/${fileName}`
-
-        // Delete from storage
-        const { error: deleteError } = await supabase.storage.from('user').remove([filePath])
-
-        if (deleteError) throw deleteError
-
-        // Remove from user table
-        const { error: updateError } = await supabase
-            .from('users')
-            .update({
-                avatar: null,
-                updated_at: new Date().toISOString(),
-            })
-            .eq('id', user.id)
-
-        if (updateError) throw updateError
-        revalidatePath('/[user]/[slug]', 'layout')
-        revalidateTag(`user-${user.username}`)
-
-        return { success: true }
-    } catch (error) {
-        logWarning('Error deleting avatar:', error)
-        throw new Error('Failed to delete avatar')
-    }
+    return deleteUserImage('avatar')
 }
 
+// Remove self cover
 export async function removeSelfCover() {
-    const session = await userSession()
-    const user = session.user
-
-    if (!user) {
-        throw new Error('Not authenticated')
-    }
-
-    const supabase = await createClient()
-
-    try {
-        const fileName = 'cover.png'
-        const filePath = `user/@${user.username}/${fileName}`
-
-        // Delete from storage
-        const { error: deleteError } = await supabase.storage.from('user').remove([filePath])
-
-        if (deleteError) throw deleteError
-
-        // Remove from user table
-        const { error: updateError } = await supabase
-            .from('users')
-            .update({
-                cover: null,
-                updated_at: new Date().toISOString(),
-            })
-            .eq('id', user.id)
-
-        if (updateError) throw updateError
-        revalidatePath('/[user]/[slug]', 'layout')
-        revalidateTag(`user-${user.username}`)
-
-        return { success: true }
-    } catch (error) {
-        logWarning('Error deleting cover:', error)
-        throw new Error('Failed to delete cover')
-    }
+    return deleteUserImage('cover')
 }

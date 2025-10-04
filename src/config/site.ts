@@ -106,3 +106,9 @@ export const META_THEME_COLORS = {
     light: '#ffffff',
     dark: '#00000',
 }
+
+export const fallback = {
+    brand: 'https://cdn3d.iconscout.com/3d/premium/thumb/astronaut-riding-rocket-while-waiving-hand-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--hello-logo-gesture-pack-aerospace-illustrations-4431886.png',
+}
+
+export type Fallback = typeof fallback

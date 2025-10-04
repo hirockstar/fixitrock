@@ -1,6 +1,5 @@
 export { useKeyboardNavigation } from './useKeyboardNavigation'
 export { useImageManager } from './useImageManager'
-export { useBrandImg } from './useBrandImg'
 export { usePwa } from './usePwa'
 export { useDevice } from './useDevice'
 export { useFileUpload } from './useFileUpload'

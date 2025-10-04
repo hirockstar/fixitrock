@@ -8,8 +8,9 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 import { Delete } from '@/ui/icons'
 import { Brand } from '@/types/brands'
-import { useBrandImg } from '@/hooks'
 import { Input } from '@/app/(space)/ui'
+import { bucketUrl } from '@/supabase/bucket'
+import { fallback } from '@/config/site'
 
 import AddEdit from './add'
 import DeleteBrand from './delete'
@@ -24,8 +25,6 @@ function BrandItemCard({
     onEdit: (b: Brand) => void
     onDelete: (b: Brand) => void
 }) {
-    const { src, isLoading } = useBrandImg(brand)
-
     return (
         <Card
             key={brand.id}
@@ -40,9 +39,8 @@ function BrandItemCard({
                             alt={brand.name}
                             className='bg-background rounded-lg border object-contain p-0.5'
                             height={60}
-                            isLoading={isLoading}
                             radius='sm'
-                            src={src}
+                            src={bucketUrl(brand.img) || fallback.brand}
                             width={60}
                         />
                     </>
